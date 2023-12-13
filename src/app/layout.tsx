@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
+import React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'FMT Design and Print',
-  description: 'Graphic Design and Printing Solutions',
+  title: "FMT Design and Print",
+  description: "Graphic Design and Printing Solutions",
 };
 
 export default function RootLayout({
