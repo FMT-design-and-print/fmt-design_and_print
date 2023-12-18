@@ -1,5 +1,8 @@
+import { AuthCard } from "@/components/AuthCard";
+import { LoginForm } from "@/components/forms/LoginForm";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Signup({
@@ -11,68 +14,23 @@ export default async function Signup({
   const supabase = createClient(cookieStore);
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  const signIn = async (formData: FormData) => {
-    "use server";
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
-
-    return redirect("/");
-  };
-
-  if (user) {
+  if (session) {
     return redirect("/");
   }
 
   return (
-    <div className="flex w-full flex-1 flex-col justify-center gap-2 px-8 sm:max-w-md">
-      <form
-        className="flex w-full flex-1 flex-col justify-center gap-2 text-foreground"
-        action={signIn}
-      >
-        <label className="font-medium" htmlFor="email">
-          Email
-        </label>
-        <input
-          className="mb-6 rounded-md border bg-inherit px-4 py-2"
-          name="email"
-          placeholder="you@example.com"
-          required
-        />
-        <label className="font-medium" htmlFor="password">
-          Password
-        </label>
-        <input
-          className="mb-6 rounded-md border bg-inherit px-4 py-2"
-          type="password"
-          name="password"
-          placeholder="••••••••"
-          required
-        />
-        <button className="mb-2 rounded-md bg-green-700 px-4 py-2 text-foreground">
-          Sign In
-        </button>
-
-        {searchParams?.message && (
-          <p className="mt-4 bg-foreground/10 p-4 text-center text-foreground">
-            {searchParams.message}
-          </p>
-        )}
-      </form>
-    </div>
+    <AuthCard searchParams={searchParams}>
+      <>
+        <LoginForm />
+        <div className="py-6">
+          <Link href="/signup" className=" text-sm">
+            Don’t have an account? Register
+          </Link>
+        </div>
+      </>
+    </AuthCard>
   );
 }

@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 @layer utilities {
-  /* .background-light850_dark100 {
-    @apply bg-light-850 dark:bg-dark-100;
-  } */
+  .simple-input {
+    @apply h-11 w-full rounded-md border-1 border-gray-300 bg-white px-2 outline-none transition-all duration-400 focus:border-gray-400;
+  }
+
+  .primary-gradient {
+    background: linear-gradient(180deg, #f10849 0%, #56041b 100%);
+  }
 }

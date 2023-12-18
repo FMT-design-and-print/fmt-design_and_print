@@ -17,26 +17,26 @@ export async function AuthButtons() {
         <div className="flex items-center gap-4">
           Hey, {user.email}!
           <form action={signOut}>
-            <button className=" rounded-md bg-red-500 px-4 py-2 no-underline hover:bg-red-600">
+            <button className=" rounded-md bg-red-500 px-4 py-2 text-red-100 no-underline hover:bg-red-600">
               Logout
             </button>
           </form>
         </div>
       ) : (
-        <>
+        <div className="flex">
           <Link
             href="/login"
-            className="mx-1 flex rounded-md bg-slate-200 px-3 py-2 no-underline hover:bg-slate-300"
+            className="m-1 flex rounded-md bg-slate-200 px-3 py-2 no-underline hover:bg-slate-300"
           >
             Login
           </Link>
           <Link
             href="/signup"
-            className="mx-1 flex rounded-md bg-slate-200 px-3 py-2 no-underline hover:bg-slate-300"
+            className="m-1 flex rounded-md bg-slate-200 px-3 py-2 no-underline hover:bg-slate-300"
           >
             Sign Up
           </Link>
-        </>
+        </div>
       )}
     </>
   );
