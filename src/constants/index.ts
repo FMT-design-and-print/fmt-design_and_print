@@ -5,3 +5,10 @@ export const verifyAccountMessage =
   "Check the confirmation email and verify your account to continue sign in process.";
 export const userKeyNotPresentMessage =
   "Unable to sign you up. A user with this email address might already exist on our platform. Contact support team for help";
+export const passwordResetFailedMessage =
+  "Unable to reset Password. Try again!";
+export const unableToVerifyEmailMessage = "Unable to verify your email address";
+export const passwordResetSuccessMessage =
+  "Your Password has been reset successfully. Sign in.";
+export const userNotFoundMessage = "Could not find user with this email.";
+export const OAuthResetFailedMessage = "Cannot reset password for this user.";

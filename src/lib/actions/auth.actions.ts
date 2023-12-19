@@ -1,19 +1,28 @@
 "use server";
 import {
   authFailedMessage,
+  passwordResetFailedMessage,
+  passwordResetSuccessMessage,
   signUpFailedMessage,
   userExistMessage,
   userKeyNotPresentMessage,
+  verifyAccountMessage,
 } from "@/constants";
 import { createClient } from "@/utils/supabase/server";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { LoginDataSchema, SignUpDataSchema } from "../validations";
+import {
+  LoginDataSchema,
+  ResetPasswordDataSchema,
+  SignUpDataSchema,
+} from "../validations";
 
 type SignUpData = z.infer<typeof SignUpDataSchema>;
 type LoginData = z.infer<typeof LoginDataSchema>;
+type ResetData = z.infer<typeof ResetPasswordDataSchema>;
 
+const errorStatus = "messageStatus=error";
 export const signIn = async (data: LoginData) => {
   const result = LoginDataSchema.safeParse(data);
 
@@ -33,7 +42,7 @@ export const signIn = async (data: LoginData) => {
   });
 
   if (error) {
-    return redirect(`/login?message=${authFailedMessage}`);
+    return redirect(`/login?message=${authFailedMessage}&${errorStatus}`);
   }
 
   return redirect("/");
@@ -59,7 +68,7 @@ export const signUp = async (data: SignUpData) => {
     .eq("email", email);
 
   if (error) {
-    return redirect(`/signup?message=${signUpFailedMessage}`);
+    return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
   }
 
   if (users?.length === 0) {
@@ -72,24 +81,48 @@ export const signUp = async (data: SignUpData) => {
     });
 
     if (signUpError) {
-      return redirect(`/signup?message=${signUpFailedMessage}`);
+      return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
     }
 
     // add user details to database
     const userId = newUser.user?.id;
+    const provider = newUser.user?.app_metadata.provider;
 
     const { error: err } = await supabase
       .from("users")
-      .insert([{ id: userId, email }]);
+      .insert([{ id: userId, email, provider }]);
 
     if (err && err?.code === "23503") {
-      return redirect(`/signup?message=${userKeyNotPresentMessage}`);
+      return redirect(
+        `/signup?message=${userKeyNotPresentMessage}&${errorStatus}`
+      );
     }
 
-    return redirect(`/signup?action=verify`);
+    return redirect(
+      `/signup?message=${verifyAccountMessage}&messageStatus=success`
+    );
   } else {
-    return redirect(`/signup?message=${userExistMessage}`);
+    return redirect(`/signup?message=${userExistMessage}&${errorStatus}`);
   }
+};
+
+export const resetPassword = async (data: ResetData) => {
+  const password = data.password;
+
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    return redirect(
+      `/reset-password?message=${passwordResetFailedMessage}&messageStatus=error`
+    );
+  }
+
+  redirect(`/login?message=${passwordResetSuccessMessage}&messageStatus=info`);
 };
 
 export const signOut = async () => {
