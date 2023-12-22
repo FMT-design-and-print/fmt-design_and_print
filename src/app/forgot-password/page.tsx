@@ -1,10 +1,17 @@
-import { NextPage } from "next";
-import { ForgotPassword } from "./ForgotPassword";
-import { cookies } from "next/headers";
+import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ForgotPassword } from "./ForgotPassword";
 
-const ForgotPasswordPage: NextPage = async () => {
+interface Props {
+  searchParams: {
+    message: string;
+    messageStatus: MessageStatus;
+  };
+}
+
+const ForgotPasswordPage = async ({ searchParams }: Props) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -18,7 +25,7 @@ const ForgotPasswordPage: NextPage = async () => {
 
   return (
     <>
-      <ForgotPassword />
+      <ForgotPassword searchParams={searchParams} />
     </>
   );
 };

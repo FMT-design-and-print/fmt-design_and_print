@@ -1,5 +1,6 @@
 import { MessageStatus } from "@/types";
-import { Avatar, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Avatar } from "@nextui-org/avatar";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { ReactNode } from "react";
 
 interface Props {
@@ -22,7 +23,7 @@ export const AuthCard = ({ title, children, searchParams }: Props) => {
   };
 
   return (
-    <div className="m-8">
+    <div className="relative m-8">
       <Card className="mx-auto max-w-[400px] rounded-md bg-gray-50">
         <CardHeader className="primary-gradient relative flex h-[120px] justify-center overflow-hidden rounded-t-md bg-slate-400">
           <Avatar

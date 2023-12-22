@@ -1,6 +1,6 @@
 import { AuthCard } from "@/components/AuthCard";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
-import { LoginForm } from "@/components/forms/LoginForm";
+import { LoginForm } from "@/app/login/LoginForm";
 import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";

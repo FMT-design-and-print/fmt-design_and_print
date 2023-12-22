@@ -1,5 +1,6 @@
 "use client";
 import { AuthCard } from "@/components/AuthCard";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import {
   OAuthResetFailedMessage,
@@ -10,7 +11,7 @@ import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,11 +24,15 @@ const Schema = z.object({
 
 type Data = z.infer<typeof Schema>;
 
-export const ForgotPassword = () => {
+interface Props {
+  searchParams: {
+    message: string;
+    messageStatus: MessageStatus;
+  };
+}
+export const ForgotPassword = ({ searchParams }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
-  const searchParams = useSearchParams();
-  const message = searchParams?.get("message");
-  const messageStatus = searchParams?.get("messageStatus") as MessageStatus;
   const [linkSent, setLinkSent] = useState(false);
 
   const {
@@ -47,6 +52,7 @@ export const ForgotPassword = () => {
 
     const supabase = createClient();
 
+    setIsLoading(true);
     const { data: users, error: err } = await supabase
       .from("users")
       .select("email, provider")
@@ -54,16 +60,19 @@ export const ForgotPassword = () => {
 
     if (err) {
       // error encountered when loading user details
+      setIsLoading(false);
       return push(getPath(userNotFoundMessage));
     }
 
     if (users?.length === 0) {
       // no user was found
+      setIsLoading(false);
       return push(getPath(userNotFoundMessage));
     }
 
     if (users && users[0].provider !== "Email") {
       // User signed up using OAuth
+      setIsLoading(false);
       return push(getPath(OAuthResetFailedMessage));
     }
 
@@ -71,6 +80,7 @@ export const ForgotPassword = () => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${location.origin}/reset-password`,
     });
+    setIsLoading(false);
 
     if (error) {
       return push(getPath(unableToVerifyEmailMessage));
@@ -87,13 +97,8 @@ export const ForgotPassword = () => {
           password
         </p>
       ) : (
-        <AuthCard
-          title="Forgotten Password?"
-          searchParams={{
-            message: message || "",
-            messageStatus,
-          }}
-        >
+        <AuthCard title="Forgotten Password?" searchParams={searchParams}>
+          <LoadingOverlay visible={isLoading} />
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
