@@ -1,6 +1,6 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import { Button } from "@nextui-org/react";
+import { Button } from "@mantine/core";
 import { redirect } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
@@ -26,11 +26,13 @@ export const GoogleAuthButton = () => {
 
   return (
     <Button
-      className="my-4 w-full rounded-full border-1 bg-white"
-      disableRipple
       onClick={signInWithGoogle}
+      leftSection={<FcGoogle />}
+      variant="default"
+      color="gray"
+      radius="xl"
+      w="100%"
     >
-      <FcGoogle />
       Google
     </Button>
   );

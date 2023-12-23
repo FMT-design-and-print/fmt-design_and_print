@@ -1,12 +1,13 @@
-import { Button, ButtonProps } from "@nextui-org/button";
+import { Button, ButtonProps } from "@mantine/core";
 import React, { ReactNode } from "react";
 
 interface Props extends ButtonProps {
   children: ReactNode;
+  type: "button" | "submit" | "reset" | undefined;
 }
-export const PrimaryButton = ({ children, className, ...rest }: Props) => {
+export const PrimaryButton = ({ children, type, ...rest }: Props) => {
   return (
-    <Button disableRipple className="btn w-full rounded-sm" {...rest}>
+    <Button className="btn" type={type} {...rest}>
       {children}
     </Button>
   );

@@ -1,11 +1,12 @@
 import { AuthCard } from "@/components/AuthCard";
-import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 import { LoginForm } from "@/app/login/LoginForm";
 import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Box, Divider } from "@mantine/core";
+import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 
 export default async function Signup({
   searchParams,
@@ -24,25 +25,21 @@ export default async function Signup({
   }
 
   return (
-    <AuthCard title="Welcome Back" searchParams={searchParams}>
+    <AuthCard title="Welcome Back, Sign In" searchParams={searchParams}>
       <>
         <GoogleAuthButton />
-        <div>
-          <p className="text-center text-sm leading-8 text-gray-600">
-            Or Continue with
-          </p>
-        </div>
+        <Divider label="Or Continue with" labelPosition="center" my="md" />
         <LoginForm />
-        <div className="pt-6">
+        <Box pt="sm">
           <Link href="/forgot-password" className=" text-sm">
             Forgotten Password?
           </Link>
-        </div>
-        <div className="pb-6 pt-2">
-          <Link href="/signup" className=" text-sm">
+        </Box>
+        <Box py="sm">
+          <Link href="/signup" className="text-sm">
             Don’t have an account? Register
           </Link>
-        </div>
+        </Box>
       </>
     </AuthCard>
   );

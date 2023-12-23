@@ -99,7 +99,7 @@ export const signUp = async (data: SignUpData) => {
     }
 
     return redirect(
-      `/signup?message=${verifyAccountMessage}&messageStatus=success`
+      `/login?message=${verifyAccountMessage}&messageStatus=success`
     );
   } else {
     return redirect(`/signup?message=${userExistMessage}&${errorStatus}`);
