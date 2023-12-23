@@ -1,8 +1,8 @@
 import { AuthCard } from "@/components/AuthCard";
 import { PasswordResetForm } from "@/app/reset-password/PasswordResetForm";
 import { MessageStatus } from "@/types";
-import { Button } from "@nextui-org/button";
 import Link from "next/link";
+import { Button } from "@mantine/core";
 
 interface Props {
   searchParams: {
@@ -27,7 +27,7 @@ const ResetPassword = ({ searchParams }: Props) => {
             Password reset link is invalid or has expired
           </p>
           <Link href="/forgot-password">
-            <Button variant="light" color="default" radius="sm">
+            <Button variant="subtle" radius="sm">
               Request new link
             </Button>
           </Link>

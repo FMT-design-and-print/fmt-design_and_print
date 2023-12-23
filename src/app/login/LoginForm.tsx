@@ -6,7 +6,7 @@ import { z } from "zod";
 import { PrimaryButton } from "../../components/PrimaryButton";
 import { signIn } from "@/lib/actions/auth.actions";
 import { useState } from "react";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 type LoginData = z.infer<typeof LoginDataSchema>;
 

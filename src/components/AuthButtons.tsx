@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { signOut } from "@/lib/actions/auth.actions";
+import { Button, Group } from "@mantine/core";
 
 export async function AuthButtons() {
   const cookieStore = cookies();
@@ -17,26 +18,30 @@ export async function AuthButtons() {
         <div className="flex items-center gap-4">
           Hey, {user.email}!
           <form action={signOut}>
-            <button className=" rounded-md bg-red-500 px-4 py-2 text-red-100 no-underline hover:bg-red-600">
+            <Button type="submit" color="red">
               Logout
-            </button>
+            </Button>
           </form>
         </div>
       ) : (
-        <div className="flex">
-          <Link
+        <Group>
+          <Button
+            component={Link}
             href="/login"
-            className="m-1 flex rounded-md bg-slate-200 px-3 py-2 no-underline hover:bg-slate-300"
+            color="pink"
+            variant="transparent"
           >
-            Login
-          </Link>
-          <Link
+            Log in
+          </Button>
+          <Button
+            component={Link}
             href="/signup"
-            className="m-1 flex rounded-md bg-slate-200 px-3 py-2 no-underline hover:bg-slate-300"
+            color="pink"
+            variant="transparent"
           >
-            Sign Up
-          </Link>
-        </div>
+            Sign up
+          </Button>
+        </Group>
       )}
     </>
   );
