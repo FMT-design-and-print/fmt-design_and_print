@@ -4,7 +4,7 @@
 
 @layer utilities {
   .simple-input {
-    @apply h-11 w-full rounded-md border-1 border-gray-300 bg-white px-2 outline-none transition-all duration-400 focus:border-gray-400;
+    @apply h-11 w-full rounded-md border border-gray-300 bg-white px-2 outline-none transition-all duration-300 focus:border-gray-400;
   }
 
   .primary-gradient {
