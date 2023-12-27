@@ -23,6 +23,7 @@ export const MobileNav = () => {
         opened={false}
         onClick={toggleDrawer}
         hiddenFrom="sm"
+        role="button"
       />
 
       <Drawer

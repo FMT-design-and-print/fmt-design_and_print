@@ -15,7 +15,7 @@ export function Header() {
         <TopBar />
       </Box>
       <Box className="bg-darkBlue text-white">
-        <header className={classes.header}>
+        <div className={classes.header}>
           <Group justify="space-between" h="100%">
             <Image
               src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703269414/FMT/logo-white_mfxmmk.png"
@@ -42,7 +42,7 @@ export function Header() {
             </Group>
           </Group>
           <SearchSection />
-        </header>
+        </div>
       </Box>
     </>
   );

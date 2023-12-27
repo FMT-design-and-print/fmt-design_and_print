@@ -18,7 +18,7 @@ export const SearchWithButton = (props: TextInputProps) => {
           size={isMobile ? "xs" : "sm"}
           className={`btn`}
         >
-          <Text size={isMobile ? "10px" : "md"} component="span">
+          <Text c="white" size={isMobile ? "10px" : "md"} component="span">
             Search
           </Text>
         </Button>
