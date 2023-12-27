@@ -1,48 +1,32 @@
-import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
-import { cookies } from "next/headers";
-import { signOut } from "@/lib/actions/auth.actions";
+"use client";
+import { useSession } from "@/store";
 import { Button, Group } from "@mantine/core";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export async function AuthButtons() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+const excludedPaths = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+];
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export function AuthButtons() {
+  const session = useSession((state) => state.session);
+  const pathname = usePathname();
 
-  return (
-    <>
-      {user ? (
-        <div className="flex items-center gap-4">
-          Hey, {user.email}!
-          <form action={signOut}>
-            <Button type="submit" color="red">
-              Logout
-            </Button>
-          </form>
-        </div>
-      ) : (
-        <Group>
-          <Button
-            component={Link}
-            href="/login"
-            color="pink"
-            variant="transparent"
-          >
-            Log in
-          </Button>
-          <Button
-            component={Link}
-            href="/signup"
-            color="pink"
-            variant="transparent"
-          >
-            Sign up
-          </Button>
-        </Group>
-      )}
-    </>
-  );
+  if (!session && !excludedPaths.includes(pathname)) {
+    return (
+      <Group>
+        <Button component={Link} href="/login" variant="default">
+          Log in
+        </Button>
+        <Button component={Link} href="/signup" className="btn">
+          Sign up
+        </Button>
+      </Group>
+    );
+  }
+
+  return null;
 }

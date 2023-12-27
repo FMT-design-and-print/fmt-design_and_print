@@ -23,12 +23,8 @@ export const SignupForm = () => {
 
   const onSubmit = async (data: SignUpData) => {
     setIsLoading(true);
-    const res = await signUp(data);
+    await signUp(data);
     setIsLoading(false);
-    if (!res?.success) {
-      return false;
-    }
-
     reset();
   };
 
