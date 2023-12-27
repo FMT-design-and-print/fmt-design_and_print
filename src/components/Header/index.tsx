@@ -6,6 +6,7 @@ import { MobileNav } from "./MobileNav";
 import { SearchSection } from "./SearchSection";
 import classes from "./Styles.module.css";
 import { TopBar } from "./TopBar";
+import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
 
 export function Header() {
   return (
@@ -33,7 +34,12 @@ export function Header() {
               <AuthButtons />
             </Box>
             <MobileNav />
-            <ProfileMenu />
+            <Group>
+              <Box hiddenFrom="sm">
+                <CartAndSavedItemsButtons />
+              </Box>
+              <ProfileMenu />
+            </Group>
           </Group>
           <SearchSection />
         </header>

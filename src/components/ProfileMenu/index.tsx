@@ -26,7 +26,7 @@ export const ProfileMenu = () => {
           >
             <Group gap={7}>
               <Avatar src="" alt="user name" size="md" />
-              <Text c="gray.3" size="sm">
+              <Text c="gray.3" size="sm" visibleFrom="sm">
                 My Account
               </Text>
               <IoChevronDown style={{ width: rem(12), height: rem(12) }} />
