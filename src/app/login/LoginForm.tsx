@@ -7,10 +7,14 @@ import { PrimaryButton } from "../../components/PrimaryButton";
 import { signIn } from "@/lib/actions/auth.actions";
 import { useState } from "react";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/store";
 
 type LoginData = z.infer<typeof LoginDataSchema>;
 
 export const LoginForm = () => {
+  const { setSession, setUser } = useSession((state) => state);
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -23,12 +27,12 @@ export const LoginForm = () => {
 
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
-    const res = await signIn(data);
-    setIsLoading(false);
+    const { session } = await signIn(data);
+    setSession(session);
+    setUser(session?.user);
 
-    if (!res?.success) {
-      return false;
-    }
+    router.push("/");
+    setIsLoading(false);
 
     reset();
   };

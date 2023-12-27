@@ -24,19 +24,16 @@ type ResetData = z.infer<typeof ResetPasswordDataSchema>;
 
 const errorStatus = "messageStatus=error";
 export const signIn = async (data: LoginData) => {
-  const result = LoginDataSchema.safeParse(data);
-
-  if (!result.success) {
-    return { success: false, errors: result.error.flatten().fieldErrors };
-  }
-
   const email = data.email;
   const password = data.password;
 
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const {
+    error,
+    data: { session },
+  } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -45,17 +42,11 @@ export const signIn = async (data: LoginData) => {
     return redirect(`/login?message=${authFailedMessage}&${errorStatus}`);
   }
 
-  return redirect("/");
+  return { session };
 };
 
 export const signUp = async (data: SignUpData) => {
   const origin = headers().get("origin");
-  const result = SignUpDataSchema.safeParse(data);
-
-  if (!result.success) {
-    return { success: false, errors: result.error.flatten().fieldErrors };
-  }
-
   const email = data.email;
   const password = data.password;
 
