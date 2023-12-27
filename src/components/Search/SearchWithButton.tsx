@@ -1,24 +1,26 @@
-import { Button, TextInput, TextInputProps, em } from "@mantine/core";
-import { HiSearch } from "react-icons/hi";
+import { Button, Text, TextInput, TextInputProps, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { HiSearch } from "react-icons/hi";
 
 export const SearchWithButton = (props: TextInputProps) => {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   return (
     <TextInput
-      radius="sm"
+      radius={isMobile ? "xl" : "sm"}
       size={isMobile ? "sm" : "md"}
       placeholder="Search items..."
-      rightSectionWidth="85px"
+      rightSectionWidth={isMobile ? "70px" : "90px"}
       leftSection={<HiSearch />}
       rightSection={
         <Button
-          radius="sm"
-          mr={isMobile ? "-10px" : "0px"}
-          className={`btn ${isMobile ? "rounded-l-none" : ""} `}
+          radius={isMobile ? "xl" : "sm"}
+          size={isMobile ? "xs" : "sm"}
+          className={`btn`}
         >
-          Search
+          <Text size={isMobile ? "10px" : "md"} component="span">
+            Search
+          </Text>
         </Button>
       }
       {...props}
