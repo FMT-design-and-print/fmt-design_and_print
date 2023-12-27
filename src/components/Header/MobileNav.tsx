@@ -24,6 +24,7 @@ export const MobileNav = () => {
         onClick={toggleDrawer}
         hiddenFrom="sm"
         role="button"
+        aria-label="hamburger"
       />
 
       <Drawer
