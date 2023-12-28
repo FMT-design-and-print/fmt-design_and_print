@@ -56,13 +56,18 @@ export const Hero = () => {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   return (
-    <Grid>
+    <Grid px={{ base: "md", sm: "xl" }}>
       <Grid.Col span={3} visibleFrom="sm">
         <Card withBorder h="100%">
           {printItems.map((item, i) => (
             <Group key={item.title + i} py="md" wrap="nowrap">
               <Image src={item.image} alt="" width={25} height={25} />
-              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+              <Text
+                lineClamp={1}
+                c="gray.7"
+                size={isMobile ? "sm" : "md"}
+                title={item.title}
+              >
                 {item.title}
               </Text>
             </Group>
@@ -82,7 +87,12 @@ export const Hero = () => {
           {designItems.map((item, i) => (
             <Group key={item.title + i} py="md" wrap="nowrap">
               <Image src={item.image} alt="" width={25} height={25} />
-              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+              <Text
+                lineClamp={1}
+                c="gray.7"
+                size={isMobile ? "sm" : "md"}
+                title={item.title}
+              >
                 {item.title}
               </Text>
             </Group>
