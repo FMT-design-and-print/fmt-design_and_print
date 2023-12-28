@@ -1,3 +1,9 @@
+import { Landing } from "@/features/landing";
+
 export default function Home() {
-  return <>Home Page</>;
+  return (
+    <>
+      <Landing />
+    </>
+  );
 }

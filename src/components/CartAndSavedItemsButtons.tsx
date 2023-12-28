@@ -14,7 +14,7 @@ export const CartAndSavedItemsButtons = () => {
         <ActionIcon
           size={36}
           variant="light"
-          color="gray.200"
+          color="white"
           aria-label="Saved items"
         >
           <HiOutlineHeart style={{ width: rem(24), height: rem(24) }} />
@@ -25,7 +25,7 @@ export const CartAndSavedItemsButtons = () => {
         <ActionIcon
           size={36}
           variant="light"
-          color="gray.200"
+          color="white"
           aria-label="Saved items"
         >
           <MdShoppingCart style={{ width: rem(24), height: rem(24) }} />

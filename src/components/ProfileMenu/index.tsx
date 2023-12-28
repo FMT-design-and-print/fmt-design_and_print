@@ -24,9 +24,9 @@ export const ProfileMenu = () => {
             px="xs"
             color="gray.1"
           >
-            <Group gap={7}>
-              <Avatar src="" alt="user name" size="md" />
-              <Text c="gray.3" size="sm" visibleFrom="sm">
+            <Group gap={7} wrap="nowrap">
+              <Avatar src="" alt="user name" size="md" color="white" />
+              <Text c="white" size="sm" visibleFrom="sm">
                 My Account
               </Text>
               <IoChevronDown style={{ width: rem(12), height: rem(12) }} />

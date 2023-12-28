@@ -21,6 +21,7 @@ const config: Config = {
           800: "#a90633",
           900: "#91052c",
         },
+        primaryDark: "#700120",
         darkBlue: "#080E23",
       },
       fontFamily: {

@@ -104,7 +104,7 @@ export const ForgotPassword = ({ searchParams }: Props) => {
             className="flex flex-col gap-4"
           >
             <div>
-              <label htmlFor="email" className="text-small leading-10">
+              <label htmlFor="email" className="text-sm leading-10">
                 Enter email address to reset your password
               </label>
               <input

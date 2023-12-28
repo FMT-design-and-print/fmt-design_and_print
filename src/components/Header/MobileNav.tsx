@@ -25,6 +25,7 @@ export const MobileNav = () => {
         hiddenFrom="sm"
         role="button"
         aria-label="hamburger"
+        mx={16}
       />
 
       <Drawer

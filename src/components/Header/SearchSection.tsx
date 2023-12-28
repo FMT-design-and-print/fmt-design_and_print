@@ -5,7 +5,7 @@ import { SearchWithButton } from "../Search/SearchWithButton";
 
 export const SearchSection = () => {
   return (
-    <Grid align="flex-end" gutter={{ base: "md", sm: "xl" }} pt="sm">
+    <Grid align="flex-end" gutter={{ base: "md", sm: "xl" }} pt="md">
       <Grid.Col span="auto">
         <SearchWithButton />
       </Grid.Col>
