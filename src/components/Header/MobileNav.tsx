@@ -6,12 +6,14 @@ import {
   Drawer,
   Flex,
   ScrollArea,
+  Text,
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Image from "next/image";
 import { AuthButtons } from "../AuthButtons";
 import { TopBar } from "./TopBar";
+import Link from "next/link";
 
 export const MobileNav = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -34,12 +36,14 @@ export const MobileNav = () => {
         size="100%"
         padding="md"
         title={
-          <Image
-            src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png"
-            alt="FMT Logo"
-            width={60}
-            height={50}
-          />
+          <Link href="/">
+            <Image
+              src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png"
+              alt="FMT Logo"
+              width={60}
+              height={50}
+            />
+          </Link>
         }
         hiddenFrom="sm"
         zIndex={1000000}
@@ -49,9 +53,13 @@ export const MobileNav = () => {
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
           <Divider my="sm" />
           <Flex direction="column" h="100%" gap={16} px="md">
-            <a href="#" className="mr-4 text-primary-400">
+            <Text
+              component={Link}
+              href="/services"
+              className="ml-6 text-primary-300"
+            >
               All Services
-            </a>
+            </Text>
             <a href="#">Printing Services</a>
             <a href="#">Design Services</a>
           </Flex>

@@ -42,7 +42,13 @@ export const FeaturedItems = ({ title, description }: Props) => {
       <Carousel
         withIndicators
         height={300}
-        slideSize={{ base: "100%", xs: "50%", sm: "33.33%", md: "25%" }}
+        slideSize={{
+          base: "100%",
+          xs: "50%",
+          sm: "33.33%",
+          md: "25%",
+          xl: "20%",
+        }}
         slideGap="md"
         loop
         align="start"

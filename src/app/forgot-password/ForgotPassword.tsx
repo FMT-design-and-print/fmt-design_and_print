@@ -70,7 +70,7 @@ export const ForgotPassword = ({ searchParams }: Props) => {
       return push(getPath(userNotFoundMessage));
     }
 
-    if (users && users[0].provider !== "Email") {
+    if (users && users[0].provider?.toLowerCase() !== "email") {
       // User signed up using OAuth
       setIsLoading(false);
       return push(getPath(OAuthResetFailedMessage));

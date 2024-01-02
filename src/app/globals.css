@@ -6,6 +6,18 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
+  --primary-50: #f99cb6;
+  --primary-100: #f884a4;
+  --primary-200: #f76b92;
+  --primary-300: #f4396d;
+  --primary-400: #f2215b;
+  --primary-500: #f10849;
+  --primary-600: #d90742;
+  --primary-700: #c1063a;
+  --primary-800: #a90633;
+  --primary-900: #91052c;
+
+  --primary-light: rgba(248, 222, 229, 0.388);
 }
 
 body {

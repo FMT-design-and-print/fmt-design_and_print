@@ -17,7 +17,7 @@ export function AuthButtons() {
 
   if (!session && !excludedPaths.includes(pathname)) {
     return (
-      <Group>
+      <Group wrap="nowrap">
         <Button component={Link} href="/login" variant="default">
           Log in
         </Button>

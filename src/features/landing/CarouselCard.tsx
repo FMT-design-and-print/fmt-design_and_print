@@ -21,6 +21,7 @@ export const CarouselCard = () => {
         root: classes.carousel,
         controls: classes.carouselControls,
         indicator: classes.carouselIndicator,
+        control: classes.carouselControl,
       }}
     >
       {images.map((image) => (

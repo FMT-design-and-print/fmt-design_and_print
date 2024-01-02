@@ -1,8 +1,8 @@
-.carousel {
-  @mixin hover {
-    .carouselControls {
-      opacity: 1;
-    }
+.carousel:hover .carouselControls {
+  opacity: 1;
+
+  & .carouselControl {
+    background-color: rgb(255, 255, 255, 0.7);
   }
 }
 
@@ -15,6 +15,7 @@
   width: rem(4px);
   height: rem(4px);
   transition: width 250ms ease;
+  background-color: var(--primary-300);
 
   &[data-active] {
     width: rem(16px);
@@ -23,7 +24,7 @@
 
 .featured-item-title {
   border-top-right-radius: 50px;
-  background-color: crimson;
+  background-color: var(--primary-500);
 }
 
 .card {
@@ -34,16 +35,16 @@
     var(--mantine-color-dark-6)
   );
   cursor: pointer;
+}
 
-  @mixin hover {
-    & .image {
-      transform: scale(1.03);
-    }
+.card:hover {
+  & .image {
+    transform: scale(1.03);
+  }
 
-    & .overlay,
-    & .content {
-      opacity: 1;
-    }
+  & .overlay,
+  .content {
+    opacity: 1;
   }
 }
 
