@@ -63,6 +63,13 @@ const printService: SchemaTypeDefinition = {
       group: "general",
     },
     {
+      name: "color",
+      title: "Main Image Color",
+      type: "reference",
+      to: [{ type: "colors" }],
+      group: "general",
+    },
+    {
       name: "gallery",
       title: "Gallery Images",
       type: "array",
@@ -75,8 +82,7 @@ const printService: SchemaTypeDefinition = {
       name: "description",
       title: "Description",
       description: "Short description of the item",
-      type: "array",
-      of: [{ type: "block" }],
+      type: "text",
       group: "general",
     },
     {
@@ -91,12 +97,7 @@ const printService: SchemaTypeDefinition = {
       name: "colors",
       title: "Colors",
       type: "array",
-      of: [
-        {
-          type: "reference",
-          to: [{ type: "tShirtColors" }],
-        },
-      ],
+      of: [{ type: "colorVariation" }],
       group: "variations",
     },
     {
@@ -106,7 +107,7 @@ const printService: SchemaTypeDefinition = {
       of: [
         {
           type: "reference",
-          to: [{ type: "tShirtSizes" }],
+          to: [{ type: "sizes" }],
         },
       ],
       group: "variations",
@@ -119,7 +120,7 @@ const printService: SchemaTypeDefinition = {
       of: [
         {
           type: "reference",
-          to: [{ type: "tagList" }],
+          to: [{ type: "productTags" }, { type: "professionTags" }],
         },
       ],
       group: "tags",

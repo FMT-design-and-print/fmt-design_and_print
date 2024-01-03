@@ -1,16 +1,23 @@
 import { SchemaTypeDefinition } from "sanity";
 
-const tagList: SchemaTypeDefinition = {
-  name: "tagList",
-  title: "Product Tags",
+const tags: SchemaTypeDefinition = {
+  name: "tags",
+  title: "Tags",
   type: "document",
   fields: [
     {
-      name: "title",
-      title: "Title",
-      type: "string",
+      name: "productTags",
+      title: "Product Tags",
+      type: "array",
+      of: [{ type: "string" }],
+    },
+    {
+      name: "professionTags",
+      title: "Profession Tags",
+      type: "array",
+      of: [{ type: "string" }],
     },
   ],
 };
 
-export default tagList;
+export default tags;

@@ -1,3 +1,4 @@
+"use client";
 import { Box, Flex, Group, Text } from "@mantine/core";
 import Image from "next/image";
 import { AuthButtons } from "../AuthButtons";
@@ -9,8 +10,15 @@ import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
 import { PrintingServicesDropDown } from "./PrintingServicesDropDown";
 import { DesignServicesDropDown } from "./DesignServicesDropDown";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Header() {
+  const pathname = usePathname();
+
+  if (pathname.includes("/admin")) {
+    return null;
+  }
+
   return (
     <>
       <Box visibleFrom="sm">

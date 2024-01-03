@@ -14,7 +14,7 @@ const itemImage: SchemaTypeDefinition = {
       name: "color",
       title: "Color",
       type: "reference",
-      to: [{ type: "tShirtColors" }],
+      to: [{ type: "colors" }],
       hidden: ({ parent }) => parent?.ownColor,
     },
     {

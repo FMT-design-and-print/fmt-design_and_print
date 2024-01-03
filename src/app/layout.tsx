@@ -8,6 +8,7 @@ import React from "react";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SessionProvider } from "@/components/SessionProvider";
+import { AdminHeader } from "@/components/Header/AdminHeader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
+          <AdminHeader />
           {children}
         </Providers>
         <SessionProvider />

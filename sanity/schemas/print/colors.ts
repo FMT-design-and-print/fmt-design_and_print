@@ -1,8 +1,8 @@
 import { SchemaTypeDefinition } from "sanity";
 
-const tShirtColors: SchemaTypeDefinition = {
-  name: "tShirtColors",
-  title: "T-Shirt Colors",
+const colors: SchemaTypeDefinition = {
+  name: "colors",
+  title: "Colors",
   type: "document",
   fields: [
     {
@@ -26,4 +26,4 @@ const tShirtColors: SchemaTypeDefinition = {
   ],
 };
 
-export default tShirtColors;
+export default colors;

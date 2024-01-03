@@ -1,8 +1,8 @@
 import { SchemaTypeDefinition } from "sanity";
 
-const tShirtSizes: SchemaTypeDefinition = {
-  name: "tShirtSizes",
-  title: "T-Shirt Sizes",
+const sizes: SchemaTypeDefinition = {
+  name: "sizes",
+  title: "Sizes",
   type: "document",
   fields: [
     {
@@ -13,4 +13,4 @@ const tShirtSizes: SchemaTypeDefinition = {
   ],
 };
 
-export default tShirtSizes;
+export default sizes;

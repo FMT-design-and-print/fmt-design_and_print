@@ -20,8 +20,21 @@ const printCategories: SchemaTypeDefinition = {
       },
     },
     {
+      name: "tagline",
+      title: "Tagline",
+      type: "string",
+    },
+    {
       name: "image",
-      title: "Category Image",
+      title: "Image",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      name: "icon",
+      title: "Icon",
       type: "image",
       options: {
         hotspot: true,

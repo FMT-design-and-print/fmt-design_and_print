@@ -4,12 +4,14 @@ import designService from "./schemas/graphic";
 import giftsAndPackages from "./schemas/print/giftsAndPackages";
 import printCategories from "./schemas/print/printCategories";
 import productTypes from "./schemas/print/productTypes";
-import tShirtColors from "./schemas/print/tshirtColors";
-import tShirtSizes from "./schemas/print/tshirtSizes";
+import colors from "./schemas/print/colors";
+import sizes from "./schemas/print/sizes";
 import tShirtPrintTypes from "./schemas/print/tshirtPrintTypes";
-import tagList from "./schemas/print/tags";
 import itemImage from "./schemas/print/itemImage";
 import galleryImage from "./schemas/print/galleryImage";
+import colorVariation from "./schemas/print/colorVariation";
+import productTags from "./schemas/print/productTags";
+import professionTags from "./schemas/print/professionTags";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -17,14 +19,18 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     giftsAndPackages,
     printCategories,
     productTypes,
-    tShirtColors,
-    tShirtSizes,
+
+    colors,
+    sizes,
+    productTags,
+    professionTags,
+
     tShirtPrintTypes,
-    tagList,
     designService,
 
     // ---------------
     itemImage,
     galleryImage,
+    colorVariation,
   ],
 };
