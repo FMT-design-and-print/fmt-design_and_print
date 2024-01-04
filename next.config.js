@@ -13,6 +13,15 @@ const nextConfig = {
       },
     ],
   },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: "/admin",
+  //       destination: "/admin/568763",
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
 };
 
 module.exports = nextConfig;

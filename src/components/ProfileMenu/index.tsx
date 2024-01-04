@@ -4,6 +4,7 @@ import { IoChevronDown } from "react-icons/io5";
 import { MdManageAccounts } from "react-icons/md";
 import { LogoutButton } from "../LogoutButton";
 import { useSession } from "@/store";
+import Link from "next/link";
 
 export const ProfileMenu = () => {
   const user = useSession((state) => state.user);
@@ -36,6 +37,8 @@ export const ProfileMenu = () => {
         <Menu.Dropdown>
           <Menu.Label>{user?.email}</Menu.Label>
           <Menu.Item
+            component={Link}
+            href="/my-account"
             leftSection={
               <MdManageAccounts style={{ width: rem(16), height: rem(16) }} />
             }

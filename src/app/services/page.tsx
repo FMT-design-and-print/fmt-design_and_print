@@ -1,7 +1,12 @@
+import { AllServices } from "@/features/services";
 import React from "react";
 
 const AllServicesPage = () => {
-  return <div>All Services</div>;
+  return (
+    <>
+      <AllServices />
+    </>
+  );
 };
 
 export default AllServicesPage;

@@ -48,6 +48,12 @@ const productTypes: SchemaTypeDefinition = {
       type: "array",
       of: [{ type: "block" }],
     },
+    {
+      name: "live",
+      title: "Go live",
+      description: "These Items are available and ready to sell",
+      type: "boolean",
+    },
   ],
 };
 

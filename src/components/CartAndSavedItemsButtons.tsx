@@ -1,4 +1,5 @@
 import { ActionIcon, Flex, Indicator, rem } from "@mantine/core";
+import Link from "next/link";
 import React from "react";
 import { HiOutlineHeart } from "react-icons/hi";
 import { MdShoppingCart } from "react-icons/md";
@@ -12,10 +13,12 @@ export const CartAndSavedItemsButtons = () => {
     >
       <Indicator label={12} color="red" size={14} disabled={false}>
         <ActionIcon
+          component={Link}
+          href="/favorites"
           size={36}
           variant="light"
           color="white"
-          aria-label="Saved items"
+          aria-label="Favorites"
         >
           <HiOutlineHeart style={{ width: rem(24), height: rem(24) }} />
         </ActionIcon>
@@ -23,10 +26,12 @@ export const CartAndSavedItemsButtons = () => {
 
       <Indicator inline label={3} size={14} color="red">
         <ActionIcon
+          component={Link}
+          href="/cart"
           size={36}
           variant="light"
           color="white"
-          aria-label="Saved items"
+          aria-label="Cart"
         >
           <MdShoppingCart style={{ width: rem(24), height: rem(24) }} />
         </ActionIcon>
