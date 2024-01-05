@@ -1,6 +1,6 @@
 import { Box, Button, Group, Input, Title } from "@mantine/core";
 import { BsArrowRight } from "react-icons/bs";
-import { ProductCard } from "./ProductCard";
+import { ProductTypeCard } from "./ProductTypeCard";
 import Link from "next/link";
 
 const link = "services/print/categories/categoryID/productType";
@@ -16,12 +16,12 @@ export const PrintServices = () => {
           customRequestLink="#"
         />
         <Group>
-          <ProductCard label="T-Shirts" link={link} image="" />
-          <ProductCard label="Lacoste" link={link} image="" />
-          <ProductCard label="Hoodies" link={link} image="" />
-          <ProductCard label="Caps" link={link} image="" />
-          <ProductCard label="Pillow Covers" link={link} image="" />
-          <ProductCard label="Aprons" link={link} image="" />
+          <ProductTypeCard label="T-Shirts" link={link} image="" />
+          <ProductTypeCard label="Lacoste" link={link} image="" />
+          <ProductTypeCard label="Hoodies" link={link} image="" />
+          <ProductTypeCard label="Caps" link={link} image="" />
+          <ProductTypeCard label="Pillow Covers" link={link} image="" />
+          <ProductTypeCard label="Aprons" link={link} image="" />
         </Group>
       </Box>
 
@@ -32,9 +32,9 @@ export const PrintServices = () => {
           customRequestLink="#"
         />
         <Group>
-          <ProductCard label="Cups" link={link} image="" />
-          <ProductCard label="Mugs" link={link} image="" />
-          <ProductCard label="Bottles" link={link} image="" />
+          <ProductTypeCard label="Cups" link={link} image="" />
+          <ProductTypeCard label="Mugs" link={link} image="" />
+          <ProductTypeCard label="Bottles" link={link} image="" />
         </Group>
       </Box>
 
@@ -45,11 +45,11 @@ export const PrintServices = () => {
           customRequestLink="#"
         />
         <Group>
-          <ProductCard label="Keyholders" link={link} image="" />
-          <ProductCard label="Pens" link={link} image="" />
-          <ProductCard label="Diaries" link={link} image="" />
-          <ProductCard label="Stickers" link={link} image="" />
-          <ProductCard label="Tags" link={link} image="" />
+          <ProductTypeCard label="Keyholders" link={link} image="" />
+          <ProductTypeCard label="Pens" link={link} image="" />
+          <ProductTypeCard label="Diaries" link={link} image="" />
+          <ProductTypeCard label="Stickers" link={link} image="" />
+          <ProductTypeCard label="Tags" link={link} image="" />
         </Group>
       </Box>
 
@@ -60,24 +60,24 @@ export const PrintServices = () => {
           customRequestLink="#"
         />
         <Group>
-          <ProductCard label="Flyers" link={link} image="" />
-          <ProductCard label="Labels" link={link} image="" />
-          <ProductCard label="Brochures" link={link} image="" />
-          <ProductCard label="Posters" link={link} image="" />
-          <ProductCard label="Car Decals" link={link} image="" />
-          <ProductCard label="Signage" link={link} image="" />
-          <ProductCard label="Cards" link={link} image="" />
+          <ProductTypeCard label="Flyers" link={link} image="" />
+          <ProductTypeCard label="Labels" link={link} image="" />
+          <ProductTypeCard label="Brochures" link={link} image="" />
+          <ProductTypeCard label="Posters" link={link} image="" />
+          <ProductTypeCard label="Car Decals" link={link} image="" />
+          <ProductTypeCard label="Signage" link={link} image="" />
+          <ProductTypeCard label="Cards" link={link} image="" />
         </Group>
       </Box>
 
       <Box mt={32}>
         <CategoryHeader title="Others" slug="others" customRequestLink="#" />
         <Group>
-          <ProductCard label="Phone Cases" link={link} image="" />
-          <ProductCard label="Bags" link={link} image="" />
-          <ProductCard label="Puzzle" link={link} image="" />
-          <ProductCard label="Photo Frames" link={link} image="" />
-          <ProductCard label="{Plaques}" link={link} image="" />
+          <ProductTypeCard label="Phone Cases" link={link} image="" />
+          <ProductTypeCard label="Bags" link={link} image="" />
+          <ProductTypeCard label="Puzzle" link={link} image="" />
+          <ProductTypeCard label="Photo Frames" link={link} image="" />
+          <ProductTypeCard label="{Plaques}" link={link} image="" />
         </Group>
       </Box>
     </Box>

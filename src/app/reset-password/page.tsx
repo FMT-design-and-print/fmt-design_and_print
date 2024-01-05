@@ -23,7 +23,7 @@ const ResetPassword = ({ searchParams }: Props) => {
     <>
       {linkExpired ? (
         <div className="mx-auto my-4 max-w-[400px] text-center">
-          <p className=" mb-2 bg-red-100 px-4 py-2 text-small text-red-600">
+          <p className=" mb-2 bg-red-100 px-4 py-2 text-sm text-red-600">
             Password reset link is invalid or has expired
           </p>
           <Link href="/forgot-password">

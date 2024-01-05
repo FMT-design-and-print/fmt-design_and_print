@@ -1,6 +1,6 @@
 import { Box, Group, Input } from "@mantine/core";
 import React from "react";
-import { ProductCard } from "./ProductCard";
+import { ProductTypeCard } from "./ProductTypeCard";
 
 const link = "services/design/productType";
 
@@ -10,13 +10,13 @@ export const DesignServices = () => {
       <Input placeholder="Type to search print service..." maw={600} />
 
       <Group my="lg">
-        <ProductCard label="Logos" link={link} image="" />
-        <ProductCard label="Flyers Frames" link={link} image="" />
-        <ProductCard label="3D" link={link} image="" />
-        <ProductCard label="Labels" link={link} image="" />
-        <ProductCard label="Brochure" link={link} image="" />
-        <ProductCard label="Business Cards" link={link} image="" />
-        <ProductCard label="Mockups" link={link} image="" />
+        <ProductTypeCard label="Logos" link={link} image="" />
+        <ProductTypeCard label="Flyers Frames" link={link} image="" />
+        <ProductTypeCard label="3D" link={link} image="" />
+        <ProductTypeCard label="Labels" link={link} image="" />
+        <ProductTypeCard label="Brochure" link={link} image="" />
+        <ProductTypeCard label="Business Cards" link={link} image="" />
+        <ProductTypeCard label="Mockups" link={link} image="" />
       </Group>
     </Box>
   );

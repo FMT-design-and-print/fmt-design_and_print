@@ -1,0 +1,17 @@
+.card {
+  position: relative;
+  background-color: var(--mantine-color-body);
+}
+
+.favIcon {
+  position: absolute;
+  top: var(--mantine-spacing-xs);
+  right: rem(8px);
+  color: var(--primary-400);
+}
+
+.cart-btn {
+  border: 1px solid var(--primary-500);
+  color: var(--primary-500);
+  background-color: transparent;
+}

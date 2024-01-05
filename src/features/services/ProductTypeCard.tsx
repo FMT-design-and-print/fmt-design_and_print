@@ -1,4 +1,5 @@
 import { Card, Group, Text } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
 import React from "react";
 
@@ -7,22 +8,23 @@ type Props = {
   label: string;
   link: string;
 };
-export const ProductCard = ({ image, label, link }: Props) => {
+export const ProductTypeCard = ({ image, label, link }: Props) => {
+  const sm = useMediaQuery("(max-width: 56.25em)");
   // TODO: Image placeholder if there's no product image
   return (
-    <Card component={Link} href={link} withBorder>
+    <Card component={Link} href={link} withBorder p={sm ? "xs" : "sm"}>
       <Group>
         <div
           style={{
             backgroundImage: `url(${image})`,
             backgroundColor: "gray",
-            width: 50,
-            height: 50,
+            width: sm ? 35 : 50,
+            height: sm ? 35 : 50,
             borderRadius: 50,
           }}
         />
         <div>
-          <Text tt="uppercase" fw="bold">
+          <Text tt="uppercase" fw="bold" size={sm ? "xs" : "md"}>
             {label}
           </Text>
         </div>

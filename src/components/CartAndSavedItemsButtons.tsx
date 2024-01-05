@@ -11,7 +11,7 @@ export const CartAndSavedItemsButtons = () => {
       gap={{ base: "md", sm: "xl" }}
       miw={{ base: "fit-content", sm: "200px" }}
     >
-      <Indicator label={12} color="red" size={14} disabled={false}>
+      <Indicator label={0} color="red" size={14} disabled={false}>
         <ActionIcon
           component={Link}
           href="/favorites"
@@ -24,7 +24,7 @@ export const CartAndSavedItemsButtons = () => {
         </ActionIcon>
       </Indicator>
 
-      <Indicator inline label={3} size={14} color="red">
+      <Indicator inline label={0} size={14} color="red">
         <ActionIcon
           component={Link}
           href="/cart"

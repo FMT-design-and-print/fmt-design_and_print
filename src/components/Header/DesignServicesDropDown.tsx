@@ -47,7 +47,7 @@ export const DesignServicesDropDown = () => {
   return (
     <ServicesDropDown
       title="Design Services"
-      link="/services/design"
+      link="/services?st=design"
       items={mockData}
     />
   );

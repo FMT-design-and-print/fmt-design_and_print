@@ -1,7 +1,7 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 const PrintServicesPage = () => {
-  return <div>Printing Services</div>;
+  return redirect("/services");
 };
 
 export default PrintServicesPage;

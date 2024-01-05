@@ -1,23 +1,14 @@
 "use client";
 import { Box, Flex, Tabs } from "@mantine/core";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DesignServices } from "./DesignServices";
 import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
 
 export function AllServices() {
-  const [activeTab, setActiveTab] = useState<string | null>("");
   const searchParams = useSearchParams();
   const serviceType = searchParams.get("st");
-
-  useEffect(() => {
-    if (serviceType != null) {
-      setActiveTab(serviceType);
-    } else {
-      setActiveTab("print");
-    }
-  }, [serviceType]);
+  const { push } = useRouter();
 
   return (
     <Box w={{ base: "100%", sm: "90%", lg: "80%" }} mx="auto">
@@ -50,8 +41,10 @@ export function AllServices() {
         variant="pills"
         color="gray"
         radius="xs"
-        value={activeTab}
-        onChange={setActiveTab}
+        value={serviceType == null ? "print" : serviceType}
+        onChange={(value) => {
+          push(`/services?st=${value}`);
+        }}
         px="xl"
       >
         <Tabs.List py="md">

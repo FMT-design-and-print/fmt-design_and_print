@@ -1,0 +1,10 @@
+.cart-btn {
+  border: 1px solid var(--primary-500);
+  color: var(--primary-500);
+  background-color: transparent;
+}
+
+.product-image-box {
+  border: 1px solid #eeeeee;
+  border-radius: 5px;
+}
