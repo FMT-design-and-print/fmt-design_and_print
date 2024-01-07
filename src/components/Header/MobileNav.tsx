@@ -1,11 +1,14 @@
 "use client";
 import {
+  Accordion,
+  Anchor,
   Box,
   Burger,
   Divider,
   Drawer,
   Flex,
   ScrollArea,
+  Space,
   Text,
   rem,
 } from "@mantine/core";
@@ -14,10 +17,13 @@ import Image from "next/image";
 import { AuthButtons } from "../AuthButtons";
 import { TopBar } from "./TopBar";
 import Link from "next/link";
+import { useCategories } from "@/hooks/useCategories";
+import { CategoryCard } from "./CategoryCard";
 
 export const MobileNav = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
+  const { categories } = useCategories();
   return (
     <>
       <Burger
@@ -60,8 +66,51 @@ export const MobileNav = () => {
             >
               All Services
             </Text>
-            <a href="#">Printing Services</a>
-            <a href="#">Design Services</a>
+            <Accordion>
+              <Accordion.Item value="printing-services">
+                <Accordion.Control>Printing Services</Accordion.Control>
+                <Accordion.Panel>
+                  <Flex justify="flex-end">
+                    <Anchor
+                      component={Link}
+                      href="/services?st=print"
+                      c="pink"
+                      fz="xs"
+                    >
+                      View all Printing Services
+                    </Anchor>
+                  </Flex>
+                  <Space />
+
+                  {categories &&
+                    categories.map((item) => (
+                      <CategoryCard
+                        key={item.id}
+                        title={item.title}
+                        icon={item.icon}
+                        tagline={item.tagline}
+                        link={`/services/print/categories/${item.slug}`}
+                      />
+                    ))}
+                </Accordion.Panel>
+              </Accordion.Item>
+
+              <Accordion.Item value="design-services">
+                <Accordion.Control>Design Services</Accordion.Control>
+                <Accordion.Panel>
+                  <Flex justify="flex-end">
+                    <Anchor
+                      component={Link}
+                      href="/services?st=design"
+                      c="pink"
+                      fz="xs"
+                    >
+                      View all Design Services
+                    </Anchor>
+                  </Flex>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
           </Flex>
           <Divider my="sm" />
 

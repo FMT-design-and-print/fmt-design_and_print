@@ -11,6 +11,12 @@ const nextConfig = {
         port: "",
         pathname: "/dnbmynikp/image/upload/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        port: "",
+        pathname: "/images/**",
+      },
     ],
   },
   // async redirects() {

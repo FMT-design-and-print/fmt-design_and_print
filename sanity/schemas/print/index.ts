@@ -54,6 +54,12 @@ const printService: SchemaTypeDefinition = {
       group: "general",
     },
     {
+      name: "price",
+      title: "Price",
+      type: "number",
+      group: "general",
+    },
+    {
       name: "image",
       title: "Main Image",
       type: "image",
@@ -140,8 +146,7 @@ const printService: SchemaTypeDefinition = {
       name: "gender",
       title: "Gender",
       description: "Is this item specific to any gender",
-      type: "array",
-      of: [{ type: "string" }],
+      type: "string",
       options: {
         list: [
           { title: "All", value: "all" },

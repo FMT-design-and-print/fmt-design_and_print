@@ -12,6 +12,8 @@ import galleryImage from "./schemas/print/galleryImage";
 import colorVariation from "./schemas/print/colorVariation";
 import productTags from "./schemas/print/productTags";
 import professionTags from "./schemas/print/professionTags";
+import designTypes from "./schemas/graphic/designTypes";
+import { featuredProducts } from "./schemas/print/featuredProducts";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -24,9 +26,12 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     sizes,
     productTags,
     professionTags,
-
     tShirtPrintTypes,
+
+    featuredProducts,
+
     designService,
+    designTypes,
 
     // ---------------
     itemImage,

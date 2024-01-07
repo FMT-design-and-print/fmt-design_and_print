@@ -7,24 +7,21 @@ import {
   HoverCard,
   SimpleGrid,
   Text,
-  ThemeIcon,
-  UnstyledButton,
   rem,
   useMantineTheme,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
-import { IconType } from "react-icons";
-import classes from "./Style.module.css";
+import { CategoryCard } from "./CategoryCard";
 
 interface Props {
   title: string;
   link: string;
   items: {
-    icon: IconType;
     title: string;
-    description: string;
+    tagline: string;
     link: string;
+    icon: string;
   }[];
 }
 
@@ -32,30 +29,13 @@ export const ServicesDropDown = ({ title, link, items }: Props) => {
   const theme = useMantineTheme();
 
   const links = items.map((item) => (
-    <UnstyledButton
-      component={Link}
-      href={item.link}
-      className={classes.link}
+    <CategoryCard
       key={item.title}
-    >
-      <Group wrap="nowrap" align="flex-start">
-        <ThemeIcon size={34} variant="default" radius="md">
-          <item.icon
-            style={{ width: rem(22), height: rem(22) }}
-            color={theme.colors.pink[4]}
-          />
-        </ThemeIcon>
-
-        <div>
-          <Text size="sm" fw={500}>
-            {item.title}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {item.description}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
+      title={item.title}
+      icon={item.icon}
+      tagline={item.tagline}
+      link={item.link}
+    />
   ));
 
   return (
