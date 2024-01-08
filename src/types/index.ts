@@ -30,3 +30,26 @@ export interface IFeaturedProducts {
   mugs: FeaturedItem[];
   frames: FeaturedItem[];
 }
+
+export interface IProductType {
+  id: string;
+  title: string;
+  slug: string;
+  image: string;
+  description?: any; // TODO: change to correct type
+  orderRequestSample?: any; // TODO: change to correct type
+  category: {
+    id: string;
+    slug: string;
+    title: string;
+  };
+}
+
+export type GroupedPrintProductTypes = Record<
+  string,
+  {
+    title: string;
+    slug: string;
+    items: IProductType[];
+  }
+>;

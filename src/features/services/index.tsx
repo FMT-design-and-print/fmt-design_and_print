@@ -4,8 +4,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { DesignServices } from "./DesignServices";
 import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
+import { GroupedPrintProductTypes } from "@/types";
 
-export function AllServices() {
+interface Props {
+  printCategoriesWithProductTypes: GroupedPrintProductTypes;
+}
+export function AllServices({ printCategoriesWithProductTypes }: Props) {
   const searchParams = useSearchParams();
   const serviceType = searchParams.get("st");
   const { push } = useRouter();
@@ -57,7 +61,9 @@ export function AllServices() {
         </Tabs.List>
 
         <Tabs.Panel value="print">
-          <PrintServices />
+          <PrintServices
+            groupedPrintProductTypes={printCategoriesWithProductTypes}
+          />
         </Tabs.Panel>
         <Tabs.Panel value="design">
           <DesignServices />
