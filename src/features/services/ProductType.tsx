@@ -10,7 +10,6 @@ import {
   Title,
 } from "@mantine/core";
 import React from "react";
-import { ProductCard } from "@/components/ProductCard";
 
 export const ProductType = () => {
   return (
@@ -86,12 +85,7 @@ export const ProductType = () => {
             justify={{ base: "center", md: "space-evenly" }}
             gap="md"
           >
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+            {/* <ProductCard /> */}
           </Flex>
         </Grid.Col>
       </Grid>
