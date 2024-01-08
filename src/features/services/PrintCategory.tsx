@@ -13,46 +13,25 @@ import {
 import React from "react";
 import { ProductTypeCard } from "./ProductTypeCard";
 import { ProductCard } from "@/components/ProductCard";
+import { IPrintProduct, IProductType } from "@/types";
 
-const getLink = (categoryId: string, productType: string) =>
-  `/services/print/categories/${categoryId}/${productType}`;
+interface Props {
+  productTypes: IProductType[];
+  printProducts: IPrintProduct[];
+}
 
-const categoryId = "t-shirts-and-apparels";
-
-const PrintCategory = () => {
+const PrintCategory = ({ productTypes, printProducts }: Props) => {
   return (
     <div>
       <Group px="xl" gap="sm" my="lg">
-        <ProductTypeCard
-          label="T-Shirts"
-          link={getLink(categoryId, "t-shirts")}
-          image=""
-        />
-        <ProductTypeCard
-          label="Lacoste"
-          link={getLink(categoryId, "lacoste")}
-          image=""
-        />
-        <ProductTypeCard
-          label="Hoodies"
-          link={getLink(categoryId, "hoodies")}
-          image=""
-        />
-        <ProductTypeCard
-          label="Caps"
-          link={getLink(categoryId, "caps")}
-          image=""
-        />
-        <ProductTypeCard
-          label="Pillow Covers"
-          link={getLink(categoryId, "pillow-covers")}
-          image=""
-        />
-        <ProductTypeCard
-          label="Aprons"
-          link={getLink(categoryId, "aprons")}
-          image=""
-        />
+        {productTypes.map((item) => (
+          <ProductTypeCard
+            key={item.id}
+            label={item.title}
+            link={`/services/print/categories/${item.category.slug}/${item.slug}`}
+            image={item.image}
+          />
+        ))}
       </Group>
 
       <Box px="xl">
@@ -127,12 +106,15 @@ const PrintCategory = () => {
               justify={{ base: "center", md: "space-evenly" }}
               gap="md"
             >
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
+              {printProducts.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  title={item.title}
+                  image={item.image}
+                  price={item.price}
+                  link={`/services/print/${item.slug}`}
+                />
+              ))}
             </Flex>
           </Grid.Col>
         </Grid>

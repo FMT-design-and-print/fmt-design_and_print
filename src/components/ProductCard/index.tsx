@@ -14,15 +14,20 @@ import { HiOutlineHeart } from "react-icons/hi";
 import classes from "./ProductCard.module.css";
 import { BsCartPlus } from "react-icons/bs";
 
-export function ProductCard() {
+interface Props {
+  image: string;
+  title: string;
+  price: number;
+  link: string;
+}
+export function ProductCard({ title, image, price, link = "" }: Props) {
   return (
     <Card withBorder radius="md" className={classes.card} w={300}>
       <Card.Section>
-        <Link href="/services/print/product-slug">
+        <Link href={link}>
           <Box
             style={{
-              backgroundImage:
-                "url(https://res.cloudinary.com/dnbmynikp/image/upload/v1703781261/FMT/tshirt-mockup_ppflhq.png)",
+              backgroundImage: `url(${image})`,
               backgroundPosition: "center",
               backgroundSize: "cover",
               width: "100%",
@@ -41,14 +46,8 @@ export function ProductCard() {
         <HiOutlineHeart style={{ width: rem(24), height: rem(24) }} />
       </ActionIcon>
 
-      <Text
-        component={Link}
-        href="/services/print/product-slug"
-        mt="md"
-        mb="sm"
-        lineClamp={1}
-      >
-        Black T-Shirt geometric print pattern
+      <Text component={Link} href={link} mt="md" mb="sm" lineClamp={1}>
+        {title}
       </Text>
 
       <Group gap="xs">
@@ -58,7 +57,7 @@ export function ProductCard() {
 
       <Group justify="space-between" mt="md">
         <Box>
-          <Text fw="bold">GHS 45</Text>
+          <Text fw="bold">GHS {price}</Text>
         </Box>
         <Center>
           <Button

@@ -1,9 +1,9 @@
 import { AllServices } from "@/features/services";
 import React from "react";
 import { client } from "../../../sanity/lib/client";
-import { productTypesQuery } from "../../../sanity/queries/product-types";
 import { IProductType } from "@/types";
 import { groupProductTypesByCategory } from "@/functions";
+import { productTypesQuery } from "@/queries";
 
 const AllServicesPage = async () => {
   const productTypes: IProductType[] = await client.fetch(productTypesQuery);

@@ -12,9 +12,9 @@ export const ProductTypeCard = ({ image, label, link }: Props) => {
   const sm = useMediaQuery("(max-width: 56.25em)");
 
   return (
-    <Card component={Link} href={link} withBorder p={sm ? "xs" : "sm"}>
+    <Card component={Link} href={link || ""} withBorder p={sm ? "xs" : "sm"}>
       <Group>
-        <Avatar src={image} radius="xl" size={sm ? "sm" : "md"}>
+        <Avatar src={image} alt={label} radius="xl" size={sm ? "sm" : "md"}>
           {label.charAt(0)}
         </Avatar>
 

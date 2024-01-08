@@ -9,28 +9,6 @@ export interface ICategory {
   icon: string;
 }
 
-export type FeaturedItem = {
-  id: string;
-  title: string;
-  slug: string;
-  image: string;
-  price: number;
-  type: {
-    slug: string;
-    title: string;
-  };
-  category: {
-    slug: string;
-    title: string;
-  };
-};
-export interface IFeaturedProducts {
-  tShirts: FeaturedItem[];
-  hoodies: FeaturedItem[];
-  mugs: FeaturedItem[];
-  frames: FeaturedItem[];
-}
-
 export interface IProductType {
   id: string;
   title: string;
@@ -43,6 +21,42 @@ export interface IProductType {
     slug: string;
     title: string;
   };
+}
+
+export type FeaturedItem = {
+  id: string;
+  title: string;
+  slug: string;
+  image: string;
+  price: number;
+  type: IProductType;
+  category: ICategory;
+};
+export interface IFeaturedProducts {
+  tShirts: FeaturedItem[];
+  hoodies: FeaturedItem[];
+  mugs: FeaturedItem[];
+  frames: FeaturedItem[];
+}
+
+export type ProductColor = {
+  id: string;
+  title: string;
+  hex: string;
+  image: string;
+};
+
+export interface IPrintProduct extends FeaturedItem {
+  color?: ProductColor;
+  gallery?: string[];
+  description?: string;
+  details?: any; // TODO: replace with correct type
+  colors?: ProductColor[];
+  sizes?: string[];
+  tags: string[];
+  extraTags?: string[];
+  gender?: string;
+  isForKids: boolean;
 }
 
 export type GroupedPrintProductTypes = Record<

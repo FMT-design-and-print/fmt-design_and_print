@@ -1,5 +1,9 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import PrintCategory from "@/features/services/PrintCategory";
+import { client } from "@/lib/client";
+import { filteredProductTypesQuery } from "@/queries";
+import { printProductsQuery } from "@/queries/products";
+import { IPrintProduct, IProductType } from "@/types";
 
 interface Props {
   params: {
@@ -7,11 +11,22 @@ interface Props {
   };
 }
 
-const PrintCategoryPage = ({ params }: Props) => {
+const PrintCategoryPage = async ({ params }: Props) => {
+  const productTypes: IProductType[] = await client.fetch(
+    filteredProductTypesQuery,
+    {
+      slug: params.categoryId,
+    }
+  );
+
+  const products: IPrintProduct[] = await client.fetch(printProductsQuery, {
+    slug: params.categoryId,
+  });
+
   const items = [
     { title: "Printing Services", href: "/services?st=print" },
     {
-      title: `${params.categoryId.replaceAll("-", " ")}`,
+      title: `${productTypes[0].category.title}`,
       href: `/services/print/categories/${params.categoryId}`,
     },
   ];
@@ -19,7 +34,7 @@ const PrintCategoryPage = ({ params }: Props) => {
   return (
     <>
       <BreadcrumbRenderer items={items} />
-      <PrintCategory />
+      <PrintCategory productTypes={productTypes} printProducts={products} />
     </>
   );
 };
