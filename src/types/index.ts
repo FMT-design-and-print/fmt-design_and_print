@@ -64,7 +64,6 @@ export interface IPrintProduct extends FeaturedItem {
   colors?: ProductColor[];
   sizes?: string[];
   tags: string[];
-  extraTags?: string[];
   gender?: string;
   isForKids: boolean;
 }

@@ -1,13 +1,17 @@
 "use client";
 import { PaginationRenderer } from "@/components/PaginationRenderer";
 import { ProductCard } from "@/components/ProductCard";
+import { filteredPrintProducts } from "@/functions/filter";
+import { useTagsFilters } from "@/store/filters";
 import { IPrintProduct, IProductType } from "@/types";
 import { Box, Flex, Grid, Group, Input } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { ProductTypeCard } from "./ProductTypeCard";
 import { SelectedTags } from "./SelectedTags";
 import { TagsFilters } from "./TagsFilters";
+import { FiltersDrawer } from "./TagsFilters/FiltersDrawer";
+import { NoItemsFound } from "@/components/NoItemsFound";
 
 interface Props {
   productTypes: IProductType[];
@@ -17,9 +21,25 @@ interface Props {
 const itemsPerPage = 10;
 
 const PrintCategory = ({ productTypes, printProducts }: Props) => {
-  const [visibleProducts, setVisibleProducts] = useState(
-    printProducts.slice(0, itemsPerPage)
-  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState<IPrintProduct[]>([]);
+  const [visibleProducts, setVisibleProducts] = useState<IPrintProduct[]>([]);
+  const tags = useTagsFilters((state) => state.tags);
+
+  useEffect(() => {
+    // Adding debounce behavior to search
+    const timeout = setTimeout(() => {
+      setFilteredProducts(
+        filteredPrintProducts(printProducts, tags, searchTerm)
+      );
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm, printProducts, tags]);
+
+  useEffect(() => {
+    setVisibleProducts(filteredProducts.slice(0, itemsPerPage));
+  }, [filteredProducts]);
 
   return (
     <div>
@@ -40,11 +60,22 @@ const PrintCategory = ({ productTypes, printProducts }: Props) => {
             <TagsFilters />
           </Grid.Col>
           <Grid.Col span="auto">
-            <Input
-              placeholder="Type to Search..."
-              leftSection={<BsSearch size="14px" />}
-              maw={600}
-            />
+            <Flex
+              gap={8}
+              align="center"
+              justify={{ base: "center", sm: "flex-start" }}
+              wrap="nowrap"
+            >
+              <Input
+                placeholder="Type to Search..."
+                leftSection={<BsSearch size="14px" />}
+                maw={600}
+                miw={{ base: "fit-content", sm: "80%", lg: 600 }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.currentTarget.value)}
+              />
+              <FiltersDrawer />
+            </Flex>
             <SelectedTags />
             <Box>
               <Flex
@@ -54,6 +85,9 @@ const PrintCategory = ({ productTypes, printProducts }: Props) => {
                 justify={{ base: "center", md: "flex-start" }}
                 gap={{ base: "md", md: 26, xl: 40 }}
               >
+                {filteredProducts.length === 0 && (
+                  <NoItemsFound label="Sorry!. No items were found for your search" />
+                )}
                 {visibleProducts.map((item) => (
                   <ProductCard
                     key={item.id}
@@ -64,13 +98,17 @@ const PrintCategory = ({ productTypes, printProducts }: Props) => {
                   />
                 ))}
               </Flex>
-              <PaginationRenderer
-                itemsLength={printProducts.length}
-                itemsPerPage={itemsPerPage}
-                onPageChange={(start, end) =>
-                  setVisibleProducts(printProducts.slice(start, end))
-                }
-              />
+
+              {filteredProducts.length !== 0 &&
+                filteredProducts.length > itemsPerPage && (
+                  <PaginationRenderer
+                    itemsLength={filteredProducts.length}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={(start, end) =>
+                      setVisibleProducts(filteredProducts.slice(start, end))
+                    }
+                  />
+                )}
             </Box>
           </Grid.Col>
         </Grid>

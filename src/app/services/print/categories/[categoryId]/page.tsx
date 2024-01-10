@@ -5,6 +5,8 @@ import { filteredProductTypesQuery } from "@/queries";
 import { printProductsQuery } from "@/queries/products";
 import { IPrintProduct, IProductType } from "@/types";
 
+export const revalidate = 60; // revalidate this page every 60 seconds
+
 interface Props {
   params: {
     categoryId: string;

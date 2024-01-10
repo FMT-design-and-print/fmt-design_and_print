@@ -1,14 +1,19 @@
 "use client";
 import { useTagsFilters } from "@/store/filters";
-import { Group, Badge, ActionIcon } from "@mantine/core";
-import React from "react";
+import { ActionIcon, Badge, Flex } from "@mantine/core";
 import { MdOutlineClose } from "react-icons/md";
 
 export const SelectedTags = () => {
   const { tags, removeTag } = useTagsFilters((state) => state);
 
   return (
-    <Group my="sm">
+    <Flex
+      gap="sm"
+      wrap="wrap"
+      align="center"
+      my="sm"
+      justify={{ base: "center", sm: "flex-start" }}
+    >
       {tags.map((tag) => (
         <Badge
           pr="0"
@@ -29,6 +34,6 @@ export const SelectedTags = () => {
           {tag.name}
         </Badge>
       ))}
-    </Group>
+    </Flex>
   );
 };
