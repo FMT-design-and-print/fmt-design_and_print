@@ -9,6 +9,16 @@ export interface ICategory {
   icon: string;
 }
 
+export interface ITag {
+  id: string;
+  name: string;
+}
+
+export interface ITags {
+  productTags: ITag[];
+  professionTags: ITag[];
+}
+
 export interface IProductType {
   id: string;
   title: string;

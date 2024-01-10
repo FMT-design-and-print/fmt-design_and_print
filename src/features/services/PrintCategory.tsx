@@ -1,26 +1,26 @@
 "use client";
-import {
-  Box,
-  Card,
-  Checkbox,
-  Flex,
-  Grid,
-  Group,
-  Input,
-  ScrollArea,
-  Title,
-} from "@mantine/core";
-import React from "react";
-import { ProductTypeCard } from "./ProductTypeCard";
+import { PaginationRenderer } from "@/components/PaginationRenderer";
 import { ProductCard } from "@/components/ProductCard";
 import { IPrintProduct, IProductType } from "@/types";
+import { Box, Flex, Grid, Group, Input } from "@mantine/core";
+import { useState } from "react";
+import { BsSearch } from "react-icons/bs";
+import { ProductTypeCard } from "./ProductTypeCard";
+import { SelectedTags } from "./SelectedTags";
+import { TagsFilters } from "./TagsFilters";
 
 interface Props {
   productTypes: IProductType[];
   printProducts: IPrintProduct[];
 }
 
+const itemsPerPage = 10;
+
 const PrintCategory = ({ productTypes, printProducts }: Props) => {
+  const [visibleProducts, setVisibleProducts] = useState(
+    printProducts.slice(0, itemsPerPage)
+  );
+
   return (
     <div>
       <Group px="xl" gap="sm" my="lg">
@@ -37,85 +37,41 @@ const PrintCategory = ({ productTypes, printProducts }: Props) => {
       <Box px="xl">
         <Grid>
           <Grid.Col span={{ base: 4, lg: 3 }} visibleFrom="md">
-            <Card withBorder>
-              <Box bg="gray.1" p="xs">
-                <Title order={4} tt="uppercase" mb={4}>
-                  Topic
-                </Title>
-                <Input placeholder="Search topic..." size="xs" />
-                <ScrollArea h={300} p="xs">
-                  <Checkbox my="xs" label="Adventure and Outdoors" />
-                  <Checkbox my="xs" label="Animals" />
-                  <Checkbox my="xs" label="Back to School" />
-                  <Checkbox my="xs" label="Bible" />
-                  <Checkbox my="xs" label="Christian" />
-                  <Checkbox my="xs" label="Birthday" />
-                  <Checkbox my="xs" label="Adventure and Outdoors" />
-                  <Checkbox my="xs" label="Animals" />
-                  <Checkbox my="xs" label="Back to School" />
-                  <Checkbox my="xs" label="Bible" />
-                  <Checkbox my="xs" label="Christian" />
-                  <Checkbox my="xs" label="Birthday" />
-                  <Checkbox my="xs" label="Adventure and Outdoors" />
-                  <Checkbox my="xs" label="Animals" />
-                  <Checkbox my="xs" label="Back to School" />
-                  <Checkbox my="xs" label="Bible" />
-                  <Checkbox my="xs" label="Christian" />
-                  <Checkbox my="xs" label="Birthday" />
-                </ScrollArea>
-              </Box>
-
-              <Box bg="gray.1" p="xs" my="sm">
-                <Title order={4} tt="uppercase" mb={4}>
-                  Occupation and Profession
-                </Title>
-                <Input
-                  placeholder="Search occupation and professsion..."
-                  size="xs"
-                />
-                <ScrollArea h={300} p="xs">
-                  <Checkbox my="xs" label="Nurse" />
-                  <Checkbox my="xs" label="Teacher" />
-                  <Checkbox my="xs" label="Accountant" />
-                  <Checkbox my="xs" label="Bartender" />
-                  <Checkbox my="xs" label="Black Smith" />
-                  <Checkbox my="xs" label="Bus Driver" />
-                  <Checkbox my="xs" label="Chef" />
-                  <Checkbox my="xs" label="Chemist" />
-                  <Checkbox my="xs" label="Construction" />
-                  <Checkbox my="xs" label="Dentist" />
-                  <Checkbox my="xs" label="DJ" />
-                  <Checkbox my="xs" label="Engineer" />
-                  <Checkbox my="xs" label="Firefighter" />
-                  <Checkbox my="xs" label="Firework Tech" />
-                  <Checkbox my="xs" label="Counsellor" />
-                  <Checkbox my="xs" label="Hair Stylist" />
-                  <Checkbox my="xs" label="IT" />
-                  <Checkbox my="xs" label="Journalist" />
-                </ScrollArea>
-              </Box>
-            </Card>
+            <TagsFilters />
           </Grid.Col>
           <Grid.Col span="auto">
-            <Input placeholder="Type to Search..." />
-
-            <Flex
-              wrap="wrap"
-              align="center"
-              py="lg"
-              justify={{ base: "center", md: "space-evenly" }}
-              gap="md"
-            >
-              {printProducts.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  title={item.title}
-                  image={item.image}
-                  price={item.price}
-                  link={`/services/print/${item.slug}`}
-                />
-              ))}
-            </Flex>
+            <Input
+              placeholder="Type to Search..."
+              leftSection={<BsSearch size="14px" />}
+              maw={600}
+            />
+            <SelectedTags />
+            <Box>
+              <Flex
+                wrap="wrap"
+                align="center"
+                py="lg"
+                justify={{ base: "center", md: "flex-start" }}
+                gap={{ base: "md", md: 26, xl: 40 }}
+              >
+                {visibleProducts.map((item) => (
+                  <ProductCard
+                    key={item.id}
+                    title={item.title}
+                    image={item.image}
+                    price={item.price}
+                    link={`/services/print/${item.slug}`}
+                  />
+                ))}
+              </Flex>
+              <PaginationRenderer
+                itemsLength={printProducts.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={(start, end) =>
+                  setVisibleProducts(printProducts.slice(start, end))
+                }
+              />
+            </Box>
           </Grid.Col>
         </Grid>
       </Box>
