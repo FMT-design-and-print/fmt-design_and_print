@@ -1,4 +1,5 @@
 "use client";
+import { IPrintProduct } from "@/types";
 import {
   AspectRatio,
   Badge,
@@ -17,29 +18,58 @@ import {
   Title,
 } from "@mantine/core";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { BsCartPlus } from "react-icons/bs";
+import { Colors } from "./Colors";
+import { Gallery } from "./Gallery";
 import classes from "./Style.module.css";
+import { useEffect, useState } from "react";
+import { PortableText } from "@portabletext/react";
+import { RichTextComponents } from "@/components/RichTextComponent";
 
-export const ProductDetails = () => {
+export const revalidate = 60;
+
+interface Props {
+  product: IPrintProduct;
+}
+export const ProductDetails = ({ product }: Props) => {
+  const searchParams = useSearchParams();
+  const colorId = searchParams.get("colorId");
+  const [selectedImage, setSelectedImage] = useState<string | undefined>("");
+
+  useEffect(() => {
+    if (colorId && colorId !== product.color?.id) {
+      setSelectedImage(
+        product.colors?.filter((c) => c.color.id === colorId)[0].image
+      );
+    } else {
+      setSelectedImage(product.image);
+    }
+  }, [colorId, product.color?.id, product.colors, product.image]);
+
   return (
     <Box px="xl" py="lg">
       <Grid>
         <Grid.Col span={{ base: 12, sm: 6, lg: 5 }}>
-          <AspectRatio
-            ratio={1 / 1.2}
-            maw={450}
-            mx={{ base: "sm", sm: "auto" }}
-          >
-            <Image
-              radius="md"
-              src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703781261/FMT/tshirt-mockup_ppflhq.png"
-              alt=""
-            />
-          </AspectRatio>
+          <Box>
+            <AspectRatio
+              ratio={1 / 1.2}
+              maw={450}
+              mx={{ base: "sm", sm: "auto" }}
+            >
+              <Image radius="md" src={selectedImage} alt={product.title} />
+            </AspectRatio>
+            {product.gallery && product.gallery.length > 0 && (
+              <Gallery
+                images={[product.image, ...product.gallery]}
+                setSelectedImage={setSelectedImage}
+              />
+            )}
+          </Box>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md">
-          <Title order={3}>Black T-Shirt geometric print pattern</Title>
+          <Title order={3}>{product.title}</Title>
           <Group gap="xs">
             <Rating size="xs" value={4.5} fractions={2} readOnly color="pink" />
             <Text size="xs" my="md">
@@ -51,15 +81,7 @@ export const ProductDetails = () => {
             <Text size="sm" c="dimmed">
               Please choose color below
             </Text>
-            <Group gap="xs" my="xs">
-              <Box w={30} h={30} bg="cyan" className="rounded-full" />
-              <Box w={30} h={30} bg="grape" className="rounded-full" />
-              <Box w={30} h={30} bg="indigo" className="rounded-full" />
-              <Box w={30} h={30} bg="orange" className="rounded-full" />
-              <Box w={30} h={30} bg="pink" className="rounded-full" />
-              <Box w={30} h={30} bg="red" className="rounded-full" />
-              <Box w={30} h={30} bg="green" className="rounded-full" />
-            </Group>
+            <Colors mainColor={product.color} colors={product.colors || []} />
           </Box>
           <Box mb="sm">
             <Text fw="bold">Size</Text>
@@ -151,23 +173,13 @@ export const ProductDetails = () => {
         </Tabs.List>
 
         <Tabs.Panel value="description" py="md">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-          aspernatur sapiente sed incidunt, atque commodi a ullam quo ipsa?
-          Excepturi deserunt neque, sunt velit veritatis autem minus corrupti
-          non quos.
+          {product.description}
         </Tabs.Panel>
         <Tabs.Panel value="details" py="md">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Et tempore
-          natus adipisci illo? Officiis magnam exercitationem laborum laudantium
-          officia maiores nihil fugit totam in nesciunt iste temporibus quia
-          laboriosam tempora nulla natus, harum repellat, accusamus voluptate,
-          aliquam nobis ab cupiditate. Ea enim nobis minima, vel iusto
-          cupiditate alias accusamus, consectetur nulla, mollitia ex dolorum
-          pariatur debitis maxime quis ipsa? Similique eligendi distinctio natus
-          dicta a consequatur ipsum. Velit, modi iusto excepturi dolorem quam
-          veritatis quidem voluptate non ipsum laudantium error distinctio! Quod
-          quam aliquam omnis, tenetur cumque temporibus maiores quos fugit, aut
-          adipisci rerum deserunt doloremque iure necessitatibus molestiae est!
+          <PortableText
+            value={product.details}
+            components={RichTextComponents}
+          />
         </Tabs.Panel>
       </Tabs>
 

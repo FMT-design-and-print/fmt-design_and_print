@@ -57,15 +57,20 @@ export type ProductColor = {
 };
 
 export interface IPrintProduct extends FeaturedItem {
+  productNumber?: string;
   color?: ProductColor;
   gallery?: string[];
   description?: string;
   details?: any; // TODO: replace with correct type
-  colors?: ProductColor[];
+  colors?: {
+    id: string;
+    image: string;
+    color: ProductColor;
+  }[];
   sizes?: string[];
   tags: string[];
   gender?: string;
-  isForKids: boolean;
+  isForKids?: boolean;
 }
 
 export type GroupedPrintProductTypes = Record<

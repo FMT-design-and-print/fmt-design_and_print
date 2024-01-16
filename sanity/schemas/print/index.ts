@@ -40,6 +40,12 @@ const printService: SchemaTypeDefinition = {
       group: "general",
     },
     {
+      name: "number",
+      title: "Product Number",
+      type: "string",
+      group: "general",
+    },
+    {
       name: "category",
       title: "Printing Category",
       type: "reference",
@@ -83,6 +89,7 @@ const printService: SchemaTypeDefinition = {
       options: {
         maxLength: 3,
       },
+      group: "general",
     },
     {
       name: "description",

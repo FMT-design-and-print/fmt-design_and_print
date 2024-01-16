@@ -1,6 +1,11 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import { ProductType } from "@/features/services/ProductType";
+import { client } from "@/lib/client";
+import { printProductsByTypeQuery } from "@/queries/products";
+import { IPrintProduct } from "@/types";
 import React from "react";
+
+export const revalidate = 60; // revalidate this page every 60 seconds
 
 interface Props {
   params: {
@@ -9,15 +14,22 @@ interface Props {
   };
 }
 
-const ProductTypePage = ({ params }: Props) => {
+const ProductTypePage = async ({ params }: Props) => {
+  const products: IPrintProduct[] = await client.fetch(
+    printProductsByTypeQuery,
+    {
+      slug: params.productType,
+    }
+  );
+
   const items = [
     { title: "Printing Services", href: "/services?st=print" },
     {
-      title: params?.categoryId?.replaceAll("-", " "),
+      title: products[0].category.title,
       href: `/services/print/categories/${params.categoryId}`,
     },
     {
-      title: params?.productType?.replaceAll("-", " "),
+      title: products[0].type.title,
       href: `/services/print/categories/${params.productType}`,
     },
   ];
@@ -25,7 +37,7 @@ const ProductTypePage = ({ params }: Props) => {
   return (
     <div>
       <BreadcrumbRenderer items={items} />
-      <ProductType />
+      <ProductType products={products} />
     </div>
   );
 };
