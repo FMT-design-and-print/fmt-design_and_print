@@ -1,17 +1,18 @@
 "use client";
-import { Box, Flex, Input } from "@mantine/core";
-import React, { useEffect, useState } from "react";
-import { BsSearch } from "react-icons/bs";
-import { FiltersDrawer } from "./TagsFilters/FiltersDrawer";
-import { SelectedTags } from "./SelectedTags";
-import { ProductCard } from "@/components/ProductCard";
-import { PaginationRenderer } from "@/components/PaginationRenderer";
-import { IPrintProduct } from "@/types";
-import { useTagsFilters } from "@/store/filters";
-import { filteredPrintProducts } from "@/functions/filter";
 import { NoItemsFound } from "@/components/NoItemsFound";
+import { PaginationRenderer } from "@/components/PaginationRenderer";
+import { ProductCard } from "@/components/ProductCard";
+import { filteredPrintProducts } from "@/functions/filter";
+import { useTagsFilters } from "@/store/filters";
+import { IPrintProduct } from "@/types";
+import { Box, Flex, Input } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { BsSearch } from "react-icons/bs";
+import { SelectedTags } from "./SelectedTags";
+import { FiltersDrawer } from "./TagsFilters/FiltersDrawer";
+import { ProductLoaders } from "./ProductLoaders";
 
-const itemsPerPage = 10;
+const itemsPerPage = 20;
 
 interface Props {
   printProducts: IPrintProduct[];
@@ -64,8 +65,10 @@ export const PrintProducts = ({ printProducts }: Props) => {
           justify={{ base: "center", md: "flex-start" }}
           gap={{ base: "md", md: 26, xl: 40 }}
         >
-          {filteredProducts.length === 0 && (
+          {(searchTerm || tags.length > 0) && filteredProducts.length === 0 ? (
             <NoItemsFound label="Sorry!. No items were found for your search" />
+          ) : (
+            filteredProducts.length === 0 && <ProductLoaders />
           )}
           {visibleProducts.map((item) => (
             <ProductCard
@@ -79,7 +82,8 @@ export const PrintProducts = ({ printProducts }: Props) => {
         </Flex>
 
         {filteredProducts.length !== 0 &&
-          filteredProducts.length > itemsPerPage && (
+          filteredProducts.length > itemsPerPage &&
+          visibleProducts.length !== 0 && (
             <PaginationRenderer
               itemsLength={filteredProducts.length}
               itemsPerPage={itemsPerPage}

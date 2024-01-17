@@ -62,12 +62,14 @@ export interface IPrintProduct extends FeaturedItem {
   gallery?: string[];
   description?: string;
   details?: any; // TODO: replace with correct type
-  colors?: {
-    id: string;
-    image: string;
-    color: ProductColor;
-  }[];
-  sizes?: string[];
+  colors?:
+    | {
+        id: string;
+        image: string;
+        color: ProductColor;
+      }[]
+    | null;
+  sizes?: string[] | null;
   tags: string[];
   gender?: string;
   isForKids?: boolean;

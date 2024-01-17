@@ -19,7 +19,7 @@
 }
 
 .color-wrapper:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .check-icon {
@@ -30,4 +30,15 @@
   stroke: black;
   fill: #fff;
   color: white;
+}
+
+.size-card {
+  width: rem(35px);
+  height: rem(35px);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.size-card:hover {
+  transform: scale(1.1);
 }

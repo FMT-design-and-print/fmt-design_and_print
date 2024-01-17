@@ -73,6 +73,7 @@ export const singleProductQuery = groq`
               "image": image.asset->url
             }, 
         },
+         "sizes": sizes[]->.title,
         "gallery": gallery[].asset->url,
         price,
         description,

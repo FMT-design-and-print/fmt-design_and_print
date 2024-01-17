@@ -1,4 +1,5 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
+import { NotFound } from "@/components/NotFound";
 import { ProductDetails } from "@/features/product-details";
 import { client } from "@/lib/client";
 import { singleProductQuery } from "@/queries";
@@ -16,6 +17,10 @@ const ProductDetailsPage = async ({ params: { id } }: Props) => {
   const product: IPrintProduct = await client.fetch(singleProductQuery, {
     id,
   });
+
+  if (product == null) {
+    return <NotFound />;
+  }
 
   const items = [
     { title: "Printing Services", href: "/services?st=print" },

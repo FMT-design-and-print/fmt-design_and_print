@@ -1,36 +1,37 @@
 "use client";
+import { RichTextComponents } from "@/components/RichTextComponent";
 import { IPrintProduct } from "@/types";
 import {
   AspectRatio,
   Badge,
   Box,
   Button,
-  Card,
   Divider,
   Flex,
   Grid,
   Group,
   Image,
-  NumberInput,
   Rating,
   Tabs,
   Text,
   Title,
 } from "@mantine/core";
+import { PortableText } from "@portabletext/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BsCartPlus } from "react-icons/bs";
 import { Colors } from "./Colors";
 import { Gallery } from "./Gallery";
+import { Quantity } from "./Quantity";
+import { Sizes } from "./Sizes";
 import classes from "./Style.module.css";
-import { useEffect, useState } from "react";
-import { PortableText } from "@portabletext/react";
-import { RichTextComponents } from "@/components/RichTextComponent";
 
 interface Props {
   product: IPrintProduct;
 }
 export const ProductDetails = ({ product }: Props) => {
+  console.log(product);
   const searchParams = useSearchParams();
   const colorId = searchParams.get("colorId");
   const [selectedImage, setSelectedImage] = useState<string | undefined>("");
@@ -68,66 +69,29 @@ export const ProductDetails = ({ product }: Props) => {
 
         <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md">
           <Title order={3}>{product.title}</Title>
+          {product.productNumber && product.productNumber != null && (
+            <Title order={4} my="md" c="dimmed">
+              #{product.productNumber}
+            </Title>
+          )}
           <Group gap="xs">
             <Rating size="xs" value={4.5} fractions={2} readOnly color="pink" />
             <Text size="xs" my="md">
               (123)
             </Text>
           </Group>
-          <Box mb="sm">
-            <Text fw="bold">Color</Text>
-            <Text size="sm" c="dimmed">
-              Please choose color below
-            </Text>
-            <Colors mainColor={product.color} colors={product.colors || []} />
-          </Box>
-          <Box mb="sm">
-            <Text fw="bold">Size</Text>
-            <Text size="sm" c="dimmed">
-              Please choose size below
-            </Text>
-            <Group gap="xs" my="xs">
-              <Card w={35} h={35} p={4} className="text-center" withBorder>
-                S
-              </Card>
-              <Card w={35} h={35} p={4} className="text-center" withBorder>
-                M
-              </Card>
-              <Card w={35} h={35} p={4} className="text-center" withBorder>
-                L
-              </Card>
-              <Card w={35} h={35} p={4} className="text-center" withBorder>
-                XL
-              </Card>
-              <Card w={35} h={35} p={4} className="text-center" withBorder>
-                2XL
-              </Card>
-            </Group>
-          </Box>
-          <Divider label="Quantity" labelPosition="left" mt="md" />
-          <Flex my="sm" justify="space-between">
-            <Group>
-              <Button variant="light" color="gray">
-                -
-              </Button>
-              <NumberInput
-                w={50}
-                placeholder="1"
-                value={1}
-                min={1}
-                hideControls
-              />
-              <Button variant="light" color="gray">
-                +
-              </Button>
-            </Group>
+          <Colors mainColor={product.color} colors={product.colors || []} />
+          <Sizes sizes={product.sizes} />
 
+          <Divider label="Quantity" labelPosition="left" mt="md" maw={700} />
+          <Flex my="sm" justify="space-between" maw={700}>
+            <Quantity />
             <Group align="flex-start" gap={1}>
               <Text pt="5px">GHS</Text>
-              <Title>55</Title>
+              <Title>{product.price}</Title>
             </Group>
           </Flex>
-          <Divider mb="md" />
+          <Divider mb="md" maw={700} />
           <Group my="xl">
             <Button
               size="md"
@@ -186,18 +150,11 @@ export const ProductDetails = ({ product }: Props) => {
           Related search terms
         </Text>
         <Group>
-          <Badge variant="outline" color="gray">
-            Search Term 1
-          </Badge>
-          <Badge variant="outline" color="gray">
-            Term 2
-          </Badge>
-          <Badge variant="outline" color="gray">
-            Screen printing
-          </Badge>
-          <Badge variant="outline" color="gray">
-            Heat transfer printing
-          </Badge>
+          {product.tags.map((tag, i) => (
+            <Badge key={tag + i} variant="outline" color="gray">
+              {tag}
+            </Badge>
+          ))}
         </Group>
       </Box>
     </Box>

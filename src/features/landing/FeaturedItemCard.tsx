@@ -10,7 +10,7 @@ export function FeaturedItemCard({ item }: Props) {
   return (
     <Card
       component={Link}
-      href={`/services/print/${item.slug}`}
+      href={`/services/print/${item.id}`}
       p="lg"
       shadow="lg"
       className={classes.card}

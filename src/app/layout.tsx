@@ -9,6 +9,7 @@ import React from "react";
 import { Providers } from "./providers";
 import { SessionProvider } from "@/components/SessionProvider";
 import { AdminHeader } from "@/components/Header/AdminHeader";
+import { Footer } from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
           <Header />
           <AdminHeader />
           {children}
+          <Footer />
         </Providers>
         <SessionProvider />
       </body>

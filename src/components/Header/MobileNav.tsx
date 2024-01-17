@@ -1,4 +1,5 @@
 "use client";
+import { useCategories } from "@/hooks/useCategories";
 import {
   Accordion,
   Anchor,
@@ -13,12 +14,11 @@ import {
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import Image from "next/image";
-import { AuthButtons } from "../AuthButtons";
-import { TopBar } from "./TopBar";
 import Link from "next/link";
-import { useCategories } from "@/hooks/useCategories";
+import { AuthButtons } from "../AuthButtons";
+import { FMTLogo } from "../FMTLogo";
 import { CategoryCard } from "./CategoryCard";
+import { TopBar } from "./TopBar";
 
 export const MobileNav = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -42,14 +42,7 @@ export const MobileNav = () => {
         size="100%"
         padding="md"
         title={
-          <Link href="/">
-            <Image
-              src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png"
-              alt="FMT Logo"
-              width={60}
-              height={50}
-            />
-          </Link>
+          <FMTLogo image="https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png" />
         }
         hiddenFrom="sm"
         zIndex={1000000}

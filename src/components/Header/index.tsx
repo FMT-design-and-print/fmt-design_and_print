@@ -1,16 +1,16 @@
 "use client";
 import { Box, Flex, Group, Text } from "@mantine/core";
-import Image from "next/image";
-import { AuthButtons } from "../AuthButtons";
-import { ProfileMenu } from "../ProfileMenu";
-import { MobileNav } from "./MobileNav";
-import { SearchSection } from "./SearchSection";
-import { TopBar } from "./TopBar";
-import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
-import { PrintingServicesDropDown } from "./PrintingServicesDropDown";
-import { DesignServicesDropDown } from "./DesignServicesDropDown";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AuthButtons } from "../AuthButtons";
+import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
+import { FMTLogo } from "../FMTLogo";
+import { ProfileMenu } from "../ProfileMenu";
+import { DesignServicesDropDown } from "./DesignServicesDropDown";
+import { MobileNav } from "./MobileNav";
+import { PrintingServicesDropDown } from "./PrintingServicesDropDown";
+import { SearchSection } from "./SearchSection";
+import { TopBar } from "./TopBar";
 
 export function Header() {
   const pathname = usePathname();
@@ -31,14 +31,7 @@ export function Header() {
         className="bg-darkBlue text-white"
       >
         <Flex align="center" gap={16} h="100%">
-          <Link href="/">
-            <Image
-              src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703269414/FMT/logo-white_mfxmmk.png"
-              alt="FMT Logo"
-              width={60}
-              height={50}
-            />
-          </Link>
+          <FMTLogo />
 
           <Flex align="center" justify="space-between" className="grow">
             <Group h="100%" gap={12} wrap="nowrap" visibleFrom="sm">
