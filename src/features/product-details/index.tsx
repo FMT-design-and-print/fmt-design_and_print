@@ -27,8 +27,6 @@ import { useEffect, useState } from "react";
 import { PortableText } from "@portabletext/react";
 import { RichTextComponents } from "@/components/RichTextComponent";
 
-export const revalidate = 60;
-
 interface Props {
   product: IPrintProduct;
 }

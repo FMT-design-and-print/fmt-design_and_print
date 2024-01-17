@@ -4,6 +4,8 @@ import { client } from "@/lib/client";
 import { singleProductQuery } from "@/queries";
 import { IPrintProduct } from "@/types";
 
+export const revalidate = 0;
+
 interface Props {
   params: {
     id: string;
