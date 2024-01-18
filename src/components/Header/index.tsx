@@ -11,6 +11,7 @@ import { MobileNav } from "./MobileNav";
 import { PrintingServicesDropDown } from "./PrintingServicesDropDown";
 import { SearchSection } from "./SearchSection";
 import { TopBar } from "./TopBar";
+import { featureFlags } from "@/constants/feature-flags";
 
 export function Header() {
   const pathname = usePathname();
@@ -44,7 +45,7 @@ export function Header() {
               </Text>
 
               <PrintingServicesDropDown />
-              <DesignServicesDropDown />
+              {featureFlags.design && <DesignServicesDropDown />}
             </Group>
 
             <MobileNav />

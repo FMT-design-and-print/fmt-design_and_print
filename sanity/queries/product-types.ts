@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 
 export const productTypesQuery = groq`
-    *[_type == "productTypes"]{
+    *[_type == "productTypes" && live == true ]{
       "id": _id,
         title,
         "slug": slug.current,
@@ -15,7 +15,7 @@ export const productTypesQuery = groq`
 `;
 
 export const filteredProductTypesQuery = groq`
-  *[_type == "productTypes" && category->slug.current == $slug ]{
+  *[_type == "productTypes" && live == true && category->slug.current == $slug ]{
       "id": _id,
         title,
         "slug": slug.current,

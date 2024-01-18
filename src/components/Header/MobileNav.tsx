@@ -19,6 +19,7 @@ import { AuthButtons } from "../AuthButtons";
 import { FMTLogo } from "../FMTLogo";
 import { CategoryCard } from "./CategoryCard";
 import { TopBar } from "./TopBar";
+import { featureFlags } from "@/constants/feature-flags";
 
 export const MobileNav = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -39,7 +40,7 @@ export const MobileNav = () => {
       <Drawer
         opened={drawerOpened}
         onClose={closeDrawer}
-        size="100%"
+        size="md"
         padding="md"
         title={
           <FMTLogo image="https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png" />
@@ -59,7 +60,7 @@ export const MobileNav = () => {
             >
               All Services
             </Text>
-            <Accordion>
+            <Accordion defaultValue="printing-services">
               <Accordion.Item value="printing-services">
                 <Accordion.Control>Printing Services</Accordion.Control>
                 <Accordion.Panel>
@@ -88,24 +89,26 @@ export const MobileNav = () => {
                 </Accordion.Panel>
               </Accordion.Item>
 
-              <Accordion.Item value="design-services">
-                <Accordion.Control>Design Services</Accordion.Control>
-                <Accordion.Panel>
-                  <Flex justify="flex-end">
-                    <Anchor
-                      component={Link}
-                      href="/services?st=design"
-                      c="pink"
-                      fz="xs"
-                    >
-                      View all Design Services
-                    </Anchor>
-                  </Flex>
-                </Accordion.Panel>
-              </Accordion.Item>
+              {featureFlags.design && (
+                <Accordion.Item value="design-services">
+                  <Accordion.Control>Design Services</Accordion.Control>
+                  <Accordion.Panel>
+                    <Flex justify="flex-end">
+                      <Anchor
+                        component={Link}
+                        href="/services?st=design"
+                        c="pink"
+                        fz="xs"
+                      >
+                        View all Design Services
+                      </Anchor>
+                    </Flex>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              )}
             </Accordion>
           </Flex>
-          <Divider my="sm" />
+          {/* <Divider my="sm" /> */}
 
           <Box px="md">
             <AuthButtons />

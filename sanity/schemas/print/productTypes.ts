@@ -53,6 +53,7 @@ const productTypes: SchemaTypeDefinition = {
       title: "Go live",
       description: "These Items are available and ready to sell",
       type: "boolean",
+      initialValue: false,
     },
   ],
 };

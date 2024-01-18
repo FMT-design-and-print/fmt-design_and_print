@@ -5,6 +5,9 @@ import { DesignServices } from "./DesignServices";
 import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
 import { GroupedPrintProductTypes } from "@/types";
+import { FeatureFlagKeys, featureFlags } from "@/constants/feature-flags";
+
+const validServiceTypes = ["print", "design"];
 
 interface Props {
   printCategoriesWithProductTypes: GroupedPrintProductTypes;
@@ -22,30 +25,42 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
         wrap="wrap"
         gap={32}
       >
-        <ServiceCard
-          link="/services/plain-items"
-          label="Plain Materials & Souvenirs"
-          color="#9B51E0"
-          image="/clothes.png"
-        />
-        <ServiceCard
-          link="/services/gifts"
-          label="Gifts & Packages"
-          color="orange"
-          image="/gift.png"
-        />
-        <ServiceCard
-          link="/services/deals"
-          label="Deals of the Week"
-          color="#27AE60"
-          image="/deal.png"
-        />
+        {featureFlags.plainItems && (
+          <ServiceCard
+            link="/services/plain-items"
+            label="Plain Materials & Souvenirs"
+            color="#9B51E0"
+            image="/clothes.png"
+          />
+        )}
+        {featureFlags.gifts && (
+          <ServiceCard
+            link="/services/gifts"
+            label="Gifts & Packages"
+            color="orange"
+            image="/gift.png"
+          />
+        )}
+        {featureFlags.deals && (
+          <ServiceCard
+            link="/services/deals"
+            label="Deals of the Week"
+            color="#27AE60"
+            image="/deal.png"
+          />
+        )}
       </Flex>
       <Tabs
         variant="pills"
         color="gray"
         radius="xs"
-        value={serviceType == null ? "print" : serviceType}
+        value={
+          serviceType == null ||
+          !validServiceTypes.includes(serviceType) ||
+          !featureFlags[serviceType as FeatureFlagKeys]
+            ? "print"
+            : serviceType
+        }
         onChange={(value) => {
           push(`/services?st=${value}`);
         }}
@@ -55,9 +70,11 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
           <Tabs.Tab value="print" px="xl" py="md">
             Printing Services
           </Tabs.Tab>
-          <Tabs.Tab value="design" px="xl" py="md">
-            Design Services
-          </Tabs.Tab>
+          {featureFlags.design && (
+            <Tabs.Tab value="design" px="xl" py="md">
+              Design Services
+            </Tabs.Tab>
+          )}
         </Tabs.List>
 
         <Tabs.Panel value="print">
@@ -65,9 +82,11 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
             groupedPrintProductTypes={printCategoriesWithProductTypes}
           />
         </Tabs.Panel>
-        <Tabs.Panel value="design">
-          <DesignServices />
-        </Tabs.Panel>
+        {featureFlags.design && (
+          <Tabs.Panel value="design">
+            <DesignServices />
+          </Tabs.Panel>
+        )}
       </Tabs>
     </Box>
   );

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "../../sanity/lib/client";
-import { categoriesQuery } from "../../sanity/queries";
 import { ICategory } from "@/types";
+import { filteredCategoriesByProductTypeQuery } from "@/queries";
 
 const getCategories = async (): Promise<ICategory[]> =>
-  await client.fetch(categoriesQuery);
+  await client.fetch(filteredCategoriesByProductTypeQuery);
 
 export function useCategories() {
   const {

@@ -5,14 +5,13 @@ import {
   Card,
   Center,
   Group,
-  Rating,
   Text,
   rem,
 } from "@mantine/core";
 import Link from "next/link";
+import { BsCartPlus } from "react-icons/bs";
 import { HiOutlineHeart } from "react-icons/hi";
 import classes from "./ProductCard.module.css";
-import { BsCartPlus } from "react-icons/bs";
 
 interface Props {
   image: string;
@@ -49,11 +48,6 @@ export function ProductCard({ title, image, price, link = "" }: Props) {
       <Text component={Link} href={link} mt="md" mb="sm" lineClamp={1}>
         {title}
       </Text>
-
-      <Group gap="xs">
-        <Rating size="xs" value={4.5} fractions={2} readOnly color="pink" />
-        <Text size="xs">(123)</Text>
-      </Group>
 
       <Group justify="space-between" mt="md">
         <Box>

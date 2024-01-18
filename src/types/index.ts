@@ -83,3 +83,20 @@ export type GroupedPrintProductTypes = Record<
     items: IProductType[];
   }
 >;
+
+export type SearchItem = {
+  id: string;
+  title: string;
+  slug: string;
+  image: string;
+  category?: {
+    id: string;
+    slug: string;
+    title: string;
+  };
+  type?: {
+    id: string;
+    slug: string;
+    title: string;
+  };
+};
