@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { CarouselCard } from "./CarouselCard";
 import { PrintCategories } from "./PrintCategories";
+import { featureFlags } from "@/constants/feature-flags";
 
 const designItems = [
   {
@@ -43,28 +44,30 @@ export const Hero = () => {
       <Grid.Col span="auto">
         <CarouselCard />
       </Grid.Col>
-      <Grid.Col span={3} visibleFrom="md">
-        <Card withBorder h="100%">
-          {designItems.map((item, i) => (
-            <Group key={item.title + i} py="md" wrap="nowrap">
-              <Image src={item.image} alt="" width={25} height={25} />
-              <Text
-                lineClamp={1}
-                c="gray.7"
-                size={isMobile ? "sm" : "md"}
-                title={item.title}
-              >
-                {item.title}
-              </Text>
+      {featureFlags.design && (
+        <Grid.Col span={3} visibleFrom="md">
+          <Card withBorder h="100%">
+            {designItems.map((item, i) => (
+              <Group key={item.title + i} py="md" wrap="nowrap">
+                <Image src={item.image} alt="" width={25} height={25} />
+                <Text
+                  lineClamp={1}
+                  c="gray.7"
+                  size={isMobile ? "sm" : "md"}
+                  title={item.title}
+                >
+                  {item.title}
+                </Text>
+              </Group>
+            ))}
+            <Group py={8} grow>
+              <Button className="btn">
+                View More <FaLongArrowAltRight style={{ margin: "0 10px" }} />
+              </Button>
             </Group>
-          ))}
-          <Group py={8} grow>
-            <Button className="btn">
-              View More <FaLongArrowAltRight style={{ margin: "0 10px" }} />
-            </Button>
-          </Group>
-        </Card>
-      </Grid.Col>
+          </Card>
+        </Grid.Col>
+      )}
     </Grid>
   );
 };

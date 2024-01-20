@@ -3,7 +3,9 @@ import { Box, Flex, Group, Text } from "@mantine/core";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthButtons } from "../AuthButtons";
-import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
+// import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
+import { featureFlags } from "@/constants/feature-flags";
+import dynamic from "next/dynamic";
 import { FMTLogo } from "../FMTLogo";
 import { ProfileMenu } from "../ProfileMenu";
 import { DesignServicesDropDown } from "./DesignServicesDropDown";
@@ -11,7 +13,13 @@ import { MobileNav } from "./MobileNav";
 import { PrintingServicesDropDown } from "./PrintingServicesDropDown";
 import { SearchSection } from "./SearchSection";
 import { TopBar } from "./TopBar";
-import { featureFlags } from "@/constants/feature-flags";
+
+const CartAndSavedItemsButtons = dynamic(
+  () => import("../CartAndSavedItemsButtons"),
+  {
+    ssr: false,
+  }
+);
 
 export function Header() {
   const pathname = usePathname();

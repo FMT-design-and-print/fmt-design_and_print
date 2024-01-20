@@ -1,20 +1,20 @@
+import { SelectedProductOptions } from "@/types";
 import { Box, Card, Center, Group, Text } from "@mantine/core";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 import classes from "./Style.module.css";
-import { useCreateQueryString } from "@/hooks/useCreateQueryString";
 
 interface Props {
   sizes?: string[] | null;
+  selectedSize: string;
+  setSelectedProductOptions: Dispatch<SetStateAction<SelectedProductOptions>>;
 }
-export const Sizes = ({ sizes }: Props) => {
-  const searchParams = useSearchParams();
-  const createQueryString = useCreateQueryString();
-  const { push } = useRouter();
-  const selectedSize = searchParams.get("size");
-
+export const Sizes = ({
+  sizes,
+  selectedSize,
+  setSelectedProductOptions,
+}: Props) => {
   const handleSizeSelect = (size: string) => {
-    const newParams = createQueryString("size", size);
-    push("?" + newParams);
+    setSelectedProductOptions((prevState) => ({ ...prevState, size }));
   };
 
   if (sizes != null && sizes.length !== 0) {

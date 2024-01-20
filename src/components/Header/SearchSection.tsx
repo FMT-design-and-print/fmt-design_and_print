@@ -1,7 +1,14 @@
 "use client";
 import { Grid } from "@mantine/core";
-import { CartAndSavedItemsButtons } from "../CartAndSavedItemsButtons";
+import dynamic from "next/dynamic";
 import { SearchWithButton } from "../Search/SearchWithButton";
+
+const CartAndSavedItemsButtons = dynamic(
+  () => import("../CartAndSavedItemsButtons"),
+  {
+    ssr: false,
+  }
+);
 
 export const SearchSection = () => {
   return (

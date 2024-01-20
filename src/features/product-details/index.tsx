@@ -1,6 +1,8 @@
 "use client";
-import { RichTextComponents } from "@/components/RichTextComponent";
-import { IPrintProduct } from "@/types";
+import { CartBtn } from "@/components/CartBtn";
+import { getProductOptionsErrors } from "@/functions";
+import { useCart } from "@/store/cart";
+import { IOptionsErrors, IPrintProduct, SelectedProductOptions } from "@/types";
 import {
   AspectRatio,
   Badge,
@@ -11,40 +13,76 @@ import {
   Grid,
   Group,
   Image,
-  Rating,
-  Tabs,
   Text,
   Title,
 } from "@mantine/core";
-import { PortableText } from "@portabletext/react";
+import { useLocalStorage } from "@mantine/hooks";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BsCartPlus } from "react-icons/bs";
-import { Colors } from "./Colors";
 import { Gallery } from "./Gallery";
-import { Quantity } from "./Quantity";
-import { Sizes } from "./Sizes";
-import classes from "./Style.module.css";
+import { ProductDescription } from "./ProductDescription";
+import { ItemRating } from "./Rating";
+import { toast } from "react-toastify";
+import { Colors } from "@/components/Colors";
+import { Sizes } from "@/components/Sizes";
+import { AdditionalDetails } from "@/components/AdditionalDetails";
+import { Quantity } from "@/components/Quantity";
+import { ErrorText } from "@/components/ErrorText";
+
+const defaultValue = {
+  productId: "",
+  color: undefined,
+  image: "",
+  size: "",
+  quantity: 1,
+  note: "",
+};
 
 interface Props {
   product: IPrintProduct;
 }
 export const ProductDetails = ({ product }: Props) => {
-  console.log(product);
-  const searchParams = useSearchParams();
-  const colorId = searchParams.get("colorId");
-  const [selectedImage, setSelectedImage] = useState<string | undefined>("");
+  const addItem = useCart((state) => state.addItem);
+  const [errors, setErrors] = useState<IOptionsErrors>({});
+  const [selectedProductOptions, setSelectedProductOptions] =
+    useLocalStorage<SelectedProductOptions>({
+      key: "fmt_dp_selected_product_options",
+      defaultValue,
+    });
+
+  const handleAddItemToCart = () => {
+    const errors = getProductOptionsErrors(selectedProductOptions);
+    setErrors(errors);
+
+    // TODO: Check if product does not have sizes
+
+    if (Object.keys(errors).length > 0) return false;
+    addItem({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      quantity: selectedProductOptions.quantity,
+      image: selectedProductOptions.image,
+      timestamp: new Date(),
+      color: selectedProductOptions.color,
+      size: selectedProductOptions.size,
+      notes: selectedProductOptions.note,
+    });
+    toast.success("Item added to cart");
+  };
 
   useEffect(() => {
-    if (colorId && colorId !== product.color?.id) {
-      setSelectedImage(
-        product.colors?.filter((c) => c.color.id === colorId)[0].image
-      );
-    } else {
-      setSelectedImage(product.image);
+    if (product.id !== selectedProductOptions.productId) {
+      setSelectedProductOptions({
+        productId: product.id,
+        color: product.color,
+        image: product.image,
+        size: "",
+        quantity: 1,
+      });
     }
-  }, [colorId, product.color?.id, product.colors, product.image]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product]);
 
   return (
     <Box px="xl" py="lg">
@@ -56,12 +94,16 @@ export const ProductDetails = ({ product }: Props) => {
               maw={450}
               mx={{ base: "sm", sm: "auto" }}
             >
-              <Image radius="md" src={selectedImage} alt={product.title} />
+              <Image
+                radius="md"
+                src={selectedProductOptions.image}
+                alt={product.title}
+              />
             </AspectRatio>
             {product.gallery && product.gallery.length > 0 && (
               <Gallery
                 images={[product.image, ...product.gallery]}
-                setSelectedImage={setSelectedImage}
+                setSelectedProductOptions={setSelectedProductOptions}
               />
             )}
           </Box>
@@ -74,33 +116,61 @@ export const ProductDetails = ({ product }: Props) => {
               #{product.productNumber}
             </Title>
           )}
-          <Group gap="xs">
-            <Rating size="xs" value={4.5} fractions={2} readOnly color="pink" />
-            <Text size="xs" my="md">
-              (123)
-            </Text>
-          </Group>
-          <Colors mainColor={product.color} colors={product.colors || []} />
-          <Sizes sizes={product.sizes} />
+          <ItemRating />
+          <Colors
+            mainColor={product.color}
+            colors={product.colors || []}
+            selectedColor={selectedProductOptions.color}
+            setSelectedProductOptions={setSelectedProductOptions}
+          />
+          {!selectedProductOptions.color && errors.color && (
+            <ErrorText text={errors.color} />
+          )}
+          <Sizes
+            sizes={product.sizes}
+            selectedSize={selectedProductOptions.size}
+            setSelectedProductOptions={setSelectedProductOptions}
+          />
+          {!selectedProductOptions.size && errors.size && (
+            <ErrorText text={errors.size} />
+          )}
 
           <Divider label="Quantity" labelPosition="left" mt="md" maw={700} />
           <Flex my="sm" justify="space-between" maw={700}>
-            <Quantity />
-            <Group align="flex-start" gap={1}>
-              <Text pt="5px">GHS</Text>
-              <Title>{product.price}</Title>
-            </Group>
+            <Box>
+              <Quantity
+                quantity={selectedProductOptions.quantity}
+                setSelectedProductOptions={setSelectedProductOptions}
+              />
+              {!selectedProductOptions.quantity && errors.quantity && (
+                <ErrorText text={errors.quantity} />
+              )}
+            </Box>
+            <Box>
+              {selectedProductOptions.quantity > 1 && (
+                <Text size="xs" ta="right">
+                  {product.price} x {selectedProductOptions.quantity} =
+                </Text>
+              )}
+              <Group align="flex-start" gap={1}>
+                <Text pt="5px">GHS</Text>
+                <Title>{product.price * selectedProductOptions.quantity}</Title>
+              </Group>
+            </Box>
           </Flex>
           <Divider mb="md" maw={700} />
+
+          <AdditionalDetails
+            note={selectedProductOptions.note}
+            setSelectedProductOptions={setSelectedProductOptions}
+          />
+
           <Group my="xl">
-            <Button
-              size="md"
+            <CartBtn
+              handler={handleAddItemToCart}
+              productId={product.id}
               miw={{ base: "100%", xs: 150 }}
-              className={classes["cart-btn"]}
-              leftSection={<BsCartPlus />}
-            >
-              Add to cart
-            </Button>
+            />
             <Button size="md" miw={{ base: "100%", xs: 150 }} className="btn">
               Buy now
             </Button>
@@ -117,33 +187,10 @@ export const ProductDetails = ({ product }: Props) => {
         </Grid.Col>
       </Grid>
 
-      <Tabs
-        variant="outline"
-        color="gray"
-        radius="sm"
-        defaultValue="description"
-        px="xl"
-        mt="xl"
-      >
-        <Tabs.List py="md">
-          <Tabs.Tab value="description" px="xl" py="md">
-            Description
-          </Tabs.Tab>
-          <Tabs.Tab value="details" px="xl" py="md">
-            Product Details
-          </Tabs.Tab>
-        </Tabs.List>
-
-        <Tabs.Panel value="description" py="md">
-          {product.description}
-        </Tabs.Panel>
-        <Tabs.Panel value="details" py="md">
-          <PortableText
-            value={product.details}
-            components={RichTextComponents}
-          />
-        </Tabs.Panel>
-      </Tabs>
+      <ProductDescription
+        description={product.description}
+        details={product.details}
+      />
 
       <Box my="xl">
         <Text fw="bold" my="sm">

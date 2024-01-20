@@ -1,8 +1,10 @@
 import { Header } from "@/components/Header";
 import { ColorSchemeScript } from "@mantine/core";
+import { ToastContainer } from "react-toastify";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
@@ -36,6 +38,7 @@ export default function RootLayout({
           <Footer />
         </Providers>
         <SessionProvider />
+        <ToastContainer />
       </body>
     </html>
   );

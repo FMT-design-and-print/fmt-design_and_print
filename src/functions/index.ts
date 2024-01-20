@@ -1,4 +1,11 @@
-import { GroupedPrintProductTypes, IProductType, MessageStatus } from "@/types";
+import {
+  GroupedPrintProductTypes,
+  ICartItem,
+  IOptionsErrors,
+  IProductType,
+  MessageStatus,
+  SelectedProductOptions,
+} from "@/types";
 import { DefaultMantineColor } from "@mantine/core";
 
 export const getAlertColor = (
@@ -35,4 +42,32 @@ export function groupProductTypesByCategory(arr: IProductType[]) {
 
     return acc;
   }, {});
+}
+
+export function getProductOptionsErrors(options: SelectedProductOptions) {
+  let errors: IOptionsErrors = {};
+
+  if (options.color == null) {
+    errors = { ...errors, color: "Select color" };
+  }
+
+  if (!options.size) {
+    errors = { ...errors, size: "Select size" };
+  }
+
+  if (!options.quantity) {
+    errors = { ...errors, quantity: "Choose quantity" };
+  }
+
+  return errors;
+}
+
+export function calculateTotalPrice(cart: ICartItem[]): number {
+  let totalPrice = 0;
+
+  for (const item of cart) {
+    totalPrice += item.price * item.quantity;
+  }
+
+  return totalPrice;
 }

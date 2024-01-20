@@ -1,44 +1,4 @@
-.cart-btn {
-  border: 1px solid var(--primary-500);
-  color: var(--primary-500);
-  background-color: transparent;
-}
-
 .product-image-box {
   border: 1px solid #eeeeee;
   border-radius: 5px;
-}
-
-.color-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.color-wrapper:hover {
-  transform: scale(1.1);
-}
-
-.check-icon {
-  position: absolute;
-  width: rem(12);
-  height: rem(12);
-  stroke-width: 1px;
-  stroke: black;
-  fill: #fff;
-  color: white;
-}
-
-.size-card {
-  width: rem(35px);
-  height: rem(35px);
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.size-card:hover {
-  transform: scale(1.1);
 }

@@ -1,5 +1,6 @@
 import { client } from "@/lib/client";
 import { searchQuery } from "@/queries/global-search";
+import { SearchItem } from "@/types";
 import {
   Button,
   Center,
@@ -13,8 +14,9 @@ import {
 import { useMediaQuery } from "@mantine/hooks";
 import { useCallback, useEffect, useState } from "react";
 import { HiSearch } from "react-icons/hi";
-import { Results } from "./Results";
-import { SearchItem } from "@/types";
+import { CategoriesResults } from "./CategoriesResults";
+import { ProductTypesResults } from "./ProductTypesResults";
+import { ProductsResults } from "./ProductsResults";
 
 interface ISearchResults {
   printService: SearchItem[];
@@ -94,19 +96,9 @@ export const SearchWithButton = (props: TextInputProps) => {
         />
       </Popover.Target>
       <Popover.Dropdown>
-        <Results searchResults={searchResults.printService} label="Products" />
-
-        <Results
-          searchResults={searchResults.productTypes}
-          label="Product  Types"
-          badgeLabel="Product  Types"
-        />
-
-        <Results
-          searchResults={searchResults.printCategories}
-          label="Categories"
-          badgeLabel="Categories"
-        />
+        <ProductsResults products={searchResults.printService} />
+        <ProductTypesResults items={searchResults.productTypes} />
+        <CategoriesResults items={searchResults.printCategories} />
 
         {isLoading && (
           <Center>

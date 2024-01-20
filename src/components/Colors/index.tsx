@@ -1,12 +1,12 @@
-"use client";
-import { ProductColor } from "@/types";
+import { ProductColor, SelectedProductOptions } from "@/types";
 import { Avatar, Box, CheckIcon, Group, Text } from "@mantine/core";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 import classes from "./Style.module.css";
-import { useCreateQueryString } from "@/hooks/useCreateQueryString";
 
 interface Props {
   mainColor?: ProductColor;
+  selectedColor?: ProductColor;
+  setSelectedProductOptions: Dispatch<SetStateAction<SelectedProductOptions>>;
   colors:
     | {
         id: string;
@@ -15,16 +15,21 @@ interface Props {
       }[]
     | null;
 }
-export const Colors = ({ mainColor, colors = [] }: Props) => {
-  const searchParams = useSearchParams();
-  const createQueryString = useCreateQueryString();
-  const { push } = useRouter();
-  const colorId = searchParams.get("colorId");
+export const Colors = ({
+  mainColor,
+  selectedColor,
+  colors = [],
+  setSelectedProductOptions,
+}: Props) => {
+  const handleColorSelect = (color: ProductColor) => {
+    const colorId = color.id;
 
-  const handleColorSelect = (colorId: string) => {
     if (colors != null && colors.length !== 0) {
-      const newParams = createQueryString("colorId", colorId);
-      push("?" + newParams);
+      setSelectedProductOptions((prevState) => ({
+        ...prevState,
+        color,
+        image: colors.find((color) => color.color.id === colorId)?.image || "",
+      }));
     }
   };
 
@@ -42,9 +47,9 @@ export const Colors = ({ mainColor, colors = [] }: Props) => {
               size="sm"
               src={mainColor.image}
               variant="outline"
-              onClick={() => handleColorSelect(mainColor.id)}
+              onClick={() => handleColorSelect(mainColor)}
             />
-            {(!colorId || (colorId && colorId === mainColor.id)) && (
+            {selectedColor?.id === mainColor.id && (
               <CheckIcon className={classes["check-icon"]} />
             )}
           </div>
@@ -59,9 +64,9 @@ export const Colors = ({ mainColor, colors = [] }: Props) => {
               size="sm"
               src={color.color.image}
               variant="outline"
-              onClick={() => handleColorSelect(color.color.id)}
+              onClick={() => handleColorSelect(color.color)}
             />
-            {colorId === color.color.id && (
+            {selectedColor?.id === color.color.id && (
               <CheckIcon className={classes["check-icon"]} />
             )}
           </div>

@@ -8,7 +8,25 @@ export const printProductsQuery = groq`
         "id": _id,
         title,
         "slug": slug.current,
+        "productNumber": number,
         "image": image.asset->url,
+        color->{
+            "id": _id,
+            title,
+            hex,
+            "image": image.asset->url
+        },
+        "colors": colors[]{
+            "id": _key,
+            "image": image.asset->url,
+            color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+            }, 
+        },
+         "sizes": sizes[]->.title,
         price,
         description,
         "tags": [
@@ -30,6 +48,23 @@ export const printProductsByTypeQuery = groq`
         title,
         "slug": slug.current,
         "image": image.asset->url,
+        color->{
+            "id": _id,
+            title,
+            hex,
+            "image": image.asset->url
+        },
+        "colors": colors[]{
+            "id": _key,
+            "image": image.asset->url,
+            color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+            }, 
+        },
+         "sizes": sizes[]->.title,
         price,
         description,
         "tags": [

@@ -75,6 +75,18 @@ export interface IPrintProduct extends FeaturedItem {
   isForKids?: boolean;
 }
 
+export interface ICartItem {
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+  timestamp: Date;
+  color?: ProductColor;
+  size?: string;
+  notes?: string;
+}
+
 export type GroupedPrintProductTypes = Record<
   string,
   {
@@ -100,3 +112,18 @@ export type SearchItem = {
     title: string;
   };
 };
+
+export type SelectedProductOptions = {
+  productId: string;
+  image: string;
+  size: string;
+  quantity: number;
+  color?: ProductColor;
+  note?: string;
+};
+
+export interface IOptionsErrors {
+  color?: string;
+  size?: string;
+  quantity?: string;
+}

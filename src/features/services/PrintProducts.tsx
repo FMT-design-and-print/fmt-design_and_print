@@ -73,9 +73,7 @@ export const PrintProducts = ({ printProducts }: Props) => {
           {visibleProducts.map((item) => (
             <ProductCard
               key={item.id}
-              title={item.title}
-              image={item.image}
-              price={item.price}
+              product={item}
               link={`/services/print/${item.id}`}
             />
           ))}

@@ -9,24 +9,23 @@ import {
   rem,
 } from "@mantine/core";
 import Link from "next/link";
-import { BsCartPlus } from "react-icons/bs";
 import { HiOutlineHeart } from "react-icons/hi";
 import classes from "./ProductCard.module.css";
+import { ProductOptions } from "./ProductOptions";
+import { IPrintProduct } from "@/types";
 
 interface Props {
-  image: string;
-  title: string;
-  price: number;
+  product: IPrintProduct;
   link: string;
 }
-export function ProductCard({ title, image, price, link = "" }: Props) {
+export function ProductCard({ product, link = "" }: Props) {
   return (
     <Card withBorder radius="md" className={classes.card} w={300}>
       <Card.Section>
         <Link href={link}>
           <Box
             style={{
-              backgroundImage: `url(${image})`,
+              backgroundImage: `url(${product.image})`,
               backgroundPosition: "center",
               backgroundSize: "cover",
               width: "100%",
@@ -46,22 +45,15 @@ export function ProductCard({ title, image, price, link = "" }: Props) {
       </ActionIcon>
 
       <Text component={Link} href={link} mt="md" mb="sm" lineClamp={1}>
-        {title}
+        {product.title}
       </Text>
 
       <Group justify="space-between" mt="md">
         <Box>
-          <Text fw="bold">GHS {price}</Text>
+          <Text fw="bold">GHS {product.price}</Text>
         </Box>
         <Center>
-          <Button
-            className={classes["cart-btn"]}
-            size="xs"
-            mx={4}
-            title="Add to Cart"
-          >
-            <BsCartPlus />
-          </Button>
+          <ProductOptions product={product} />
           <Button
             component={Link}
             href="/checkout"

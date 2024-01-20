@@ -5,6 +5,7 @@ import { Button, Center, Group, Loader, em } from "@mantine/core";
 import { ICategory } from "@/types";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { useCategories } from "@/hooks/useCategories";
+import { featureFlags } from "@/constants/feature-flags";
 
 const gift: ICategory = {
   id: "",
@@ -41,7 +42,9 @@ export const PrintCategories = () => {
             />
           ))}
 
-      <HeroLink item={gift} isMobile={isMobile} link="/services/gifts" />
+      {featureFlags.gifts && (
+        <HeroLink item={gift} isMobile={isMobile} link="/services/gifts" />
+      )}
 
       <Group py={8} grow>
         <Button className="btn">
