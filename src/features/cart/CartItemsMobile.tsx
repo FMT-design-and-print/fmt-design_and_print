@@ -35,7 +35,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
   );
 
   return (
-    <Card withBorder shadow="xs" my="sm">
+    <Card withBorder my="sm">
       <Group gap="sm" wrap="nowrap">
         <Avatar size="lg" src={cartItem.image} radius="xs" />
 
@@ -43,6 +43,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
           <Text fz="sm" fw={500} lineClamp={2} mb="xs">
             {cartItem.title}
           </Text>
+
           <Group>
             <Group>
               <Text fz="xs" c="dimmed">
@@ -54,11 +55,21 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
             <Text fz="xs" c="dimmed">
               Size: {cartItem.size}
             </Text>
+
+            <Group>
+              <Text fz="xs" c="dimmed">
+                Price:
+              </Text>
+              <Text fz="xs" fw={500}>
+                GHS {cartItem.price * cartItem.quantity}
+              </Text>
+            </Group>
           </Group>
         </div>
       </Group>
 
-      <Group justify="space-between" my="sm">
+      <Divider />
+      <Group justify="space-between" pt="xs">
         <Group>
           <Button
             onClick={() => decreaseQuantity(cartItem.id)}
@@ -86,26 +97,23 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
           </Button>
         </Group>
 
-        <Text fw={500}>GHS {cartItem.price * cartItem.quantity}</Text>
-      </Group>
-
-      <Divider />
-      <Group justify="flex-end" pt="sm">
-        <Button
-          onClick={() => removeItem(cartItem.id)}
-          variant="outline"
-          color="gray"
-          size="compact-sm"
-        >
-          <Text size="xs" component="span">
-            Remove
-          </Text>
-        </Button>
-        <Button className="btn" size="compact-sm">
-          <Text size="xs" component="span">
-            Buy Now
-          </Text>
-        </Button>
+        <Group justify="flex-end">
+          <Button
+            onClick={() => removeItem(cartItem.id)}
+            variant="outline"
+            color="gray"
+            size="compact-sm"
+          >
+            <Text size="xs" component="span">
+              Remove
+            </Text>
+          </Button>
+          <Button className="btn" size="compact-sm">
+            <Text size="xs" component="span">
+              Buy Now
+            </Text>
+          </Button>
+        </Group>
       </Group>
     </Card>
   );

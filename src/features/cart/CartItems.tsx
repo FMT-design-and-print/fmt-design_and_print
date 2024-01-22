@@ -8,7 +8,7 @@ interface Props {
 export const CartItems = ({ cartItems }: Props) => {
   return (
     <>
-      <Table verticalSpacing="sm" visibleFrom="sm">
+      <Table verticalSpacing="sm" visibleFrom="sm" bg="white">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Product Name & Options</Table.Th>

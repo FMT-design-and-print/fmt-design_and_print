@@ -28,10 +28,12 @@ export const Cart = () => {
         <Title order={2} mt="xl" mb="sm">
           Cart ({cartItems.length})
         </Title>
-        <CartItems cartItems={cartItems} />
-        <CartItemsMobile cartItems={cartItems} />
+        <Box bg="gray.1" p="sm">
+          <CartItems cartItems={cartItems} />
+          <CartItemsMobile cartItems={cartItems} />
+        </Box>
 
-        <Card withBorder my="xl">
+        <Card withBorder my="xl" bg="gray.1">
           <Group justify="space-between">
             <Button variant="light" color="gray" onClick={clearCart}>
               Clear Cart
