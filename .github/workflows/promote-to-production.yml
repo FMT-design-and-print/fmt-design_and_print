@@ -1,0 +1,39 @@
+name: Promotion to Production
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+
+jobs:
+  promote-to-production:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build for Production
+        run: npm run build # Replace with your actual build command
+
+      - name: Deploy to Netlify (Production)
+        run: npx netlify deploy --prod
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Send Email Notification
+        if: success()
+        run: |
+          npm install sendgrid/mail
+          node -e "const sgMail = require('@sendgrid/mail'); sgMail.setApiKey(process.env.SENDGRID_API_KEY); sgMail.send({ to: 'your-email@example.com', from: 'sender@example.com', subject: 'Promotion to Production Completed', text: 'Promotion to Production completed successfully!' });"
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}

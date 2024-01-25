@@ -44,14 +44,20 @@ export function groupProductTypesByCategory(arr: IProductType[]) {
   }, {});
 }
 
-export function getProductOptionsErrors(options: SelectedProductOptions) {
+type Payload = {
+  sizes?: string[] | null;
+};
+export function getProductOptionsErrors(
+  options: SelectedProductOptions,
+  payload?: Payload
+) {
   let errors: IOptionsErrors = {};
 
   if (options.color == null) {
     errors = { ...errors, color: "Select color" };
   }
 
-  if (!options.size) {
+  if (payload?.sizes != null && payload?.sizes.length !== 0 && !options.size) {
     errors = { ...errors, size: "Select size" };
   }
 

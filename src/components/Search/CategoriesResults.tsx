@@ -4,8 +4,9 @@ import { ResultItem } from "./ResultItem";
 
 export interface Props {
   items: SearchItem[];
+  close: () => void;
 }
-export const CategoriesResults = ({ items }: Props) => {
+export const CategoriesResults = ({ items, close }: Props) => {
   if (!items || items.length === 0) return null;
 
   return (
@@ -18,6 +19,7 @@ export const CategoriesResults = ({ items }: Props) => {
             item={item}
             link={`/services/print/categories/${item.slug}`}
             badgeLabel="Categories"
+            close={close}
           />
         ))}
       </Flex>

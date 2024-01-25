@@ -22,7 +22,7 @@ export const CartItemTableRow = ({ cartItem }: Props) => {
   return (
     <Table.Tr className={classes["cart-item"]}>
       <Table.Td>
-        <Group gap="sm">
+        <Group gap="sm" wrap="nowrap">
           <Avatar size="lg" src={cartItem.image} radius="xs" />
           <div>
             <Text fz="sm" fw={500} lineClamp={1} mb="sm">

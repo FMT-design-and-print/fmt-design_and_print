@@ -46,10 +46,10 @@ export const ProductOptions = ({ product }: Props) => {
   const addItem = useCart((state) => state.addItem);
 
   const handleAddItemToCart = () => {
-    const errors = getProductOptionsErrors(selectedProductOptions);
+    const errors = getProductOptionsErrors(selectedProductOptions, {
+      sizes: product.sizes,
+    });
     setErrors(errors);
-
-    // TODO: Check if product does not have sizes
 
     if (Object.keys(errors).length > 0) return false;
     addItem({
@@ -183,6 +183,7 @@ export const ProductOptions = ({ product }: Props) => {
         handler={open}
         productId={product.id}
         showLabel={false}
+        disableRemove
         size="xs"
       />
     </>
