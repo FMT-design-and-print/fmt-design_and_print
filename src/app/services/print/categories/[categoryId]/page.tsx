@@ -28,7 +28,7 @@ const PrintCategoryPage = async ({ params }: Props) => {
   const items = [
     { title: "Printing Services", href: "/services?st=print" },
     {
-      title: `${productTypes[0].category.title}`,
+      title: `${productTypes[0]?.category.title}`,
       href: `/services/print/categories/${params.categoryId}`,
     },
   ];

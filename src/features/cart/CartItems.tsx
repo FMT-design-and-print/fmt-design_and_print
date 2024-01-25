@@ -5,6 +5,7 @@ import { CartItemTableRow } from "./CartItemTableRow";
 interface Props {
   cartItems: ICartItem[];
 }
+
 export const CartItems = ({ cartItems }: Props) => {
   return (
     <>

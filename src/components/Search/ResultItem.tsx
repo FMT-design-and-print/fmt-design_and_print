@@ -1,21 +1,22 @@
 import { SearchItem } from "@/types";
-import { Box, Group, Avatar, Flex, Badge, Text } from "@mantine/core";
+import { Avatar, Badge, Box, Flex, Group, Text } from "@mantine/core";
 import Link from "next/link";
-import React from "react";
 
 interface Props {
   item: SearchItem;
   link: string;
   badgeLabel?: string;
+  close: () => void;
 }
 
-export const ResultItem = ({ item, link, badgeLabel }: Props) => (
+export const ResultItem = ({ item, link, badgeLabel, close }: Props) => (
   <Box
     component={Link}
     href={link}
     w={{ base: "95%", md: "45%" }}
     m="xs"
     p="xs"
+    onClick={close}
   >
     <Group wrap="nowrap" justify="space-between">
       <Group wrap="nowrap">

@@ -4,8 +4,9 @@ import { ResultItem } from "./ResultItem";
 
 export interface Props {
   products: SearchItem[];
+  close: () => void;
 }
-export const ProductsResults = ({ products }: Props) => {
+export const ProductsResults = ({ products, close }: Props) => {
   if (!products || products.length === 0) return null;
 
   return (
@@ -17,6 +18,7 @@ export const ProductsResults = ({ products }: Props) => {
             key={item.id}
             item={item}
             link={`/services/print/${item.id}`}
+            close={close}
           />
         ))}
       </Flex>

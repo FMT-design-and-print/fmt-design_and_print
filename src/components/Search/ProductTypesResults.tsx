@@ -4,8 +4,9 @@ import { ResultItem } from "./ResultItem";
 
 export interface Props {
   items: SearchItem[];
+  close: () => void;
 }
-export const ProductTypesResults = ({ items }: Props) => {
+export const ProductTypesResults = ({ items, close }: Props) => {
   if (!items || items.length === 0) return null;
 
   return (
@@ -18,6 +19,7 @@ export const ProductTypesResults = ({ items }: Props) => {
             item={item}
             link={`/services/print/categories/${item.category?.slug}/${item.slug}`}
             badgeLabel="Product Types"
+            close={close}
           />
         ))}
       </Flex>

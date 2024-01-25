@@ -11,7 +11,7 @@ import {
   TextInputProps,
   em,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useClickOutside, useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useCallback, useEffect, useState } from "react";
 import { HiSearch } from "react-icons/hi";
 import { CategoriesResults } from "./CategoriesResults";
@@ -33,6 +33,10 @@ const initialSearchRes: ISearchResults = {
 };
 
 export const SearchWithButton = (props: TextInputProps) => {
+  const [opened, { close, open }] = useDisclosure(false);
+  const [dropdown, setDropdown] = useState<HTMLDivElement | null>(null);
+  const [control, setControl] = useState<HTMLInputElement | null>(null);
+  useClickOutside(() => close(), null, [control, dropdown]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] =
     useState<ISearchResults>(initialSearchRes);
@@ -71,9 +75,10 @@ export const SearchWithButton = (props: TextInputProps) => {
   }, [search, searchTerm]);
 
   return (
-    <Popover width="target" position="bottom" shadow="md">
+    <Popover width="target" position="bottom" shadow="md" opened={opened}>
       <Popover.Target>
         <TextInput
+          ref={setControl}
           radius={isMobile ? "xl" : "sm"}
           size={isMobile ? "sm" : "md"}
           placeholder="Search items..."
@@ -81,6 +86,7 @@ export const SearchWithButton = (props: TextInputProps) => {
           leftSection={<HiSearch />}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.currentTarget.value)}
+          onClick={open}
           rightSection={
             <Button
               radius={isMobile ? "xl" : "sm"}
@@ -95,10 +101,13 @@ export const SearchWithButton = (props: TextInputProps) => {
           {...props}
         />
       </Popover.Target>
-      <Popover.Dropdown>
-        <ProductsResults products={searchResults.printService} />
-        <ProductTypesResults items={searchResults.productTypes} />
-        <CategoriesResults items={searchResults.printCategories} />
+      <Popover.Dropdown ref={setDropdown}>
+        <ProductsResults products={searchResults.printService} close={close} />
+        <ProductTypesResults items={searchResults.productTypes} close={close} />
+        <CategoriesResults
+          items={searchResults.printCategories}
+          close={close}
+        />
 
         {isLoading && (
           <Center>
