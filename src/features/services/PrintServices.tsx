@@ -3,14 +3,30 @@ import { BsArrowRight } from "react-icons/bs";
 import { ProductTypeCard } from "./ProductTypeCard";
 import Link from "next/link";
 import { GroupedPrintProductTypes } from "@/types";
+import { useEffect, useState } from "react";
 
 interface Props {
   groupedPrintProductTypes: GroupedPrintProductTypes;
 }
 export const PrintServices = ({ groupedPrintProductTypes }: Props) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // useEffect(() => {
+  //   const items = Object.values(groupedPrintProductTypes);
+  //   console.log(items);
+  //   // return () => {
+  //   //   effect
+  //   // };
+  // }, [searchTerm]);
+
   return (
     <Box py="lg">
-      <Input placeholder="Type to search print service..." maw={600} />
+      <Input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.currentTarget.value)}
+        placeholder="Type to search print service..."
+        maw={600}
+      />
 
       {Object.entries(groupedPrintProductTypes).map(([key, value]) => (
         <Box key={key} mt={32}>

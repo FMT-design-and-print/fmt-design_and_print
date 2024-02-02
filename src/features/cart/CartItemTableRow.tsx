@@ -1,4 +1,5 @@
 import { useCart } from "@/store/cart";
+import { useCheckout } from "@/store/checkout";
 import { ICartItem } from "@/types";
 import {
   Avatar,
@@ -9,15 +10,23 @@ import {
   Table,
   Text,
 } from "@mantine/core";
+import { useRouter } from "next/navigation";
 import classes from "./Style.module.css";
 
 interface Props {
   cartItem: ICartItem;
 }
 export const CartItemTableRow = ({ cartItem }: Props) => {
+  const { push } = useRouter();
   const { removeItem, increaseQuantity, decreaseQuantity } = useCart(
     (state) => state
   );
+  const { setItems } = useCheckout((state) => state);
+
+  const handleCheckout = () => {
+    setItems([cartItem]);
+    return push("/checkout");
+  };
 
   return (
     <Table.Tr className={classes["cart-item"]}>
@@ -29,16 +38,18 @@ export const CartItemTableRow = ({ cartItem }: Props) => {
               {cartItem.title}
             </Text>
             <Group>
-              <Group>
+              <Group gap="5px">
                 <Text fz="xs" c="dimmed">
                   Color:
                 </Text>
                 <Avatar src={cartItem.color?.image} size="xs" />
               </Group>
 
-              <Text fz="xs" c="dimmed">
-                Size: {cartItem.size}
-              </Text>
+              {cartItem.size && (
+                <Text fz="xs" c="dimmed">
+                  Size: {cartItem.size}
+                </Text>
+              )}
             </Group>
           </div>
         </Group>
@@ -81,7 +92,7 @@ export const CartItemTableRow = ({ cartItem }: Props) => {
           >
             Remove
           </Button>
-          <Button className="btn" size="xs" maw={100}>
+          <Button onClick={handleCheckout} className="btn" size="xs" maw={100}>
             Buy Now
           </Button>
         </Stack>

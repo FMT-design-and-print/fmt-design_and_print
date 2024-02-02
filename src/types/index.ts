@@ -127,3 +127,14 @@ export interface IOptionsErrors {
   size?: string;
   quantity?: string;
 }
+
+export interface CheckoutDetails {
+  orderId: string;
+  paymentType: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  country: string;
+  address: string;
+  region: string;
+}

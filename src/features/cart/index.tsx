@@ -1,18 +1,26 @@
 "use client";
+import { calculateTotalPrice } from "@/functions";
+import { useCart } from "@/store/cart";
+import { useCheckout } from "@/store/checkout";
+import { ICartItem } from "@/types";
+import { Box, Button, Card, Group, Text, Title } from "@mantine/core";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CartItems } from "./CartItems";
-import { ICartItem } from "@/types";
-import { useCart } from "@/store/cart";
-import { EmptyCart } from "./EmptyCart";
-import { Box, Button, Card, Group, Text, Title } from "@mantine/core";
-import { calculateTotalPrice } from "@/functions";
 import { CartItemsMobile } from "./CartItemsMobile";
-
-// TODO: Ability to buy product
+import { EmptyCart } from "./EmptyCart";
 
 export const Cart = () => {
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   const { items, clearCart } = useCart((state) => state);
+  const { setItems } = useCheckout((state) => state);
+  const { push } = useRouter();
+
+  const handleCheckout = () => {
+    if (items.length === 0) return;
+    setItems(items);
+    return push("/checkout");
+  };
 
   useEffect(() => {
     setCartItems(items);
@@ -43,12 +51,22 @@ export const Cart = () => {
               <Text fw={600}>
                 GHS {calculateTotalPrice(cartItems).toFixed(1)}
               </Text>
-              <Button className="btn" size="md" miw={150}>
+              <Button
+                onClick={handleCheckout}
+                className="btn"
+                size="md"
+                miw={150}
+              >
                 Checkout
               </Button>
             </Group>
 
-            <Button size="sm" className="btn" hiddenFrom="sm">
+            <Button
+              onClick={handleCheckout}
+              size="sm"
+              className="btn"
+              hiddenFrom="sm"
+            >
               Checkout (GHS {calculateTotalPrice(cartItems).toFixed(1)})
             </Button>
           </Group>

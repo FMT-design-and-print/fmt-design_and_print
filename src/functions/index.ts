@@ -1,6 +1,7 @@
 import {
   GroupedPrintProductTypes,
   ICartItem,
+  ICategory,
   IOptionsErrors,
   IProductType,
   MessageStatus,
@@ -76,4 +77,29 @@ export function calculateTotalPrice(cart: ICartItem[]): number {
   }
 
   return totalPrice;
+}
+
+export function getOrderId(length = 8): string {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const orderIdArray = [];
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    orderIdArray.push(characters.charAt(randomIndex));
+  }
+
+  return orderIdArray.join("");
+}
+
+export function removeDuplicateCategories(
+  inputArray: ICategory[]
+): ICategory[] {
+  const uniqueObjects: { [key: string]: ICategory } = {};
+
+  inputArray.forEach((obj) => {
+    uniqueObjects[obj.id] = obj;
+  });
+
+  const resultArray: ICategory[] = Object.values(uniqueObjects);
+  return resultArray;
 }
