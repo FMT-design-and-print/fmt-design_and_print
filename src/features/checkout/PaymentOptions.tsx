@@ -1,34 +1,63 @@
+import { featureFlags } from "@/constants/feature-flags";
+import { useCheckout } from "@/store/checkout";
 import { Box, Radio, Stack, Text } from "@mantine/core";
 
 export const PaymentOptions = () => {
+  const {
+    update,
+    details: { paymentType },
+  } = useCheckout((state) => state);
+
   return (
     <Box py="md">
-      <Radio.Group
-        name="favoriteFramework"
-        label="Payment Options"
-        description="Choose your preferred mode of payment"
-      >
-        <Stack mt="md">
+      <Text c="white">Payment Options</Text>
+      <Text component="span" size="xs" c="gray.2">
+        Choose your preferred mode of payment
+      </Text>
+      <Stack mt="md">
+        <Radio
+          variant="outline"
+          color="dark"
+          checked={paymentType === "momo"}
+          onChange={() => {
+            console.log();
+            update("paymentType", "momo");
+          }}
+          label={
+            <Text component="span" c="white" size="sm">
+              Mobile Money (MTN, VODAFONE, AT)
+            </Text>
+          }
+        />
+        <Radio
+          variant="outline"
+          color="dark"
+          checked={paymentType === "card"}
+          onChange={() => {
+            update("paymentType", "card");
+          }}
+          label={
+            <Text component="span" c="white" size="sm">
+              Card (Master | Visa)
+            </Text>
+          }
+        />
+        {featureFlags.cod && (
           <Radio
+            color="dark"
             variant="outline"
-            color="pink"
-            value="momo"
-            label="Mobile Money (MTN, VODAFONE, AT)"
+            checked={paymentType === "cod"}
+            onChange={() => {
+              update("paymentType", "cod");
+            }}
+            label={
+              <Text component="span" c="white" size="sm">
+                Cash On Delivery
+              </Text>
+            }
           />
-          <Radio
-            variant="outline"
-            color="pink"
-            value="card"
-            label="Card (Master/Visa)"
-          />
-          <Radio
-            color="pink"
-            variant="outline"
-            value="cod"
-            label="Cash On Delivery"
-          />
-        </Stack>
-      </Radio.Group>
+        )}
+      </Stack>
     </Box>
   );
 };

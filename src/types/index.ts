@@ -130,11 +130,15 @@ export interface IOptionsErrors {
 
 export interface CheckoutDetails {
   orderId: string;
-  paymentType: string;
+  paymentType: "momo" | "card" | "cod" | "";
   fullName: string;
   email: string;
   phone: string;
   country: string;
   address: string;
   region: string;
+  discount?: number;
+  discountCode?: string;
+  shippingFee?: number;
+  items: ICartItem[];
 }

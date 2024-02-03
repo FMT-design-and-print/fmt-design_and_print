@@ -1,35 +1,36 @@
 "use client";
 import { Box, Grid } from "@mantine/core";
+import { DeliveryInformation } from "./DeliveryInformation";
 import { PaymentDetails } from "./PaymentDetails";
 import { ReviewItems } from "./ReviewItems";
-import { DeliveryInformation } from "./DeliveryInformation";
-import { useState } from "react";
-import { CheckoutDetails } from "@/types";
-import { getOrderId } from "@/functions";
 
-const initialState: CheckoutDetails = {
-  orderId: "",
-  paymentType: "",
-  fullName: "",
-  email: "",
-  phone: "",
-  country: "",
-  address: "",
-  region: "",
-};
+// const initialState: CheckoutDetails = {
+//   orderId: "",
+//   paymentType: "",
+//   fullName: "",
+//   email: "",
+//   phone: "",
+//   country: "",
+//   address: "",
+//   region: "",
+// };
 
 export const Checkout = () => {
-  const [state, setState] = useState<CheckoutDetails>({
-    ...initialState,
-    orderId: getOrderId(),
-  });
+  // const [state, setState] = useState<CheckoutDetails>({
+  //   ...initialState,
+  //   orderId: getOrderId(),
+  // });
 
   return (
-    <>
+    <Box
+      w={{ base: "100%", lg: "90%" }}
+      mx="auto"
+      py={{ base: "sm", sm: "xl" }}
+    >
       <Grid>
         <Grid.Col span="auto">
           <ReviewItems />
-          <DeliveryInformation details={state} setDetails={setState} />
+          <DeliveryInformation />
           <Box hiddenFrom="sm">
             <PaymentDetails />
           </Box>
@@ -38,6 +39,6 @@ export const Checkout = () => {
           <PaymentDetails />
         </Grid.Col>
       </Grid>
-    </>
+    </Box>
   );
 };

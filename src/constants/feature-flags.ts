@@ -5,6 +5,7 @@ export const featureFlags = {
   plainItems: false,
   gifts: false,
   deals: false,
+  cod: false, // availability of "cash on delivery"
 };
 
 export type FeatureFlagKeys = keyof typeof featureFlags;

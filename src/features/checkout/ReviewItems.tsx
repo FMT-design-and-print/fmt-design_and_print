@@ -12,9 +12,11 @@ import {
 import React from "react";
 
 export const ReviewItems = () => {
-  const { items, increaseQuantity, decreaseQuantity } = useCheckout(
-    (state) => state
-  );
+  const {
+    details: { items },
+    increaseQuantity,
+    decreaseQuantity,
+  } = useCheckout((state) => state);
 
   return (
     <Card withBorder>

@@ -1,17 +1,11 @@
-import { CheckoutDetails } from "@/types";
+import { useCheckout } from "@/store/checkout";
 import { Card, Select, TextInput, Title } from "@mantine/core";
-import React, { Dispatch, SetStateAction } from "react";
 
-interface Props {
-  details: CheckoutDetails;
-  setDetails: Dispatch<SetStateAction<CheckoutDetails>>;
-}
-
-export const DeliveryInformation = ({ details, setDetails }: Props) => {
-  // set state using details key
-  const handleChange = (key: keyof CheckoutDetails, value: string) => {
-    setDetails((prev) => ({ ...prev, [key]: value }));
-  };
+export const DeliveryInformation = () => {
+  const {
+    details: { fullName, email, phone, country, address, region },
+    update,
+  } = useCheckout((state) => state);
 
   return (
     <Card withBorder my="sm">
@@ -20,27 +14,28 @@ export const DeliveryInformation = ({ details, setDetails }: Props) => {
       </Title>
 
       <TextInput
-        value={details.fullName}
-        onChange={(e) => handleChange("fullName", e.currentTarget.value)}
+        value={fullName}
+        onChange={(e) => update("fullName", e.currentTarget.value)}
         label="Full name"
         placeholder="John Doe"
       />
       <TextInput
-        value={details.email}
-        onChange={(e) => handleChange("email", e.currentTarget.value)}
+        type="email"
+        value={email}
+        onChange={(e) => update("email", e.currentTarget.value)}
         label="Email"
         placeholder="qI8gM@example.com"
       />
       <TextInput
-        value={details.phone}
-        onChange={(e) => handleChange("phone", e.currentTarget.value)}
+        value={phone}
+        onChange={(e) => update("phone", e.currentTarget.value)}
         label="Phone"
-        placeholder="+233 55 555 5555"
+        placeholder="+233555555555 or 0555555555"
       />
 
       <Select
-        value={details.country}
-        onChange={(value) => handleChange("country", value || "")}
+        value={country}
+        onChange={(value) => update("country", value || "")}
         my="md"
         comboboxProps={{ withinPortal: true }}
         data={["Ghana"]}
@@ -49,15 +44,15 @@ export const DeliveryInformation = ({ details, setDetails }: Props) => {
       />
 
       <TextInput
-        value={details.region}
-        onChange={(e) => handleChange("region", e.currentTarget.value)}
+        value={region}
+        onChange={(e) => update("region", e.currentTarget.value)}
         label="Region"
         placeholder="Greater Accra"
       />
 
       <TextInput
-        value={details.address}
-        onChange={(e) => handleChange("address", e.currentTarget.value)}
+        value={address}
+        onChange={(e) => update("address", e.currentTarget.value)}
         my="md"
         label="Home address"
         placeholder="Soko Park, Tantra Hills, Accra"

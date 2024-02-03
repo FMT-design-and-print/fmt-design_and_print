@@ -9,6 +9,7 @@ import { groupProductTypesByCategory } from "@/functions";
 interface Props {
   groupedPrintProductTypes: GroupedPrintProductTypes;
 }
+
 export const PrintServices = ({ groupedPrintProductTypes }: Props) => {
   const [filteredGroupedTypes, setFilteredGroupedTypes] = useState<
     GroupedPrintProductTypes | undefined
