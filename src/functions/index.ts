@@ -1,4 +1,5 @@
 import {
+  CheckoutDetails,
   GroupedPrintProductTypes,
   ICartItem,
   ICategory,
@@ -102,4 +103,23 @@ export function removeDuplicateCategories(
 
   const resultArray: ICategory[] = Object.values(uniqueObjects);
   return resultArray;
+}
+
+export function verifyCheckoutDetails(details: CheckoutDetails) {
+  const keysToCheck: (keyof CheckoutDetails)[] = [
+    "fullName",
+    "email",
+    "phone",
+    "address",
+    "country",
+    "region",
+  ];
+
+  const emptyFields = keysToCheck.filter((key) => !details[key]);
+  const isValid = emptyFields.length === 0;
+
+  return {
+    isValid,
+    fields: emptyFields,
+  };
 }

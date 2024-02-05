@@ -1,5 +1,8 @@
+import { verifyCheckoutDetails } from "@/functions";
+import { useCheckout } from "@/store/checkout";
+import { CheckoutDetails } from "@/types";
 import { Button, Text } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { HookConfig } from "react-paystack/dist/types";
 
@@ -15,6 +18,8 @@ interface IProps {
   total: number;
 }
 export const PayButton = ({ total }: IProps) => {
+  const { details } = useCheckout((state) => state);
+  const [emptyFields, setEmptyFields] = useState<(keyof CheckoutDetails)[]>([]);
   const initializePayment = usePaystackPayment(config);
 
   const onSuccess = (reference: any) => {
@@ -30,20 +35,25 @@ export const PayButton = ({ total }: IProps) => {
     console.log("closed");
   };
 
-  const handleMakePayment = () => {};
+  const handleMakePayment = () => {
+    // const initializePayment = usePaystackPayment(config);
+    const { isValid, fields } = verifyCheckoutDetails(details);
+    if (!isValid) {
+      setEmptyFields(fields);
+    }
+
+    // return initializePayment({ ...config, amount: total })
+  };
 
   return (
     <>
-      <Button
-        variant="white"
-        onClick={() => {
-          initializePayment({ onSuccess, onClose });
-        }}
-      >
+      <Button variant="white" onClick={handleMakePayment}>
         <Text component="span" className="text-primary-500" fw={600}>
           Pay GHS {total.toFixed(1)}
         </Text>
       </Button>
+
+      {emptyFields.length > 0 && <>These fields are required</>}
     </>
   );
 };
