@@ -1,5 +1,5 @@
 import { useCheckout } from "@/store/checkout";
-import { Card, Select, TextInput, Title } from "@mantine/core";
+import { Card, Select, SimpleGrid, TextInput, Title } from "@mantine/core";
 
 export const DeliveryInformation = () => {
   const {
@@ -13,50 +13,52 @@ export const DeliveryInformation = () => {
         Delivery Information
       </Title>
 
-      <TextInput
-        value={fullName}
-        onChange={(e) => update("fullName", e.currentTarget.value)}
-        label="Full name"
-        placeholder="John Doe"
-      />
-      <TextInput
-        type="email"
-        value={email}
-        onChange={(e) => update("email", e.currentTarget.value)}
-        label="Email"
-        placeholder="qI8gM@example.com"
-      />
-      <TextInput
-        value={phone}
-        onChange={(e) => update("phone", e.currentTarget.value)}
-        label="Phone"
-        placeholder="+233555555555 or 0555555555"
-      />
+      <SimpleGrid cols={{ base: 1, md: 2 }}>
+        <TextInput
+          value={fullName}
+          onChange={(e) => update("fullName", e.currentTarget.value)}
+          label="Full name"
+          placeholder="John Doe"
+          autoComplete="on"
+        />
+        <TextInput
+          type="email"
+          value={email}
+          onChange={(e) => update("email", e.currentTarget.value)}
+          label="Email"
+          placeholder="qI8gM@example.com"
+        />
 
-      <Select
-        value={country}
-        onChange={(value) => update("country", value || "")}
-        my="md"
-        comboboxProps={{ withinPortal: true }}
-        data={["Ghana"]}
-        placeholder="Ghana"
-        label="Country"
-      />
+        <TextInput
+          value={phone}
+          onChange={(e) => update("phone", e.currentTarget.value)}
+          label="Phone"
+          placeholder="+233555555555 or 0555555555"
+        />
 
-      <TextInput
-        value={region}
-        onChange={(e) => update("region", e.currentTarget.value)}
-        label="Region"
-        placeholder="Greater Accra"
-      />
+        <Select
+          value={country}
+          onChange={(value) => update("country", value || "")}
+          comboboxProps={{ withinPortal: true }}
+          data={["Ghana"]}
+          placeholder="Ghana"
+          label="Country"
+        />
 
-      <TextInput
-        value={address}
-        onChange={(e) => update("address", e.currentTarget.value)}
-        my="md"
-        label="Home address"
-        placeholder="Soko Park, Tantra Hills, Accra"
-      />
+        <TextInput
+          value={region}
+          onChange={(e) => update("region", e.currentTarget.value)}
+          label="Region"
+          placeholder="Greater Accra"
+        />
+
+        <TextInput
+          value={address}
+          onChange={(e) => update("address", e.currentTarget.value)}
+          label="Home address"
+          placeholder="Soko Park, Tantra Hills, Accra"
+        />
+      </SimpleGrid>
     </Card>
   );
 };
