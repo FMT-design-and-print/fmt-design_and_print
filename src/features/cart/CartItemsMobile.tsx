@@ -1,4 +1,5 @@
 import { useCart } from "@/store/cart";
+import { useCheckout } from "@/store/checkout";
 import { ICartItem } from "@/types";
 import {
   Avatar,
@@ -10,7 +11,7 @@ import {
   NumberInput,
   Text,
 } from "@mantine/core";
-import React from "react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   cartItems: ICartItem[];
@@ -30,9 +31,16 @@ interface ICartItemProps {
 }
 
 const CartItem = ({ cartItem }: ICartItemProps) => {
+  const { push } = useRouter();
   const { removeItem, increaseQuantity, decreaseQuantity } = useCart(
     (state) => state
   );
+  const { setItems } = useCheckout((state) => state);
+
+  const handleCheckout = () => {
+    setItems([cartItem]);
+    return push("/checkout");
+  };
 
   return (
     <Card withBorder my="sm">
@@ -45,17 +53,17 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
           </Text>
 
           <Group>
-            <Group>
+            <Group gap="5px">
               <Text fz="xs" c="dimmed">
                 Color:
               </Text>
               <Avatar src={cartItem.color?.image} size="xs" />
             </Group>
-
-            <Text fz="xs" c="dimmed">
-              Size: {cartItem.size}
-            </Text>
-
+            {cartItem.size && (
+              <Text fz="xs" c="dimmed">
+                Size: {cartItem.size}
+              </Text>
+            )}
             <Group>
               <Text fz="xs" c="dimmed">
                 Price:
@@ -108,7 +116,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
               Remove
             </Text>
           </Button>
-          <Button className="btn" size="compact-sm">
+          <Button onClick={handleCheckout} className="btn" size="compact-sm">
             <Text size="xs" component="span">
               Buy Now
             </Text>

@@ -1,4 +1,6 @@
 export type MessageStatus = "error" | "success" | "info";
+export type CouponType = "percentage" | "fixed" | "free-shipping";
+export type CouponStatus = "expired" | "active" | "disabled";
 
 export interface ICategory {
   id: string;
@@ -126,4 +128,19 @@ export interface IOptionsErrors {
   color?: string;
   size?: string;
   quantity?: string;
+}
+
+export interface CheckoutDetails {
+  orderId: string;
+  paymentType: "momo" | "card" | "cod" | "";
+  fullName: string;
+  email: string;
+  phone: string;
+  country: string;
+  address: string;
+  region: string;
+  discount?: number;
+  discountCode?: string;
+  shippingFee?: number;
+  items: ICartItem[];
 }

@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
 
-const MyAccountPage = async () => {
+const MyAccountCouponsPage = async () => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
@@ -18,9 +18,9 @@ const MyAccountPage = async () => {
 
   return (
     <div>
-      <MyAccount email={session.user.email || ""}>My Account Main</MyAccount>
+      <MyAccount email={session.user.email || ""}>Coupons</MyAccount>
     </div>
   );
 };
 
-export default MyAccountPage;
+export default MyAccountCouponsPage;
