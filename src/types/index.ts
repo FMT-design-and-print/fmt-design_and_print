@@ -1,4 +1,6 @@
 export type MessageStatus = "error" | "success" | "info";
+export type CouponType = "percentage" | "fixed" | "free-shipping";
+export type CouponStatus = "expired" | "active" | "disabled";
 
 export interface ICategory {
   id: string;
