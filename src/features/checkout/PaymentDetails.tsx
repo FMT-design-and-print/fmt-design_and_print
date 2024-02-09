@@ -1,12 +1,4 @@
-import {
-  Card,
-  Title,
-  Divider,
-  Stack,
-  Group,
-  Button,
-  Text,
-} from "@mantine/core";
+import { Card, Title, Divider, Stack, Group, Text } from "@mantine/core";
 import React, { useState } from "react";
 import { DiscountForm } from "./DiscountForm";
 import { PaymentOptions } from "./PaymentOptions";
@@ -18,8 +10,8 @@ export const PaymentDetails = () => {
   const {
     details: { items },
   } = useCheckout((state) => state);
-  const [discount, setDiscount] = useState(0);
-  const [shippingFee, setShippingFee] = useState(0);
+  const [discount] = useState(0);
+  const [shippingFee] = useState(0);
 
   const subTotal = calculateTotalPrice(items);
   const total = subTotal + shippingFee - discount;
