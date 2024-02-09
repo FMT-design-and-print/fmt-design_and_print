@@ -18,7 +18,7 @@ const MyAccountPage = async () => {
 
   return (
     <div>
-      <MyAccount user={session.user}>My Account Main</MyAccount>
+      <MyAccount email={session.user.email || ""}>My Account Main</MyAccount>
     </div>
   );
 };

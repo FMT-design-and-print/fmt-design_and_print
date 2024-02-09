@@ -18,7 +18,7 @@ const SavedItemsPage = async () => {
 
   return (
     <div>
-      <MyAccount user={session.user}>Saved Items</MyAccount>
+      <MyAccount email={session.user.email || ""}>Saved Items</MyAccount>
     </div>
   );
 };

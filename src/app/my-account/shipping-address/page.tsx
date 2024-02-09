@@ -18,7 +18,9 @@ const MyAccountShippingAddressPage = async () => {
 
   return (
     <div>
-      <MyAccount user={session.user}>Shipping Address Page</MyAccount>
+      <MyAccount email={session.user.email || ""}>
+        Shipping Address Page
+      </MyAccount>
     </div>
   );
 };

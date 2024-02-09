@@ -18,7 +18,7 @@ const RecentlySearchedPage = async () => {
 
   return (
     <div>
-      <MyAccount user={session.user}>Recently Searched</MyAccount>
+      <MyAccount email={session.user.email || ""}>Recently Searched</MyAccount>
     </div>
   );
 };

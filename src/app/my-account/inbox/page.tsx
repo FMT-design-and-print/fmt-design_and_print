@@ -18,7 +18,7 @@ const AccountInboxPage = async () => {
 
   return (
     <div>
-      <MyAccount user={session.user}>Inboxs</MyAccount>
+      <MyAccount email={session.user.email || ""}>Inboxs</MyAccount>
     </div>
   );
 };

@@ -18,7 +18,7 @@ const MyAccountCouponsPage = async () => {
 
   return (
     <div>
-      <MyAccount user={session.user}>Coupons</MyAccount>
+      <MyAccount email={session.user.email || ""}>Coupons</MyAccount>
     </div>
   );
 };
