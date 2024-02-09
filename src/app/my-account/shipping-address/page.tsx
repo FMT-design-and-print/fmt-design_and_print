@@ -1,4 +1,6 @@
 import { MyAccount } from "@/features/my-account";
+import { ShippingAddresses } from "@/features/my-account/shipping-address";
+import { IShippingAddress } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -16,10 +18,19 @@ const MyAccountShippingAddressPage = async () => {
     return redirect("/");
   }
 
+  const { data: addresses } = await supabase
+    .from("shipping-addresses")
+    .select(
+      "id,contactName,phone1,phone2,email,country,region,address,town,user_id"
+    )
+    .eq("user_id", session.user.id);
+
   return (
     <div>
       <MyAccount email={session.user.email || ""}>
-        Shipping Address Page
+        <ShippingAddresses
+          addresses={addresses != null ? (addresses as IShippingAddress[]) : []}
+        />
       </MyAccount>
     </div>
   );

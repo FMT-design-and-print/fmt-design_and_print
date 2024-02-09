@@ -1,10 +1,10 @@
 import {
-  CheckoutDetails,
   GroupedPrintProductTypes,
   ICartItem,
   ICategory,
   IOptionsErrors,
   IProductType,
+  IShippingAddress,
   MessageStatus,
   SelectedProductOptions,
 } from "@/types";
@@ -105,14 +105,13 @@ export function removeDuplicateCategories(
   return resultArray;
 }
 
-export function verifyCheckoutDetails(details: CheckoutDetails) {
-  const keysToCheck: (keyof CheckoutDetails)[] = [
-    "fullName",
-    "email",
-    "phone",
+export function verifyAddressDetails(details: IShippingAddress) {
+  const keysToCheck: (keyof IShippingAddress)[] = [
+    "contactName",
+    "phone1",
     "address",
-    "country",
     "region",
+    "town",
   ];
 
   const emptyFields = keysToCheck.filter((key) => !details[key]);

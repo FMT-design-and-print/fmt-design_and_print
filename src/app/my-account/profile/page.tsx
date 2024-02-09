@@ -26,8 +26,6 @@ const MyAccountProfilePage = async () => {
     .eq("id", session.user.id)
     .single();
 
-  console.log(error);
-
   return (
     <div>
       <MyAccount

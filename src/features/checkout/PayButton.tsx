@@ -1,4 +1,4 @@
-import { getOrderId, verifyCheckoutDetails } from "@/functions";
+import { getOrderId, verifyAddressDetails } from "@/functions";
 import { useCart } from "@/store/cart";
 import { useCheckout } from "@/store/checkout";
 import { CheckoutDetails } from "@/types";
@@ -27,16 +27,6 @@ export const PayButton = ({ total }: IProps) => {
   const initializePayment = usePaystackPayment(config);
 
   const onSuccess = async (ref: any) => {
-    // Implementation for whatever you want to do with reference and after success call.
-    console.log(ref);
-    // message: "Approved";
-    // redirecturl: "https://fmtgh.netlify.app/?trxref=1707236374090&reference=1707236374090";
-    // reference: "1707236374090";
-    // status: "success";
-    // trans: "3527283119";
-    // transaction: "3527283119";
-    // trxref: "1707236374090";
-
     const supabase = createClient();
 
     const { error } = await supabase
@@ -51,13 +41,15 @@ export const PayButton = ({ total }: IProps) => {
           couponCode: "",
           discount: 0,
           reference: ref.reference,
-          deliveryDetails: {
-            fullName: details.fullName,
+          shippingAddress: {
+            contactName: details.contactName,
+            phone1: details.phone1,
+            phone2: details.phone2,
             email: details.email,
-            phone: details.phone,
             country: details.country,
             address: details.address,
             region: details.region,
+            town: details.town,
           },
         },
       ])
@@ -67,23 +59,11 @@ export const PayButton = ({ total }: IProps) => {
       console.log(error);
     }
 
-    // save order details to database
-    // Order ID
-    // Order Date
-    // Order Items
-    // Order Total Amount
-    // Customer Details
-    // Order Status: pending, processing, shipped, delivered, cancelled
-    // Shipping Method
-    // couponCode
-    // discount
-
     clearCart();
     router.push("/order-success?reference=1707236374090");
   };
 
   const onClose = () => {
-    // implementation for  whatever you want to do when the Paystack dialog closed.
     console.log("closed");
   };
 
@@ -93,7 +73,7 @@ export const PayButton = ({ total }: IProps) => {
       return;
     }
 
-    const { isValid, fields } = verifyCheckoutDetails(details);
+    const { isValid, fields } = verifyAddressDetails(details);
     if (!isValid) {
       setEmptyFields(fields);
       return;
@@ -101,17 +81,13 @@ export const PayButton = ({ total }: IProps) => {
 
     setEmptyFields([]);
 
-    // firstname?: string;
-    // lastname?: string;
-    // phone?: phone;
-    // reference?: string;
-    // metadata?: PaystackMetadata;
     return initializePayment({
       config: {
         ...config,
-        email: details.email,
+        email: details.email || `${details.phone1}@fmtdesignprint.com`,
+        label: details.contactName,
         amount: total * 100,
-        phone: details.phone,
+        phone: details.phone1,
         reference: getOrderId(),
         metadata: {
           custom_fields: [

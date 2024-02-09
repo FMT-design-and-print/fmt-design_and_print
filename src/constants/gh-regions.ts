@@ -1,0 +1,18 @@
+export const regionsInGhana = [
+  "AHAFO",
+  "ASHANTI",
+  "BONO EAST",
+  "BRONG AHAFO",
+  "CENTRAL",
+  "EASTERN",
+  "GREATER ACCRA",
+  "NORTH EAST",
+  "NORTHERN",
+  "OTI",
+  "SAVANNAH",
+  "UPPER EAST",
+  "UPPER WEST",
+  "VOLTA",
+  "WESTERN",
+  "WESTERN NORTH",
+];
