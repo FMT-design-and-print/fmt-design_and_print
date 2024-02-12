@@ -130,15 +130,21 @@ export interface IOptionsErrors {
   quantity?: string;
 }
 
-export interface CheckoutDetails {
-  orderId: string;
-  paymentType: "momo" | "card" | "cod" | "";
-  fullName: string;
-  email: string;
-  phone: string;
+export interface IShippingAddress {
+  id?: string;
+  contactName: string;
+  email?: string;
+  phone1: string;
+  phone2?: string;
   country: string;
   address: string;
   region: string;
+  town?: string;
+}
+
+export interface CheckoutDetails extends IShippingAddress {
+  orderId: string;
+  paymentType: "momo" | "card" | "cod" | "";
   discount?: number;
   discountCode?: string;
   shippingFee?: number;

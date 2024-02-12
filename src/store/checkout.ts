@@ -13,12 +13,14 @@ type CheckoutStore = {
 const initialState: CheckoutDetails = {
   orderId: "",
   paymentType: "",
-  fullName: "John Test",
-  email: "yopamif362@flexvio.com",
-  phone: "0205667673",
+  contactName: "",
+  phone1: "",
+  phone2: "",
+  email: "",
   country: "Ghana",
-  region: "Greater Accra",
-  address: "Mile 7, Achimota, Accra",
+  region: "",
+  town: "",
+  address: "",
   items: [],
 };
 
