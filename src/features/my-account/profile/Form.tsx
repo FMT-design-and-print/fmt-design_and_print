@@ -1,5 +1,7 @@
 "use client";
-import { getChangedUserDetails } from "@/functions/user";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { regionsInGhana } from "@/constants/gh-regions";
+import { getChangedDetails } from "@/functions/user";
 import { IUserDetails } from "@/types/user";
 import { createClient } from "@/utils/supabase/client";
 import {
@@ -14,6 +16,7 @@ import {
   Title,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -22,6 +25,8 @@ interface Props {
 }
 
 export const ProfileForm = ({ user }: Props) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState<IUserDetails>({ ...user });
 
   const dob =
@@ -34,22 +39,26 @@ export const ProfileForm = ({ user }: Props) => {
   };
 
   const handleUpdateUserDetails = async () => {
-    const changedDetails = getChangedUserDetails(user, userDetails);
+    const changedDetails = getChangedDetails(user, userDetails);
 
     if (Object.keys(changedDetails).length > 0) {
       const supabase = createClient();
+      setLoading(true);
       await supabase
         .from("users")
         .update(changedDetails)
         .eq("id", user.id)
         .select();
+      setLoading(false);
 
       toast.success("Profile details updated");
+      router.refresh();
     }
   };
 
   return (
     <Card maw={500} withBorder my="sm" mx="auto">
+      <LoadingOverlay visible={loading} />
       <Title ta="center" order={3} py={16} c="dimmed">
         Update Profile
       </Title>
@@ -90,11 +99,14 @@ export const ProfileForm = ({ user }: Props) => {
           placeholder="Ghana"
           label="Country"
         />
-        <TextInput
+
+        <Select
           value={userDetails?.region || ""}
-          onChange={(e) => update("region", e.currentTarget.value)}
+          onChange={(value) => update("region", value || "")}
+          comboboxProps={{ withinPortal: true }}
+          data={regionsInGhana}
           label="Region"
-          placeholder="Greater Accra"
+          placeholder="choose region"
         />
         <Box>
           <InputLabel mb={0}>Gender</InputLabel>
