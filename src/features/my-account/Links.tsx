@@ -7,26 +7,29 @@ interface Props {
   links: ILink[];
 }
 export const RenderLinks = ({ links }: Props) =>
-  links.map((link) => (
-    <UnstyledButton
-      component={Link}
-      href={link.link}
-      key={link.label}
-      className={classes.mainLink}
-    >
-      <div className={classes.mainLinkInner}>
-        <span className={classes.mainLinkIcon}>{link.icon}</span>
-        <span>{link.label}</span>
-      </div>
-      {link.notifications && (
-        <Badge
-          size="xs"
-          variant="filled"
-          color="pink"
-          className={classes.mainLinkBadge}
+  links.map(
+    (link) =>
+      link.isVisible && (
+        <UnstyledButton
+          component={Link}
+          href={link.link}
+          key={link.label}
+          className={classes.mainLink}
         >
-          {link.notifications}
-        </Badge>
-      )}
-    </UnstyledButton>
-  ));
+          <div className={classes.mainLinkInner}>
+            <span className={classes.mainLinkIcon}>{link.icon}</span>
+            <span>{link.label}</span>
+          </div>
+          {link.notifications && (
+            <Badge
+              size="xs"
+              variant="filled"
+              color="pink"
+              className={classes.mainLinkBadge}
+            >
+              {link.notifications}
+            </Badge>
+          )}
+        </UnstyledButton>
+      )
+  );

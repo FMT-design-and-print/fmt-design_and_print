@@ -1,6 +1,7 @@
 "use client";
+import { LogoutButton } from "@/components/LogoutButton";
 import { Avatar, Group, Menu, Text, UnstyledButton, rem } from "@mantine/core";
-import { IconChevronDown, IconLogout2 } from "@tabler/icons-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import cx from "clsx";
 import { useState } from "react";
 import { RenderLinks } from "./Links";
@@ -64,17 +65,8 @@ export const MobileMenu = ({
         <RenderLinks links={accountLinks} />
 
         <Menu.Divider />
-        <Menu.Item
-          color="red"
-          leftSection={
-            <IconLogout2
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          }
-        >
-          Logout
-        </Menu.Item>
+
+        <LogoutButton />
       </Menu.Dropdown>
     </Menu>
   );

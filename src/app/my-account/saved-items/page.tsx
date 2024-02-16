@@ -1,4 +1,5 @@
 import { MyAccount } from "@/features/my-account";
+import { SavedItems } from "@/features/my-account/saved-items";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -18,7 +19,9 @@ const SavedItemsPage = async () => {
 
   return (
     <div>
-      <MyAccount email={session.user.email || ""}>Saved Items</MyAccount>
+      <MyAccount email={session.user.email || ""}>
+        <SavedItems savedItems={[]} />
+      </MyAccount>
     </div>
   );
 };

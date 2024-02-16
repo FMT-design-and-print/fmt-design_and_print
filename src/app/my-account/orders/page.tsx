@@ -1,4 +1,6 @@
 import { MyAccount } from "@/features/my-account";
+import { Orders } from "@/features/my-account/orders";
+import { IOrder } from "@/types/order";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -16,9 +18,16 @@ const MyAccountOrdersPage = async () => {
     return redirect("/");
   }
 
+  const { data: orders } = await supabase
+    .from("orders")
+    .select("id,created_at,orderId,items,totalAmount,status,deliveryDetails")
+    .eq("user_id", session.user.id);
+
   return (
     <div>
-      <MyAccount email={session.user.email || ""}>Orders</MyAccount>
+      <MyAccount email={session.user.email || ""}>
+        <Orders orders={(orders as IOrder[]) || []} />
+      </MyAccount>
     </div>
   );
 };

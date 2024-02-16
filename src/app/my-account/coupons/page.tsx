@@ -1,4 +1,5 @@
 import { MyAccount } from "@/features/my-account";
+import { Coupons } from "@/features/my-account/coupons";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -18,7 +19,9 @@ const MyAccountCouponsPage = async () => {
 
   return (
     <div>
-      <MyAccount email={session.user.email || ""}>Coupons</MyAccount>
+      <MyAccount email={session.user.email || ""}>
+        <Coupons coupons={[]} />
+      </MyAccount>
     </div>
   );
 };

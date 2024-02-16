@@ -1,19 +1,15 @@
-interface IUserDetails {
-  [key: string]: any;
-}
-
-export function getChangedUserDetails(
-  originalDetails: IUserDetails,
-  newDetails: IUserDetails
-) {
-  const changedValues: IUserDetails = {};
+export function getChangedDetails<T>(
+  originalDetails: T,
+  newDetails: T
+): Partial<T> {
+  const changedValues: Partial<T> = {};
 
   for (const key in newDetails) {
     if (
       Object.prototype.hasOwnProperty.call(originalDetails, key) &&
-      originalDetails[key] !== newDetails[key]
+      originalDetails[key as keyof T] !== newDetails[key as keyof T]
     ) {
-      changedValues[key] = newDetails[key];
+      changedValues[key as keyof T] = newDetails[key as keyof T];
     }
   }
 

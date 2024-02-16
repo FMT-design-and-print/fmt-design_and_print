@@ -30,7 +30,7 @@ const MyAccountProfilePage = async () => {
     <div>
       <MyAccount
         email={session.user.email || ""}
-        name={`${user?.firstName} ${user?.lastName}`}
+        name={`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
       >
         {error ? (
           <Alert variant="light" maw={400} mx="auto" color="red">
