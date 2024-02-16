@@ -1,6 +1,6 @@
 "use client";
-import { Button, Group, Space, Text } from "@mantine/core";
-import { IconLogout2 } from "@tabler/icons-react";
+import { LogoutButton } from "@/components/LogoutButton";
+import { Box, Group, Space, Text } from "@mantine/core";
 import { RenderLinks } from "./Links";
 import classes from "./Navbar.module.css";
 import { UserButton } from "./UserButton";
@@ -48,16 +48,9 @@ export const DesktopMenu = ({
         </div>
 
         <Space my={16} />
-        <Button
-          variant="light"
-          color="red"
-          w="90%"
-          style={{ boxSizing: "border-box" }}
-          mx={8}
-          leftSection={<IconLogout2 size="1rem" />}
-        >
-          Logout
-        </Button>
+        <Box px="md">
+          <LogoutButton />
+        </Box>
       </div>
     </nav>
   );

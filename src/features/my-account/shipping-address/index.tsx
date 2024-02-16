@@ -1,10 +1,13 @@
 "use client";
 
-import { Card, Center, Stack, Text, Title } from "@mantine/core";
-import { NewAddress } from "./NewAddress";
-import { AddressCard } from "./AddressCard";
+import { NoItemsFound } from "@/components/NoItemsFound";
 import { IShippingAddress } from "@/types";
+import { Button, Stack, Title } from "@mantine/core";
 import { LiaShippingFastSolid } from "react-icons/lia";
+import { AddressCard } from "./AddressCard";
+import { NewAddress } from "./NewAddress";
+import { IconPlus } from "@tabler/icons-react";
+import { Link, Element } from "react-scroll";
 
 interface Props {
   addresses: IShippingAddress[];
@@ -18,26 +21,29 @@ export const ShippingAddresses = ({ addresses }: Props) => {
       </Title>
 
       {addresses.length === 0 && (
-        <Card withBorder mb="lg">
-          <Center>
-            <Stack justify="center" align="center" py="8rem">
-              <LiaShippingFastSolid
-                style={{ fontSize: "5rem", color: "var(--primary-300)" }}
-              />
-
-              <Text p="1rem" c="dimmed">
-                No Shipping address found. Add one using the form below.
-              </Text>
-            </Stack>
-          </Center>
-        </Card>
+        <NoItemsFound
+          icon={
+            <LiaShippingFastSolid
+              style={{ fontSize: "5rem", color: "var(--primary-300)" }}
+            />
+          }
+          label="No Shipping address found. Add one using the form below."
+        >
+          <Link to="new-shipping-address" smooth>
+            <Button size="xs" className="btn" leftSection={<IconPlus />}>
+              Add shipping address
+            </Button>
+          </Link>
+        </NoItemsFound>
       )}
       <Stack mb="xl" pb="lg">
         {addresses.map((address) => (
           <AddressCard key={address.id} address={address} />
         ))}
       </Stack>
-      <NewAddress numberOfAddresses={addresses.length} />
+      <Element name="new-shipping-address">
+        <NewAddress numberOfAddresses={addresses.length} />
+      </Element>
     </>
   );
 };

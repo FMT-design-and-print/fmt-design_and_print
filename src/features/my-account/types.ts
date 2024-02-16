@@ -5,4 +5,5 @@ export interface ILink {
   label: string;
   notifications?: number;
   link: string;
+  isVisible?: boolean;
 }
