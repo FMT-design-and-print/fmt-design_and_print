@@ -8,6 +8,7 @@ import {
   MessageStatus,
   SelectedProductOptions,
 } from "@/types";
+import { OrderStatus } from "@/types/order";
 import { DefaultMantineColor } from "@mantine/core";
 
 export const getAlertColor = (
@@ -80,8 +81,15 @@ export function calculateTotalPrice(cart: ICartItem[]): number {
   return totalPrice;
 }
 
-export function getOrderId(length = 8): string {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+export function getRandomLength<T>(arr: T[]): T {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
+}
+
+export function getOrderId(): string {
+  const characters = "0123456789";
+
+  const length = getRandomLength([5, 6, 7, 8]);
   const orderIdArray = [];
 
   for (let i = 0; i < length; i++) {
@@ -122,3 +130,45 @@ export function verifyAddressDetails(details: IShippingAddress) {
     fields: emptyFields,
   };
 }
+
+export const areAllDigits = (s: string) => {
+  return /^\d+$/.test(s);
+};
+
+export const areAllowedOrderNumbers = (orderNumbers: string[]) =>
+  orderNumbers.every(
+    (number) => areAllDigits(number) && number.length >= 5 && number.length <= 8
+  );
+
+export const getOrderCompletedDate = (completedAt?: Date) => {
+  return completedAt
+    ? `${new Date(completedAt).toDateString()}, ${new Date(
+        completedAt
+      ).toLocaleTimeString()}`
+    : "an Unspecified Date";
+};
+
+export const getOrderStatusText = (status: OrderStatus) => {
+  switch (status) {
+    case "pending":
+      return "Awaiting Confirmation";
+    case "processing":
+      return "Processing";
+    case "placed":
+      return "Confirmed";
+    case "shipped":
+      return "On the way";
+    case "delivered":
+      return "Delivered";
+    case "packaging":
+      return "Preparing for pickup";
+    case "ready":
+      return "Ready for Pickup";
+    case "completed":
+      return "Completed";
+    case "cancelled":
+      return "Cancelled";
+    default:
+      return "";
+  }
+};
