@@ -1,15 +1,15 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { getOrderId, verifyAddressDetails } from "@/functions";
+import { getOrderId } from "@/functions";
 import { useSession } from "@/store";
 import { useCart } from "@/store/cart";
 import { useCheckout } from "@/store/checkout";
 import { CheckoutDetails } from "@/types";
 import { createClient } from "@/utils/supabase/client";
-import { Alert, Box, Button, Text } from "@mantine/core";
+import { Alert, Box } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { PaystackButton, usePaystackPayment } from "react-paystack";
+import { useState } from "react";
+import { PaystackButton } from "react-paystack";
 import { HookConfig } from "react-paystack/dist/types";
 
 const config: HookConfig = {
@@ -25,9 +25,9 @@ export const PayButton = ({ total }: IProps) => {
   const router = useRouter();
   const { details } = useCheckout((state) => state);
   const { clearCart } = useCart((state) => state);
-  const [emptyFields, setEmptyFields] = useState<(keyof CheckoutDetails)[]>([]);
+  const [emptyFields] = useState<(keyof CheckoutDetails)[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const initializePayment = usePaystackPayment(config);
+  // const initializePayment = usePaystackPayment(config);
   const user = useSession((state) => state.user);
 
   const onSuccess = async (ref: any) => {
@@ -111,33 +111,33 @@ export const PayButton = ({ total }: IProps) => {
     onClose: () => onClose(),
   };
 
-  const handleMakePayment = () => {
-    if (total === 0) {
-      setEmptyFields(["Amount" as any]);
-      return;
-    }
+  // const handleMakePayment = () => {
+  //   if (total === 0) {
+  //     setEmptyFields(["Amount" as any]);
+  //     return;
+  //   }
 
-    const { isValid, fields } = verifyAddressDetails(details);
-    if (!isValid) {
-      setEmptyFields(fields);
-      return;
-    }
+  //   const { isValid, fields } = verifyAddressDetails(details);
+  //   if (!isValid) {
+  //     setEmptyFields(fields);
+  //     return;
+  //   }
 
-    setEmptyFields([]);
+  //   setEmptyFields([]);
 
-    return initializePayment({
-      config: {
-        ...config,
-        email: details.email || `${details.phone1}@fmtdesignprint.com`,
-        label: details.contactName,
-        amount: total * 100,
-        phone: details.phone1,
-        reference: getOrderId(),
-      },
-      onSuccess: (reference) => onSuccess(reference),
-      onClose,
-    });
-  };
+  //   return initializePayment({
+  //     config: {
+  //       ...config,
+  //       email: details.email || `${details.phone1}@fmtdesignprint.com`,
+  //       label: details.contactName,
+  //       amount: total * 100,
+  //       phone: details.phone1,
+  //       reference: getOrderId(),
+  //     },
+  //     onSuccess: (reference) => onSuccess(reference),
+  //     onClose,
+  //   });
+  // };
 
   return (
     <>
