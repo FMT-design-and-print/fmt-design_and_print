@@ -1,5 +1,5 @@
 "use client";
-import { Box, Grid } from "@mantine/core";
+import { Box, Button, Card, Grid, Group, Text } from "@mantine/core";
 import { DeliveryInformation } from "./DeliveryInformation";
 import { PaymentDetails } from "./PaymentDetails";
 import { ReviewItems } from "./ReviewItems";
@@ -7,8 +7,16 @@ import { useEffect } from "react";
 import { useCart } from "@/store/cart";
 import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
+import { IShippingAddress } from "@/types";
+import Link from "next/link";
+import { useSession } from "@/store";
 
-export const Checkout = () => {
+interface Props {
+  shippingAddresses?: IShippingAddress[];
+}
+
+export const Checkout = ({ shippingAddresses }: Props) => {
+  const { session } = useSession();
   const router = useRouter();
   const cartItems = useCart((state) => state.items);
   const {
@@ -34,8 +42,39 @@ export const Checkout = () => {
     >
       <Grid>
         <Grid.Col span="auto">
+          {!session && (
+            <Card withBorder my="sm">
+              <Group>
+                <Text size="sm">Already have an account? </Text>
+                <Button
+                  variant="transparent"
+                  size="xs"
+                  component={Link}
+                  href={"/login?redirect=/checkout"}
+                  color="pink"
+                >
+                  Login
+                </Button>
+
+                <Text size="sm">otherwise </Text>
+                <Button
+                  variant="transparent"
+                  size="xs"
+                  component={Link}
+                  href={"/signup?redirect=/checkout"}
+                  color="pink"
+                >
+                  Signup
+                </Button>
+              </Group>
+              <Text size="xs" c="dimmed">
+                Don&apos;t worry! You can still continue to make your purchase
+                without an account
+              </Text>
+            </Card>
+          )}
           <ReviewItems />
-          <DeliveryInformation />
+          <DeliveryInformation shippingAddresses={shippingAddresses} />
           <Box hiddenFrom="md">
             <PaymentDetails />
           </Box>

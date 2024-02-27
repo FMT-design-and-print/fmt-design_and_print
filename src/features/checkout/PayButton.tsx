@@ -1,4 +1,6 @@
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { getOrderId, verifyAddressDetails } from "@/functions";
+import { useSession } from "@/store";
 import { useCart } from "@/store/cart";
 import { useCheckout } from "@/store/checkout";
 import { CheckoutDetails } from "@/types";
@@ -24,24 +26,28 @@ export const PayButton = ({ total }: IProps) => {
   const { details } = useCheckout((state) => state);
   const { clearCart } = useCart((state) => state);
   const [emptyFields, setEmptyFields] = useState<(keyof CheckoutDetails)[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const initializePayment = usePaystackPayment(config);
+  const user = useSession((state) => state.user);
 
   const onSuccess = async (ref: any) => {
     const supabase = createClient();
 
+    setIsLoading(true);
     const { error } = await supabase
       .from("orders")
       .insert([
         {
+          user_id: user?.id,
           orderId: ref.reference,
           items: details.items,
           totalAmount: total,
           status: "pending",
-          shippingMethod: "",
-          couponCode: "",
-          discount: 0,
+          deliveryType: details.deliveryType,
+          paymentType: details.paymentType,
+          deliveryFee: details.deliveryFee,
           reference: ref.reference,
-          shippingAddress: {
+          deliveryDetails: {
             contactName: details.contactName,
             phone1: details.phone1,
             phone2: details.phone2,
@@ -57,8 +63,34 @@ export const PayButton = ({ total }: IProps) => {
 
     if (error) {
       console.log(error);
+      setIsLoading(false);
+      return;
     }
 
+    if (details.saveAddress) {
+      const { error } = await supabase
+        .from("shipping-addresses")
+        .insert([
+          {
+            user_id: user?.id,
+            contactName: details.contactName,
+            phone1: details.phone1,
+            phone2: details.phone2,
+            email: details.email,
+            country: details.country,
+            region: details.region,
+            address: details.address,
+            town: details.town,
+          },
+        ])
+        .select();
+
+      if (error) {
+        // log address could not be saved
+      }
+    }
+
+    setIsLoading(false);
     clearCart();
     router.push("/order-success?reference=1707236374090");
   };
@@ -106,6 +138,7 @@ export const PayButton = ({ total }: IProps) => {
 
   return (
     <>
+      <LoadingOverlay visible={isLoading} />
       <Button variant="white" onClick={handleMakePayment}>
         <Text component="span" className="text-primary-500" fw={600}>
           Pay GHS {total.toFixed(1)}

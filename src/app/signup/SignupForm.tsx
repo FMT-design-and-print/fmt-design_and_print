@@ -7,10 +7,13 @@ import { z } from "zod";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type SignUpData = z.infer<typeof SignUpDataSchema>;
 
 export const SignupForm = () => {
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -23,7 +26,7 @@ export const SignupForm = () => {
 
   const onSubmit = async (data: SignUpData) => {
     setIsLoading(true);
-    await signUp(data);
+    await signUp(data, redirectPath);
     setIsLoading(false);
     reset();
   };

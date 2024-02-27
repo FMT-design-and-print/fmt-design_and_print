@@ -45,7 +45,7 @@ export const signIn = async (data: LoginData) => {
   return { session };
 };
 
-export const signUp = async (data: SignUpData) => {
+export const signUp = async (data: SignUpData, next?: string | null) => {
   const origin = headers().get("origin");
   const email = data.email;
   const password = data.password;
@@ -67,7 +67,7 @@ export const signUp = async (data: SignUpData) => {
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo: `${origin}/auth/callback?next=${next}`,
       },
     });
 

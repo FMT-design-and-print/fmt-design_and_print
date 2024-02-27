@@ -1,18 +1,18 @@
 import { Card, Title, Divider, Stack, Group, Text } from "@mantine/core";
 import React, { useState } from "react";
 import { DiscountForm } from "./DiscountForm";
-import { PaymentOptions } from "./PaymentOptions";
 import { calculateTotalPrice } from "@/functions";
 import { useCheckout } from "@/store/checkout";
 import { PayButton } from "./PayButton";
+import { DeliveryType } from "./DeliveryType";
 
 export const PaymentDetails = () => {
   const {
-    details: { items },
+    details: { deliveryFee, items },
   } = useCheckout((state) => state);
   const [discount] = useState(0);
-  const [shippingFee] = useState(0);
 
+  const shippingFee = deliveryFee || 0;
   const subTotal = calculateTotalPrice(items);
   const total = subTotal + shippingFee - discount;
 
@@ -25,7 +25,8 @@ export const PaymentDetails = () => {
       <DiscountForm />
       <Divider my={16} />
 
-      <PaymentOptions />
+      {/* <PaymentOptions /> */}
+      <DeliveryType />
       <Divider my={16} />
       <Stack>
         <Group justify="space-between">
@@ -46,7 +47,7 @@ export const PaymentDetails = () => {
         </Group>
         <Group justify="space-between">
           <Text fz="sm" c="gray.1">
-            Shipping
+            Delivery Fee
           </Text>
           <Text fz="sm" fw={600} c="white">
             +GHS {shippingFee.toFixed(1)}

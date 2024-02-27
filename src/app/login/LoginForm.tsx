@@ -7,12 +7,13 @@ import { PrimaryButton } from "../../components/PrimaryButton";
 import { signIn } from "@/lib/actions/auth.actions";
 import { useState } from "react";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/store";
 
 type LoginData = z.infer<typeof LoginDataSchema>;
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
   const { setSession, setUser } = useSession((state) => state);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,13 +26,19 @@ export const LoginForm = () => {
     resolver: zodResolver(LoginDataSchema),
   });
 
+  const redirectPath = searchParams.get("redirect");
+
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
     const { session } = await signIn(data);
     setSession(session);
     setUser(session?.user);
 
-    router.push("/");
+    if (redirectPath) {
+      router.push(redirectPath);
+    } else {
+      router.push("/");
+    }
     setIsLoading(false);
 
     reset();

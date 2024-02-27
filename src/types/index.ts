@@ -147,6 +147,9 @@ export interface CheckoutDetails extends IShippingAddress {
   paymentType: "momo" | "card" | "cod" | "";
   discount?: number;
   discountCode?: string;
-  shippingFee?: number;
+  deliveryFee?: number;
   items: ICartItem[];
+  notes?: string;
+  saveAddress?: boolean;
+  deliveryType: "pickup" | "delivery";
 }

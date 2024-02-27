@@ -16,7 +16,7 @@ export const Orders = ({ orders }: Props) => {
       <Title order={3} c="dimmed" mb="md">
         Orders
       </Title>
-      {orders.length !== 0 ? (
+      {orders.length === 0 ? (
         <NoItemsFound
           icon={<IconPackage size="6rem" color="var(--primary-300)" />}
           label="You have no orders"

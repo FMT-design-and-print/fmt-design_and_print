@@ -29,4 +29,7 @@ export interface IOrder {
   reference?: string;
   user_id: string;
   estimatedFulfillmentDate?: Date;
+  paymentType: string;
+  deliveryFee?: number;
+  notes?: string;
 }

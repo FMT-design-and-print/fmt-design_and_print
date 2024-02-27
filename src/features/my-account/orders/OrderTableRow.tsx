@@ -1,6 +1,7 @@
 import { IOrder } from "@/types/order";
 import { Table, Text } from "@mantine/core";
 import { OrderItems } from "./OrderItems";
+import Link from "next/link";
 
 interface Props {
   order: IOrder;
@@ -12,7 +13,18 @@ export const OrderTableRow = ({ order }: Props) => {
   return (
     <Table.Tr>
       <Table.Td>
-        <Text size="sm">{order.orderId}</Text>
+        <Text
+          title="Track this order"
+          size="sm"
+          component={Link}
+          c="pink"
+          fw="bolder"
+          href={`/order-tracking/${order.orderId}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {order.orderId}
+        </Text>
       </Table.Td>
       <Table.Td>
         <Text size="sm">{createdAt.toDateString()}</Text>
