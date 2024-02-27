@@ -40,7 +40,6 @@ export const PickupSteps = ({ orientation, status }: Props) => {
 
   return (
     <>
-      {status} {active}
       <Stepper
         orientation={orientation}
         color="pink"

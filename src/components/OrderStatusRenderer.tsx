@@ -88,7 +88,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "placed") {
     return (
-      <Badge {...defaultBadgeProps} color="orange">
+      <Badge {...defaultBadgeProps} color="cyan">
         {`${statusText}`}
       </Badge>
     );

@@ -42,7 +42,7 @@ export const PayButton = ({ total }: IProps) => {
           orderId: ref.reference,
           items: details.items,
           totalAmount: total,
-          status: "pending",
+          status: "placed",
           deliveryType: details.deliveryType,
           paymentType: details.paymentType,
           deliveryFee: details.deliveryFee,
@@ -92,7 +92,7 @@ export const PayButton = ({ total }: IProps) => {
 
     setIsLoading(false);
     clearCart();
-    router.push("/order-success?reference=1707236374090");
+    router.push(`/order-success?reference=${ref.reference}`);
   };
 
   const onClose = () => {
