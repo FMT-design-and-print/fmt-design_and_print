@@ -9,6 +9,7 @@ export type OrderStatus =
   | "packaging"
   | "ready"
   | "completed"
+  | "pending-cancellation"
   | "cancelled";
 
 export type DeliveryType = "pickup" | "delivery";

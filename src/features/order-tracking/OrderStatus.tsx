@@ -10,13 +10,16 @@ import { getOrderCompletedDate, getOrderStatusText } from "@/functions";
 interface Props {
   order: IOrder;
 }
+
+const topLevelStatuses = ["cancelled", "pending", "pending-cancellation"];
+
 export const OrderStatus = ({ order }: Props) => {
   const createdAt = new Date(order.created_at);
   const estimatedFulfilmentDate = new Date(
     order.estimatedFulfillmentDate ?? createdAt.getDate() + 3
   );
 
-  return order.status === "cancelled" || order.status === "pending" ? (
+  return topLevelStatuses.includes(order.status) ? (
     <OrderStatusAlert orderId={order.orderId} status={order.status} />
   ) : (
     <>

@@ -50,5 +50,20 @@ export const OrderStatusAlert = ({ title, status, orderId }: Props) => {
     );
   }
 
+  if (status === "pending-cancellation") {
+    return (
+      <Alert
+        variant="light"
+        color="red"
+        title={title || "Awaiting Cancellation"}
+        maw={500}
+        mx="auto"
+      >
+        We are Processing Cancellation request for order with id{" "}
+        <span className="font-bold">#{orderId}</span>
+      </Alert>
+    );
+  }
+
   return <></>;
 };

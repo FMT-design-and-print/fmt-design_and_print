@@ -168,6 +168,8 @@ export const getOrderStatusText = (status: OrderStatus) => {
       return "Completed";
     case "cancelled":
       return "Cancelled";
+    case "pending-cancellation":
+      return "Awaiting Cancellation";
     default:
       return "";
   }
