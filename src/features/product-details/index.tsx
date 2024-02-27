@@ -2,7 +2,12 @@
 import { CartBtn } from "@/components/CartBtn";
 import { getProductOptionsErrors } from "@/functions";
 import { useCart } from "@/store/cart";
-import { IOptionsErrors, IPrintProduct, SelectedProductOptions } from "@/types";
+import {
+  ICartItem,
+  IOptionsErrors,
+  IPrintProduct,
+  SelectedProductOptions,
+} from "@/types";
 import {
   AspectRatio,
   Badge,
@@ -28,6 +33,8 @@ import { Sizes } from "@/components/Sizes";
 import { AdditionalDetails } from "@/components/AdditionalDetails";
 import { Quantity } from "@/components/Quantity";
 import { ErrorText } from "@/components/ErrorText";
+import { useCheckout } from "@/store/checkout";
+import { useRouter } from "next/navigation";
 
 const defaultValue = {
   productId: "",
@@ -42,7 +49,9 @@ interface Props {
   product: IPrintProduct;
 }
 export const ProductDetails = ({ product }: Props) => {
+  const router = useRouter();
   const addItem = useCart((state) => state.addItem);
+  const { setItems } = useCheckout();
   const [errors, setErrors] = useState<IOptionsErrors>({});
   const [selectedProductOptions, setSelectedProductOptions] =
     useLocalStorage<SelectedProductOptions>({
@@ -50,14 +59,15 @@ export const ProductDetails = ({ product }: Props) => {
       defaultValue,
     });
 
-  const handleAddItemToCart = () => {
+  const handleBuyOrAddItemToCart = (actionType: "buy" | "cart") => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
     });
     setErrors(errors);
 
     if (Object.keys(errors).length > 0) return false;
-    addItem({
+
+    const item: ICartItem = {
       id: product.id,
       title: product.title,
       price: product.price,
@@ -67,7 +77,15 @@ export const ProductDetails = ({ product }: Props) => {
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
       notes: selectedProductOptions.note,
-    });
+    };
+
+    if (actionType === "buy") {
+      setItems([item]);
+      router.push("/checkout");
+      return;
+    }
+
+    addItem(item);
     toast.success("Item added to cart");
   };
 
@@ -167,11 +185,16 @@ export const ProductDetails = ({ product }: Props) => {
 
           <Group my="xl">
             <CartBtn
-              handler={handleAddItemToCart}
+              handler={() => handleBuyOrAddItemToCart("cart")}
               productId={product.id}
               miw={{ base: "100%", xs: 150 }}
             />
-            <Button size="md" miw={{ base: "100%", xs: 150 }} className="btn">
+            <Button
+              onClick={() => handleBuyOrAddItemToCart("buy")}
+              size="md"
+              miw={{ base: "100%", xs: 150 }}
+              className="btn"
+            >
               Buy now
             </Button>
           </Group>

@@ -1,18 +1,9 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Card,
-  Center,
-  Group,
-  Text,
-  rem,
-} from "@mantine/core";
+import { IPrintProduct } from "@/types";
+import { ActionIcon, Box, Card, Center, Group, Text, rem } from "@mantine/core";
 import Link from "next/link";
 import { HiOutlineHeart } from "react-icons/hi";
 import classes from "./ProductCard.module.css";
 import { ProductOptions } from "./ProductOptions";
-import { IPrintProduct } from "@/types";
 
 interface Props {
   product: IPrintProduct;
@@ -53,16 +44,8 @@ export function ProductCard({ product, link = "" }: Props) {
           <Text fw="bold">GHS {product.price}</Text>
         </Box>
         <Center>
-          <ProductOptions product={product} />
-          <Button
-            component={Link}
-            href="/checkout"
-            className="btn"
-            size="xs"
-            title="Buy now"
-          >
-            Buy
-          </Button>
+          <ProductOptions product={product} actionType="cart" />
+          <ProductOptions product={product} actionType="buy" />
         </Center>
       </Group>
     </Card>
