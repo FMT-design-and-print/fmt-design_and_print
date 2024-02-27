@@ -9,7 +9,7 @@ import { Alert, Box, Button, Text } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { usePaystackPayment } from "react-paystack";
+import { PaystackButton, usePaystackPayment } from "react-paystack";
 import { HookConfig } from "react-paystack/dist/types";
 
 const config: HookConfig = {
@@ -99,6 +99,18 @@ export const PayButton = ({ total }: IProps) => {
     console.log("closed");
   };
 
+  const componentProps = {
+    ...config,
+    email: "test@gmail.com",
+    label: details.contactName,
+    amount: total * 100,
+    phone: details.phone1,
+    reference: getOrderId(),
+    text: `Pay GHS ${total.toFixed(1)}`,
+    onSuccess: (ref: any) => onSuccess(ref),
+    onClose: () => onClose(),
+  };
+
   const handleMakePayment = () => {
     if (total === 0) {
       setEmptyFields(["Amount" as any]);
@@ -121,15 +133,6 @@ export const PayButton = ({ total }: IProps) => {
         amount: total * 100,
         phone: details.phone1,
         reference: getOrderId(),
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Order ID",
-              variable_name: "orderId",
-              value: getOrderId(),
-            },
-          ],
-        },
       },
       onSuccess: (reference) => onSuccess(reference),
       onClose,
@@ -139,11 +142,13 @@ export const PayButton = ({ total }: IProps) => {
   return (
     <>
       <LoadingOverlay visible={isLoading} />
-      <Button variant="white" onClick={handleMakePayment}>
+      {/* <Button variant="white" onClick={handleMakePayment}>
         <Text component="span" className="text-primary-500" fw={600}>
           Pay GHS {total.toFixed(1)}
         </Text>
-      </Button>
+      </Button> */}
+
+      <PaystackButton {...componentProps} />
 
       <Box bg="white">
         {emptyFields.length > 0 && (
