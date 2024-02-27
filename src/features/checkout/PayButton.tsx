@@ -116,7 +116,9 @@ export const PayButton = ({ total }: IProps) => {
     return initializePayment({
       config: {
         ...config,
-        email: details.email || `${details.phone1}@fmtdesignprint.com`,
+        email:
+          details.email ||
+          `${details.phone1.replaceAll(" ", "")}@fmtdesignprint.com`,
         label: details.contactName,
         amount: total * 100,
         phone: details.phone1,

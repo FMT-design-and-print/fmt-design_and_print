@@ -14,19 +14,25 @@ export const OrdersCard = ({ orders }: Props) => {
     <Box hiddenFrom="sm">
       {orders.map((order) => (
         <Card key={order.id} withBorder my="sm">
-          <Text
-            title="Track this order"
-            fz="lg"
-            mb="sm"
-            component={Link}
-            c="dimmed"
-            fw="bolder"
-            href={`/order-tracking/${order.orderId}`}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {order.orderId}
-          </Text>
+          <Group justify="space-between" align="center" mb="sm">
+            <Text
+              title="Track this order"
+              fz="sm"
+              component={Link}
+              c="dimmed"
+              fw="bolder"
+              href={`/order-tracking/${order.orderId}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {order.orderId}
+            </Text>
+            <OrderItems
+              orderId={order.id}
+              items={order.items}
+              btnLabel="View Items"
+            />
+          </Group>
 
           <Group>
             <Group gap="5px">
@@ -72,11 +78,6 @@ export const OrdersCard = ({ orders }: Props) => {
                 )}
               </Group>
             </Group>
-            <OrderItems
-              orderId={order.id}
-              items={order.items}
-              btnLabel="View Items"
-            />
           </Group>
         </Card>
       ))}
