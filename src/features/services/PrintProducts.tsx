@@ -12,7 +12,7 @@ import { SelectedTags } from "./SelectedTags";
 import { FiltersDrawer } from "./TagsFilters/FiltersDrawer";
 import { ProductLoaders } from "./ProductLoaders";
 
-const itemsPerPage = 20;
+const itemsPerPage = 50;
 
 interface Props {
   printProducts: IPrintProduct[];
