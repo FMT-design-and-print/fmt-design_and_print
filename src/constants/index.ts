@@ -12,3 +12,8 @@ export const passwordResetSuccessMessage =
   "Your Password has been reset successfully. Sign in.";
 export const userNotFoundMessage = "Could not find user with this email.";
 export const OAuthResetFailedMessage = "Cannot reset password for this user.";
+export const alreadyConfirmedMsg = "This email has already been confirmed";
+export const exceededRequestLimitMsg =
+  "You have exceeded confirm link request limit. Please contact support team.";
+export const resendLinkFailed =
+  "Unable to resend link at this time. Try again!";

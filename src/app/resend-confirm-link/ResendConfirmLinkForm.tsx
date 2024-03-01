@@ -3,15 +3,14 @@ import { AuthCard } from "@/components/AuthCard";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import {
-  OAuthResetFailedMessage,
-  unableToVerifyEmailMessage,
+  alreadyConfirmedMsg,
+  exceededRequestLimitMsg,
+  resendLinkFailed,
   userNotFoundMessage,
 } from "@/constants";
 import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Space } from "@mantine/core";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,7 +30,7 @@ interface Props {
     messageStatus: MessageStatus;
   };
 }
-export const ForgotPassword = ({ searchParams }: Props) => {
+export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
   const [linkSent, setLinkSent] = useState(false);
@@ -46,7 +45,7 @@ export const ForgotPassword = ({ searchParams }: Props) => {
   });
 
   const getPath = (message: string) =>
-    `/forgot-password?message=${message}&messageStatus=error`;
+    `/resend-confirm-link?message=${message}&messageStatus=error`;
 
   const onSubmit = async (res: Data) => {
     const email = res.email;
@@ -54,10 +53,13 @@ export const ForgotPassword = ({ searchParams }: Props) => {
     const supabase = createClient();
 
     setIsLoading(true);
-    const { data: users, error: err } = await supabase
+    const { data: user, error: err } = await supabase
       .from("users")
-      .select("email, provider")
-      .eq("email", email);
+      .select(
+        "id, email, provider, requestedConfirmLinkNumberOfTimes, confirmed"
+      )
+      .eq("email", email)
+      .single();
 
     if (err) {
       // error encountered when loading user details
@@ -65,27 +67,51 @@ export const ForgotPassword = ({ searchParams }: Props) => {
       return push(getPath(userNotFoundMessage));
     }
 
-    if (users?.length === 0) {
+    if (!user) {
       // no user was found
       setIsLoading(false);
       return push(getPath(userNotFoundMessage));
+    } else {
+      if (user.provider?.toLowerCase() !== "email" || user.confirmed) {
+        // User signed up using OAuth
+        setIsLoading(false);
+        return push(getPath(alreadyConfirmedMsg));
+      }
+
+      if (user.requestedConfirmLinkNumberOfTimes >= 3) {
+        setIsLoading(false);
+        return push(getPath(exceededRequestLimitMsg));
+      }
     }
 
-    if (users && users[0].provider?.toLowerCase() !== "email") {
-      // User signed up using OAuth
-      setIsLoading(false);
-      return push(getPath(OAuthResetFailedMessage));
-    }
-
-    // reset the password, after user is verified to exist
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${location.origin}/auth/callback?next=/reset-password`,
+    // resend confirm link after user is verified
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback`,
+      },
     });
-    setIsLoading(false);
 
     if (error) {
-      return push(getPath(unableToVerifyEmailMessage));
+      return push(getPath(resendLinkFailed));
     }
+
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({
+        requestedConfirmLinkNumberOfTimes:
+          user.requestedConfirmLinkNumberOfTimes + 1,
+      })
+      .eq("email", email);
+
+    if (updateError) {
+      // Todo: handle error logging
+      console.log(error);
+    }
+
+    setIsLoading(false);
+
     reset();
     setLinkSent(true);
   };
@@ -94,11 +120,11 @@ export const ForgotPassword = ({ searchParams }: Props) => {
     <>
       {linkSent ? (
         <p className="mx-8 my-6 mb-1 bg-blue-200 px-4 py-2 text-center text-blue-600">
-          Password reset link has been sent to your email. Follow to reset your
-          password
+          If your email address is in our records, confirmation link has been
+          sent to your email. Follow to confirm your signup.
         </p>
       ) : (
-        <AuthCard title="Forgotten Password?" searchParams={searchParams}>
+        <AuthCard title="Resend Confirmation Link" searchParams={searchParams}>
           <LoadingOverlay visible={isLoading} />
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -106,7 +132,7 @@ export const ForgotPassword = ({ searchParams }: Props) => {
           >
             <div>
               <label htmlFor="email" className="text-sm leading-10">
-                Enter email address to reset your password
+                Enter email address to receive confirmation link
               </label>
               <input
                 id="email"
@@ -121,11 +147,6 @@ export const ForgotPassword = ({ searchParams }: Props) => {
             </div>
             <PrimaryButton type="submit">Continue</PrimaryButton>
           </form>
-
-          <Space h="sm" />
-          <Link href="/login" className="my-4 text-sm text-gray-400">
-            I Remember my password. Login
-          </Link>
         </AuthCard>
       )}
     </>

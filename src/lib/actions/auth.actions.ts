@@ -1,6 +1,5 @@
 "use server";
 import {
-  authFailedMessage,
   passwordResetFailedMessage,
   passwordResetSuccessMessage,
   signUpFailedMessage,
@@ -32,17 +31,18 @@ export const signIn = async (data: LoginData) => {
 
   const {
     error,
-    data: { session },
+    data: { session, user, weakPassword },
   } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error) {
-    return redirect(`/login?message=${authFailedMessage}&${errorStatus}`);
-  }
-
-  return { session };
+  return {
+    session,
+    user,
+    weakPassword,
+    error: error ? { message: error.message } : null,
+  };
 };
 
 export const signUp = async (data: SignUpData, next?: string | null) => {
@@ -59,6 +59,8 @@ export const signUp = async (data: SignUpData, next?: string | null) => {
     .eq("email", email);
 
   if (error) {
+    console.log(error);
+    // TODO: Error logging
     return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
   }
 
@@ -67,11 +69,15 @@ export const signUp = async (data: SignUpData, next?: string | null) => {
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback?next=${next}`,
+        emailRedirectTo: next
+          ? `${origin}/auth/callback?next=${next}`
+          : `${origin}/auth/callback`,
       },
     });
 
     if (signUpError) {
+      console.log(signUpError);
+      // TODO: Error logging
       return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
     }
 

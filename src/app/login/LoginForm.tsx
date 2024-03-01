@@ -1,22 +1,29 @@
 "use client";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { authFailedMessage } from "@/constants";
+import { signIn } from "@/lib/actions/auth.actions";
 import { LoginDataSchema } from "@/lib/validations";
+import { useSession } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@mantine/core";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PrimaryButton } from "../../components/PrimaryButton";
-import { signIn } from "@/lib/actions/auth.actions";
-import { useState } from "react";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "@/store";
 
 type LoginData = z.infer<typeof LoginDataSchema>;
+
+const errorStatus = "messageStatus=error";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const { setSession, setUser } = useSession((state) => state);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmLink, setShowConfirmLink] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -30,18 +37,35 @@ export const LoginForm = () => {
 
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
-    const { session } = await signIn(data);
-    setSession(session);
-    setUser(session?.user);
+    const { session, error } = await signIn(data);
 
-    if (redirectPath) {
-      router.push(redirectPath);
-    } else {
-      router.push("/");
+    if (error) {
+      const msg = "Email not confirmed";
+      setIsLoading(false);
+      if (error.message.toLowerCase() === msg.toLowerCase()) {
+        setShowConfirmLink(true);
+        return router.push(`/login?message=${msg}&${errorStatus}`);
+      }
+      setShowConfirmLink(false);
+      // TODO: Error logging
+      return router.push(`/login?message=${authFailedMessage}&${errorStatus}`);
     }
-    setIsLoading(false);
 
-    reset();
+    if (session) {
+      setSession(session);
+      setUser(session?.user);
+
+      if (redirectPath) {
+        router.push(redirectPath);
+        router.refresh();
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    }
+
+    setIsLoading(false);
+    reset({ email: data.email, password: "" });
   };
 
   return (
@@ -76,6 +100,16 @@ export const LoginForm = () => {
         </div>
 
         <PrimaryButton type="submit">Sign in</PrimaryButton>
+        {showConfirmLink && (
+          <Button
+            component={Link}
+            href="/resend-confirm-link"
+            variant="outline"
+            color="gray"
+          >
+            Resend confirm link
+          </Button>
+        )}
       </form>
     </>
   );

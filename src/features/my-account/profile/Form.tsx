@@ -114,7 +114,7 @@ export const ProfileForm = ({ user }: Props) => {
           <SegmentedControl
             value={userDetails.gender || "Male"}
             onChange={(value) => update("gender", value)}
-            data={["Male", "Female"]}
+            data={["Male", "Female", "Other"]}
           />
         </Box>
         <DateInput

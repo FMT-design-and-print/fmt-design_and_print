@@ -4,12 +4,7 @@ import { Button, Group } from "@mantine/core";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const excludedPaths = [
-  "/login",
-  "/signup",
-  "/forgot-password",
-  "/reset-password",
-];
+const excludedPaths = ["/login", "/signup", "/reset-password"];
 
 export function AuthButtons() {
   const session = useSession((state) => state.session);

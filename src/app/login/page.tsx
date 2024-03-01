@@ -5,13 +5,19 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Box, Divider } from "@mantine/core";
+import { Alert, Box, Divider } from "@mantine/core";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 
 export default async function Signup({
   searchParams,
 }: {
-  searchParams: { message: string; messageStatus: MessageStatus };
+  searchParams: {
+    message: string;
+    messageStatus: MessageStatus;
+    err_type?: string;
+    error: string;
+    error_description: string;
+  };
 }) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
@@ -25,22 +31,30 @@ export default async function Signup({
   }
 
   return (
-    <AuthCard title="Welcome Back, Sign In" searchParams={searchParams}>
-      <>
-        <GoogleAuthButton />
-        <Divider label="Or Continue with" labelPosition="center" my="md" />
-        <LoginForm />
-        <Box pt="sm">
-          <Link href="/forgot-password" className=" text-sm">
-            Forgotten Password?
-          </Link>
-        </Box>
-        <Box py="sm">
-          <Link href="/signup" className="text-sm">
-            Don’t have an account? Register
-          </Link>
-        </Box>
-      </>
-    </AuthCard>
+    <>
+      {searchParams?.err_type && (
+        <Alert variant="light" color="orange" className="text-center">
+          <p>We were unable to log you in Automatically. Login below </p>
+        </Alert>
+      )}
+
+      <AuthCard title="Welcome Back, Sign In" searchParams={searchParams}>
+        <>
+          <GoogleAuthButton />
+          <Divider label="Or Continue with" labelPosition="center" my="md" />
+          <LoginForm />
+          <Box pt="sm">
+            <Link href="/forgot-password" className=" text-sm">
+              Forgotten Password?
+            </Link>
+          </Box>
+          <Box py="sm">
+            <Link href="/signup" className="text-sm">
+              Don’t have an account? Register
+            </Link>
+          </Box>
+        </>
+      </AuthCard>
+    </>
   );
 }
