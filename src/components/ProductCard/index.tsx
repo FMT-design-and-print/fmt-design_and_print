@@ -11,7 +11,7 @@ interface Props {
 }
 export function ProductCard({ product, link = "" }: Props) {
   return (
-    <Card withBorder radius="md" className={classes.card} w={250}>
+    <Card withBorder radius="md" className={classes.card} w="250px" mb="sm">
       <Card.Section>
         <Link href={link}>
           <Box

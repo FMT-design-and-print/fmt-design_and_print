@@ -27,7 +27,7 @@ export const FiltersDrawer = () => {
         color="gray"
         leftSection={<CiFilter />}
         hiddenFrom="md"
-        w={{ base: "fit-content", sm: 200 }}
+        w={{ base: "100px", md: "120px" }}
       >
         Filters
       </Button>

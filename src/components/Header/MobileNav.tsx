@@ -50,6 +50,10 @@ export const MobileNav = () => {
       >
         <TopBar />
 
+        <Box py="lg" mt="sm">
+          <AuthButtons grow />
+        </Box>
+
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
           <Divider my="sm" />
           <Flex direction="column" h="100%" gap={16} px="md">
@@ -109,10 +113,6 @@ export const MobileNav = () => {
             </Accordion>
           </Flex>
           {/* <Divider my="sm" /> */}
-
-          <Box px="md">
-            <AuthButtons />
-          </Box>
         </ScrollArea>
       </Drawer>
     </>

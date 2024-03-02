@@ -13,6 +13,7 @@ export const DesktopFiltersBtn = () => {
           leftSection={<CiFilter />}
           variant="light"
           color="gray"
+          visibleFrom="md"
         >
           Filters
         </Button>

@@ -13,7 +13,7 @@ export const BreadcrumbRenderer = ({ items }: Props) => {
   const sm = useMediaQuery("(max-width: 56.25em)");
 
   return (
-    <Breadcrumbs bg="gray.2" px="xl" py="md" visibleFrom="xs">
+    <Breadcrumbs bg="gray.2" px="xl" py="md" style={{ flexWrap: "wrap" }}>
       {items.map((item, index) =>
         index === items.length - 1 ? (
           <Text

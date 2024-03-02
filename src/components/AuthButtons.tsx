@@ -12,13 +12,13 @@ const excludedRedirectPaths: string[] = [
   "/forgot-password",
 ];
 
-export function AuthButtons() {
+export function AuthButtons({ grow = false }: { grow?: boolean }) {
   const session = useSession((state) => state.session);
   const pathname = usePathname();
 
   if (!session && !excludedPaths.includes(pathname)) {
     return (
-      <Group wrap="nowrap">
+      <Group wrap="nowrap" grow={grow}>
         <Button
           component={Link}
           href={
