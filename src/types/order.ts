@@ -32,5 +32,5 @@ export interface IOrder {
   estimatedFulfillmentDate?: Date;
   paymentType: string;
   deliveryFee?: number;
-  notes?: string;
+  note?: string;
 }

@@ -1,3 +1,4 @@
+"use client";
 import { Button, Drawer } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React from "react";

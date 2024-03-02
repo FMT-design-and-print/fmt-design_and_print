@@ -3,7 +3,8 @@ import { IPrintProduct, IProductType } from "@/types";
 import { Box, Grid, Group } from "@mantine/core";
 import { PrintProducts } from "./PrintProducts";
 import { ProductTypeCard } from "./ProductTypeCard";
-import { TagsFilters } from "./TagsFilters";
+import { DesktopFilters } from "./TagsFilters/DesktopFilters";
+import { useTagsFilters } from "@/store/filters";
 
 interface Props {
   productTypes: IProductType[];
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const PrintCategory = ({ productTypes, printProducts }: Props) => {
+  const { isExpanded } = useTagsFilters();
+
   return (
     <div>
       <Group px="xl" gap="sm" my="lg">
@@ -26,9 +29,11 @@ const PrintCategory = ({ productTypes, printProducts }: Props) => {
 
       <Box px="xl">
         <Grid>
-          <Grid.Col span={{ base: 4, lg: 3 }} visibleFrom="md">
-            <TagsFilters />
-          </Grid.Col>
+          {isExpanded && (
+            <Grid.Col span={{ base: 4, lg: 3 }} visibleFrom="md">
+              <DesktopFilters />
+            </Grid.Col>
+          )}
           <Grid.Col span="auto">
             <PrintProducts printProducts={printProducts} />
           </Grid.Col>

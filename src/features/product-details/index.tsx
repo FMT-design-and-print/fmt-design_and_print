@@ -76,7 +76,7 @@ export const ProductDetails = ({ product }: Props) => {
       timestamp: new Date(),
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
-      notes: selectedProductOptions.note,
+      note: selectedProductOptions.note,
     };
 
     if (actionType === "buy") {
@@ -97,6 +97,7 @@ export const ProductDetails = ({ product }: Props) => {
         image: product.image,
         size: "",
         quantity: 1,
+        note: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,6 +137,7 @@ export const ProductDetails = ({ product }: Props) => {
           )}
           <ItemRating />
           <Colors
+            mainImage={product.image}
             mainColor={product.color}
             colors={product.colors || []}
             selectedColor={selectedProductOptions.color}

@@ -86,7 +86,7 @@ export interface ICartItem {
   timestamp: Date;
   color?: ProductColor;
   size?: string;
-  notes?: string;
+  note?: string;
 }
 
 export type GroupedPrintProductTypes = Record<
@@ -149,7 +149,7 @@ export interface CheckoutDetails extends IShippingAddress {
   discountCode?: string;
   deliveryFee?: number;
   items: ICartItem[];
-  notes?: string;
+  note?: string;
   saveAddress?: boolean;
   deliveryType: "pickup" | "delivery";
 }

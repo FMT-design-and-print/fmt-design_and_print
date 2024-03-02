@@ -23,7 +23,7 @@ const initialState: CheckoutDetails = {
   town: "",
   address: "",
   items: [],
-  notes: "",
+  note: "",
   deliveryType: "delivery",
   deliveryFee: 30,
 };

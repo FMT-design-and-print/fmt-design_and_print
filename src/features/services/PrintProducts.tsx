@@ -11,6 +11,7 @@ import { BsSearch } from "react-icons/bs";
 import { SelectedTags } from "./SelectedTags";
 import { FiltersDrawer } from "./TagsFilters/FiltersDrawer";
 import { ProductLoaders } from "./ProductLoaders";
+import { DesktopFiltersBtn } from "./TagsFilters/DesktopFiltersBtn";
 
 const itemsPerPage = 50;
 
@@ -46,6 +47,7 @@ export const PrintProducts = ({ printProducts }: Props) => {
         justify={{ base: "center", sm: "flex-start" }}
         wrap="nowrap"
       >
+        <DesktopFiltersBtn />
         <Input
           placeholder="Type to Search..."
           leftSection={<BsSearch size="14px" />}
@@ -63,7 +65,7 @@ export const PrintProducts = ({ printProducts }: Props) => {
           align="center"
           py="lg"
           justify={{ base: "center", md: "flex-start" }}
-          gap={{ base: "md", md: 26, xl: 40 }}
+          gap={{ base: "md", md: 26, xl: 30 }}
         >
           {(searchTerm || tags.length > 0) && filteredProducts.length === 0 ? (
             <NoItemsFound label="Sorry!. No items were found for your search" />

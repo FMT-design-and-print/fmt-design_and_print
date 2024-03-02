@@ -10,6 +10,13 @@ export const AdditionalDetails = ({
   note,
   setSelectedProductOptions,
 }: Props) => {
+  const handleSetNote = (note: string) => {
+    setSelectedProductOptions((prevState) => ({
+      ...prevState,
+      note,
+    }));
+  };
+
   return (
     <Box>
       <Text fw="bold">Leave a Note</Text>
@@ -18,12 +25,7 @@ export const AdditionalDetails = ({
       </Text>
       <Textarea
         value={note}
-        onChange={(e) =>
-          setSelectedProductOptions((prevState) => ({
-            ...prevState,
-            note: e.currentTarget.value,
-          }))
-        }
+        onChange={(event) => handleSetNote(event.currentTarget.value)}
         placeholder="Optional note"
       />
     </Box>

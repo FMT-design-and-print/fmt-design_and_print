@@ -72,7 +72,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       timestamp: new Date(),
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
-      notes: selectedProductOptions.note,
+      note: selectedProductOptions.note,
     };
 
     if (actionType === "cart") {
@@ -95,6 +95,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       image: product.image,
       size: "",
       quantity: 1,
+      note: "Test note",
     });
   }, [product]);
 
@@ -138,6 +139,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
             )}
 
             <Colors
+              mainImage={product.image}
               mainColor={product.color}
               colors={product.colors || []}
               selectedColor={selectedProductOptions.color}

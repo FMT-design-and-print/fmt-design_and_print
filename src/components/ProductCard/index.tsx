@@ -11,16 +11,17 @@ interface Props {
 }
 export function ProductCard({ product, link = "" }: Props) {
   return (
-    <Card withBorder radius="md" className={classes.card} w={300}>
+    <Card withBorder radius="md" className={classes.card} w={250}>
       <Card.Section>
         <Link href={link}>
           <Box
             style={{
               backgroundImage: `url(${product.image})`,
-              backgroundPosition: "center",
+              backgroundPosition: "top -15px right 0px",
+              backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               width: "100%",
-              height: "250px",
+              height: "200px",
             }}
           />
         </Link>
