@@ -46,6 +46,7 @@ const excludedPaths = [
   "/my-account/shipping-address",
   "/my-account/recently-viewed",
   "/my-account/recently-searched",
+  "/reset-password",
 ];
 
 export const ProfileMenu = () => {

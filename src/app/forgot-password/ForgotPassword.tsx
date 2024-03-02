@@ -56,7 +56,7 @@ export const ForgotPassword = ({ searchParams }: Props) => {
     setIsLoading(true);
     const { data: users, error: err } = await supabase
       .from("users")
-      .select("email, provider")
+      .select("email, provider, confirmed")
       .eq("email", email);
 
     if (err) {
@@ -69,6 +69,12 @@ export const ForgotPassword = ({ searchParams }: Props) => {
       // no user was found
       setIsLoading(false);
       return push(getPath(userNotFoundMessage));
+    }
+
+    if (users && users[0].confirmed === false) {
+      // User is not confirmed
+      setIsLoading(false);
+      return push(getPath(unableToVerifyEmailMessage));
     }
 
     if (users && users[0].provider?.toLowerCase() !== "email") {

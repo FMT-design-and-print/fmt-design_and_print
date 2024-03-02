@@ -5,6 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const excludedPaths = ["/login", "/signup", "/reset-password"];
+const excludedRedirectPaths: string[] = [
+  "/login",
+  "/signup",
+  "/reset-password",
+  "/forgot-password",
+];
 
 export function AuthButtons() {
   const session = useSession((state) => state.session);
@@ -15,14 +21,22 @@ export function AuthButtons() {
       <Group wrap="nowrap">
         <Button
           component={Link}
-          href={`/login?redirect=${pathname}`}
+          href={
+            excludedRedirectPaths.includes(pathname)
+              ? "/login"
+              : `/login?redirect=${pathname}`
+          }
           variant="default"
         >
           Log in
         </Button>
         <Button
           component={Link}
-          href={`/signup?redirect=${pathname}`}
+          href={
+            excludedRedirectPaths.includes(pathname)
+              ? "/signup"
+              : `/signup?redirect=${pathname}`
+          }
           className="btn"
         >
           Sign up
