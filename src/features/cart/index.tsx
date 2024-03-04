@@ -23,6 +23,7 @@ export const Cart = () => {
   };
 
   useEffect(() => {
+    // re-set cart items as local state to avoid hydration error because of the if check
     setCartItems(items);
   }, [items]);
 

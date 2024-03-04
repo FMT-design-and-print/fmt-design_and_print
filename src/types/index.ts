@@ -153,3 +153,10 @@ export interface CheckoutDetails extends IShippingAddress {
   saveAddress?: boolean;
   deliveryType: "pickup" | "delivery";
 }
+
+export interface IFavoriteItem {
+  id: string;
+  title: string;
+  price: number;
+  image: string;
+}

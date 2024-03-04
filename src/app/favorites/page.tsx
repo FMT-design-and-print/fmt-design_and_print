@@ -1,7 +1,12 @@
+import { Favorites } from "@/features/favorites";
 import React from "react";
 
 const FavoritesPage = () => {
-  return <div>No favorite items</div>;
+  return (
+    <>
+      <Favorites />
+    </>
+  );
 };
 
 export default FavoritesPage;

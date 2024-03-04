@@ -1,7 +1,7 @@
 import { IPrintProduct } from "@/types";
-import { ActionIcon, Box, Card, Center, Group, Text, rem } from "@mantine/core";
+import { Box, Card, Center, Group, Text } from "@mantine/core";
 import Link from "next/link";
-import { HiOutlineHeart } from "react-icons/hi";
+import { FavoriteBtn } from "./FavoriteBtn";
 import classes from "./ProductCard.module.css";
 import { ProductOptions } from "./ProductOptions";
 
@@ -27,14 +27,12 @@ export function ProductCard({ product, link = "" }: Props) {
         </Link>
       </Card.Section>
 
-      <ActionIcon
-        className={classes.favIcon}
-        size={36}
-        variant="transparent"
-        aria-label="Add to favorites"
-      >
-        <HiOutlineHeart style={{ width: rem(24), height: rem(24) }} />
-      </ActionIcon>
+      <FavoriteBtn
+        productId={product.id}
+        title={product.title}
+        image={product.image}
+        price={product.price}
+      />
 
       <Text component={Link} href={link} mt="md" mb="sm" lineClamp={1}>
         {product.title}
