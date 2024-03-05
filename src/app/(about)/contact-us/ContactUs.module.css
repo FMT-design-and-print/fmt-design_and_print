@@ -3,8 +3,9 @@
   border-radius: var(--mantine-radius-md);
   padding: calc(var(--mantine-spacing-xl) * 2.5);
   background-color: var(--mantine-color-gray-1);
-  @media (max-width: $mantine-breakpoint-sm) {
-    padding: calc(var(--mantine-spacing-xl) * 1.5);
+
+  @media (max-width: 615px) {
+    padding: 1rem;
   }
 }
 

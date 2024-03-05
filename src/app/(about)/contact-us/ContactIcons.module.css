@@ -9,10 +9,7 @@
   background-color: transparent;
 }
 
-.title {
-  color: var(--mantine-color-blue-0);
-}
-
 .description {
   color: var(--mantine-color-white);
+  word-break: break-all;
 }
