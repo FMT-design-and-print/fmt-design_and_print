@@ -4,6 +4,8 @@ import Link from "next/link";
 import { FavoriteBtn } from "./FavoriteBtn";
 import classes from "./ProductCard.module.css";
 import { ProductOptions } from "./ProductOptions";
+import Image from "next/image";
+import { shimmer, toBase64 } from "@/functions/shimmer";
 
 interface Props {
   product: IPrintProduct;
@@ -14,14 +16,17 @@ export function ProductCard({ product, link = "" }: Props) {
     <Card withBorder radius="md" className={classes.card} w="250px" mb="sm">
       <Card.Section>
         <Link href={link}>
-          <Box
+          <Image
+            src={product.image}
+            alt={product.title}
+            width={250}
+            height={200}
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(250, 200)
+            )}`}
             style={{
-              backgroundImage: `url(${product.image})`,
-              backgroundPosition: "top -15px right 0px",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              width: "100%",
-              height: "200px",
+              maxWidth: "100%",
+              height: "auto",
             }}
           />
         </Link>
