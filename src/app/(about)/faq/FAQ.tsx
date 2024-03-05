@@ -11,7 +11,7 @@ export function Faq() {
       </Title>
 
       <Accordion variant="separated">
-        <Accordion.Item className={classes.item} value="reset-password">
+        <Accordion.Item className={classes.item} value="order-placement">
           <Accordion.Control>How do I place an order?</Accordion.Control>
           <Accordion.Panel>
             To place an order, simply browse our website and select the product
@@ -20,7 +20,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="another-account">
+        <Accordion.Item className={classes.item} value="order-cancellation">
           <Accordion.Control>
             Can I cancel or modify my order after it&apos;s been placed?
           </Accordion.Control>
@@ -32,7 +32,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="newsletter">
+        <Accordion.Item className={classes.item} value="order-duration">
           <Accordion.Control>
             How long will it take to receive my order?
           </Accordion.Control>
@@ -45,7 +45,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="credit-card">
+        <Accordion.Item className={classes.item} value="return-policy">
           <Accordion.Control>What is your return policy?</Accordion.Control>
           <Accordion.Panel>
             We want you to be completely satisfied with your purchase. If for
@@ -56,7 +56,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="payment">
+        <Accordion.Item className={classes.item} value="bulk-discount">
           <Accordion.Control>
             Do you offer bulk discounts for large orders?
           </Accordion.Control>
@@ -67,7 +67,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="payment">
+        <Accordion.Item className={classes.item} value="order-tracking">
           <Accordion.Control>
             Can I track the status of my order?
           </Accordion.Control>
@@ -83,7 +83,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="payment">
+        <Accordion.Item className={classes.item} value="contact-for-help">
           <Accordion.Control>
             How can I contact your customer service team?
           </Accordion.Control>
@@ -95,7 +95,7 @@ export function Faq() {
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item className={classes.item} value="payment">
+        <Accordion.Item className={classes.item} value="artwork-file-types">
           <Accordion.Control>
             What types of files can I upload for customization?
           </Accordion.Control>
