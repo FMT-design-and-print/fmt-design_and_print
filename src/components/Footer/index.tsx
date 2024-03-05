@@ -20,15 +20,15 @@ const data = [
     links: [
       { label: "All Products", link: "/services" },
       { label: "FAQ", link: "/faq" },
-      { label: "Artwork Help", link: "#" },
+      { label: "Artwork Help", link: "/artwork-help" },
     ],
   },
   {
     title: "Policies",
     links: [
-      { label: "Privacy Policy", link: "#" },
-      { label: "Shipping and Returns", link: "#" },
-      { label: "Terms of Use", link: "#" },
+      { label: "Privacy Policy", link: "/privacy-policy" },
+      { label: "Shipping and Returns", link: "/shipping-and-returns" },
+      { label: "Terms of Use", link: "terms-of-use" },
     ],
   },
   // {

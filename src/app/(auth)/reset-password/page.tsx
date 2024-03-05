@@ -1,5 +1,5 @@
 import { AuthCard } from "@/components/AuthCard";
-import { PasswordResetForm } from "@/app/reset-password/PasswordResetForm";
+import { PasswordResetForm } from "@/app/(auth)/reset-password/PasswordResetForm";
 import { MessageStatus } from "@/types";
 import Link from "next/link";
 import { Button } from "@mantine/core";

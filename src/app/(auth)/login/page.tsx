@@ -1,5 +1,5 @@
 import { AuthCard } from "@/components/AuthCard";
-import { LoginForm } from "@/app/login/LoginForm";
+import { LoginForm } from "@/app/(auth)/login/LoginForm";
 import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
