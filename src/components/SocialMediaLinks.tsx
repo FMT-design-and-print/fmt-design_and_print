@@ -1,12 +1,11 @@
-import { ActionIcon, Group, rem } from "@mantine/core";
+import { ActionIcon, rem } from "@mantine/core";
 import {
-  IconBrandInstagram,
-  IconBrandTwitter,
   IconBrandFacebook,
+  IconBrandInstagram,
   IconBrandTiktok,
+  IconBrandTwitter,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import React from "react";
 
 const socialMediaHandles = [
   {
@@ -33,26 +32,19 @@ const socialMediaHandles = [
 ];
 
 export const SocialMediaLinks = () => {
-  return (
-    <Group gap={0} justify="flex-end" wrap="nowrap">
-      {socialMediaHandles.map((handle) => (
-        <ActionIcon
-          key={handle.name}
-          component={Link}
-          href={handle.handle}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="lg"
-          color="gray"
-          variant="subtle"
-          aria-label={handle.name}
-        >
-          <handle.icon
-            style={{ width: rem(18), height: rem(18) }}
-            stroke={1.5}
-          />
-        </ActionIcon>
-      ))}
-    </Group>
-  );
+  return socialMediaHandles.map((handle) => (
+    <ActionIcon
+      key={handle.name}
+      component={Link}
+      href={handle.handle}
+      target="_blank"
+      rel="noopener noreferrer"
+      size="lg"
+      color="gray.2"
+      variant="subtle"
+      aria-label={handle.name}
+    >
+      <handle.icon style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
+    </ActionIcon>
+  ));
 };
