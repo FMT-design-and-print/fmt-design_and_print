@@ -84,8 +84,4 @@
   .groups {
     display: none;
   }
-
-  .social {
-    margin-top: var(--mantine-spacing-xs);
-  }
 }
