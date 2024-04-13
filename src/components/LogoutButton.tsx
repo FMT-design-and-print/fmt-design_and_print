@@ -16,6 +16,7 @@ export const LogoutButton = () => {
 
     setSession(null);
     setUser(undefined);
+    localStorage.removeItem("fmt_initialUserDetailsSaved");
   };
 
   return (

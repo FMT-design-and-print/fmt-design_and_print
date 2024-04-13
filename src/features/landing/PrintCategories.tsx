@@ -1,11 +1,12 @@
 import React from "react";
 import { HeroLink } from "./HeroLink";
 import { useMediaQuery } from "@mantine/hooks";
-import { Button, Center, Group, Loader, em } from "@mantine/core";
+import { Box, Button, Group, Skeleton, em } from "@mantine/core";
 import { ICategory } from "@/types";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { useCategories } from "@/hooks/useCategories";
 import { featureFlags } from "@/constants/feature-flags";
+import Link from "next/link";
 
 const gift: ICategory = {
   id: "",
@@ -16,15 +17,23 @@ const gift: ICategory = {
   tagline: "",
 };
 
+const LoadingItem = () => (
+  <Group my="sm">
+    <Skeleton height={35} width={35} radius="sm" />
+    <Skeleton height={30} style={{ flex: 1 }} radius="sm" />
+  </Group>
+);
+
 export const PrintCategories = () => {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
   const { isLoading, categories } = useCategories();
 
   if (isLoading) {
     return (
-      <Center>
-        <Loader size="xs" color="pink" />
-      </Center>
+      <Box>
+        <LoadingItem />
+        <LoadingItem />
+      </Box>
     );
   }
 
@@ -47,7 +56,7 @@ export const PrintCategories = () => {
       )}
 
       <Group py={8} grow>
-        <Button className="btn">
+        <Button component={Link} href="/services" className="btn" maw={250}>
           View More <FaLongArrowAltRight style={{ margin: "0 10px" }} />
         </Button>
       </Group>

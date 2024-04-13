@@ -1,3 +1,4 @@
+"use client";
 import { Box, Divider, Flex, Group, Text } from "@mantine/core";
 import {
   IconClockSearch,
@@ -14,6 +15,7 @@ import { DesktopMenu } from "./DesktopMenu";
 import { MobileMenu } from "./MobileMenu";
 import { ILink } from "./types";
 import { featureFlags } from "@/constants/feature-flags";
+import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 
 const topLinks: ILink[] = [
   {
@@ -72,11 +74,12 @@ const accountLinks: ILink[] = [
 
 interface Props {
   email: string;
-  name?: string;
   children: ReactNode;
 }
 
-export function MyAccount({ email, name, children }: Props) {
+export function MyAccount({ email, children }: Props) {
+  useSaveInitialUserDetails();
+
   return (
     <>
       <Box hiddenFrom="md">
@@ -86,7 +89,6 @@ export function MyAccount({ email, name, children }: Props) {
           </Text>
           <MobileMenu
             email={email}
-            name={name}
             image=""
             topLinks={topLinks}
             accountLinks={accountLinks}
@@ -98,7 +100,6 @@ export function MyAccount({ email, name, children }: Props) {
       <Flex>
         <Box visibleFrom="md">
           <DesktopMenu
-            name={name}
             image=""
             email={email}
             topLinks={topLinks}

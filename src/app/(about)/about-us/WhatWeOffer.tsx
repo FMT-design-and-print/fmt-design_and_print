@@ -10,14 +10,15 @@ import {
   rem,
 } from "@mantine/core";
 import {
+  Icon,
   IconCalendarTime,
   IconCircleCheck,
   IconPaperBag,
   IconPencil,
   IconPrinter,
+  IconProps,
   IconShirt,
   IconUser,
-  TablerIconsProps,
 } from "@tabler/icons-react";
 import React from "react";
 import classes from "./FeaturesCards.module.css";
@@ -25,10 +26,12 @@ import classes from "./FeaturesCards.module.css";
 export type Data = {
   title: string;
   description: string;
-  icon: (props: TablerIconsProps) => React.JSX.Element;
+  icon: React.ForwardRefExoticComponent<
+    Omit<IconProps, "ref"> & React.RefAttributes<Icon>
+  >;
 };
 
-const offers: Data[] = [
+const offers = [
   {
     title: "Apparels",
     description:

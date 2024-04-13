@@ -1,16 +1,21 @@
-import { Box, Button, Group, Stack, Title } from "@mantine/core";
+"use client";
+import { Box, Button, Container, Group, Stack, Title } from "@mantine/core";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FeaturedItems } from "./FeaturedItems";
 import { Hero } from "./Hero";
 import Link from "next/link";
 import { IFeaturedProducts } from "@/types";
+import { Faq } from "@/components/FAQ/FAQ";
+import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 
 interface Props {
   featuredProducts: IFeaturedProducts;
 }
 export const Landing = ({ featuredProducts }: Props) => {
+  useSaveInitialUserDetails();
+
   return (
-    <>
+    <Container size="xl">
       <Hero />
       <Box p={{ base: "md", sm: "xl" }}>
         <Group my="xl" justify="space-between">
@@ -63,6 +68,10 @@ export const Landing = ({ featuredProducts }: Props) => {
           )}
         </Stack>
       </Box>
-    </>
+
+      <Box my="xl">
+        <Faq isOverview />
+      </Box>
+    </Container>
   );
 };

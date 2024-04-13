@@ -18,27 +18,29 @@ const MyAccountProfilePage = async () => {
     return redirect("/");
   }
 
-  const { data: user, error } = await supabase
+  const { data, error } = await supabase
     .from("users")
     .select(
-      "firstName,lastName,profileImage,phone,country,region,gender,dateOfBirth"
+      "firstName, lastName, profileImage, phone, country, region, gender, dateOfBirth"
     )
     .eq("id", session.user.id)
-    .single();
+    .limit(1);
 
   return (
     <div>
-      <MyAccount
-        email={session.user.email || ""}
-        name={`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
-      >
+      <MyAccount email={session.user.email || ""}>
         {error ? (
           <Alert variant="light" maw={400} mx="auto" color="red">
             Failed to Load profile details. Try again.
           </Alert>
         ) : (
           <ProfileForm
-            user={{ id: session.user.id, email: session.user.email, ...user }}
+            user={{
+              id: session.user.id,
+              email: session.user.email,
+              ...data[0],
+            }}
+            isUserSaved={data?.length !== 0}
           />
         )}
       </MyAccount>

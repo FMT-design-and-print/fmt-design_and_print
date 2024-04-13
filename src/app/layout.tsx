@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/nprogress/styles.css";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import type { Metadata } from "next";

@@ -59,7 +59,7 @@ export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
         "id, email, provider, requestedConfirmLinkNumberOfTimes, confirmed"
       )
       .eq("email", email)
-      .single();
+      .limit(1);
 
     if (err) {
       // error encountered when loading user details
@@ -67,18 +67,18 @@ export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
       return push(getPath(userNotFoundMessage));
     }
 
-    if (!user) {
+    if (!user || user.length === 0) {
       // no user was found
       setIsLoading(false);
       return push(getPath(userNotFoundMessage));
     } else {
-      if (user.provider?.toLowerCase() !== "email" || user.confirmed) {
+      if (user[0].provider?.toLowerCase() !== "email" || user[0].confirmed) {
         // User signed up using OAuth
         setIsLoading(false);
         return push(getPath(alreadyConfirmedMsg));
       }
 
-      if (user.requestedConfirmLinkNumberOfTimes >= 3) {
+      if (user[0].requestedConfirmLinkNumberOfTimes >= 3) {
         setIsLoading(false);
         return push(getPath(exceededRequestLimitMsg));
       }
@@ -101,7 +101,7 @@ export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
       .from("users")
       .update({
         requestedConfirmLinkNumberOfTimes:
-          user.requestedConfirmLinkNumberOfTimes + 1,
+          user[0].requestedConfirmLinkNumberOfTimes + 1,
       })
       .eq("email", email);
 

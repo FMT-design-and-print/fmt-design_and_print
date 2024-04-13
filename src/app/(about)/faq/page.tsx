@@ -1,5 +1,5 @@
+import { Faq } from "@/components/FAQ/FAQ";
 import React from "react";
-import { Faq } from "./FAQ";
 
 const FaqPage = () => {
   return (

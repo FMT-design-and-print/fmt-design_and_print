@@ -16,18 +16,21 @@ import {
   Title,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
   user: IUserDetails;
+  isUserSaved: boolean;
 }
 
-export const ProfileForm = ({ user }: Props) => {
+export const ProfileForm = ({ user, isUserSaved }: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState<IUserDetails>({ ...user });
+  const queryClient = useQueryClient();
 
   const dob =
     !userDetails.dateOfBirth || userDetails.dateOfBirth == null
@@ -43,18 +46,32 @@ export const ProfileForm = ({ user }: Props) => {
 
     if (Object.keys(changedDetails).length > 0) {
       const supabase = createClient();
-      setLoading(true);
-      await supabase
-        .from("users")
-        .update(changedDetails)
-        .eq("id", user.id)
-        .select();
-      setLoading(false);
+
+      if (isUserSaved) {
+        setLoading(true);
+        await supabase.from("users").update(changedDetails).eq("id", user.id);
+
+        setLoading(false);
+      } else {
+        const { data } = await supabase
+          .from("users")
+          .insert([userDetails])
+          .select(
+            "firstName, lastName, profileImage, phone, country, region, gender, dateOfBirth"
+          )
+          .limit(1);
+        setUserDetails((prevData) => ({ ...prevData, ...data?.[0] }));
+      }
 
       toast.success("Profile details updated");
+      queryClient.invalidateQueries({ queryKey: ["user", user.id] });
       router.refresh();
     }
   };
+
+  useEffect(() => {
+    setUserDetails((prevDetails) => ({ ...prevDetails, ...user }));
+  }, [user]);
 
   return (
     <Card maw={500} withBorder my="sm" mx="auto">

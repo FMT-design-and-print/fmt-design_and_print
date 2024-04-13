@@ -23,12 +23,6 @@ const ResendConfirmLinkPage = async ({ searchParams }: Props) => {
     return redirect("/");
   }
 
-  // supabase
-  //   .from("users")
-  //   .select("email")
-  //   .eq("email", searchParams.message)
-  //   .single();
-
   return (
     <>
       <ResendConfirmLinkForm searchParams={searchParams} />

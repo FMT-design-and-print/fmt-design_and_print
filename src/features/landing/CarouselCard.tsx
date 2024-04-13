@@ -26,7 +26,7 @@ export const CarouselCard = () => {
     >
       {images.map((image) => (
         <Carousel.Slide key={image}>
-          <AspectRatio ratio={1080 / 720} mah={400} mx="auto" bg="cyan" p={4}>
+          <AspectRatio ratio={1080 / 720} mah={400} mx="auto" p={4}>
             <Image src={image} height={220} alt="banner image" />
           </AspectRatio>
         </Carousel.Slide>

@@ -7,23 +7,20 @@ import { useState } from "react";
 import { RenderLinks } from "./Links";
 import classes from "./Navbar.module.css";
 import { ILink } from "./types";
+import { useUser } from "@/hooks/useUser";
 
 interface Props {
-  name?: string;
   email?: string;
   image?: string;
   topLinks: ILink[];
   accountLinks: ILink[];
 }
 
-export const MobileMenu = ({
-  email,
-  image,
-  name,
-  topLinks,
-  accountLinks,
-}: Props) => {
+export const MobileMenu = ({ email, image, topLinks, accountLinks }: Props) => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const { user } = useUser();
+
+  const userName = (user?.firstName || "") + " " + (user?.lastName || "");
 
   return (
     <Menu
@@ -44,7 +41,7 @@ export const MobileMenu = ({
             </Avatar>
             <div>
               <Text size="sm" fw={500}>
-                {name}
+                {userName.trim() ? userName : ""}
               </Text>
               <Text fw={500} c="dimmed" size="xs" lh={1} mr={3}>
                 {email}
