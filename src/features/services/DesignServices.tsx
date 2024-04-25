@@ -1,6 +1,6 @@
 import { Box, Group, Input } from "@mantine/core";
 import React from "react";
-import { ProductTypeCard } from "./ProductTypeCard";
+import { ProductTypeCard } from "../../components/ProductTypeCard";
 
 const link = "services/design/productType";
 

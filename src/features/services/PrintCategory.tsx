@@ -2,7 +2,7 @@
 import { IPrintProduct, IProductType } from "@/types";
 import { Box, Grid, Group } from "@mantine/core";
 import { PrintProducts } from "./PrintProducts";
-import { ProductTypeCard } from "./ProductTypeCard";
+import { ProductTypeCard } from "../../components/ProductTypeCard";
 import { DesktopFilters } from "./TagsFilters/DesktopFilters";
 import { useTagsFilters } from "@/store/filters";
 

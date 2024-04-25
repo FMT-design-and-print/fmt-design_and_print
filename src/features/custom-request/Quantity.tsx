@@ -1,3 +1,4 @@
+"use client";
 import { NumberInput, Text } from "@mantine/core";
 import React from "react";
 import { useCustomRequest } from ".";
@@ -7,6 +8,7 @@ export const Quantity = () => {
 
   return (
     <NumberInput
+      miw={250}
       label={
         <Text size="sm">
           Quantity{" "}

@@ -1,31 +1,20 @@
 "use client";
-import {
-  Box,
-  ComboboxData,
-  Group,
-  LoadingOverlay,
-  Select,
-  Stack,
-  Text,
-} from "@mantine/core";
-import { ArtworkOptions } from "../ArtworkOptions";
-import { ArtworksDropzone } from "../ArtworksDropzone";
-import { DesignInstructions } from "../DesignInstructions";
-import { BrandSelect } from "../BrandSelect";
+import { useSession } from "@/store";
+import { ComboboxData, Group, Select, Text } from "@mantine/core";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCustomRequest } from "..";
+import { ArtworkSection } from "../ArtworkSection";
+import { BrandSelect } from "../BrandSelect";
+import { DesignInstructions } from "../DesignInstructions";
+import { ErrorsRenderer } from "../ErrorsRenderer";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
-import { validateQuoteMedium } from "../validate-quote-medium";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { isArtworkRequired } from "../required-artwork";
+import { saveCustomOrderDetails } from "../save-details";
 import { uploadArtworkFiles } from "../upload-files";
-import { createClient } from "@/utils/supabase/client";
-import { ICustomOrder } from "@/types/order";
-import { ItemTypes } from "@/constants/item-types";
-import { getOrderId } from "@/functions";
-import { useSession } from "@/store";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { validateQuoteMedium } from "../validate-quote-medium";
+import { Layout } from "./Layout";
 
 const tShirtBrands: ComboboxData = [
   {
@@ -44,6 +33,7 @@ const tShirtBrands: ComboboxData = [
 
 export const TShirts = () => {
   const router = useRouter();
+  const { productType } = useParams();
   const context = useCustomRequest();
   const [brand, setBrand] = useState("");
   const [side, setSide] = useState("");
@@ -74,8 +64,7 @@ export const TShirts = () => {
     }
 
     if (
-      context?.selectedArtworkOption === "own-artwork" &&
-      context?.artworkFiles.length === 0
+      isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
     ) {
       errors.push("Upload artworks");
     }
@@ -92,8 +81,6 @@ export const TShirts = () => {
   };
 
   const handleReceiveQuote = async () => {
-    context?.setIsSubmitting(true);
-
     const errors = validateFields();
     if (errors.length > 0) {
       setErrors(errors);
@@ -105,54 +92,35 @@ export const TShirts = () => {
     setLoadingMessage("Uploading  Artwork files...");
     const urls = await uploadArtworkFiles(context?.artworkFiles || []);
 
-    setLoadingMessage("Adding details...");
-
-    const supabase = createClient();
-    const customOrderDetails: Partial<ICustomOrder> = {
-      itemType: ItemTypes.TSHIRT,
-      orderId: getOrderId(),
+    const requestDetails = {
+      itemType: productType,
       user_id: user?.id,
-      status: "requested",
-      orderDetails: {
-        brand,
-        side,
-        sleeveType,
-        printType,
-        quantity: context?.quantity,
-        artworkOption: context?.selectedArtworkOption,
-        artworks: urls,
-        quoteReceptionMedium: context?.quoteReceptionMedium,
-        quoteReceptionValue: context?.quoteReceptionValue,
-        instructions: context?.designInstructions,
-      },
     };
-    const { data, error } = await supabase
-      .from("custom-orders")
-      .insert([customOrderDetails])
-      .select("orderId")
-      .single();
 
+    const orderDetails = {
+      brand,
+      side,
+      sleeveType,
+      printType,
+      artworks: urls,
+    };
+
+    setLoadingMessage("Adding details...");
+    const { isSuccess, data } = await saveCustomOrderDetails(
+      requestDetails,
+      orderDetails,
+      context
+    );
     setIsLoading(false);
     setLoadingMessage("");
 
-    if (error) {
-      toast.error("Could not add details. Please try again.");
-      return;
+    if (isSuccess) {
+      router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
-
-    toast.success(
-      "Order requested successfully. We will reach out to you soon."
-    );
-    router.push(`/custom-request/success?orderId=${data?.orderId}`);
   };
 
   return (
-    <Stack gap={16} py="lg" pos="relative">
-      <LoadingOverlay
-        visible={isLoading}
-        overlayProps={{ radius: "sm", blur: 2, children: loadingMessage }}
-        loaderProps={{ color: "pink", type: "dots" }}
-      />
+    <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
       <Group grow>
         <BrandSelect
           defaultValue={"aoykawim"}
@@ -161,6 +129,7 @@ export const TShirts = () => {
           onChange={(brand) => setBrand(brand || "")}
         />
         <Select
+          miw={250}
           label="Sides"
           placeholder="Select design sides (front/back)"
           data={["Front only", "Back only", "Front & Back"]}
@@ -171,6 +140,7 @@ export const TShirts = () => {
 
       <Group grow>
         <Select
+          miw={250}
           label="Sleeve Type"
           placeholder="Select sleeve type"
           data={["Short sleeve", "Long sleeve"]}
@@ -179,6 +149,7 @@ export const TShirts = () => {
         />
 
         <Select
+          miw={250}
           label="Print Type"
           placeholder="Select print type"
           data={["DTF", "Screen Printing"]}
@@ -193,26 +164,11 @@ export const TShirts = () => {
         as design instructions below
       </Text>
 
-      <Box my="md">
-        <Text mb="xs">Artworks</Text>
-        <ArtworkOptions />
-        {context?.selectedArtworkOption === "own-artwork" && (
-          <>
-            <Text c="dimmed" size="sm">
-              Please upload high quality artworks below
-            </Text>
-            <ArtworksDropzone />
-            <Text c="dimmed" size="sm" mt="sm">
-              <b>NB:</b> If you are uploading many artworks files or files with
-              huge sizes, please send them to us separately via Whatsapp here
-            </Text>
-          </>
-        )}
-      </Box>
+      <ArtworkSection />
       <DesignInstructions />
       <QuoteReceptionOptions handleReceiveQuote={handleReceiveQuote} />
 
       {errors.length > 0 && <ErrorsRenderer errors={errors} />}
-    </Stack>
+    </Layout>
   );
 };

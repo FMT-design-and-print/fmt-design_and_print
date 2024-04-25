@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, Card, Group, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";

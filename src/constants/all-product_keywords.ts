@@ -21,12 +21,15 @@ export const pillowKeywords = [
   "pillows_covers",
 ];
 
+export const mugKeyWords = ["mug", "mugs"];
+
 export const productKeywords = [
   ...tShirtKeywords,
   ...lacosteKeywords,
   ...hoodieKeywords,
   ...capKeywords,
   ...pillowKeywords,
+  ...mugKeyWords,
 
   "socks",
   "aprons",

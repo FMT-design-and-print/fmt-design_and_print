@@ -1,6 +1,6 @@
 import { Box, Button, Group, Input, Space, Title, rem } from "@mantine/core";
 import { BsArrowRight } from "react-icons/bs";
-import { ProductTypeCard } from "./ProductTypeCard";
+import { ProductTypeCard } from "../../components/ProductTypeCard";
 import Link from "next/link";
 import { GroupedPrintProductTypes } from "@/types";
 import { useEffect, useState } from "react";

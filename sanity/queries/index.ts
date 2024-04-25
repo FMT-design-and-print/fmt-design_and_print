@@ -3,7 +3,10 @@ export {
   filteredCategoriesByProductTypeQuery,
 } from "./categories";
 export { featuredProductsQuery } from "./featured";
-export { productTypesQuery, filteredProductTypesQuery } from "./product-types";
+export {
+  liveProductTypesQuery,
+  filteredProductTypesQuery,
+} from "./product-types";
 export {
   printProductsQuery,
   printProductsByTypeQuery,
