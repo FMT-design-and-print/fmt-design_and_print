@@ -35,7 +35,7 @@ export const OrderStatusAlert = ({ title, status, orderId }: Props) => {
     );
   }
 
-  if (status === "pending") {
+  if (status === "pending" || status === "requested") {
     return (
       <Alert
         variant="light"

@@ -20,7 +20,6 @@ export const PaymentOptions = () => {
           color="dark"
           checked={paymentType === "momo"}
           onChange={() => {
-            console.log();
             update("paymentType", "momo");
           }}
           label={

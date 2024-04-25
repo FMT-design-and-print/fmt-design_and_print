@@ -1,6 +1,12 @@
 export type MessageStatus = "error" | "success" | "info";
 export type CouponType = "percentage" | "fixed" | "free-shipping";
 export type CouponStatus = "expired" | "active" | "disabled";
+export type ArtworkOption =
+  | "own-artwork"
+  | "fmt-to-provide"
+  | "no-artwork-needed";
+
+export type QuoteReceptionMedium = "email" | "whatsapp" | "sms";
 
 export interface ICategory {
   id: string;

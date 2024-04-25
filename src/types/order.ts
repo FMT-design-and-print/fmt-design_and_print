@@ -10,18 +10,18 @@ export type OrderStatus =
   | "ready"
   | "completed"
   | "pending-cancellation"
-  | "cancelled";
+  | "cancelled"
+  | "requested";
 
 export type DeliveryType = "pickup" | "delivery";
 
 export interface IOrderItem extends ICartItem {}
 
-export interface IOrder {
+interface CommonOrderDetails {
   id: any;
   created_at: Date;
   completed_at?: Date;
   orderId: string;
-  items: IOrderItem[];
   totalAmount: number;
   status: OrderStatus;
   deliveryType: DeliveryType;
@@ -32,5 +32,14 @@ export interface IOrder {
   estimatedFulfillmentDate?: Date;
   paymentType: string;
   deliveryFee?: number;
+}
+
+export interface IOrder extends CommonOrderDetails {
+  items: IOrderItem[];
   note?: string;
+}
+
+export interface ICustomOrder extends CommonOrderDetails {
+  itemType: string;
+  orderDetails: object;
 }

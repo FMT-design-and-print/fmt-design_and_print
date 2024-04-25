@@ -18,7 +18,7 @@ export const GoogleAuthButton = () => {
       : `${origin}/auth/callback`;
 
     const supabase = createClient();
-    const { error, data } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo,
@@ -31,8 +31,6 @@ export const GoogleAuthButton = () => {
 
     if (error) {
       return redirect("/login?message=Could not authenticate user");
-    } else {
-      console.log(data);
     }
   };
 

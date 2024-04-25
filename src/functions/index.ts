@@ -174,3 +174,27 @@ export const getOrderStatusText = (status: OrderStatus) => {
       return "";
   }
 };
+
+export function formatString(input: string) {
+  // Remove leading and trailing whitespaces and convert to lowercase
+  input = input.trim().toLowerCase();
+
+  // Split the input string by spaces, hyphens, or commas
+  const words = input.split(/[ ,-]+/);
+
+  // Capitalize the first letter of each word
+  const formattedWords = words.map((word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+
+  // Join the formatted words with a space
+  const output = formattedWords.join(" ");
+
+  return output;
+}
+
+export function bytesToMB(bytes: number) {
+  // 1 MB = 1024 * 1024 bytes
+  const megabytes = bytes / (1024 * 1024);
+  return megabytes.toFixed(2) + "MB";
+}

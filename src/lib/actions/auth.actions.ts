@@ -109,19 +109,6 @@ export const resetPassword = async (data: ResetData) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  // if (searchParams.code) {
-  //   const supabase = createClient();
-  //   const { error } = await supabase.auth.exchangeCodeForSession(
-  //     searchParams.code
-  //   );
-
-  //   if (error) {
-  //     return redirect(
-  //       `/reset-password?message=Unable to reset Password. Link expired!`
-  //     );
-  //   }
-  // }
-
   const { error } = await supabase.auth.updateUser({
     password,
   });

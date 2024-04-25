@@ -24,7 +24,7 @@ export const Hero = () => {
 
       <Grid.Col span={3} visibleFrom="md">
         <Card withBorder h="100%">
-          <Link href="">
+          <Link href="/custom-request">
             <Group py="md" wrap="nowrap">
               <Avatar alt="" size={25}>
                 <IconPrinter />
