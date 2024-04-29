@@ -24,8 +24,8 @@ export function validateQuoteMedium(
     }
 
     if (
-      quoteReceptionMedium === "whatsapp" ||
-      (quoteReceptionMedium === "sms" && value.length !== 10)
+      (quoteReceptionMedium === "whatsapp" || quoteReceptionMedium === "sms") &&
+      value.length !== 10
     ) {
       errors.push("Enter valid number. It should be 10 digits");
     }

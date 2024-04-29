@@ -3,7 +3,10 @@ import { NumberInput, Text } from "@mantine/core";
 import React from "react";
 import { useCustomRequest } from ".";
 
-export const Quantity = () => {
+interface Props {
+  minQty?: number;
+}
+export const Quantity = ({ minQty = 1 }: Props) => {
   const context = useCustomRequest();
 
   return (
@@ -13,7 +16,7 @@ export const Quantity = () => {
         <Text size="sm">
           Quantity{" "}
           <Text component="span" c="dimmed">
-            (minimum qty 1)
+            (minimum qty {minQty || 1})
           </Text>
         </Text>
       }

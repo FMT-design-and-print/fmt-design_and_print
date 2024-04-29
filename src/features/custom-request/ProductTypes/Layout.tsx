@@ -1,4 +1,4 @@
-import { LoadingOverlay, Stack } from "@mantine/core";
+import { Center, Loader, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { ReactNode } from "react";
 
 interface Props {
@@ -6,13 +6,26 @@ interface Props {
   isLoading: boolean;
   loadingMessage?: string;
 }
-export const Layout = ({ children, isLoading, loadingMessage }: Props) => {
+export const Layout = ({
+  children,
+  isLoading,
+  loadingMessage = "Loading...",
+}: Props) => {
   return (
     <Stack gap={16} py="lg" pos="relative">
       <LoadingOverlay
         visible={isLoading}
-        overlayProps={{ radius: "sm", blur: 2, children: loadingMessage }}
-        loaderProps={{ color: "pink", type: "dots" }}
+        overlayProps={{ radius: "sm", blur: 2 }}
+        loaderProps={{
+          children: (
+            <Center>
+              <Stack align="center">
+                <Loader color="pink" type="dots" />
+                <Text>{loadingMessage}</Text>
+              </Stack>
+            </Center>
+          ),
+        }}
       />
 
       {children}

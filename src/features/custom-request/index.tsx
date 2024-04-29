@@ -29,6 +29,8 @@ interface ICustomRequestContext {
   quoteReceptionValue: string;
   editor: Editor | null;
   quantity: number;
+  productImageUrl: string;
+  setProductImageUrl: (value: string) => void;
   setQuantity: (value: number) => void;
   setQuoteReceptionValue: (value: string) => void;
   setQuoteReceptionMedium: (value: QuoteReceptionMedium) => void;
@@ -54,6 +56,7 @@ export const CustomRequest = ({ children }: Props) => {
     useState<QuoteReceptionMedium>("email");
   const [quoteReceptionValue, setQuoteReceptionValue] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [productImageUrl, setProductImageUrl] = useState("");
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -85,6 +88,7 @@ export const CustomRequest = ({ children }: Props) => {
         quoteReceptionValue,
         editor,
         quantity,
+        productImageUrl,
         isSubmitting,
         setIsSubmitting,
         setSelectedArtworkOption,
@@ -92,6 +96,7 @@ export const CustomRequest = ({ children }: Props) => {
         setQuoteReceptionValue,
         setQuoteReceptionMedium,
         setQuantity,
+        setProductImageUrl,
       }}
     >
       {children}

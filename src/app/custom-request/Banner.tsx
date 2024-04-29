@@ -1,5 +1,7 @@
+"use client";
+import { useCustomRequest } from "@/features/custom-request";
 import { formatString } from "@/functions";
-import { Button, Center, Title } from "@mantine/core";
+import { Avatar, Button, Center, Stack, Title } from "@mantine/core";
 import { IconArrowBack } from "@tabler/icons-react";
 import Link from "next/link";
 import React from "react";
@@ -9,6 +11,7 @@ interface Props {
 }
 
 export const Banner = ({ name }: Props) => {
+  const context = useCustomRequest();
   const productName = name ? formatString(name) : "";
 
   return (
@@ -26,7 +29,18 @@ export const Banner = ({ name }: Props) => {
       >
         Select new product
       </Button>
-      <Title c="gray.7">Custom {productName} Order</Title>
+
+      <Stack align="center">
+        <Avatar src={context?.productImageUrl} size="lg">
+          {productName.charAt(0).toUpperCase()}
+        </Avatar>
+        <Title c="gray.7" visibleFrom="sm">
+          Request for {productName}
+        </Title>
+        <Title c="gray.7" hiddenFrom="sm" order={2}>
+          Request for {productName}
+        </Title>
+      </Stack>
     </Center>
   );
 };

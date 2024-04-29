@@ -1,9 +1,7 @@
 "use client";
-import { useSession } from "@/store";
+import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
 import { ComboboxData, Group, Select, Text } from "@mantine/core";
-import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { useCustomRequest } from "..";
 import { ArtworkSection } from "../ArtworkSection";
 import { BrandSelect } from "../BrandSelect";
 import { DesignInstructions } from "../DesignInstructions";
@@ -22,6 +20,10 @@ const tShirtBrands: ComboboxData = [
     label: "Aoykawim (Recommended)",
   },
   {
+    value: "mr_tan",
+    label: "Mr Tan",
+  },
+  {
     value: "gildan",
     label: "Gildan",
   },
@@ -32,17 +34,19 @@ const tShirtBrands: ComboboxData = [
 ];
 
 export const TShirts = () => {
-  const router = useRouter();
-  const { productType } = useParams();
-  const context = useCustomRequest();
+  const {
+    context,
+    loadingState: { isLoading, setIsLoading },
+    loadingMsgState: { loadingMessage, setLoadingMessage },
+    errorsState: { errors, setErrors },
+    user,
+    router,
+    productType,
+  } = useCustomReqCommonStates();
   const [brand, setBrand] = useState("");
   const [side, setSide] = useState("");
   const [sleeveType, setSleeveType] = useState("");
   const [printType, setPrintType] = useState("");
-  const [errors, setErrors] = useState<string[]>([]);
-  const [loadingMessage, setLoadingMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const user = useSession((state) => state.user);
 
   const validateFields = () => {
     let errors: string[] = [];

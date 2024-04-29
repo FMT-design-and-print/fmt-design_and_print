@@ -122,7 +122,8 @@ export const ArtworksDropzone = (props: Partial<DropzoneProps>) => {
             </Text>
             <Text size="sm" c="dimmed" inline mt={7}>
               You can upload a maximum of 5 artworks, each file should not
-              exceed 10mb. Accepted formats: .eps, .svg, .ai, .pdf, .png
+              exceed 10mb. Accepted formats: .eps, .svg, .ai, .pdf, .png and
+              sometimes(.jpg, .jpeg)
             </Text>
           </div>
         </Group>

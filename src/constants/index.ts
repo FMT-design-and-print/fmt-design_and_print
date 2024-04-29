@@ -17,3 +17,7 @@ export const exceededRequestLimitMsg =
   "You have exceeded confirm link request limit. Please contact support team.";
 export const resendLinkFailed =
   "Unable to resend link at this time. Try again!";
+
+export const whatsappUrl = "https://wa.me/0559617959";
+export const artworkText = `Please I would like to send my artworks for my custom order. 
+My order number is:  `;

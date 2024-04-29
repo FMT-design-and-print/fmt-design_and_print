@@ -1,11 +1,10 @@
 "use client";
 import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
-import { ComboboxData, Group } from "@mantine/core";
+import { Select, Text } from "@mantine/core";
 import { useState } from "react";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
 import { ErrorsRenderer } from "../ErrorsRenderer";
-import { ItemTypeSelect } from "../ItemTypeSelect";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";
@@ -14,18 +13,7 @@ import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 
-const mugTypes: ComboboxData = [
-  {
-    value: "ceramic",
-    label: "Ceramic mug",
-  },
-  {
-    value: "magic",
-    label: "Magic mug",
-  },
-];
-
-export const Mugs = () => {
+export const Caps = () => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -35,13 +23,13 @@ export const Mugs = () => {
     router,
     productType,
   } = useCustomReqCommonStates();
-  const [mugType, setMugType] = useState("");
+  const [printType, setPrintType] = useState("");
 
   const validateFields = () => {
     let errors: string[] = [];
 
-    if (!mugType) {
-      errors.push("Select Mug Type");
+    if (!printType) {
+      errors.push("Select Print Type");
     }
 
     if (
@@ -79,7 +67,7 @@ export const Mugs = () => {
     };
 
     const orderDetails = {
-      mugType,
+      printType,
       artworks: urls,
     };
 
@@ -92,22 +80,27 @@ export const Mugs = () => {
     setLoadingMessage("");
 
     if (isSuccess) {
-      console.log(data);
       router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
   };
 
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
-      <Group grow flex="wrap">
-        <ItemTypeSelect
-          value={mugType}
-          onChange={(value) => setMugType(value || "")}
-          label="Mug Type"
-          types={mugTypes}
-        />
-        <Quantity />
-      </Group>
+      <Select
+        miw={250}
+        label="Print Type"
+        placeholder="Select print type"
+        data={["DTF", "Embroidery"]}
+        value={printType}
+        onChange={(printType) => setPrintType(printType || "")}
+      />
+
+      <Quantity />
+
+      <Text c="dimmed" size="sm" mt="sm">
+        <b>NB:</b> Options like <b>Colors</b> and <b>Sizes</b> should be added
+        as design instructions below
+      </Text>
 
       <ArtworkSection />
       <DesignInstructions />

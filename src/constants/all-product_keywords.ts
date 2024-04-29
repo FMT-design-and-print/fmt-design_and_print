@@ -21,7 +21,35 @@ export const pillowKeywords = [
   "pillows_covers",
 ];
 
-export const mugKeyWords = ["mug", "mugs"];
+export const mugKeywords = ["mug", "mugs"];
+export const frameKeywords = ["frame", "frames", "photo-frame", "photo-frames"];
+export const apronsKeywords = ["apron", "aprons"];
+export const designsKeywords = [
+  "flyers",
+  "flyer",
+  "flier",
+  "brochures",
+  "brochure",
+  "labels",
+  "label",
+  "business-cards",
+  "business-card",
+  "business_cards",
+  "banner",
+  "banners",
+  "book-covers",
+  "book-cover",
+  "book_cover",
+  "book_covers",
+  "stickers",
+  "receipts",
+  "receipt",
+  "invoice",
+  "calendar",
+  "calendars",
+  "ticket",
+  "tickets",
+];
 
 export const productKeywords = [
   ...tShirtKeywords,
@@ -29,12 +57,9 @@ export const productKeywords = [
   ...hoodieKeywords,
   ...capKeywords,
   ...pillowKeywords,
-  ...mugKeyWords,
-
+  ...mugKeywords,
+  ...frameKeywords,
+  ...apronsKeywords,
+  ...designsKeywords,
   "socks",
-  "aprons",
-  "apron",
-  "mugs",
-  "frames",
-  "photo-frames",
 ];

@@ -1,12 +1,44 @@
 "use client";
 import { ProductTypeCard } from "@/components/ProductTypeCard";
-import { useGroupedProductTypes } from "@/hooks/useProductTypes";
-import { Center, Divider, Group, Stack, Text, Title } from "@mantine/core";
+import { useProductTypes } from "@/hooks/useProductTypes";
+import {
+  Center,
+  Divider,
+  Flex,
+  Group,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import Link from "next/link";
 import { LoadingTypes } from "./LoadingTypes";
+import { HiSearch } from "react-icons/hi";
+import { IProductType } from "@/types";
+import { useEffect, useState } from "react";
 
 export const CustomRequestItems = () => {
-  const { groupedProductTypes, isLoading } = useGroupedProductTypes();
+  const { productTypes, isLoading } = useProductTypes();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchedProductTypes, setSearchedProductTypes] = useState<
+    IProductType[]
+  >([]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (searchTerm && productTypes) {
+        setSearchedProductTypes(
+          productTypes.filter((item) =>
+            item.title.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      } else {
+        setSearchedProductTypes(productTypes || []);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm, productTypes]);
 
   return (
     <>
@@ -21,29 +53,39 @@ export const CustomRequestItems = () => {
         </Stack>
       </Center>
 
-      <Group justify="space-between">
+      <Flex
+        justify="space-between"
+        align="center"
+        direction={{ base: "column", sm: "row" }}
+      >
         <Title order={3} mb="lg" c="dimmed" mt="lg">
           Choose a product type
         </Title>
 
-        {/* <TextInput leftSection={<HiSearch />} rightSectionWidth={"90px"} /> */}
-      </Group>
-      <Divider mb="lg" />
+        <TextInput
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          leftSection={<HiSearch />}
+          rightSectionWidth={"90px"}
+          placeholder="search..."
+        />
+      </Flex>
+      <Divider my="sm" />
 
       {isLoading ? (
         <LoadingTypes />
-      ) : groupedProductTypes ? (
+      ) : productTypes ? (
         <Group>
-          {Object.values(groupedProductTypes).map((value) =>
-            value.items.map((item) => (
+          {searchedProductTypes
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((item) => (
               <ProductTypeCard
                 key={item.id}
                 label={item.title}
                 link={`/custom-request/${item.slug}`}
                 image={item.image}
               />
-            ))
-          )}
+            ))}
         </Group>
       ) : (
         <>No Products were found. Reload!</>

@@ -1,31 +1,18 @@
-"use client";
-import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
-import { ComboboxData, Group } from "@mantine/core";
-import { useState } from "react";
-import { ArtworkSection } from "../ArtworkSection";
-import { DesignInstructions } from "../DesignInstructions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
-import { ItemTypeSelect } from "../ItemTypeSelect";
-import { Quantity } from "../Quantity";
-import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
-import { isArtworkRequired } from "../required-artwork";
-import { saveCustomOrderDetails } from "../save-details";
-import { uploadArtworkFiles } from "../upload-files";
-import { validateQuoteMedium } from "../validate-quote-medium";
+import React, { useState } from "react";
 import { Layout } from "./Layout";
+import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
+import { Quantity } from "../Quantity";
+import { DesignInstructions } from "../DesignInstructions";
+import { ArtworkSection } from "../ArtworkSection";
+import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
+import { ErrorsRenderer } from "../ErrorsRenderer";
+import { Checkbox, Text } from "@mantine/core";
+import { uploadArtworkFiles } from "../upload-files";
+import { saveCustomOrderDetails } from "../save-details";
+import { validateQuoteMedium } from "../validate-quote-medium";
+import { isArtworkRequired } from "../required-artwork";
 
-const mugTypes: ComboboxData = [
-  {
-    value: "ceramic",
-    label: "Ceramic mug",
-  },
-  {
-    value: "magic",
-    label: "Magic mug",
-  },
-];
-
-export const Mugs = () => {
+export const DesignWorks = () => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -35,14 +22,10 @@ export const Mugs = () => {
     router,
     productType,
   } = useCustomReqCommonStates();
-  const [mugType, setMugType] = useState("");
+  const [willPrint, setWillPrint] = useState(true);
 
   const validateFields = () => {
     let errors: string[] = [];
-
-    if (!mugType) {
-      errors.push("Select Mug Type");
-    }
 
     if (
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
@@ -79,7 +62,6 @@ export const Mugs = () => {
     };
 
     const orderDetails = {
-      mugType,
       artworks: urls,
     };
 
@@ -92,25 +74,31 @@ export const Mugs = () => {
     setLoadingMessage("");
 
     if (isSuccess) {
-      console.log(data);
       router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
   };
 
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
-      <Group grow flex="wrap">
-        <ItemTypeSelect
-          value={mugType}
-          onChange={(value) => setMugType(value || "")}
-          label="Mug Type"
-          types={mugTypes}
-        />
-        <Quantity />
-      </Group>
+      <Text c="dimmed" size="sm" mt="sm">
+        <b>NB:</b> Options like <b>Colors</b> and <b>Dimensions</b> should be
+        added as design instructions below
+      </Text>
+
+      <DesignInstructions />
+
+      <Checkbox
+        label="Will you print?"
+        checked={willPrint}
+        color="pink"
+        onChange={(e) => {
+          setWillPrint(e.currentTarget.checked);
+        }}
+      />
+
+      {willPrint && <Quantity />}
 
       <ArtworkSection />
-      <DesignInstructions />
       <QuoteReceptionOptions handleReceiveQuote={handleReceiveQuote} />
 
       {errors.length > 0 && <ErrorsRenderer errors={errors} />}
