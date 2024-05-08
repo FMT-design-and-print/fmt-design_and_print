@@ -15,26 +15,18 @@ import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 
-const tShirtBrands: ComboboxData = [
-  {
-    value: "aoykawim",
-    label: "Aoykawim (Recommended)",
-  },
+const lacosteBrands: ComboboxData = [
   {
     value: "mr_tan",
-    label: "Mr Tan",
+    label: "Mr Tan (Recommended)",
   },
   {
-    value: "gildan",
-    label: "Gildan",
-  },
-  {
-    value: "key",
-    label: "Key",
+    value: "aoykawim",
+    label: "Aoykawim",
   },
 ];
 
-export const TShirts = ({ image }: { image: string }) => {
+export const Lacoste = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -46,22 +38,17 @@ export const TShirts = ({ image }: { image: string }) => {
   } = useCustomReqCommonStates(image);
   const [brand, setBrand] = useState("");
   const [side, setSide] = useState("");
-  const [sleeveType, setSleeveType] = useState("");
   const [printType, setPrintType] = useState("");
 
   const validateFields = () => {
     let errors: string[] = [];
 
     if (!brand) {
-      errors.push("Select T-Shirt Brand");
+      errors.push("Select Lacoste Brand");
     }
 
     if (!side) {
-      errors.push("Select T-Shirt Side");
-    }
-
-    if (!sleeveType) {
-      errors.push("Select sleeve type");
+      errors.push("Select Lacoste Side");
     }
 
     if (!printType) {
@@ -105,7 +92,6 @@ export const TShirts = ({ image }: { image: string }) => {
     const orderDetails = {
       brand,
       side,
-      sleeveType,
       printType,
       artworks: urls,
     };
@@ -128,8 +114,8 @@ export const TShirts = ({ image }: { image: string }) => {
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
       <FlexLayout grow>
         <BrandSelect
-          defaultValue={"aoykawim"}
-          brands={tShirtBrands}
+          defaultValue={"mr_tan"}
+          brands={lacosteBrands}
           value={brand}
           onChange={(brand) => setBrand(brand || "")}
         />
@@ -142,26 +128,18 @@ export const TShirts = ({ image }: { image: string }) => {
           onChange={(side) => setSide(side || "")}
         />
       </FlexLayout>
+
       <FlexLayout grow>
         <Select
-          miw={200}
-          label="Sleeve Type"
-          placeholder="Select sleeve type"
-          data={["Short sleeve", "Long sleeve"]}
-          value={sleeveType}
-          onChange={(sleeveType) => setSleeveType(sleeveType || "")}
-        />
-
-        <Select
-          miw={200}
+          miw={250}
           label="Print Type"
           placeholder="Select print type"
           data={["DTF", "Screen Printing"]}
           value={printType}
           onChange={(printType) => setPrintType(printType || "")}
         />
+        <Quantity />
       </FlexLayout>
-      <Quantity />
 
       <Text c="dimmed" size="sm" mt="sm">
         <b>NB:</b> Options like <b>Colors</b> and <b>Sizes</b> should be added

@@ -11,8 +11,9 @@ import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { isArtworkRequired } from "../required-artwork";
+import { cardKeywords } from "@/constants/all-product_keywords";
 
-export const DesignWorks = () => {
+export const DesignWorks = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -21,7 +22,7 @@ export const DesignWorks = () => {
     user,
     router,
     productType,
-  } = useCustomReqCommonStates();
+  } = useCustomReqCommonStates(image);
   const [willPrint, setWillPrint] = useState(true);
 
   const validateFields = () => {
@@ -81,8 +82,9 @@ export const DesignWorks = () => {
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
       <Text c="dimmed" size="sm" mt="sm">
-        <b>NB:</b> Options like <b>Colors</b> and <b>Dimensions</b> should be
-        added as design instructions below
+        Please add all the details like, the <b>Type of Item</b>, <b>Colors</b>{" "}
+        and <b>Dimensions</b> as design instructions below. You can use example
+        in the editor as a guide.
       </Text>
 
       <DesignInstructions />
@@ -96,7 +98,11 @@ export const DesignWorks = () => {
         }}
       />
 
-      {willPrint && <Quantity />}
+      {willPrint && (
+        <Quantity
+          minQty={cardKeywords.includes(productType as string) ? 50 : 1}
+        />
+      )}
 
       <ArtworkSection />
       <QuoteReceptionOptions handleReceiveQuote={handleReceiveQuote} />

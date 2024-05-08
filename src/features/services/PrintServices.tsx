@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GroupedPrintProductTypes } from "@/types";
 import { useEffect, useState } from "react";
 import { groupProductTypesByCategory } from "@/functions";
+import { HiSearch } from "react-icons/hi";
 
 interface Props {
   groupedPrintProductTypes: GroupedPrintProductTypes;
@@ -51,6 +52,7 @@ export const PrintServices = ({ groupedPrintProductTypes }: Props) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.currentTarget.value)}
         placeholder="Type to search print service..."
+        leftSection={<HiSearch />}
         maw={600}
       />
 

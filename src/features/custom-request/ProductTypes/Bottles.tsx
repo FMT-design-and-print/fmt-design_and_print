@@ -1,12 +1,12 @@
 "use client";
 import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
-import { ComboboxData, Select, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useState } from "react";
+import { v4 as uid } from "uuid";
 import { ArtworkSection } from "../ArtworkSection";
-import { BrandSelect } from "../BrandSelect";
 import { DesignInstructions } from "../DesignInstructions";
 import { ErrorsRenderer } from "../ErrorsRenderer";
-import { FlexLayout } from "../FlexLayout";
+import { ImagesCardSelect } from "../ItemCardSelect copy";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";
@@ -15,26 +15,20 @@ import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 
-const tShirtBrands: ComboboxData = [
+const bottleTypes = [
   {
-    value: "aoykawim",
-    label: "Aoykawim (Recommended)",
+    id: uid(),
+    image:
+      "https://res.cloudinary.com/dnbmynikp/image/upload/v1715181473/FMT/3gcsa_512_zwexf0.webp",
   },
   {
-    value: "mr_tan",
-    label: "Mr Tan",
-  },
-  {
-    value: "gildan",
-    label: "Gildan",
-  },
-  {
-    value: "key",
-    label: "Key",
+    id: uid(),
+    image:
+      "https://res.cloudinary.com/dnbmynikp/image/upload/v1715181486/FMT/water-bottle-2048px-mira_qsjk1d.jpg",
   },
 ];
 
-export const TShirts = ({ image }: { image: string }) => {
+export const Bottles = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -44,28 +38,13 @@ export const TShirts = ({ image }: { image: string }) => {
     router,
     productType,
   } = useCustomReqCommonStates(image);
-  const [brand, setBrand] = useState("");
-  const [side, setSide] = useState("");
-  const [sleeveType, setSleeveType] = useState("");
-  const [printType, setPrintType] = useState("");
+  const [bottleType, setBottleType] = useState({ id: "", image: "" });
 
   const validateFields = () => {
     let errors: string[] = [];
 
-    if (!brand) {
-      errors.push("Select T-Shirt Brand");
-    }
-
-    if (!side) {
-      errors.push("Select T-Shirt Side");
-    }
-
-    if (!sleeveType) {
-      errors.push("Select sleeve type");
-    }
-
-    if (!printType) {
-      errors.push("Select print type");
+    if (!bottleType.image) {
+      errors.push("Select Bottle Type");
     }
 
     if (
@@ -103,10 +82,7 @@ export const TShirts = ({ image }: { image: string }) => {
     };
 
     const orderDetails = {
-      brand,
-      side,
-      sleeveType,
-      printType,
+      bottleType: bottleType.image,
       artworks: urls,
     };
 
@@ -126,45 +102,17 @@ export const TShirts = ({ image }: { image: string }) => {
 
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
-      <FlexLayout grow>
-        <BrandSelect
-          defaultValue={"aoykawim"}
-          brands={tShirtBrands}
-          value={brand}
-          onChange={(brand) => setBrand(brand || "")}
-        />
-        <Select
-          miw={250}
-          label="Sides"
-          placeholder="Select design sides (front/back)"
-          data={["Front only", "Back only", "Front & Back"]}
-          value={side}
-          onChange={(side) => setSide(side || "")}
-        />
-      </FlexLayout>
-      <FlexLayout grow>
-        <Select
-          miw={200}
-          label="Sleeve Type"
-          placeholder="Select sleeve type"
-          data={["Short sleeve", "Long sleeve"]}
-          value={sleeveType}
-          onChange={(sleeveType) => setSleeveType(sleeveType || "")}
-        />
+      <ImagesCardSelect
+        label="Bottle Type"
+        items={bottleTypes}
+        value={bottleType.id}
+        onChange={(type) => setBottleType(type)}
+      />
 
-        <Select
-          miw={200}
-          label="Print Type"
-          placeholder="Select print type"
-          data={["DTF", "Screen Printing"]}
-          value={printType}
-          onChange={(printType) => setPrintType(printType || "")}
-        />
-      </FlexLayout>
       <Quantity />
 
       <Text c="dimmed" size="sm" mt="sm">
-        <b>NB:</b> Options like <b>Colors</b> and <b>Sizes</b> should be added
+        <b>NB:</b> Options like <b>Colors</b> and <b>Others</b> should be added
         as design instructions below. You can use example in the editor as a
         guide.
       </Text>

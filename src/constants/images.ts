@@ -13,4 +13,13 @@ export const productImages = {
     "https://cdn.sanity.io/images/5qz48ekn/production/d046fd78f7190a29edee768ccc5d7825010c8a39-360x540.jpg",
   designWorks:
     "https://res.cloudinary.com/dnbmynikp/image/upload/v1714425741/FMT/dw-facebook_uw30zy.png",
+  bags: "https://cdn.sanity.io/images/5qz48ekn/production/ab1b090cad608aae06e4a512454be71fccdb287b-550x550.jpg",
+  invitationCards:
+    "https://cdn.sanity.io/images/5qz48ekn/production/6ec1bb0324c2643ee0c6481d3ef2b39cace3cc9a-848x635.jpg",
+  phoneCases:
+    "https://cdn.sanity.io/images/5qz48ekn/production/03cabbf5a70bac5d7d1011cc11c6690848ee1622-1500x857.jpg",
+  pillows:
+    "https://cdn.sanity.io/images/5qz48ekn/production/893ea9c3aed3de5bcc965edbb2a3064c6cd77d11-740x493.jpg",
+  bottles:
+    "https://cdn.sanity.io/images/5qz48ekn/production/71218cc498b09271e1597dd2a19de4bce4c79415-360x540.jpg",
 };

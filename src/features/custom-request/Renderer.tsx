@@ -3,56 +3,85 @@ import React from "react";
 import { TShirts } from "./ProductTypes/TShirts";
 import {
   apronsKeywords,
+  bagKeywords,
+  bottlesKeywords,
   capKeywords,
   designsKeywords,
   frameKeywords,
+  hoodieKeywords,
+  lacosteKeywords,
   mugKeywords,
+  phoneCaseKeywords,
+  pillowKeywords,
   tShirtKeywords,
 } from "@/constants/all-product_keywords";
 import { Mugs } from "./ProductTypes/Mugs";
 import { Caps } from "./ProductTypes/Caps";
-import { useCustomRequest } from ".";
 import { productImages } from "@/constants/images";
 import { Frames } from "./ProductTypes/Frames";
 import { Aprons } from "./ProductTypes/Aprons";
 import { DesignWorks } from "./ProductTypes/DesignWorks";
+import { Bags } from "./ProductTypes/Bags";
+import { Lacoste } from "./ProductTypes/Lacoste";
+import { Hoodies } from "./ProductTypes/Hoodies";
+import { PhoneCases } from "./ProductTypes/PhoneCases";
+import { Pillows } from "./ProductTypes/Pillows";
+import { Bottles } from "./ProductTypes/Bottles";
+import { UnspecifiedProduct } from "./ProductTypes/Unspecified";
 
 interface Props {
   name: string;
 }
 export const CustomRequestPageRenderer = ({ name }: Props) => {
-  const context = useCustomRequest();
-
   const productName = name.toLowerCase();
+
   if (tShirtKeywords.includes(productName)) {
-    context?.setProductImageUrl(productImages.tShirts);
-    return <TShirts />;
+    return <TShirts image={productImages.tShirts} />;
+  }
+
+  if (lacosteKeywords.includes(productName)) {
+    return <Lacoste image={productImages.lacoste} />;
+  }
+
+  if (hoodieKeywords.includes(productName)) {
+    return <Hoodies image={productImages.hoodies} />;
   }
 
   if (mugKeywords.includes(productName)) {
-    context?.setProductImageUrl(productImages.mugs);
-    return <Mugs />;
+    return <Mugs image={productImages.mugs} />;
   }
 
   if (capKeywords.includes(productName)) {
-    context?.setProductImageUrl(productImages.caps);
-    return <Caps />;
+    return <Caps image={productImages.caps} />;
   }
 
   if (frameKeywords.includes(productName)) {
-    context?.setProductImageUrl(productImages.frames);
-    return <Frames />;
+    return <Frames image={productImages.frames} />;
   }
 
   if (apronsKeywords.includes(productName)) {
-    context?.setProductImageUrl(productImages.aprons);
-    return <Aprons />;
+    return <Aprons image={productImages.aprons} />;
   }
 
   if (designsKeywords.includes(productName)) {
-    context?.setProductImageUrl(productImages.designWorks);
-    return <DesignWorks />;
+    return <DesignWorks image={productImages.designWorks} />;
   }
 
-  return <></>;
+  if (bagKeywords.includes(productName)) {
+    return <Bags image={productImages.bags} />;
+  }
+
+  if (phoneCaseKeywords.includes(productName)) {
+    return <PhoneCases image={productImages.phoneCases} />;
+  }
+
+  if (pillowKeywords.includes(productName)) {
+    return <Pillows image={productImages.pillows} />;
+  }
+
+  if (bottlesKeywords.includes(productName)) {
+    return <Bottles image={productImages.bottles} />;
+  }
+
+  return <UnspecifiedProduct image="" />;
 };

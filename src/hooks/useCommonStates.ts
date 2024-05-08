@@ -1,9 +1,9 @@
 import { useCustomRequest } from "@/features/custom-request";
 import { useSession } from "@/store";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export const useCustomReqCommonStates = () => {
+export const useCustomReqCommonStates = (image: string) => {
   const context = useCustomRequest();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -15,6 +15,13 @@ export const useCustomReqCommonStates = () => {
   const loadingState = { isLoading, setIsLoading };
   const loadingMsgState = { loadingMessage, setLoadingMessage };
   const errorsState = { errors, setErrors };
+
+  useEffect(() => {
+    return () => {
+      context?.setProductImageUrl(image);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     context,

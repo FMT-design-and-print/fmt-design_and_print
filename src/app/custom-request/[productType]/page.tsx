@@ -17,7 +17,6 @@ const CustomRequestPage = ({ params }: Props) => {
   if (!productKeywords.includes(product)) {
     redirect("/custom-request");
   }
-
   return (
     <>
       <Container size="xl">

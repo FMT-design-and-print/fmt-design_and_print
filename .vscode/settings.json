@@ -15,7 +15,14 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["aoykawim", "gildan", "lacoste", "Signup", "TSHIRT"],
+  "cSpell.words": [
+    "aoykawim",
+    "gildan",
+    "lacoste",
+    "Polybag",
+    "Signup",
+    "TSHIRT"
+  ],
   "cssVariables.lookupFiles": [
     "**/*.css",
     "**/*.scss",

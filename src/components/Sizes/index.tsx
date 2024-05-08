@@ -1,6 +1,6 @@
 import { SelectedProductOptions } from "@/types";
 import { Box, Card, Center, Group, Text } from "@mantine/core";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import classes from "./Style.module.css";
 
 interface Props {
@@ -16,6 +16,13 @@ export const Sizes = ({
   const handleSizeSelect = (size: string) => {
     setSelectedProductOptions((prevState) => ({ ...prevState, size }));
   };
+
+  useEffect(() => {
+    if (sizes?.length === 1) {
+      handleSizeSelect(sizes[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sizes?.length]);
 
   if (sizes != null && sizes.length !== 0) {
     return (

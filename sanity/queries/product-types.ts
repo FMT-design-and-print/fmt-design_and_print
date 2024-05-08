@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 
 export const allProductTypesQuery = groq`
-    *[_type == "productTypes" ]{
+    *[_type == "productTypes" && customRequestAvailable == true ]{
       "id": _id,
         title,
         "slug": slug.current,
@@ -39,5 +39,19 @@ export const filteredProductTypesQuery = groq`
           "slug": slug.current,
           title,
       }  
+    }
+`;
+
+export const customRequestProductTypesQuery = groq`
+    *[_type == "productTypes" && customRequestAvailable == true ]{
+      "id": _id,
+        title,
+        "slug": slug.current,
+        "image": image.asset->url,
+        category->{
+          "id": _id,
+          "slug": slug.current,
+          title,
+      }
     }
 `;

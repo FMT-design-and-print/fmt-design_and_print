@@ -24,6 +24,9 @@ export const CustomRequestItems = () => {
     IProductType[]
   >([]);
 
+  const items =
+    searchedProductTypes.length > 0 ? searchedProductTypes : productTypes;
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (searchTerm && productTypes) {
@@ -74,9 +77,9 @@ export const CustomRequestItems = () => {
 
       {isLoading ? (
         <LoadingTypes />
-      ) : productTypes ? (
+      ) : items ? (
         <Group>
-          {searchedProductTypes
+          {items
             .sort((a, b) => a.title.localeCompare(b.title))
             .map((item) => (
               <ProductTypeCard
@@ -94,7 +97,7 @@ export const CustomRequestItems = () => {
       <Divider my="xl" />
       <Group justify="flex-end">
         <Text>Can&apos;t find your product? </Text>
-        <Text component={Link} href="/custom-request/unavailable" c="pink">
+        <Text component={Link} href="/custom-request/custom-product" c="pink">
           Click here
         </Text>
       </Group>

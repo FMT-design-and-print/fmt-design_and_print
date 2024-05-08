@@ -1,8 +1,8 @@
 import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
-import React from "react";
+import React, { useState } from "react";
 import { Layout } from "./Layout";
 import { Quantity } from "../Quantity";
-import { Text } from "@mantine/core";
+import { Group, Text } from "@mantine/core";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
@@ -11,8 +11,15 @@ import { isArtworkRequired } from "../required-artwork";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";
+import { ItemTypeSelect } from "../ItemTypeSelect";
 
-export const Aprons = ({ image }: { image: string }) => {
+const bagTypes = [
+  { type: "Paper Bag", minQty: 100 },
+  { type: "Tote Bag", minQty: 5 },
+  { type: "Rubber bag / Polybag", minQty: 100 },
+];
+
+export const Bags = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -22,9 +29,15 @@ export const Aprons = ({ image }: { image: string }) => {
     router,
     productType,
   } = useCustomReqCommonStates(image);
+  const [bagType, setBagType] = useState("");
+  const [minQty, setMinQty] = useState<number>(1);
 
   const validateFields = () => {
     let errors: string[] = [];
+
+    if (!bagType) {
+      errors.push("Select Print Type");
+    }
 
     if (
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
@@ -77,9 +90,24 @@ export const Aprons = ({ image }: { image: string }) => {
     }
   };
 
+  const handleItemTypeChange = (value: string | null | undefined) => {
+    setBagType(value || "");
+    const selected = bagTypes.find((bag) => bag.type === value)?.minQty;
+    setMinQty(selected || 1);
+    context?.setQuantity(selected || 1);
+  };
+
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
-      <Quantity minQty={2} />
+      <Group grow flex="wrap">
+        <ItemTypeSelect
+          value={bagType}
+          onChange={handleItemTypeChange}
+          label="Mug Type"
+          types={bagTypes.map((bag) => bag.type)}
+        />
+        <Quantity minQty={minQty} />
+      </Group>
 
       <Text c="dimmed" size="sm" mt="sm">
         <b>NB:</b> Options like <b>Colors</b> and <b>Sizes</b> should be added

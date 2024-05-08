@@ -20,8 +20,8 @@ export const Quantity = ({ minQty = 1 }: Props) => {
           </Text>
         </Text>
       }
-      defaultValue={1}
-      min={1}
+      defaultValue={minQty || 1}
+      min={minQty || 1}
       value={context?.quantity}
       onChange={(quantity) => context?.setQuantity(Number(quantity))}
     />

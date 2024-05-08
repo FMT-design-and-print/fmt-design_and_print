@@ -1,11 +1,10 @@
 "use client";
 import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
-import { ComboboxData, Group } from "@mantine/core";
 import { useState } from "react";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
 import { ErrorsRenderer } from "../ErrorsRenderer";
-import { ItemTypeSelect } from "../ItemTypeSelect";
+import { ItemsCardSelect } from "../ItemCardSelect";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";
@@ -14,18 +13,34 @@ import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 
-const mugTypes: ComboboxData = [
+const mugTypes = [
   {
-    value: "ceramic",
+    value: "Ceramic",
     label: "Ceramic mug",
+    image:
+      "https://cdn.sanity.io/images/5qz48ekn/production/da64d66a67171b9e944fdd59351807715fe9fccf-2160x2160.png",
   },
   {
-    value: "magic",
+    value: "Magic",
     label: "Magic mug",
+    image:
+      "https://res.cloudinary.com/dnbmynikp/image/upload/v1715103553/FMT/Cold_1_250x_2x_p9wwoy.webp",
+  },
+  {
+    value: "Gold Coated",
+    label: "Gold Coated",
+    image:
+      "https://res.cloudinary.com/dnbmynikp/image/upload/v1715104136/FMT/eng_pl_330-ml-glitter-mug-for-sublimation-printing-gold-4709_1_bixnl2.jpg",
+  },
+  {
+    value: "Inside Colored",
+    label: "Inside Colored",
+    image:
+      "https://res.cloudinary.com/dnbmynikp/image/upload/v1715105489/FMT/colored-mugs-photo-print-megastore-printing_yepeb5.jpg",
   },
 ];
 
-export const Mugs = () => {
+export const Mugs = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -34,7 +49,7 @@ export const Mugs = () => {
     user,
     router,
     productType,
-  } = useCustomReqCommonStates();
+  } = useCustomReqCommonStates(image);
   const [mugType, setMugType] = useState("");
 
   const validateFields = () => {
@@ -92,22 +107,20 @@ export const Mugs = () => {
     setLoadingMessage("");
 
     if (isSuccess) {
-      console.log(data);
       router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
   };
 
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
-      <Group grow flex="wrap">
-        <ItemTypeSelect
-          value={mugType}
-          onChange={(value) => setMugType(value || "")}
-          label="Mug Type"
-          types={mugTypes}
-        />
-        <Quantity />
-      </Group>
+      <ItemsCardSelect
+        label="Mug Type"
+        value={mugType}
+        onChange={(value) => setMugType(value || "")}
+        items={mugTypes}
+      />
+
+      <Quantity />
 
       <ArtworkSection />
       <DesignInstructions />

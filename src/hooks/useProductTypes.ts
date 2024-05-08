@@ -1,11 +1,13 @@
-import { allProductTypesQuery } from "@/queries/product-types";
+import { customRequestProductTypesQuery } from "@/queries/product-types";
 import { GroupedPrintProductTypes, IProductType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "../../sanity/lib/client";
 import { groupProductTypesByCategory } from "@/functions";
 
 const getProductTypes = async (): Promise<IProductType[]> => {
-  const res: IProductType[] = await client.fetch(allProductTypesQuery);
+  const res: IProductType[] = await client.fetch(
+    customRequestProductTypesQuery
+  );
   return res;
 };
 

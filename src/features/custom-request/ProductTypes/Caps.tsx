@@ -13,7 +13,7 @@ import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 
-export const Caps = () => {
+export const Caps = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -22,7 +22,7 @@ export const Caps = () => {
     user,
     router,
     productType,
-  } = useCustomReqCommonStates();
+  } = useCustomReqCommonStates(image);
   const [printType, setPrintType] = useState("");
 
   const validateFields = () => {
@@ -99,7 +99,8 @@ export const Caps = () => {
 
       <Text c="dimmed" size="sm" mt="sm">
         <b>NB:</b> Options like <b>Colors</b> and <b>Sizes</b> should be added
-        as design instructions below
+        as design instructions below. You can use example in the editor as a
+        guide.
       </Text>
 
       <ArtworkSection />

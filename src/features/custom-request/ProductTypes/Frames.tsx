@@ -16,8 +16,9 @@ import { generalAcceptableTypes } from "@/constants/artwork-types";
 import { IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 const frameSizes = ["A5", "A4", "A3", "A2", "20cm x 25cm"];
+const types = ["with Glass", "Canvas Laminated", "Rubber Laminated"];
 
-export const Frames = () => {
+export const Frames = ({ image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -26,8 +27,9 @@ export const Frames = () => {
     user,
     router,
     productType,
-  } = useCustomReqCommonStates();
+  } = useCustomReqCommonStates(image);
   const [frameSize, setFrameSize] = useState("");
+  const [frontType, setFrontType] = useState("");
   const [isCustomSize, setIsCustomSize] = useState(false);
   const [customFrameSize, setCustomFrameSize] = useState("");
   const [frameImageUrl, setFrameImageUrl] = useState("");
@@ -77,6 +79,7 @@ export const Frames = () => {
 
     const orderDetails = {
       frameSize,
+      frontType,
       frameImageUrl,
       artworks: urls,
     };
@@ -132,7 +135,7 @@ export const Frames = () => {
           label="Frame image URL (Optional)"
           placeholder="Enter Frame image URL here"
           description={
-            <Text size="xs">
+            <Text size="xs" component="span">
               Enter a URL of an image of a frame type you want here.{" "}
               <Text
                 component={Link}
@@ -144,6 +147,15 @@ export const Frames = () => {
               </Text>
             </Text>
           }
+        />
+
+        <Select
+          miw={250}
+          label="Front Type"
+          placeholder="Select front type"
+          data={types}
+          value={frontType}
+          onChange={(type) => setFrontType(type || "")}
         />
 
         <Quantity />

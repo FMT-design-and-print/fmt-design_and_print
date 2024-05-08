@@ -202,12 +202,12 @@ export const ProductDetails = ({ product }: Props) => {
           </Group>
           <Text>
             Click{" "}
-            <Link href="/custom-request">
+            <Link href={`/custom-request/${product.type.slug}`}>
               <Text component="span" c="pink">
                 here
               </Text>
             </Link>{" "}
-            to request for custom print service.
+            to make custom print request.
           </Text>
         </Grid.Col>
       </Grid>

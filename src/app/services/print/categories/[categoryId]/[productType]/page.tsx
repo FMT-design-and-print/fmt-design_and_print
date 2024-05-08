@@ -3,6 +3,8 @@ import { ProductType } from "@/features/services/ProductType";
 import { client } from "@/lib/client";
 import { printProductsByTypeQuery } from "@/queries/products";
 import { IPrintProduct } from "@/types";
+import { Text } from "@mantine/core";
+import Link from "next/link";
 import React from "react";
 
 export const revalidate = 0;
@@ -37,6 +39,16 @@ const ProductTypePage = async ({ params }: Props) => {
   return (
     <div>
       <BreadcrumbRenderer items={items} />
+      <Text ta="right" mx="xl" size="sm" py="md">
+        Click{" "}
+        <Link href={`/custom-request/${params.productType}`}>
+          <Text component="span" c="pink">
+            here
+          </Text>
+        </Link>{" "}
+        to make custom print request.
+      </Text>
+
       <ProductType products={products} />
     </div>
   );
