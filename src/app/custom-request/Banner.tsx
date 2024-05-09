@@ -27,7 +27,7 @@ export const Banner = ({ name }: Props) => {
         component={Link}
         href="/custom-request"
       >
-        Select new product
+        Back to all products
       </Button>
 
       <Stack align="center">

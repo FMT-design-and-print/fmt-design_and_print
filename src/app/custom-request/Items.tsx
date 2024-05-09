@@ -16,32 +16,48 @@ import { LoadingTypes } from "./LoadingTypes";
 import { HiSearch } from "react-icons/hi";
 import { IProductType } from "@/types";
 import { useEffect, useState } from "react";
+import { useUrlSearchParams } from "@/hooks/useUpdateURLSearchParams";
+import { useSearchParams } from "next/navigation";
 
 export const CustomRequestItems = () => {
   const { productTypes, isLoading } = useProductTypes();
   const [searchTerm, setSearchTerm] = useState("");
+  const updateSearchParams = useUrlSearchParams();
+  const searchParams = useSearchParams();
   const [searchedProductTypes, setSearchedProductTypes] = useState<
     IProductType[]
   >([]);
+
+  const searchText = searchParams.get("search");
 
   const items =
     searchedProductTypes.length > 0 ? searchedProductTypes : productTypes;
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (searchTerm && productTypes) {
-        setSearchedProductTypes(
-          productTypes.filter((item) =>
-            item.title.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        );
+      if (searchTerm) {
+        updateSearchParams({ search: searchTerm });
       } else {
-        setSearchedProductTypes(productTypes || []);
+        updateSearchParams({ search: undefined });
       }
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [searchTerm, productTypes]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (searchText && productTypes) {
+      setSearchTerm(searchText);
+      setSearchedProductTypes(
+        productTypes.filter((item) =>
+          item.title.toLowerCase().includes(searchText.toLowerCase())
+        )
+      );
+    } else {
+      setSearchedProductTypes(productTypes || []);
+    }
+  }, [searchText, productTypes]);
 
   return (
     <>
