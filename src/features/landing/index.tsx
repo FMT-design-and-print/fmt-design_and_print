@@ -28,7 +28,7 @@ export const Landing = ({ featuredProducts }: Props) => {
             variant="outline"
             color="pink.6"
           >
-            Browse All Categories{" "}
+            Browse All Products{" "}
             <FaLongArrowAltRight style={{ margin: "0 10px" }} />
           </Button>
         </Group>

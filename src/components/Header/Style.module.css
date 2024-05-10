@@ -8,7 +8,7 @@
 
 .link {
   width: 100%;
-  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-xs);
   border-radius: var(--mantine-radius-md);
 }
 

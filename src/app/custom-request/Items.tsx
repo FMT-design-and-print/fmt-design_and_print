@@ -21,14 +21,13 @@ import { useSearchParams } from "next/navigation";
 
 export const CustomRequestItems = () => {
   const { productTypes, isLoading } = useProductTypes();
-  const [searchTerm, setSearchTerm] = useState("");
-  const updateSearchParams = useUrlSearchParams();
   const searchParams = useSearchParams();
+  const searchText = searchParams.get("search");
+  const [searchTerm, setSearchTerm] = useState(searchText || "");
+  const updateSearchParams = useUrlSearchParams();
   const [searchedProductTypes, setSearchedProductTypes] = useState<
     IProductType[]
   >([]);
-
-  const searchText = searchParams.get("search");
 
   const items =
     searchedProductTypes.length > 0 ? searchedProductTypes : productTypes;
@@ -48,7 +47,6 @@ export const CustomRequestItems = () => {
 
   useEffect(() => {
     if (searchText && productTypes) {
-      setSearchTerm(searchText);
       setSearchedProductTypes(
         productTypes.filter((item) =>
           item.title.toLowerCase().includes(searchText.toLowerCase())

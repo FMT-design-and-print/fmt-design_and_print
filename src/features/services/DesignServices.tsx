@@ -3,7 +3,7 @@ import React from "react";
 import { ProductTypeCard } from "../../components/ProductTypeCard";
 import { HiSearch } from "react-icons/hi";
 
-const link = "services/design/productType";
+const link = "/services/design/productType";
 
 export const DesignServices = () => {
   return (
