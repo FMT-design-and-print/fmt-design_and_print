@@ -31,6 +31,7 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
     if (session && (shippingAddresses?.length ?? 0) < 5) {
       update("saveAddress", true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, shippingAddresses?.length]);
 
   return (
