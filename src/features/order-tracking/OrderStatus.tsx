@@ -11,11 +11,16 @@ interface Props {
   order: IOrder;
 }
 
-const topLevelStatuses = ["cancelled", "pending", "pending-cancellation"];
+const topLevelStatuses = [
+  "cancelled",
+  "pending",
+  "requested",
+  "pending-cancellation",
+];
 
 export const OrderStatus = ({ order }: Props) => {
   const createdAt = new Date(order.created_at);
-  const estimatedFulfilmentDate = new Date(
+  const estimatedFulfillmentDate = new Date(
     order.estimatedFulfillmentDate ?? createdAt.getDate() + 3
   );
 
@@ -42,14 +47,16 @@ export const OrderStatus = ({ order }: Props) => {
             </Text>
           </Stack>
 
-          <Stack align="center" gap={4}>
-            <Text size="sm" fw={500}>
-              Ship to
-            </Text>
-            <Text size="xs" c="dimmed">
-              {order.deliveryDetails.town}, {order.deliveryDetails.region}
-            </Text>
-          </Stack>
+          {order.deliveryDetails && (
+            <Stack align="center" gap={4}>
+              <Text size="sm" fw={500}>
+                Ship to
+              </Text>
+              <Text size="xs" c="dimmed">
+                {order.deliveryDetails.town}, {order.deliveryDetails.region}
+              </Text>
+            </Stack>
+          )}
 
           <Stack align="center" gap={4}>
             <Text size="sm" fw={500}>
@@ -87,12 +94,12 @@ export const OrderStatus = ({ order }: Props) => {
             {order.deliveryType === "delivery" ? (
               <EstimatedTime
                 label="Estimated Delivery Date:"
-                time={estimatedFulfilmentDate.toDateString()}
+                time={estimatedFulfillmentDate.toDateString()}
               />
             ) : (
               <EstimatedTime
                 label="Estimated Ready Time:"
-                time={`${estimatedFulfilmentDate.toDateString()}, ${estimatedFulfilmentDate.toLocaleTimeString()}`}
+                time={`${estimatedFulfillmentDate.toDateString()}, ${estimatedFulfillmentDate.toLocaleTimeString()}`}
               />
             )}
           </Stack>

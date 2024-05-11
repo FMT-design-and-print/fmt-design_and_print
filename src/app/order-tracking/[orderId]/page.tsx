@@ -19,7 +19,13 @@ import Link from "next/link";
 
 export const revalidate = 0;
 
-const OrderIdPage = async ({ params }: { params: { orderId: string } }) => {
+interface Props {
+  params: { orderId: string };
+}
+const columns =
+  "id, created_at, orderId, totalAmount, status, deliveryDetails, deliveryType, estimatedFulfillmentDate, completed_at";
+
+const OrderIdPage = async ({ params }: Props) => {
   const { orderId } = params;
   const orderNumbers = orderId.split("-").map((x) => x.trim());
   const areAllowedNumbers = areAllowedOrderNumbers(orderNumbers);
@@ -41,23 +47,30 @@ const OrderIdPage = async ({ params }: { params: { orderId: string } }) => {
   }
 
   const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  const { data: orders, error } = await supabase
-    .from("orders")
-    .select(
-      "id, created_at, orderId, totalAmount, status, deliveryDetails, deliveryType, estimatedFulfillmentDate, completed_at"
-    )
-    .in("orderId", orderNumbers);
+  const supabase1 = createClient(cookieStore);
 
-  if (error) {
+  const cookieStore2 = cookies();
+  const supabase2 = createClient(cookieStore2);
+
+  const [ordersResponse, customOrdersResponse] = await Promise.all([
+    supabase1.from("orders").select(columns).in("orderId", orderNumbers),
+    supabase2.from("custom-orders").select(columns).in("orderId", orderNumbers),
+  ]);
+
+  const { data: orders, error: ordersError } = ordersResponse;
+  const { data: customOrders, error: customOrdersError } = customOrdersResponse;
+
+  if (ordersError || customOrdersError) {
     // TODO: Handle error
-    console.log(error);
+    console.log(ordersError, customOrdersError);
     return;
   }
 
+  const trackedOrders: IOrder[] = [...orders, ...customOrders] as IOrder[];
+
   return (
     <>
-      {orders == null || orders.length === 0 ? (
+      {trackedOrders == null || trackedOrders.length === 0 ? (
         <NoItemsFound
           label="No Orders were found for your search"
           icon={
@@ -78,7 +91,7 @@ const OrderIdPage = async ({ params }: { params: { orderId: string } }) => {
               Delivery date is subject to change without advanced notice
             </Text>
           </Stack>
-          <OrderStatuses orders={orders as IOrder[]} />
+          <OrderStatuses orders={trackedOrders as IOrder[]} />
 
           <TrackNewOrderButton />
         </Container>
