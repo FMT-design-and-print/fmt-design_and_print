@@ -1,14 +1,16 @@
-import { useCustomRequest } from "@/features/custom-request";
 import { RichTextEditor } from "@mantine/tiptap";
-import { BubbleMenu } from "@tiptap/react";
+import { BubbleMenu, Editor } from "@tiptap/react";
 
-export function TextEditor() {
-  const context = useCustomRequest();
+interface Props {
+  editor: Editor | null | undefined;
+}
+
+export function TextEditor({ editor }: Props) {
   return (
-    <RichTextEditor editor={context?.editor || null}>
+    <RichTextEditor editor={editor || null}>
       <RichTextEditor.Toolbar sticky stickyOffset={0}>
-        {context?.editor && (
-          <BubbleMenu editor={context.editor}>
+        {editor && (
+          <BubbleMenu editor={editor}>
             <RichTextEditor.ControlsGroup>
               <RichTextEditor.Bold />
               <RichTextEditor.Italic />

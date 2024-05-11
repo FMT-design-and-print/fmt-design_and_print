@@ -170,8 +170,10 @@ export const getOrderStatusText = (status: OrderStatus) => {
       return "Cancelled";
     case "pending-cancellation":
       return "Awaiting Cancellation";
+    case "requested":
+      return "Requested";
     default:
-      return "";
+      return status;
   }
 };
 
@@ -193,8 +195,36 @@ export function formatString(input: string) {
   return output;
 }
 
+export function formatCamelCase(input: string): string {
+  let result = "";
+
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charAt(i);
+
+    // Check if the character is uppercase and not the first character
+    if (char === char.toUpperCase() && i > 0) {
+      // Add space before the uppercase character
+      result += " ";
+    }
+
+    // Append the current character to the result
+    result += char;
+  }
+
+  return result;
+}
+
 export function bytesToMB(bytes: number) {
   // 1 MB = 1024 * 1024 bytes
   const megabytes = bytes / (1024 * 1024);
   return megabytes.toFixed(2) + "MB";
+}
+
+export function isLink(str: string): boolean {
+  // Regular expression pattern to match URLs
+  const urlPattern =
+    /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/i;
+
+  // Test the string against the URL pattern
+  return urlPattern.test(str);
 }

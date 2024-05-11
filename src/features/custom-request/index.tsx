@@ -1,6 +1,10 @@
 "use client";
+import { useCustomEditor } from "@/hooks/useCustomEditor";
 import { ArtworkOption, QuoteReceptionMedium } from "@/types";
-import React, {
+import { FileWithPath } from "@mantine/dropzone";
+import { Editor } from "@tiptap/react";
+import DOMPurify from "dompurify";
+import {
   Dispatch,
   ReactNode,
   SetStateAction,
@@ -9,14 +13,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Link } from "@mantine/tiptap";
-import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
-import Underline from "@tiptap/extension-underline";
-import { Editor, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import DOMPurify from "dompurify";
-import { FileWithPath } from "@mantine/dropzone";
 
 const content = ``;
 
@@ -57,16 +53,7 @@ export const CustomRequest = ({ children }: Props) => {
   const [quoteReceptionValue, setQuoteReceptionValue] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [productImageUrl, setProductImageUrl] = useState("");
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Link,
-      Highlight,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-    ],
-    content,
-  });
+  const editor = useCustomEditor(content);
 
   useEffect(() => {
     if (isSubmitting) {

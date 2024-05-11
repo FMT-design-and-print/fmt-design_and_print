@@ -2,6 +2,7 @@
 import { Box, Divider, Flex, Group, Text } from "@mantine/core";
 import {
   IconClockSearch,
+  IconCubeSend,
   IconHeart,
   IconHistory,
   IconMail,
@@ -22,6 +23,12 @@ const topLinks: ILink[] = [
     icon: <IconPackage size="1rem" />,
     label: "My Orders",
     link: "/my-account/orders",
+    isVisible: true,
+  },
+  {
+    icon: <IconCubeSend size="1rem" />,
+    label: "My Custom Requests",
+    link: "/my-account/custom-requests",
     isVisible: true,
   },
   {

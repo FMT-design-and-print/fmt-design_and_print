@@ -3,6 +3,7 @@ import { TextEditor } from "@/components/TextEditor";
 import { Box, Text } from "@mantine/core";
 
 import { ReactNode } from "react";
+import { useCustomRequest } from ".";
 
 interface Props {
   label?: string;
@@ -15,6 +16,8 @@ export const DesignInstructions = ({
   topLevelNotice,
   hideDescription = false,
 }: Props) => {
+  const context = useCustomRequest();
+
   return (
     <>
       <Text fw="bold" my="lg">
@@ -28,7 +31,7 @@ export const DesignInstructions = ({
         </Text>
       )}
 
-      <TextEditor />
+      <TextEditor editor={context?.editor} />
     </>
   );
 };
