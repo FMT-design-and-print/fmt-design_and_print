@@ -2,9 +2,14 @@ import { MyAccount } from "@/features/my-account";
 import { Orders } from "@/features/my-account/orders";
 import { IOrder } from "@/types/order";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "My Account | Orders | FMT Design and Print",
+};
 
 const MyAccountOrdersPage = async () => {
   const cookieStore = cookies();

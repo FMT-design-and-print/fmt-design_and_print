@@ -7,6 +7,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 import { Divider } from "@mantine/core";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Signup | FMT Design and Print",
+};
 
 export default async function Signup({
   searchParams,

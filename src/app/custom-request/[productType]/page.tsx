@@ -4,10 +4,18 @@ import { CustomRequestPageRenderer } from "@/features/custom-request/Renderer";
 import { Container } from "@mantine/core";
 import { redirect } from "next/navigation";
 import { Banner } from "../Banner";
+import { Metadata } from "next";
+import { formatString } from "@/functions";
 
 interface Props {
   params: {
     productType: string;
+  };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: formatString(params.productType),
   };
 }
 

@@ -33,6 +33,45 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <ColorSchemeScript />
+        <title>FMT Design and Print — Design and Printing Services</title>
+        <meta
+          name="title"
+          content="FMT Design and Print — Design and Printing Services"
+        />
+        <meta
+          name="description"
+          content="We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more"
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://fmtdesignprint.com" />
+        <meta
+          property="og:title"
+          content="FMT Design and Print — Design and Printing Services"
+        />
+        <meta
+          property="og:description"
+          content="We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more"
+        />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/dnbmynikp/image/upload/v1715768873/FMT/FMT-meta-bg_wu3gjc.png"
+        />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://fmtdesignprint.com" />
+        <meta
+          property="twitter:title"
+          content="FMT Design and Print — Design and Printing Services"
+        />
+        <meta
+          property="twitter:description"
+          content="We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more"
+        />
+        <meta
+          property="twitter:image"
+          content="https://res.cloudinary.com/dnbmynikp/image/upload/v1715768873/FMT/FMT-meta-bg_wu3gjc.png"
+        />
       </head>
       <body className={inter.className}>
         <Providers>

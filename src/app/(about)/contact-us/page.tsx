@@ -1,6 +1,11 @@
 import React from "react";
 import { ContactUs } from "./ContactUs";
 import { Card, Title } from "@mantine/core";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us | FMT Design and Print",
+};
 
 const ContactUsPage = () => {
   return (

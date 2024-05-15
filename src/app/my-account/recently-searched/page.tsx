@@ -1,8 +1,13 @@
 import { MyAccount } from "@/features/my-account";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "My Account | Recently Searched | FMT Design and Print",
+};
 
 const RecentlySearchedPage = async () => {
   const cookieStore = cookies();

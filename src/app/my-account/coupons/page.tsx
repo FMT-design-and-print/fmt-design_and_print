@@ -1,9 +1,14 @@
 import { MyAccount } from "@/features/my-account";
 import { Coupons } from "@/features/my-account/coupons";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "My Account | Coupons | FMT Design and Print",
+};
 
 const MyAccountCouponsPage = async () => {
   const cookieStore = cookies();

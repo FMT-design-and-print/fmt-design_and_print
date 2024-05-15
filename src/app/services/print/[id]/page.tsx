@@ -4,12 +4,27 @@ import { ProductDetails } from "@/features/product-details";
 import { client } from "@/lib/client";
 import { singleProductQuery } from "@/queries";
 import { IPrintProduct } from "@/types";
+import { Metadata } from "next";
 
 export const revalidate = 0;
 
 interface Props {
   params: {
     id: string;
+  };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const product: IPrintProduct = await client.fetch(singleProductQuery, {
+    id: params.id,
+  });
+
+  return {
+    title: product.title,
+    description: product.description,
+    openGraph: {
+      images: [product.image],
+    },
   };
 }
 

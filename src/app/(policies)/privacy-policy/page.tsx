@@ -1,5 +1,10 @@
 import React from "react";
 import { Container, Text, Divider, Title } from "@mantine/core";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | FMT Design and Print",
+};
 
 const PrivacyPolicyPage = () => {
   return (

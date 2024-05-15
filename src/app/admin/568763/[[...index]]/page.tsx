@@ -1,9 +1,10 @@
-"use client";
+import { Metadata } from "next";
+import { Renderer } from "./Renderer";
 
-import { NextStudio } from "next-sanity/studio";
-import config from "../../../../../sanity.config";
-import React from "react";
+export const metadata: Metadata = {
+  title: "Admin| FMT Design and Print",
+};
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  return <Renderer />;
 }

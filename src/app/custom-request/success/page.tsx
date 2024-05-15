@@ -2,6 +2,11 @@ import { Button, Container, Group, Text, Title } from "@mantine/core";
 import Link from "next/link";
 import React from "react";
 import classes from "./Style.module.css";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Order Success | FMT Design and Print",
+};
 
 interface Props {
   searchParams: {

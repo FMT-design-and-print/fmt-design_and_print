@@ -1,5 +1,10 @@
 import React from "react";
 import { Container, Text, Divider, Title } from "@mantine/core";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Use | FMT Design and Print",
+};
 
 const TermsOfUsePage = () => {
   return (

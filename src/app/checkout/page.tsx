@@ -1,8 +1,13 @@
 import { Checkout } from "@/features/checkout";
 import { IShippingAddress } from "@/types";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Checkout | FMT Design and Print",
+};
 
 const CheckoutPage = async () => {
   // load shipping addresses of logged in users

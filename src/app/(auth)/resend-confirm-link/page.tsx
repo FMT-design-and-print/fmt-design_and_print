@@ -3,6 +3,11 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ResendConfirmLinkForm } from "./ResendConfirmLinkForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Resend Confirm Link | FMT Design and Print",
+};
 
 interface Props {
   searchParams: {

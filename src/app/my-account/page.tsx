@@ -1,8 +1,11 @@
-import { MyAccount } from "@/features/my-account";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import React from "react";
+
+export const metadata: Metadata = {
+  title: "My Account | FMT Design and Print",
+};
 
 const MyAccountPage = async () => {
   const cookieStore = cookies();
@@ -16,11 +19,7 @@ const MyAccountPage = async () => {
     return redirect("/");
   }
 
-  return (
-    <div>
-      <MyAccount email={session.user.email || ""}>My Account Main</MyAccount>
-    </div>
-  );
+  return redirect("/my-account/profile");
 };
 
 export default MyAccountPage;

@@ -1,5 +1,10 @@
 import { TrackingForm } from "@/features/order-tracking/TrackingForm";
 import { Container, Stack, Text, Title } from "@mantine/core";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Order Tracking | FMT Design and Print",
+};
 
 const title = "Track your Orders";
 const description =

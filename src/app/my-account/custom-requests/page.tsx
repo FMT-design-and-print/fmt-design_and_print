@@ -2,9 +2,14 @@ import { MyAccount } from "@/features/my-account";
 import { CustomRequests } from "@/features/my-account/custom-requests";
 import { ICustomOrder } from "@/types/order";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "My Account | Custom Requests | FMT Design and Print",
+};
 
 const MyAccountCustomRequestsPage = async () => {
   const cookieStore = cookies();

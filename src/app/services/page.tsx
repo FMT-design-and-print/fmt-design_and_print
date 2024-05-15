@@ -4,6 +4,11 @@ import { client } from "../../../sanity/lib/client";
 import { IProductType } from "@/types";
 import { groupProductTypesByCategory } from "@/functions";
 import { liveProductTypesQuery } from "@/queries";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Services | FMT Design and Print",
+};
 
 export const revalidate = 0;
 

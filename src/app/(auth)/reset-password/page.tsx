@@ -3,6 +3,11 @@ import { PasswordResetForm } from "@/app/(auth)/reset-password/PasswordResetForm
 import { MessageStatus } from "@/types";
 import Link from "next/link";
 import { Button } from "@mantine/core";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Reset Password | FMT Design and Print",
+};
 
 interface Props {
   searchParams: {

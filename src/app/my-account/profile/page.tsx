@@ -2,9 +2,14 @@ import { MyAccount } from "@/features/my-account";
 import { ProfileForm } from "@/features/my-account/profile/Form";
 import { createClient } from "@/utils/supabase/server";
 import { Alert } from "@mantine/core";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "My Account | Profile | FMT Design and Print",
+};
 
 const MyAccountProfilePage = async () => {
   const cookieStore = cookies();

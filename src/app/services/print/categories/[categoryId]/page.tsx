@@ -1,15 +1,23 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import PrintCategory from "@/features/services/PrintCategory";
+import { formatString } from "@/functions";
 import { client } from "@/lib/client";
 import { filteredProductTypesQuery } from "@/queries";
 import { printProductsQuery } from "@/queries/products";
 import { IPrintProduct, IProductType } from "@/types";
+import { Metadata } from "next";
 
 export const revalidate = 0;
 
 interface Props {
   params: {
     categoryId: string;
+  };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: formatString(params.categoryId) + " | FMT Design and Print ",
   };
 }
 

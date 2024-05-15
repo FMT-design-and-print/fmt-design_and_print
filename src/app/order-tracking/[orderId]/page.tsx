@@ -14,8 +14,13 @@ import {
   Title,
 } from "@mantine/core";
 import { IconPackage } from "@tabler/icons-react";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Order Tracking | FMT Design and Print",
+};
 
 export const revalidate = 0;
 

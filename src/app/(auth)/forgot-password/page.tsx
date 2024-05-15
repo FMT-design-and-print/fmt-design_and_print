@@ -3,6 +3,11 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ForgotPassword } from "./ForgotPassword";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Forgot Password | FMT Design and Print",
+};
 
 interface Props {
   searchParams: {

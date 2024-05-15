@@ -1,9 +1,11 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import { ProductType } from "@/features/services/ProductType";
+import { formatString } from "@/functions";
 import { client } from "@/lib/client";
 import { printProductsByTypeQuery } from "@/queries/products";
 import { IPrintProduct } from "@/types";
 import { Text } from "@mantine/core";
+import { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
@@ -13,6 +15,12 @@ interface Props {
   params: {
     categoryId: string;
     productType: string;
+  };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: formatString(params.productType) + " | FMT Design and Print",
   };
 }
 
