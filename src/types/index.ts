@@ -81,6 +81,8 @@ export interface IPrintProduct extends FeaturedItem {
   tags: string[];
   gender?: string;
   isForKids?: boolean;
+  relatedProducts: FeaturedItem[];
+  otherProducts: FeaturedItem[];
 }
 
 export interface ICartItem {

@@ -39,9 +39,10 @@ export const Sizes = ({
               p={0}
               withBorder
               style={{
+                borderWidth: selectedSize === size ? "2px" : "1px",
                 borderColor:
                   selectedSize === size
-                    ? "pink"
+                    ? "#f76b92"
                     : "var(--mantine-color-gray-4)",
               }}
               className={classes["size-card"]}

@@ -35,6 +35,7 @@ import { Quantity } from "@/components/Quantity";
 import { ErrorText } from "@/components/ErrorText";
 import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
+import { OtherItems } from "./OtherItems";
 
 const defaultValue = {
   productId: "",
@@ -217,7 +218,16 @@ export const ProductDetails = ({ product }: Props) => {
         details={product.details}
       />
 
-      <Box my="xl">
+      <OtherItems
+        label="Related Items"
+        items={product.relatedProducts.filter((item) => item.id !== product.id)}
+      />
+      <OtherItems
+        label="You may also like"
+        items={product.otherProducts.filter((item) => item.id !== product.id)}
+      />
+
+      <Box m="xl">
         <Text fw="bold" my="sm">
           Related search terms
         </Text>
