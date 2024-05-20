@@ -17,7 +17,12 @@ export const AdminHeader = () => {
         className="bg-darkBlue text-gray-100"
       >
         <FMTLogo />
-        <Title order={3}> Admin </Title>
+        <Title order={3}>
+          {" "}
+          {pathname.includes("/admin/studio")
+            ? "Admin Panel | Studio"
+            : "Admin Panel"}{" "}
+        </Title>
       </Flex>
     );
   }
