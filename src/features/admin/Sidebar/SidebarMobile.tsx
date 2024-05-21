@@ -1,55 +1,54 @@
 import { LogoutButton } from "@/components/LogoutButton";
 import {
-  Button,
+  ActionIcon,
+  Box,
   Center,
   Divider,
-  Group,
   ScrollArea,
   Text,
 } from "@mantine/core";
-
-import { adminNavItems } from "@/features/admin/Sidebar/AdminNavItems";
 import { IconDeviceLaptop } from "@tabler/icons-react";
 import Link from "next/link";
+import { adminNavItems } from "./AdminNavItems";
 import { Links } from "./Links";
 import classes from "./Sidebar.module.css";
 
-export function Sidebar() {
+export const SidebarMobile = () => {
   return (
     <div className={classes.wrapper}>
-      <nav className={classes.navbar}>
+      <nav className={classes.navbarMobile}>
         <div className={classes.header}>
-          <Group justify="space-between">
-            <Text fw="bold">FMT Design and Print</Text>
-          </Group>
+          <Text fw="bold" ta="center">
+            FMT
+          </Text>
         </div>
 
         <Center px="sm">
-          <Button
-            leftSection={<IconDeviceLaptop />}
+          <ActionIcon
             component={Link}
             href="/admin/studio"
             variant="light"
             color="gray"
             w="100%"
             mt="sm"
+            title="Open Studio"
           >
-            Open Studio
-          </Button>
+            <IconDeviceLaptop />
+          </ActionIcon>
         </Center>
 
         <Divider my="md" />
 
         <ScrollArea className={classes.links}>
-          <div className={classes.linksInner}>
-            <Links navItems={adminNavItems} />
-          </div>
+          <Box px="sm">
+            <Links navItems={adminNavItems} isMobile />
+          </Box>
         </ScrollArea>
 
         <div className={classes.footer}>
-          <LogoutButton />
+          <LogoutButton iconOnly />
         </div>
       </nav>
     </div>
   );
-}
+};

@@ -1,11 +1,22 @@
 "use client";
 import { signOut } from "@/lib/actions/auth.actions";
 import { useSession } from "@/store";
-import { Button, rem } from "@mantine/core";
+import { ActionIcon, Button, rem } from "@mantine/core";
 import { useTransition } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 
-export const LogoutButton = () => {
+interface Props {
+  iconOnly?: boolean;
+}
+
+const buttonProps = {
+  w: "100%",
+  variant: "light",
+  color: "red",
+  className: "bg-red-100",
+};
+
+export const LogoutButton = ({ iconOnly }: Props) => {
   const { setSession, setUser } = useSession((state) => state);
   const [isPending, startTransition] = useTransition();
 
@@ -19,18 +30,27 @@ export const LogoutButton = () => {
     localStorage.removeItem("fmt_initialUserDetailsSaved");
   };
 
-  return (
+  return iconOnly ? (
+    <ActionIcon
+      title="Logout"
+      component="button"
+      type="submit"
+      onClick={handleLogout}
+      disabled={isPending}
+      {...buttonProps}
+    >
+      <HiOutlineLogout style={{ width: rem(16), height: rem(16) }} />
+    </ActionIcon>
+  ) : (
     <Button
+      title="Logout"
       leftSection={
         <HiOutlineLogout style={{ width: rem(16), height: rem(16) }} />
       }
-      w="100%"
       type="submit"
-      variant="light"
-      color="red"
-      className="bg-red-100"
       onClick={handleLogout}
       disabled={isPending}
+      {...buttonProps}
     >
       Logout
     </Button>

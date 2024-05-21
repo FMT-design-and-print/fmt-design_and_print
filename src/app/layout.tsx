@@ -21,7 +21,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "FMT Design and Print",
-  description: "Graphic Design and Printing Solutions",
+  description:
+    "We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more",
 };
 
 export default function RootLayout({
@@ -32,17 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <ColorSchemeScript />
-        <title>FMT Design and Print — Design and Printing Services</title>
-        <meta
-          name="title"
-          content="FMT Design and Print — Design and Printing Services"
-        />
-        <meta
-          name="description"
-          content="We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more"
-        />
-
+        <ColorSchemeScript defaultColorScheme="light" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://fmtdesignprint.com" />
         <meta

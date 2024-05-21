@@ -14,7 +14,7 @@ export const Providers = ({ children }: Props) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <MantineProvider>
+      <MantineProvider defaultColorScheme="light">
         <NavigationProgress />
         {children}
       </MantineProvider>
