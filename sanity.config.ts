@@ -4,14 +4,14 @@
 
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
-import { deskTool } from "sanity/desk";
+import { structureTool } from "sanity/structure";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity";
 
 export default defineConfig({
-  basePath: "/admin/568763",
+  basePath: "/admin/studio",
   projectId,
   dataset,
   schema,
-  plugins: [deskTool(), visionTool({ defaultApiVersion: apiVersion })],
+  plugins: [structureTool(), visionTool({ defaultApiVersion: apiVersion })],
 });

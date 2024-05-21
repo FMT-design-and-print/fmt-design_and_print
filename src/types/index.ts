@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type MessageStatus = "error" | "success" | "info";
 export type CouponType = "percentage" | "fixed" | "free-shipping";
 export type CouponStatus = "expired" | "active" | "disabled";
@@ -168,3 +170,13 @@ export interface IFavoriteItem {
   price: number;
   image: string;
 }
+
+export type IAdminNavItems =
+  | {
+      value: string;
+      label: string;
+      icon: ReactNode;
+      isVisible: boolean;
+      component: ReactNode;
+    }
+  | "divider";

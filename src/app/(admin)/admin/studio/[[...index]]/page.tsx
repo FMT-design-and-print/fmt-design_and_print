@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { Renderer } from "./Renderer";
 
 export const metadata: Metadata = {
-  title: "Admin| FMT Design and Print",
+  title: "Admin | Studio | FMT Design and Print",
 };
 
-export default function StudioPage() {
+export default function AdminPage() {
   return <Renderer />;
 }
