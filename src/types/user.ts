@@ -10,3 +10,5 @@ export interface IUserDetails {
   gender?: string | null;
   dateOfBirth?: Date | null;
 }
+
+export type UserType = "admin" | "regular";

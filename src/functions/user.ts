@@ -1,3 +1,5 @@
+import { User } from "@supabase/supabase-js";
+
 export function getChangedDetails2<T>(
   originalDetails: T,
   newDetails: T
@@ -32,4 +34,8 @@ export function getChangedDetails<T>(obj1: T, obj2: T): Partial<T> {
   }
 
   return difference;
+}
+
+export function isAdminUser(user: User) {
+  return user.user_metadata.userType === "admin";
 }

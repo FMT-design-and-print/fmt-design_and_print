@@ -1,3 +1,4 @@
+import { isAdminUser } from "@/functions/user";
 import { IUserDetails } from "@/types/user";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
@@ -17,7 +18,7 @@ export const useSaveInitialUserDetails = () => {
           data: { session },
         } = await supabase.auth.getSession();
 
-        if (session) {
+        if (session && !isAdminUser(session.user)) {
           if (!isDetailsSaved) {
             const { error, data } = await supabase
               .from("users")

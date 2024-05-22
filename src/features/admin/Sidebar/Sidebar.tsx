@@ -47,7 +47,7 @@ export function Sidebar() {
         </ScrollArea>
 
         <div className={classes.footer}>
-          <LogoutButton />
+          <LogoutButton userType="admin" />
         </div>
       </nav>
     </div>
