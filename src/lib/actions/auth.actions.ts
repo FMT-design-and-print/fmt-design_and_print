@@ -16,6 +16,7 @@ import {
   ResetPasswordDataSchema,
   SignUpDataSchema,
 } from "../validations";
+import { UserType } from "@/types/user";
 
 type SignUpData = z.infer<typeof SignUpDataSchema>;
 type LoginData = z.infer<typeof LoginDataSchema>;
@@ -69,6 +70,9 @@ export const signUp = async (data: SignUpData, next?: string | null) => {
       email,
       password,
       options: {
+        data: {
+          userType: "regular",
+        },
         emailRedirectTo: next
           ? `${origin}/auth/callback?next=${next}`
           : `${origin}/auth/callback`,
@@ -122,10 +126,15 @@ export const resetPassword = async (data: ResetData) => {
   redirect(`/login?message=${passwordResetSuccessMessage}&messageStatus=info`);
 };
 
-export const signOut = async () => {
+export const signOut = async (userType?: UserType) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
   await supabase.auth.signOut();
+
+  if (userType === "admin") {
+    redirect("/admin/login");
+  }
+
   return redirect("/");
 };

@@ -1,12 +1,14 @@
 "use client";
 import { signOut } from "@/lib/actions/auth.actions";
 import { useSession } from "@/store";
+import { UserType } from "@/types/user";
 import { ActionIcon, Button, rem } from "@mantine/core";
 import { useTransition } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 
 interface Props {
   iconOnly?: boolean;
+  userType?: UserType;
 }
 
 const buttonProps = {
@@ -16,13 +18,13 @@ const buttonProps = {
   className: "bg-red-100",
 };
 
-export const LogoutButton = ({ iconOnly }: Props) => {
+export const LogoutButton = ({ iconOnly, userType }: Props) => {
   const { setSession, setUser } = useSession((state) => state);
   const [isPending, startTransition] = useTransition();
 
   const handleLogout = async () => {
     await startTransition(() => {
-      signOut();
+      signOut(userType);
     });
 
     setSession(null);

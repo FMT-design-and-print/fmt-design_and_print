@@ -1,10 +1,13 @@
+"use client";
 import React from "react";
 import { Sidebar } from "./Sidebar/Sidebar";
 import { Box, Group } from "@mantine/core";
 import { SidebarMobile } from "./Sidebar/SidebarMobile";
 import { PageRenderer } from "./PageRenderer";
 
-export const AdminLayout = () => {
+export const AdminLayout = ({ user }: { user: any }) => {
+  console.log(user);
+
   return (
     <Group align="flex-start">
       <Box visibleFrom="sm">

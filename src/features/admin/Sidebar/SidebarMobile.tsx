@@ -46,7 +46,7 @@ export const SidebarMobile = () => {
         </ScrollArea>
 
         <div className={classes.footer}>
-          <LogoutButton iconOnly />
+          <LogoutButton userType="admin" iconOnly />
         </div>
       </nav>
     </div>
