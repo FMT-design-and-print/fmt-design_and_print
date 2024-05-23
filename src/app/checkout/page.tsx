@@ -1,4 +1,5 @@
 import { Checkout } from "@/features/checkout";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { IShippingAddress } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 const CheckoutPage = async () => {
+  await redirectAdminUser();
+
   // load shipping addresses of logged in users
   let shippingAddresses: IShippingAddress[] = [];
 

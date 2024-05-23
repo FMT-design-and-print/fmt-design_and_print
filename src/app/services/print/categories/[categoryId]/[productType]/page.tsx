@@ -1,6 +1,7 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import { ProductType } from "@/features/services/ProductType";
 import { formatString } from "@/functions";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/lib/client";
 import { printProductsByTypeQuery } from "@/queries/products";
 import { IPrintProduct } from "@/types";
@@ -25,6 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const ProductTypePage = async ({ params }: Props) => {
+  await redirectAdminUser();
+
   const products: IPrintProduct[] = await client.fetch(
     printProductsByTypeQuery,
     {

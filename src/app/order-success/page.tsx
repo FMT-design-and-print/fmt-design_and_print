@@ -1,6 +1,7 @@
 import React from "react";
 import { OrderSuccessHero } from "./Hero";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "Order Success | FMT Design and Print",
@@ -12,7 +13,9 @@ interface Props {
   };
 }
 
-const OrderSuccessPage = ({ searchParams }: Props) => {
+const OrderSuccessPage = async ({ searchParams }: Props) => {
+  await redirectAdminUser();
+
   return (
     <div>
       <OrderSuccessHero orderId={searchParams.reference} />

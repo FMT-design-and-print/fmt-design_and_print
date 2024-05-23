@@ -1,4 +1,5 @@
 import { TrackingForm } from "@/features/order-tracking/TrackingForm";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { Container, Stack, Text, Title } from "@mantine/core";
 import { Metadata } from "next";
 
@@ -10,7 +11,9 @@ const title = "Track your Orders";
 const description =
   "You can Track Multiple Orders by separating order numbers with commas. Valid Order numbers are usually from 5 to 8 digits. For example: 34565,673466,7762256. Enter the tracking number(s) of your package below to track status. If you don't know your order number, please contact us.";
 
-const OrderTrackingPage = () => {
+const OrderTrackingPage = async () => {
+  await redirectAdminUser();
+
   return (
     <>
       <Container size="sm">

@@ -1,5 +1,6 @@
 import { MyAccount } from "@/features/my-account";
 import { ShippingAddresses } from "@/features/my-account/shipping-address";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { IShippingAddress } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 const MyAccountShippingAddressPage = async () => {
+  await redirectAdminUser();
+
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

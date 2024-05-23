@@ -1,5 +1,6 @@
 import { MyAccount } from "@/features/my-account";
 import { CustomRequests } from "@/features/my-account/custom-requests";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { ICustomOrder } from "@/types/order";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 const MyAccountCustomRequestsPage = async () => {
+  await redirectAdminUser();
+
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

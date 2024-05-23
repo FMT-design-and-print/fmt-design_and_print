@@ -1,3 +1,4 @@
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { Metadata } from "next";
 import React from "react";
 
@@ -7,7 +8,9 @@ export const metadata: Metadata = {
 
 export const revalidate = 0;
 
-const PlainItems = () => {
+const PlainItems = async () => {
+  await redirectAdminUser();
+
   return <div>Plain Items</div>;
 };
 

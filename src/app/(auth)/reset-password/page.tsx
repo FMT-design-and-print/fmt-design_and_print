@@ -4,6 +4,7 @@ import { MessageStatus } from "@/types";
 import Link from "next/link";
 import { Button } from "@mantine/core";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "Reset Password | FMT Design and Print",
@@ -17,7 +18,8 @@ interface Props {
   };
 }
 
-const ResetPassword = ({ searchParams }: Props) => {
+const ResetPassword = async ({ searchParams }: Props) => {
+  await redirectAdminUser();
   const message = searchParams?.message;
   const messageStatus = searchParams.messageStatus as MessageStatus;
   const errorCode = searchParams?.error_code;

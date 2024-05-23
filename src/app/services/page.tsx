@@ -5,6 +5,7 @@ import { IProductType } from "@/types";
 import { groupProductTypesByCategory } from "@/functions";
 import { liveProductTypesQuery } from "@/queries";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "Services | FMT Design and Print",
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 export const revalidate = 0;
 
 const AllServicesPage = async () => {
+  await redirectAdminUser();
+
   const productTypes: IProductType[] = await client.fetch(
     liveProductTypesQuery
   );

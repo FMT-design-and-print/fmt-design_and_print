@@ -1,5 +1,6 @@
 import { MyAccount } from "@/features/my-account";
 import { SavedItems } from "@/features/my-account/saved-items";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 const SavedItemsPage = async () => {
+  await redirectAdminUser();
+
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { Alert, Box, Divider } from "@mantine/core";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "Login | FMT Design and Print",
@@ -24,6 +25,8 @@ export default async function Signup({
     error_description: string;
   };
 }) {
+  await redirectAdminUser();
+
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

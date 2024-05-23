@@ -1,6 +1,7 @@
 import { NoItemsFound } from "@/components/NoItemsFound";
 import { OrderStatuses } from "@/features/order-tracking";
 import { areAllowedOrderNumbers } from "@/functions";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { IOrder } from "@/types/order";
 import { createClient } from "@/utils/supabase/server";
 import {
@@ -31,6 +32,8 @@ const columns =
   "id, created_at, orderId, totalAmount, status, deliveryDetails, deliveryType, estimatedFulfillmentDate, completed_at";
 
 const OrderIdPage = async ({ params }: Props) => {
+  await redirectAdminUser();
+
   const { orderId } = params;
   const orderNumbers = orderId.split("-").map((x) => x.trim());
   const areAllowedNumbers = areAllowedOrderNumbers(orderNumbers);

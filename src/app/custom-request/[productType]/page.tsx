@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { Banner } from "../Banner";
 import { Metadata } from "next";
 import { formatString } from "@/functions";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 interface Props {
   params: {
@@ -19,7 +20,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const CustomRequestPage = ({ params }: Props) => {
+const CustomRequestPage = async ({ params }: Props) => {
+  await redirectAdminUser();
+
   const product = params.productType;
 
   if (!productKeywords.includes(product)) {

@@ -3,12 +3,15 @@ import { Container, Text, Title } from "@mantine/core";
 import { WhatWeOffer } from "./WhatWeOffer";
 import Link from "next/link";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "About US| FMT Design and Print",
 };
 
-const AboutUsPage = () => {
+const AboutUsPage = async () => {
+  await redirectAdminUser();
+
   return (
     <>
       <PageHero

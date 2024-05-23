@@ -1,5 +1,6 @@
 import { MyAccount } from "@/features/my-account";
 import { ProfileForm } from "@/features/my-account/profile/Form";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { createClient } from "@/utils/supabase/server";
 import { Alert } from "@mantine/core";
 import { Metadata } from "next";
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 const MyAccountProfilePage = async () => {
+  await redirectAdminUser();
+
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

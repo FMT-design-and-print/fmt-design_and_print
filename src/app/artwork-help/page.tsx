@@ -1,12 +1,15 @@
 import React from "react";
 import { Container, Text, Divider, Title } from "@mantine/core";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "Artwork help | FMT Design and Print",
 };
 
-const ArtworkHelpPage = () => {
+const ArtworkHelpPage = async () => {
+  await redirectAdminUser();
+
   return (
     <Container size="sm">
       <Title order={1} ta="center" my={20}>

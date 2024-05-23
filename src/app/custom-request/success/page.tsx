@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import classes from "./Style.module.css";
 import { Metadata } from "next";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
 export const metadata: Metadata = {
   title: "Order Success | FMT Design and Print",
@@ -14,9 +15,11 @@ interface Props {
   };
 }
 
-const CustomRequestSuccessPage = ({
+const CustomRequestSuccessPage = async ({
   searchParams: { reference: orderId },
 }: Props) => {
+  await redirectAdminUser();
+
   return (
     <Container className={classes.wrapper} size={1400}>
       <div className={classes.inner}>
