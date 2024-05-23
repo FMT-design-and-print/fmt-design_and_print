@@ -37,7 +37,7 @@ export const AuthCard = ({ title, children, searchParams }: Props) => {
         />
         <Box
           bg="gray.0"
-          className="absolute left-[-50px] top-[70px] mx-auto h-[500px] w-[500px] rounded-full border bg-gray-50 text-center text-lg font-bold  text-primary-500"
+          className="absolute left-[-50px] top-[70px] mx-auto size-[500px] rounded-full border bg-gray-50 text-center text-lg font-bold text-primary-500"
         >
           <Title order={4} my="3rem">
             {title}
