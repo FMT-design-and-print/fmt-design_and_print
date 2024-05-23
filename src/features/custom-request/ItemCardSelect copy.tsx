@@ -1,5 +1,5 @@
 import { Avatar, Card, Text } from "@mantine/core";
-import { FlexLayout } from "./FlexLayout";
+import { FlexLayout } from "@/components/FlexLayout";
 
 type Item = { id: string; image: string };
 interface Props {

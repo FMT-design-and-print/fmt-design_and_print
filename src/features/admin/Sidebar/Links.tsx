@@ -4,6 +4,7 @@ import { IAdminNavItems } from "@/types";
 import { ActionIcon, Avatar, Divider, Group, Text } from "@mantine/core";
 import cx from "clsx";
 import classes from "./Sidebar.module.css";
+import { v4 as uid } from "uuid";
 
 interface Props {
   isMobile?: boolean;
@@ -20,7 +21,7 @@ export const Links = ({ navItems, isMobile }: Props) => {
 
   return visibleItems.map((item, i) =>
     item === "divider" ? (
-      <Divider key={item + 1} my="sm" />
+      <Divider key={uid()} my="sm" />
     ) : !isMobile ? (
       <Group
         key={item.value}

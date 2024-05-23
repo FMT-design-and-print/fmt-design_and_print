@@ -6,7 +6,7 @@ import { ArtworkSection } from "../ArtworkSection";
 import { BrandSelect } from "../BrandSelect";
 import { DesignInstructions } from "../DesignInstructions";
 import { ErrorsRenderer } from "../ErrorsRenderer";
-import { FlexLayout } from "../FlexLayout";
+import { FlexLayout } from "@/components/FlexLayout";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";

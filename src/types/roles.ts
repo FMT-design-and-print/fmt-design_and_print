@@ -1,4 +1,4 @@
-export type Roles =
+export type Role =
   | "super-admin"
   | "admin"
   | "manager"

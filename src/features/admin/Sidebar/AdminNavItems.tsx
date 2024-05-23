@@ -11,11 +11,13 @@ import {
   IconTicket,
   IconUser,
   IconUserCog,
+  IconUserPlus,
   IconUsersGroup,
 } from "@tabler/icons-react";
 import { Dashboard } from "../Pages/Dashboard";
 import { Orders } from "../Pages/Orders";
 import { IAdminNavItems } from "@/types";
+import { CreateNewAdminUser } from "../Pages/NewAdminUser";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -88,6 +90,7 @@ export const adminNavItems: IAdminNavItems[] = [
     isVisible: false,
     component: <>Reports</>,
   },
+  "divider",
   {
     value: "employees",
     label: "Employees",
@@ -95,7 +98,14 @@ export const adminNavItems: IAdminNavItems[] = [
     isVisible: true,
     component: <>Employees</>,
   },
-
+  {
+    value: "new-admin-user",
+    label: "New Admin User",
+    icon: <IconUserPlus />,
+    isVisible: true,
+    component: <CreateNewAdminUser />,
+  },
+  "divider",
   {
     value: "price-calculator",
     label: "Price Calculator",
@@ -105,7 +115,6 @@ export const adminNavItems: IAdminNavItems[] = [
   },
 
   "divider",
-
   {
     value: "my-account",
     label: "My Account",

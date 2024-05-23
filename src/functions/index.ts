@@ -228,3 +228,24 @@ export function isLink(str: string): boolean {
   // Test the string against the URL pattern
   return urlPattern.test(str);
 }
+
+export function generatePassword(): string {
+  const possibleLengths = [6, 7, 8, 9, 10];
+  const index = Math.floor(Math.random() * possibleLengths.length);
+  const selectedLength = possibleLengths[index];
+
+  const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
+  const numberChars = "0123456789";
+  const specialChars = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+
+  const allChars = upperCaseChars + lowerCaseChars + numberChars + specialChars;
+  let password = "";
+
+  for (let i = 0; i < selectedLength; i++) {
+    const randomIndex = Math.floor(Math.random() * allChars.length);
+    password += allChars[randomIndex];
+  }
+
+  return password;
+}
