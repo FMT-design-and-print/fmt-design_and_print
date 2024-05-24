@@ -18,6 +18,24 @@ import { adminRoles } from "../../adminRoles";
 import { useEffect, useState } from "react";
 import { generatePassword } from "@/functions";
 import { AvatarGenerator } from "random-avatar-generator";
+import { ZodSchema, z } from "zod";
+import { validateForm } from "@/functions/validate-form";
+
+export const schema: ZodSchema = z.object({
+  role: z.string(),
+  email: z
+    .string({ required_error: "Email is required" })
+    .email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+  firstName: z.string().min(1, { message: "First Name is required" }),
+  lastName: z.string().min(1, { message: "Last Name is required" }),
+  avatar: z.string().min(1, { message: "Provide avatar" }),
+  sendMail: z.boolean(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export const CreateNewAdminUser = () => {
   const [role, setRole] = useState("editor");
@@ -27,6 +45,7 @@ export const CreateNewAdminUser = () => {
   const [lastName, setLastName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [sendMail, setSendMail] = useState(true);
+  const [errors, setErrors] = useState<FormData | null>({});
 
   const generateTemporalPassword = () => {
     const generatedPassword = generatePassword();
@@ -38,10 +57,28 @@ export const CreateNewAdminUser = () => {
     setAvatar(generator.generateRandomAvatar());
   };
 
-  //   TODO: creating new user
-  // 1. Sign User Up - add role and userType to auth table
-  // 2. Add user details to admins table with role
-  // 3. Send user email to reset their password
+  const handleCreateNewAdminUser = () => {
+    const formData = {
+      role,
+      email,
+      password,
+      firstName,
+      lastName,
+      avatar,
+      sendMail,
+    };
+    const result = validateForm(formData, schema);
+
+    if (result.success) {
+      console.log("Validation succeeded!");
+      //   TODO: creating new user
+      // 1. Sign User Up - add role and userType to auth table
+      // 2. Add user details to admins table with role
+      // 3. Send user email to reset their password
+    } else {
+      setErrors(result.errors);
+    }
+  };
 
   useEffect(() => {
     generateAvatar();
@@ -59,6 +96,7 @@ export const CreateNewAdminUser = () => {
         data={adminRoles}
         value={role}
         onChange={(value) => setRole(value || "editor")}
+        error={errors?.role}
       />
       <Space my="lg" />
       <FlexLayout grow>
@@ -69,6 +107,7 @@ export const CreateNewAdminUser = () => {
           placeholder="email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          error={errors?.email}
         />
         <Flex align="flex-end" gap={4}>
           <PasswordInput
@@ -78,6 +117,7 @@ export const CreateNewAdminUser = () => {
             style={{ flex: 1 }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={errors?.password}
           />
           <Button
             size="sm"
@@ -96,12 +136,14 @@ export const CreateNewAdminUser = () => {
           placeholder="John"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
+          error={errors?.firstName}
         />
         <TextInput
           label="Last Name"
           placeholder="Comrah"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+          error={errors?.lastName}
         />
       </FlexLayout>
       <Space my="lg" />
@@ -121,6 +163,7 @@ export const CreateNewAdminUser = () => {
           }
           rightSectionWidth={100}
           style={{ flex: 1 }}
+          error={errors?.avatar}
         />
       </Flex>
       <Space my="xl" />
@@ -131,7 +174,7 @@ export const CreateNewAdminUser = () => {
           checked={sendMail}
           onChange={(e) => setSendMail(e.target.checked)}
         />
-        <Button className="btn" miw={200}>
+        <Button className="btn" miw={200} onClick={handleCreateNewAdminUser}>
           Create User
         </Button>
       </Group>

@@ -2,10 +2,6 @@ import { Role } from "@/types/roles";
 
 export const adminRoles: { label: string; value: Role }[] = [
   {
-    label: "Super Admin",
-    value: "super-admin",
-  },
-  {
     label: "Admin",
     value: "admin",
   },
