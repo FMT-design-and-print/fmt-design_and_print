@@ -48,3 +48,24 @@ export function hasPermission(
 
   return permissions.includes(requiredPermission);
 }
+
+export const formatRole = (role?: Role) => {
+  switch (role) {
+    case "super-admin":
+      return "Super Admin";
+    case "admin":
+      return "Admin";
+    case "manager":
+      return "Manager";
+    case "editor":
+      return "Editor";
+    case "sales-rep":
+      return "Sales Rep";
+    case "viewer":
+      return "Viewer";
+    case "guest":
+      return "Guest";
+    default:
+      return "";
+  }
+};

@@ -2,6 +2,7 @@
 import { FlexLayout } from "@/components/FlexLayout";
 import {
   Avatar,
+  Box,
   Button,
   Card,
   Checkbox,
@@ -20,6 +21,9 @@ import { generatePassword } from "@/functions";
 import { AvatarGenerator } from "random-avatar-generator";
 import { ZodSchema, z } from "zod";
 import { validateForm } from "@/functions/validate-form";
+import { createAdminClient, createClient } from "@/utils/supabase/client";
+import { toast } from "react-toastify";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 export const schema: ZodSchema = z.object({
   role: z.string(),
@@ -46,6 +50,7 @@ export const CreateNewAdminUser = () => {
   const [avatar, setAvatar] = useState("");
   const [sendMail, setSendMail] = useState(true);
   const [errors, setErrors] = useState<FormData | null>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const generateTemporalPassword = () => {
     const generatedPassword = generatePassword();
@@ -57,7 +62,7 @@ export const CreateNewAdminUser = () => {
     setAvatar(generator.generateRandomAvatar());
   };
 
-  const handleCreateNewAdminUser = () => {
+  const handleCreateNewAdminUser = async () => {
     const formData = {
       role,
       email,
@@ -70,14 +75,76 @@ export const CreateNewAdminUser = () => {
     const result = validateForm(formData, schema);
 
     if (result.success) {
-      console.log("Validation succeeded!");
-      //   TODO: creating new user
-      // 1. Sign User Up - add role and userType to auth table
+      setIsLoading(true);
+      // 1. create new user
+      const supabaseAdmin = createAdminClient();
+      const { data: createdUser, error: createUserError } =
+        await supabaseAdmin.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: {
+            userType: "admin",
+            role,
+            firstName,
+            lastName,
+            avatar,
+          },
+        });
+
+      if (createUserError) {
+        console.error(createUserError);
+        toast.error("Error creating user");
+        setIsLoading(false);
+        return;
+      }
+      const supabase = createClient();
       // 2. Add user details to admins table with role
+      const { error: addDataError } = await supabase.from("admins").insert([
+        {
+          id: createdUser.user?.id,
+          role,
+          email,
+          firstName,
+          lastName,
+          avatar,
+        },
+      ]);
+
+      if (addDataError) {
+        console.error(addDataError);
+        toast.error("Error saving user details to DB");
+        setIsLoading(false);
+        return;
+      }
+
       // 3. Send user email to reset their password
+      if (sendMail) {
+        await fetch("/api/send", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ firstName, email, tempPassword: password }),
+        });
+      }
+
+      setIsLoading(false);
+      resetForm();
+      toast.success("Admin user created successfully");
     } else {
       setErrors(result.errors);
     }
+  };
+
+  const resetForm = () => {
+    setRole("editor");
+    setEmail("");
+    setFirstName("");
+    setLastName("");
+    generateAvatar();
+    generateTemporalPassword();
+    setErrors({});
   };
 
   useEffect(() => {
@@ -86,7 +153,9 @@ export const CreateNewAdminUser = () => {
   }, []);
 
   return (
-    <>
+    <Box pos="relative">
+      <LoadingOverlay visible={isLoading} />
+
       <Title order={3}>Create New Admin User</Title>
       <Divider my="sm" />
 
@@ -178,6 +247,6 @@ export const CreateNewAdminUser = () => {
           Create User
         </Button>
       </Group>
-    </>
+    </Box>
   );
 };

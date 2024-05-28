@@ -37,6 +37,11 @@ export async function GET(request: Request) {
   }
 }
 
+const redirectRoute = (requestUrl: URL) => {
+  const next = requestUrl.searchParams.get("next");
+  return next === "/admin" ? "/admin/login" : "/login";
+};
+
 function redirectBadCode(
   requestUrl: URL,
   message: string,
@@ -48,7 +53,9 @@ function redirectBadCode(
     messageStatus,
   });
 
-  return NextResponse.redirect(`${requestUrl.origin}/login?${searchParams}`);
+  return NextResponse.redirect(
+    `${requestUrl.origin}${redirectRoute(requestUrl)}?${searchParams}`
+  );
 }
 
 function redirectDiffDevice(requestUrl: URL) {
@@ -56,7 +63,9 @@ function redirectDiffDevice(requestUrl: URL) {
     err_type: "diff_device",
   });
 
-  return NextResponse.redirect(`${requestUrl.origin}/login?${searchParams}`);
+  return NextResponse.redirect(
+    `${requestUrl.origin}${redirectRoute(requestUrl)}?${searchParams}`
+  );
 }
 
 function encodeSearchParams(params: Record<string, string>) {

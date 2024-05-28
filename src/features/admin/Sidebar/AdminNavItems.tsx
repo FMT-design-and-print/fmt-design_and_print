@@ -11,13 +11,13 @@ import {
   IconTicket,
   IconUser,
   IconUserCog,
-  IconUserPlus,
+  IconUserShield,
   IconUsersGroup,
 } from "@tabler/icons-react";
 import { Dashboard } from "../Pages/Dashboard";
 import { Orders } from "../Pages/Orders";
 import { IAdminNavItems } from "@/types";
-import { CreateNewAdminUser } from "../Pages/NewAdminUser";
+import { AdminUsers } from "../Pages/AdminUsers";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -100,10 +100,10 @@ export const adminNavItems: IAdminNavItems[] = [
   },
   {
     value: "new-admin-user",
-    label: "New Admin User",
-    icon: <IconUserPlus />,
+    label: "Admin Users",
+    icon: <IconUserShield />,
     isVisible: true,
-    component: <CreateNewAdminUser />,
+    component: <AdminUsers />,
   },
   "divider",
   {
