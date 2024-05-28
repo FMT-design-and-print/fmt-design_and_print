@@ -4,7 +4,6 @@ import {
   ActionIcon,
   Avatar,
   Box,
-  Center,
   Divider,
   Group,
   ScrollArea,
@@ -12,8 +11,8 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { TableActions } from "./TableActions";
 import { IconLock } from "@tabler/icons-react";
+import { TableActions } from "./TableActions";
 
 export function AdminUsersTable() {
   const { adminUsers } = useLoadAdminUsers();
