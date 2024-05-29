@@ -1,6 +1,11 @@
 import { Role } from "@/types/roles";
 
-const roleHierarchy: { [key in Role]: string[] } = {
+type Permissions = {
+  // eslint-disable-next-line no-unused-vars
+  [key in Role]: string[];
+};
+
+const roleHierarchy: Permissions = {
   "super-admin": ["all_permissions"],
   admin: [
     "admin_permissions",
