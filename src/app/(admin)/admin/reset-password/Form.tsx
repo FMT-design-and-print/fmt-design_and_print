@@ -22,6 +22,7 @@ export function AdminLoginForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const handleSubmit = async () => {
     if (password.trim() === "") {
@@ -58,14 +59,24 @@ export function AdminLoginForm() {
       return setErrorMsg(passwordResetFailedMessage);
     }
 
-    router.push(`/admin`);
+    setResetSuccess(true);
     setIsLoading(false);
     setErrorMsg(undefined);
   };
 
+  if (resetSuccess) {
+    return (
+      <Alert color="green" my="xl">
+        Your password has been reset successfully.
+        <Button variant="light" onClick={() => router.push("/admin")}>
+          Log me in
+        </Button>
+      </Alert>
+    );
+  }
   return (
     <>
-      <Container size={420} my={40} pos="relative">
+      <Container size={420} my={40} mih={500} pos="relative">
         <LoadingOverlay visible={isLoading} />
         <Title ta="center">Reset Password</Title>
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
