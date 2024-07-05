@@ -107,7 +107,7 @@ export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
 
     if (updateError) {
       // Todo: handle error logging
-      console.log(error);
+      console.error(error);
     }
 
     setIsLoading(false);

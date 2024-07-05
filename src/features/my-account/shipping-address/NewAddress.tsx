@@ -55,7 +55,7 @@ export const NewAddress = ({ numberOfAddresses }: Props) => {
 
     setIsLoading(false);
     if (error) {
-      console.log(error);
+      console.error(error);
     } else {
       toast.success("Address added successfully");
       setNewAddress({ ...initialAddressState });

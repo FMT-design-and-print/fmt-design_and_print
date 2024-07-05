@@ -58,7 +58,7 @@ export function AdminLoginForm() {
       return setErrorMsg(passwordResetFailedMessage);
     }
 
-    router.push(`/admin/login`);
+    router.push(`/admin`);
     setIsLoading(false);
     setErrorMsg(undefined);
   };

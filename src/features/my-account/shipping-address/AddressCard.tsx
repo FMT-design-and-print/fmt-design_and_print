@@ -31,7 +31,7 @@ export const AddressCard = ({ address }: Props) => {
     setLoading(false);
 
     if (error) {
-      console.log(error);
+      console.error(error);
       return;
     }
 

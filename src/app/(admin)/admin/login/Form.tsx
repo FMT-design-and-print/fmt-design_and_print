@@ -32,7 +32,6 @@ export function AdminLoginForm() {
   const confirmed = params.get("confirmed");
   const newUser = params.get("new");
 
-  console.log(typeof confirmed, newUser);
   const { setSession, setUser } = useSession((state) => state);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);

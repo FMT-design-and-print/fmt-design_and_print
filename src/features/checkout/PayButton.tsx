@@ -62,7 +62,7 @@ export const PayButton = ({ total }: IProps) => {
       .select();
 
     if (error) {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
       return;
     }
@@ -96,7 +96,7 @@ export const PayButton = ({ total }: IProps) => {
   };
 
   const onClose = () => {
-    console.log("closed");
+    console.info("closed");
   };
 
   const handleMakePayment = () => {

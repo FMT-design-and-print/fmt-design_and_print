@@ -38,7 +38,7 @@ export const EditAddress = ({ address }: Props) => {
       setLoading(false);
 
       if (error) {
-        console.log(error);
+        console.error(error);
         return;
       }
 

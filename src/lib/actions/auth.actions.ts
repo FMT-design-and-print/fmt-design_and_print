@@ -60,7 +60,7 @@ export const signUp = async (data: SignUpData, next?: string | null) => {
     .eq("email", email);
 
   if (error) {
-    console.log(error);
+    console.error(error);
     // TODO: Error logging
     return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
   }
@@ -80,7 +80,7 @@ export const signUp = async (data: SignUpData, next?: string | null) => {
     });
 
     if (signUpError) {
-      console.log(signUpError);
+      console.error(signUpError);
       // TODO: Error logging
       return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
     }

@@ -20,8 +20,6 @@ export const OrderStatuses = ({ orders }: Props) => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "orders" },
         (payload) => {
-          console.log("Change received!", payload);
-
           setNewOrders((prevState) => {
             return prevState.map((obj) => {
               if (obj.id === (payload.new as IOrder).id) {

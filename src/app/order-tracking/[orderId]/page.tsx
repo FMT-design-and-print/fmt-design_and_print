@@ -70,7 +70,7 @@ const OrderIdPage = async ({ params }: Props) => {
 
   if (ordersError || customOrdersError) {
     // TODO: Handle error
-    console.log(ordersError, customOrdersError);
+    console.error(ordersError, customOrdersError);
     return;
   }
 

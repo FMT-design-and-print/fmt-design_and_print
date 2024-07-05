@@ -72,7 +72,6 @@ export const PhoneCases = ({ image }: { image: string }) => {
     setLoadingMessage("");
 
     if (isSuccess) {
-      console.log(data);
       router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
   };

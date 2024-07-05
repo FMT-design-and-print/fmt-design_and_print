@@ -6,8 +6,6 @@ import { SidebarMobile } from "./Sidebar/SidebarMobile";
 import { PageRenderer } from "./PageRenderer";
 
 export const AdminLayout = ({ user }: { user: any }) => {
-  console.log(user);
-
   return (
     <Group align="flex-start" wrap="nowrap">
       <Box visibleFrom="sm">

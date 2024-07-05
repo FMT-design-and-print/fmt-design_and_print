@@ -44,8 +44,6 @@ export function AdminForgotPasswordForm() {
       .eq("email", email);
 
     if (err || users?.length === 0) {
-      console.log(err, users);
-      // error encountered when loading user details
       setIsLoading(false);
       return setErrorMsg(userNotFoundMessage);
     }
