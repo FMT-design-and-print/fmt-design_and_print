@@ -6,7 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 const supabase = createClient();
 const getAdminUsers = async (): Promise<
   PostgrestSingleResponse<IAdminUser[]>
-> => await supabase.from("admins").select("*");
+> =>
+  await supabase
+    .from("admins")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .returns<IAdminUser[]>();
 
 export function useLoadAdminUsers() {
   const {

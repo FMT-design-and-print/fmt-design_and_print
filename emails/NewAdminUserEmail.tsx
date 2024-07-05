@@ -62,7 +62,7 @@ export const NewAdminUserEmail = ({
         <Section style={btnContainer}>
           <Button
             style={button}
-            href={`https://fmtdesignprint.com/admin/reset-password`}
+            href={`https://fmtdesignprint.com/admin/login?new=true&confirmed=false`}
           >
             Reset Password
           </Button>

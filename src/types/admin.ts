@@ -7,4 +7,5 @@ export interface IAdminUser {
   lastName?: string | null;
   avatar?: string | null;
   role?: Role;
+  confirmed: boolean;
 }
