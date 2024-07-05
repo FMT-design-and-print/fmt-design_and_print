@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Permission } from "./roles";
 
 export type MessageStatus = "error" | "success" | "info";
 export type CouponType = "percentage" | "fixed" | "free-shipping";
@@ -178,5 +179,6 @@ export type IAdminNavItems =
       icon: ReactNode;
       isVisible: boolean;
       component: ReactNode;
+      requiredPermission?: Permission;
     }
   | "divider";

@@ -18,6 +18,7 @@ import { Dashboard } from "../Pages/Dashboard";
 import { Orders } from "../Pages/Orders";
 import { IAdminNavItems } from "@/types";
 import { AdminUsers } from "../Pages/AdminUsers";
+import { UserPermission } from "@/types/roles";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -26,6 +27,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconGauge />,
     isVisible: true,
     component: <Dashboard />,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "customers",
@@ -33,6 +35,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconUsersGroup />,
     isVisible: true,
     component: <>Customers</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "orders",
@@ -40,6 +43,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconShoppingCart />,
     isVisible: true,
     component: <Orders />,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "reviews",
@@ -47,6 +51,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconStars />,
     isVisible: false,
     component: <>Reviews</>,
+    requiredPermission: UserPermission.MANAGER_PERMISSIONS,
   },
   {
     value: "messages",
@@ -54,6 +59,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconMail />,
     isVisible: true,
     component: <>Messages</>,
+    requiredPermission: UserPermission.MANAGER_PERMISSIONS,
   },
   {
     value: "chat",
@@ -61,6 +67,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconBrandWechat />,
     isVisible: false,
     component: <>Chat</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "discount-coupons",
@@ -68,6 +75,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconTicket />,
     isVisible: false,
     component: <>Discount & Coupons</>,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   {
     value: "invoices",
@@ -75,6 +83,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconFileInvoice />,
     isVisible: false,
     component: <>Invoices</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "receipts",
@@ -82,6 +91,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconReceipt />,
     isVisible: false,
     component: <>Receipts</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "reports",
@@ -89,6 +99,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconFileAnalytics />,
     isVisible: false,
     component: <>Reports</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   "divider",
   {
@@ -97,6 +108,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconUser />,
     isVisible: true,
     component: <>Employees</>,
+    requiredPermission: UserPermission.MANAGER_PERMISSIONS,
   },
   {
     value: "new-admin-user",
@@ -104,6 +116,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconUserShield />,
     isVisible: true,
     component: <AdminUsers />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   "divider",
   {
@@ -112,6 +125,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconCalculator />,
     isVisible: true,
     component: <>Price Calculator</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
 
   "divider",
@@ -121,5 +135,6 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconUserCog />,
     isVisible: true,
     component: <>My Account</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
 ];

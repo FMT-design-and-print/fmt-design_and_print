@@ -1,5 +1,14 @@
-import React from "react";
+import { Title } from "@mantine/core";
+import { OrdersTabs } from "./OrdersTabs";
 
 export const Orders = () => {
-  return <div>Order</div>;
+  return (
+    <>
+      <Title order={2} mb="md">
+        Orders
+      </Title>
+      {/* <OrdersTable orders={orders || []} /> */}
+      <OrdersTabs />
+    </>
+  );
 };

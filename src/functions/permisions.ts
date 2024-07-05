@@ -1,8 +1,8 @@
-import { Role } from "@/types/roles";
+import { Permission, Role } from "@/types/roles";
 
 type Permissions = {
   // eslint-disable-next-line no-unused-vars
-  [key in Role]: string[];
+  [key in Role]: Permission[];
 };
 
 const roleHierarchy: Permissions = {
@@ -39,16 +39,17 @@ const roleHierarchy: Permissions = {
 
 export function hasPermission(
   userRole: Role,
-  requiredPermission: string
+  requiredPermission: Permission
 ): boolean {
   let permissions: string[] = [];
-  for (const role in roleHierarchy) {
-    if (
-      role === userRole ||
-      roleHierarchy[role as Role].includes(`${userRole}_permissions`)
-    ) {
-      permissions = [...permissions, ...roleHierarchy[role as Role]];
-    }
+
+  if (userRole === "super-admin") {
+    permissions = roleHierarchy[userRole];
+    return true;
+  }
+
+  if (roleHierarchy[userRole].includes(requiredPermission)) {
+    permissions = [...permissions, ...roleHierarchy[userRole]];
   }
 
   return permissions.includes(requiredPermission);
