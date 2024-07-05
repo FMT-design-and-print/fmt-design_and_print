@@ -107,7 +107,7 @@ export function AdminLoginForm() {
           <Group justify="flex-end" mt="lg">
             <Anchor
               component={Link}
-              href="/admin/reset-password"
+              href="/admin/forgot-password"
               size="sm"
               c="pink"
             >

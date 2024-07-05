@@ -41,7 +41,9 @@ function redirectBadCode(
     messageStatus,
   });
 
-  return NextResponse.redirect(`${requestUrl.origin}/login?${searchParams}`);
+  return NextResponse.redirect(
+    `${requestUrl.origin}/admin/login?${searchParams}`
+  );
 }
 
 function redirectDiffDevice(requestUrl: URL) {
@@ -49,7 +51,9 @@ function redirectDiffDevice(requestUrl: URL) {
     err_type: "diff_device",
   });
 
-  return NextResponse.redirect(`${requestUrl.origin}/login?${searchParams}`);
+  return NextResponse.redirect(
+    `${requestUrl.origin}/admin/login?${searchParams}`
+  );
 }
 
 function encodeSearchParams(params: Record<string, string>) {

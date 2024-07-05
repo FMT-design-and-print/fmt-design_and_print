@@ -9,7 +9,7 @@ export const AdminLayout = ({ user }: { user: any }) => {
   console.log(user);
 
   return (
-    <Group align="flex-start">
+    <Group align="flex-start" wrap="nowrap">
       <Box visibleFrom="sm">
         <Sidebar />
       </Box>
@@ -17,7 +17,7 @@ export const AdminLayout = ({ user }: { user: any }) => {
         <SidebarMobile />
       </Box>
 
-      <Box style={{ flex: 1 }} p="lg">
+      <Box style={{ flex: 1, overflowX: "auto" }} p="lg">
         <PageRenderer />
       </Box>
     </Group>

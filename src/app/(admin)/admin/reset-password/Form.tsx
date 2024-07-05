@@ -1,46 +1,96 @@
+"use client";
+import { userNotFoundMessage } from "@/constants";
+import { createClient } from "@/utils/supabase/client";
 import {
-  Anchor,
+  Alert,
   Button,
   Container,
   Group,
+  LoadingOverlay,
   Paper,
   PasswordInput,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function AdminLoginForm() {
-  return (
-    <Container size={420} my={40}>
-      <Title ta="center">Admin login</Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Enter details to login to admin panel
-      </Text>
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
 
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <TextInput label="Email" placeholder="you@mantine.dev" required />
-        <PasswordInput
-          label="Password"
-          placeholder="Your password"
-          required
-          mt="md"
-        />
-        <Group justify="flex-end" mt="lg">
-          <Anchor
-            component={Link}
-            href="/admin/reset-password"
-            size="sm"
-            c="pink"
-          >
-            Forgot password?
-          </Anchor>
-        </Group>
-        <Button fullWidth mt="xl" className="btn">
-          Sign in
-        </Button>
-      </Paper>
-    </Container>
+  const handleSubmit = async () => {
+    if (password.trim() === "") {
+      return setErrorMsg("Password cannot be empty");
+    }
+
+    if (password !== confirmPassword) {
+      return setErrorMsg("Passwords do not match");
+    }
+
+    const supabase = createClient();
+
+    setIsLoading(true);
+    const { error } = await supabase.auth.updateUser({
+      password,
+    });
+
+    if (error) {
+      setIsLoading(false);
+      return setErrorMsg(userNotFoundMessage);
+    }
+
+    router.push(`/admin/login`);
+    setIsLoading(false);
+    setErrorMsg(undefined);
+  };
+
+  return (
+    <>
+      <Container size={420} my={40} pos="relative">
+        <LoadingOverlay visible={isLoading} />
+        <Title ta="center">Reset Password</Title>
+        <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+          <PasswordInput
+            placeholder="••••••••"
+            label="New Password"
+            value={password}
+            onChange={(e) => setPassword(e.currentTarget.value)}
+            required
+            mb="md"
+          />
+
+          <PasswordInput
+            placeholder="••••••••"
+            label="Confirm New Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+            required
+          />
+
+          <Button fullWidth mt="xl" className="btn" onClick={handleSubmit}>
+            Reset Password
+          </Button>
+
+          <Group justify="flex-end" mt="lg">
+            <Link href="/admin/login" className="my-4 text-sm text-gray-400">
+              I Remember my password. Login
+            </Link>
+          </Group>
+
+          {errorMsg && (
+            <Alert color="red" variant="light" mt="md">
+              <Text ta="center" c="red.6" fs="italic" size="sm">
+                {errorMsg}
+              </Text>
+            </Alert>
+          )}
+        </Paper>
+      </Container>
+    </>
   );
 }
