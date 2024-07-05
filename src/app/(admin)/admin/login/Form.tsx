@@ -19,7 +19,7 @@ import {
   Title,
 } from "@mantine/core";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,6 +28,11 @@ type LoginData = z.infer<typeof LoginDataSchema>;
 
 export function AdminLoginForm() {
   const router = useRouter();
+  const params = useSearchParams();
+  const confirmed = params.get("confirmed");
+  const newUser = params.get("new");
+
+  console.log(typeof confirmed, newUser);
   const { setSession, setUser } = useSession((state) => state);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
@@ -58,6 +63,24 @@ export function AdminLoginForm() {
         return;
       }
 
+      const supabase = createClient();
+      const { data: admins, error } = await supabase
+        .from("admins")
+        .select("email, confirmed")
+        .eq("email", data.email)
+        .returns<{ email: String; confirmed: boolean }[]>();
+
+      if (error || admins.length === 0) {
+        setErrorMsg("Could not log you in");
+        await logout();
+        return;
+      }
+
+      if (!admins[0].confirmed) {
+        router.push("/admin/reset-password");
+        return;
+      }
+
       setErrorMsg(undefined);
       setSession(session);
       setUser(session?.user);
@@ -72,6 +95,11 @@ export function AdminLoginForm() {
     setSession(null);
     setUser(undefined);
   };
+
+  const passwordLabel =
+    newUser === "true" || confirmed === "false"
+      ? "Your Temporal password"
+      : "Your password";
 
   return (
     <Container size={420} my={40} pos="relative">
@@ -96,8 +124,8 @@ export function AdminLoginForm() {
 
           <PasswordInput
             id="password"
-            label="Password"
-            placeholder="Your password"
+            label={passwordLabel}
+            placeholder="••••••••"
             mt="md"
             {...register("password")}
           />

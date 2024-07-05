@@ -1,5 +1,5 @@
 "use client";
-import { userNotFoundMessage } from "@/constants";
+import { passwordResetFailedMessage } from "@/constants";
 import { createClient } from "@/utils/supabase/client";
 import {
   Alert,
@@ -41,7 +41,21 @@ export function AdminLoginForm() {
 
     if (error) {
       setIsLoading(false);
-      return setErrorMsg(userNotFoundMessage);
+      return setErrorMsg(passwordResetFailedMessage);
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const { error: updateError } = await supabase
+      .from("admins")
+      .update({ confirmed: true })
+      .eq("email", session?.user.email)
+      .returns<{ email: String; confirmed: boolean }[]>();
+
+    if (updateError) {
+      setIsLoading(false);
+      return setErrorMsg(passwordResetFailedMessage);
     }
 
     router.push(`/admin/login`);

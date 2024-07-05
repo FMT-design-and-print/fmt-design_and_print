@@ -24,6 +24,7 @@ import { validateForm } from "@/functions/validate-form";
 import { createAdminClient, createClient } from "@/utils/supabase/client";
 import { toast } from "react-toastify";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const schema: ZodSchema = z.object({
   role: z.string(),
@@ -42,6 +43,7 @@ export const schema: ZodSchema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const CreateNewAdminUser = () => {
+  const queryClient = useQueryClient();
   const [role, setRole] = useState("editor");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -132,6 +134,7 @@ export const CreateNewAdminUser = () => {
       setIsLoading(false);
       resetForm();
       toast.success("Admin user created successfully");
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
     } else {
       setErrors(result.errors);
     }

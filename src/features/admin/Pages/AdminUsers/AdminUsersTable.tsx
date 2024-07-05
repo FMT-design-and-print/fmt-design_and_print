@@ -3,19 +3,23 @@ import { useLoadAdminUsers } from "@/hooks/admin/useLoadAdminUsers";
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Box,
   Divider,
   Group,
+  LoadingOverlay,
   ScrollArea,
   Table,
   Text,
   Title,
 } from "@mantine/core";
-import { IconLock } from "@tabler/icons-react";
+import { IconLock, IconReload } from "@tabler/icons-react";
 import { TableActions } from "./TableActions";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function AdminUsersTable() {
-  const { adminUsers } = useLoadAdminUsers();
+  const queryClient = useQueryClient();
+  const { adminUsers, isLoading } = useLoadAdminUsers();
   const data = adminUsers || [];
 
   const rows = data.map((item) => (
@@ -36,6 +40,17 @@ export function AdminUsersTable() {
       <Table.Td bg={item.role === "super-admin" ? "red.1" : ""}>
         {formatRole(item.role)}
       </Table.Td>
+      <Table.Td>
+        <Group gap="sm" wrap="nowrap">
+          <Badge
+            size="xs"
+            color={item.confirmed ? "green" : "red"}
+            variant="light"
+          >
+            {item.confirmed ? "Confirmed" : "Unconfirmed"}
+          </Badge>
+        </Group>
+      </Table.Td>
       {item.role !== "super-admin" ? (
         <Table.Td>
           <TableActions />
@@ -54,9 +69,19 @@ export function AdminUsersTable() {
     </Table.Tr>
   ));
 
+  const handleReload = () => {
+    queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+  };
+
   return (
-    <Box>
-      <Title order={3}>Admin Users({data.length})</Title>
+    <Box pos="relative">
+      <LoadingOverlay visible={isLoading} />
+      <Group justify="space-between">
+        <Title order={3}>Admin Users({data.length})</Title>
+        <ActionIcon variant="light" onClick={handleReload}>
+          <IconReload size={"1rem"} />
+        </ActionIcon>
+      </Group>
       <Divider my="sm" />
 
       <ScrollArea>
@@ -66,6 +91,7 @@ export function AdminUsersTable() {
               <Table.Th>User</Table.Th>
               <Table.Th>Email</Table.Th>
               <Table.Th>Role</Table.Th>
+              <Table.Th>Status</Table.Th>
               <Table.Th></Table.Th>
             </Table.Tr>
           </Table.Thead>
