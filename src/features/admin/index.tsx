@@ -7,7 +7,7 @@ import { PageRenderer } from "./PageRenderer";
 
 export const AdminLayout = ({ user }: { user: any }) => {
   return (
-    <Group align="flex-start" wrap="nowrap">
+    <Group align="flex-start" wrap="nowrap" mih={500}>
       <Box visibleFrom="sm">
         <Sidebar />
       </Box>
