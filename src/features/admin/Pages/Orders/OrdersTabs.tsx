@@ -2,7 +2,7 @@ import { NoItemsFound } from "@/components/NoItemsFound";
 import { formatOrderStatus, groupOrdersByStatus } from "@/functions/orders";
 import { useOrders } from "@/hooks/admin/useOrders";
 import { OrderStatus } from "@/types/order";
-import { LoadingOverlay, Tabs } from "@mantine/core";
+import { Alert, LoadingOverlay, Tabs } from "@mantine/core";
 import { IconShoppingCart } from "@tabler/icons-react";
 import { useState } from "react";
 import { OrdersCard } from "./OrdersCard";
@@ -26,7 +26,12 @@ export function OrdersTabs() {
   const [activeTab, setActiveTab] = useState<OrderStatus | null>(statuses[0]);
 
   if (error) {
-    return console.error(error.message);
+    return (
+      <Alert title="Error loading orders" color="red">
+        There was an error encountered whiles loading orders. Try refreshing
+        page again
+      </Alert>
+    );
   }
 
   const groupedOrders = orders ? groupOrdersByStatus(orders) : {};

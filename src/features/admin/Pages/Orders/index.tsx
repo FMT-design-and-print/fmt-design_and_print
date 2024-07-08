@@ -7,7 +7,7 @@ export const Orders = () => {
       <Title order={2} mb="md">
         Orders
       </Title>
-      {/* <OrdersTable orders={orders || []} /> */}
+
       <OrdersTabs />
     </>
   );
