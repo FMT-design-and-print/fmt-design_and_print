@@ -21,12 +21,11 @@ export const OrdersTable = ({ orders }: Props) => {
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Order ID</Table.Th>
+              <Table.Th>Order Ref(#)</Table.Th>
               <Table.Th>Date</Table.Th>
-              <Table.Th>Time</Table.Th>
               <Table.Th>Amount</Table.Th>
               <Table.Th>Status</Table.Th>
-              <Table.Th>Items</Table.Th>
+              <Table.Th>Details</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>

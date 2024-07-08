@@ -74,7 +74,7 @@ export const OrderStatus = ({ order }: Props) => {
           <Box mb="xl">
             <OrderStatusAlert
               title={`Order Completed on ${getOrderCompletedDate(
-                order.completed_at
+                order.updated_at
               )}`}
               status="completed"
               orderId={order.orderId}

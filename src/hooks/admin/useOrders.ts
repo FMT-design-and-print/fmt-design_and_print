@@ -7,7 +7,7 @@ const fetchOrders = async () => {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, created_at, orderId, items, totalAmount, status, deliveryDetails"
+      "id, created_at, orderId, items, totalAmount, status, deliveryDetails, deliveryType, updated_at, estimatedFulfillmentDate, paymentType, deliveryFee, note"
     )
     .order("created_at", { ascending: false })
     .returns<IOrder[]>();

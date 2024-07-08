@@ -1,9 +1,10 @@
-import { OrderStatusRenderer } from "@/components/OrderStatusRenderer";
 import { IOrder } from "@/types/order";
-import { Group, Table, Text } from "@mantine/core";
-import Link from "next/link";
-// import { CancelRequest } from "./CancelRequest";
-// import { OrderItems } from "./OrderItems";
+import { Badge, Group, Table, Text } from "@mantine/core";
+import { getFormattedDurationFromNow } from "@/functions/durations";
+import { OrderStatusRenderer } from "@/components/OrderStatusRenderer";
+import { OrderDetails } from "./OrderDetails";
+import { OrderStatusOptions } from "./OrderStatusOptions";
+import { CopyIcon } from "@/components/CopyIcon";
 
 interface Props {
   order: IOrder;
@@ -15,38 +16,38 @@ export const OrderTableRow = ({ order }: Props) => {
   return (
     <Table.Tr>
       <Table.Td>
-        <Text
-          title="Track this order"
-          size="sm"
-          component={Link}
-          c="pink"
-          fw="bolder"
-          href={`/order-tracking/${order.orderId}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {order.orderId}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm">{createdAt.toDateString()}</Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm">{createdAt.toLocaleTimeString()}</Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm">{order.totalAmount}</Text>
-      </Table.Td>
-      <Table.Td>
-        <Group>
-          <OrderStatusRenderer status={order.status} />
-          {/* {order.status === "pending" && (
-            <CancelRequest orderId={order.id} orderNumber={order.orderId} />
-          )} */}
+        <Group gap="0">
+          <Text size="sm" fw="bolder">
+            {order.orderId}
+          </Text>
+          <CopyIcon value={order.orderId} />
         </Group>
       </Table.Td>
       <Table.Td>
-        {/* <OrderItems orderId={order.orderId} items={order.items} /> */}
+        <Text size="xs">
+          {createdAt.toDateString()} {createdAt.toLocaleTimeString()}
+        </Text>
+        <Badge size="xs" variant="dot" color="gray">
+          {getFormattedDurationFromNow(createdAt)}
+        </Badge>
+      </Table.Td>
+      <Table.Td>
+        <Text size="sm">{order.totalAmount.toFixed(2)}</Text>
+      </Table.Td>
+      <Table.Td>
+        <Group gap={1}>
+          <OrderStatusRenderer status={order.status} />
+          <OrderStatusOptions
+            status={order.status}
+            orderId={order.id}
+            orderNumber={order.orderId}
+            numberOfItems={order.items.length}
+            totalAmount={order.totalAmount}
+          />
+        </Group>
+      </Table.Td>
+      <Table.Td>
+        <OrderDetails order={order} />
       </Table.Td>
     </Table.Tr>
   );

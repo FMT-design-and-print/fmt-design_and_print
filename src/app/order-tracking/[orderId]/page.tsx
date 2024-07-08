@@ -29,7 +29,7 @@ interface Props {
   params: { orderId: string };
 }
 const columns =
-  "id, created_at, orderId, totalAmount, status, deliveryDetails, deliveryType, estimatedFulfillmentDate, completed_at";
+  "id, created_at, orderId, totalAmount, status, deliveryDetails, deliveryType, estimatedFulfillmentDate, updated_at";
 
 const OrderIdPage = async ({ params }: Props) => {
   await redirectAdminUser();

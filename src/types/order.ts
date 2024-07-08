@@ -20,7 +20,7 @@ export interface IOrderItem extends ICartItem {}
 interface CommonOrderDetails {
   id: any;
   created_at: Date;
-  completed_at?: Date;
+  updated_at?: Date;
   orderId: string;
   totalAmount: number;
   status: OrderStatus;
