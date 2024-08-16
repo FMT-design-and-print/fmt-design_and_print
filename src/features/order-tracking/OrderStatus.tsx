@@ -5,7 +5,11 @@ import { DeliveryOrderStatus } from "./DeliveryOrderStatus";
 import { InStoreOrderStatus } from "./InStoreOrderStatus";
 import { OrderStatusAlert } from "./OrderStatusAlert";
 import { EstimatedTime } from "./EstimatedTime";
-import { getOrderCompletedDate, getOrderStatusText } from "@/functions";
+import {
+  calculateEstimatedFulfillmentDate,
+  getOrderCompletedDate,
+  getOrderStatusText,
+} from "@/functions";
 
 interface Props {
   order: IOrder;
@@ -20,8 +24,10 @@ const topLevelStatuses = [
 
 export const OrderStatus = ({ order }: Props) => {
   const createdAt = new Date(order.created_at);
-  const estimatedFulfillmentDate = new Date(
-    order.estimatedFulfillmentDate ?? createdAt.getDate() + 3
+
+  const estimatedFulfillmentDate = calculateEstimatedFulfillmentDate(
+    createdAt,
+    order.estimatedFulfillmentDate
   );
 
   return topLevelStatuses.includes(order.status) ? (

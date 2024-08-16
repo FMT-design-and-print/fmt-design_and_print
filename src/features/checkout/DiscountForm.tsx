@@ -30,7 +30,7 @@ export function DiscountForm(props: TextInputProps) {
         radius="xl"
         size="md"
         placeholder="Enter Coupon Code"
-        rightSectionWidth={82}
+        rightSectionWidth={80}
         rightSection={
           <Button onClick={handleApplyDiscount} className="btn" radius="xl">
             Apply

@@ -1,16 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { IOrder } from "@/types/order";
+import { ICustomOrder, IOrder } from "@/types/order";
 
-const fetchOrders = async () => {
+const fetchOrders = async (tableName: "orders" | "custom-orders") => {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from("orders")
-    .select(
-      "id, created_at, orderId, items, totalAmount, status, deliveryDetails, deliveryType, updated_at, estimatedFulfillmentDate, paymentType, deliveryFee, note"
-    )
+    .from(tableName)
+    .select("*")
     .order("created_at", { ascending: false })
-    .returns<IOrder[]>();
+    .returns<IOrder[] | ICustomOrder[]>();
 
   if (error) {
     throw new Error(error.message);
@@ -20,10 +18,23 @@ const fetchOrders = async () => {
 };
 
 export const useOrders = () => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["orders", "admin"],
+    queryFn: () => fetchOrders("orders"),
+  });
+  const orders = data as IOrder[] | undefined;
+  return { orders, error, isLoading };
+};
+
+export const useCustomOrders = () => {
   const {
     data: orders,
     error,
     isLoading,
-  } = useQuery({ queryKey: ["orders", "admin"], queryFn: () => fetchOrders() });
-  return { orders, error, isLoading };
+  } = useQuery({
+    queryKey: ["custom-orders", "admin"],
+    queryFn: () => fetchOrders("custom-orders"),
+  });
+  const customerOrders = orders as ICustomOrder[] | undefined;
+  return { customerOrders, error, isLoading };
 };

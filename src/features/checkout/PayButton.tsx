@@ -1,4 +1,5 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { paystackPublicKey } from "@/constants";
 import { getOrderId, verifyAddressDetails } from "@/functions";
 import { useSession } from "@/store";
 import { useCart } from "@/store/cart";
@@ -14,7 +15,7 @@ import { HookConfig } from "react-paystack/dist/types";
 
 const config: HookConfig = {
   reference: new Date().getTime().toString(),
-  publicKey: "pk_test_0b33403d1f5c398b7a71de300472d27858572427",
+  publicKey: paystackPublicKey,
   currency: "GHS",
 };
 
@@ -24,7 +25,7 @@ interface IProps {
 export const PayButton = ({ total }: IProps) => {
   const router = useRouter();
   const { details } = useCheckout((state) => state);
-  const { clearCart } = useCart((state) => state);
+  const { clearItemsFromCart } = useCart((state) => state);
   const [emptyFields, setEmptyFields] = useState<(keyof CheckoutDetails)[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const initializePayment = usePaystackPayment(config);
@@ -57,6 +58,7 @@ export const PayButton = ({ total }: IProps) => {
             region: details.region,
             town: details.town,
           },
+          note: details.note,
         },
       ])
       .select();
@@ -90,13 +92,12 @@ export const PayButton = ({ total }: IProps) => {
       }
     }
 
-    setIsLoading(false);
-    clearCart();
+    clearItemsFromCart(details.items.map((item) => item.id));
     router.push(`/order-success?reference=${ref.reference}`);
   };
 
   const onClose = () => {
-    console.info("closed");
+    // console.info("closed");
   };
 
   const handleMakePayment = () => {
@@ -123,15 +124,8 @@ export const PayButton = ({ total }: IProps) => {
         amount: total * 100,
         phone: details.phone1,
         reference: getOrderId(),
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Order ID",
-              variable_name: "orderId",
-              value: getOrderId(),
-            },
-          ],
-        },
+        firstname: details.contactName.split(" ")[0] || "",
+        lastname: details.contactName.split(" ")[1] || "",
       },
       onSuccess: (reference) => onSuccess(reference),
       onClose,
@@ -141,8 +135,8 @@ export const PayButton = ({ total }: IProps) => {
   return (
     <>
       <LoadingOverlay visible={isLoading} />
-      <Button variant="white" onClick={handleMakePayment}>
-        <Text component="span" className="text-primary-500" fw={600}>
+      <Button onClick={handleMakePayment} className="btn">
+        <Text component="span" fw={600}>
           Pay GHS {total.toFixed(1)}
         </Text>
       </Button>

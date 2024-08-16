@@ -261,3 +261,20 @@ export function areDatesEqual(date1: Date, date2: Date): boolean {
     date1.getDate() === date2.getDate()
   );
 }
+
+export function calculateEstimatedFulfillmentDate(
+  createdAt: string | Date,
+  estimatedFulfillmentDate?: string | Date
+): Date {
+  const createdDate = new Date(createdAt);
+
+  const fulfillmentDate = estimatedFulfillmentDate
+    ? new Date(estimatedFulfillmentDate)
+    : new Date(createdDate.setDate(createdDate.getDate() + 5));
+
+  if (fulfillmentDate.getDay() === 0) {
+    fulfillmentDate.setDate(fulfillmentDate.getDate() + 1);
+  }
+
+  return fulfillmentDate;
+}

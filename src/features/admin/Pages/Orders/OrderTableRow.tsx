@@ -32,7 +32,7 @@ export const OrderTableRow = ({ order }: Props) => {
         </Badge>
       </Table.Td>
       <Table.Td>
-        <Text size="sm">{order.totalAmount.toFixed(2)}</Text>
+        <Text size="sm">{order.totalAmount?.toFixed(2)}</Text>
       </Table.Td>
       <Table.Td>
         <Group gap={1}>
@@ -41,7 +41,7 @@ export const OrderTableRow = ({ order }: Props) => {
             status={order.status}
             orderId={order.id}
             orderNumber={order.orderId}
-            numberOfItems={order.items.length}
+            numberOfItems={order.items?.length || 0}
             totalAmount={order.totalAmount}
           />
         </Group>

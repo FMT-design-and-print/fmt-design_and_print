@@ -45,14 +45,16 @@ export const OrdersCard = ({ orders }: Props) => {
               </Text>
             </Group>
 
-            <Group>
-              <Text fz="xs" c="dimmed">
-                Amount:
-              </Text>
-              <Text fz="xs" fw={500}>
-                {order.totalAmount}
-              </Text>
-            </Group>
+            {order.totalAmount && (
+              <Group>
+                <Text fz="xs" c="dimmed">
+                  Amount:
+                </Text>
+                <Text fz="xs" fw={500}>
+                  {order.totalAmount}
+                </Text>
+              </Group>
+            )}
           </Group>
 
           <Group justify="space-between">
@@ -67,7 +69,7 @@ export const OrdersCard = ({ orders }: Props) => {
                     status={order.status}
                     orderId={order.id}
                     orderNumber={order.orderId}
-                    numberOfItems={order.items.length}
+                    numberOfItems={order.items?.length || 0}
                     totalAmount={order.totalAmount}
                   />
                 </Group>

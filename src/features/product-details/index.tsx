@@ -72,6 +72,7 @@ export const ProductDetails = ({ product }: Props) => {
       id: product.id,
       title: product.title,
       price: product.price,
+      productNumber: product.productNumber,
       quantity: selectedProductOptions.quantity,
       image: selectedProductOptions.image,
       timestamp: new Date(),

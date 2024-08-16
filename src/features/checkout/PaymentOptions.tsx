@@ -10,34 +10,34 @@ export const PaymentOptions = () => {
 
   return (
     <Box py="md">
-      <Text c="white">Payment Options</Text>
-      <Text component="span" size="xs" c="gray.2">
+      <Text>Payment Options</Text>
+      <Text component="span" size="xs" c="gray.8">
         Choose your preferred mode of payment
       </Text>
       <Stack mt="md">
         <Radio
           variant="outline"
-          color="dark"
+          color="var(--primary-800)"
           checked={paymentType === "momo"}
           onChange={() => {
             update("paymentType", "momo");
           }}
           label={
-            <Text component="span" c="white" size="sm">
-              Mobile Money (MTN, VODAFONE, AT)
+            <Text component="span" size="sm">
+              Mobile Money (MTN, Telecel, AT)
             </Text>
           }
         />
         <Radio
           variant="outline"
-          color="dark"
+          color="var(--primary-800)"
           checked={paymentType === "card"}
           onChange={() => {
             update("paymentType", "card");
           }}
           label={
-            <Text component="span" c="white" size="sm">
-              Card (Master | Visa)
+            <Text component="span" size="sm">
+              Card (Master, Visa)
             </Text>
           }
         />
@@ -54,6 +54,7 @@ export const PaymentOptions = () => {
                 Cash On Delivery
               </Text>
             }
+            hidden
           />
         )}
       </Stack>

@@ -9,34 +9,35 @@ export const DeliveryType = () => {
 
   return (
     <Box py="md">
-      <Text component="span" size="xs" c="gray.2">
+      <Text>Delivery Method</Text>
+      <Text component="span" size="xs" c="gray.8">
         How do you want to receive your order?
       </Text>
       <Stack mt="md">
         <Radio
           variant="outline"
-          color="dark"
+          color="var(--primary-700)"
           checked={deliveryType === "pickup"}
           onChange={() => {
             update("deliveryType", "pickup");
             update("deliveryFee", 0);
           }}
           label={
-            <Text component="span" c="white" size="sm">
+            <Text component="span" size="sm">
               I will pick up my self
             </Text>
           }
         />
         <Radio
           variant="outline"
-          color="dark"
+          color="var(--primary-700)"
           checked={deliveryType === "delivery"}
           onChange={() => {
             update("deliveryType", "delivery");
             update("deliveryFee", 30);
           }}
           label={
-            <Text component="span" c="white" size="sm">
+            <Text component="span" size="sm">
               Deliver to me
             </Text>
           }

@@ -1,4 +1,13 @@
-import { Card, Title, Divider, Stack, Group, Text } from "@mantine/core";
+import {
+  Card,
+  Title,
+  Divider,
+  Stack,
+  Group,
+  Text,
+  Textarea,
+  Box,
+} from "@mantine/core";
 import React, { useState } from "react";
 import { DiscountForm } from "./DiscountForm";
 import { calculateTotalPrice } from "@/functions";
@@ -8,7 +17,8 @@ import { DeliveryType } from "./DeliveryType";
 
 export const PaymentDetails = () => {
   const {
-    details: { deliveryFee, items },
+    details: { deliveryFee, items, note, region },
+    update,
   } = useCheckout((state) => state);
   const [discount] = useState(0);
 
@@ -17,49 +27,77 @@ export const PaymentDetails = () => {
   const total = subTotal + shippingFee - discount;
 
   return (
-    <Card withBorder px="xl" style={{ backgroundColor: "var(--primary-400)" }}>
-      <Title order={3} py={16} c="white">
+    <Card
+      withBorder
+      px="xl"
+      style={{ backgroundColor: "var(--primary-light)" }}
+    >
+      <Title order={3} py={16}>
         Payment Details
       </Title>
-      <Divider label="Do you have coupon code?" color="white" my={16} />
+      <Divider
+        label={
+          <Text c="black" size="xs">
+            Do you have coupon code?
+          </Text>
+        }
+        color="black"
+        my={16}
+      />
       <DiscountForm />
-      <Divider my={16} />
+      <Divider my={16} color="black" />
 
       {/* <PaymentOptions /> */}
       <DeliveryType />
       <Divider my={16} />
       <Stack>
         <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
+          <Text fz="sm" c="gray.9">
             Sub Total
           </Text>
-          <Text fz="sm" fw={600} c="white">
+          <Text fz="sm" fw={600}>
             GHS {subTotal.toFixed(1)}
           </Text>
         </Group>
         <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
+          <Text fz="sm" c="gray.9">
             Discount
           </Text>
-          <Text fz="sm" fw={600} c="white">
+          <Text fz="sm" fw={600}>
             -GHS {discount.toFixed(1)}
           </Text>
         </Group>
         <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
+          <Text fz="sm" c="gray.9">
             Delivery Fee
           </Text>
-          <Text fz="sm" fw={600} c="white">
-            +GHS {shippingFee.toFixed(1)}
+          <Text fz="sm" fw={600}>
+            +GHS {region === "GREATER ACCRA" ? shippingFee.toFixed(1) : 0}
           </Text>
         </Group>
 
-        <Divider my={16} />
+        {region && region !== "GREATER ACCRA" && (
+          <Box>
+            <Text fz="xs" fs="italic" c="gray.9">
+              Your region is outside Greater Accra. Delivery fee is not
+              finalized and will be confirmed later
+            </Text>
+          </Box>
+        )}
+
+        <Divider mt={16} />
+        <Textarea
+          value={note}
+          onChange={(e) => update("note", e.currentTarget.value)}
+          label="Additional note"
+          placeholder="any additional note on your order if any"
+        />
+        <Divider mt={8} mb={16} />
         <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
+          <Text fz="sm" c="gray.9">
             TOTAL
           </Text>
-          <Text fz="sm" fw={600} c="white">
+          <Text fz="sm" fw={600}>
             GHS {total.toFixed(1)}
           </Text>
         </Group>

@@ -98,6 +98,7 @@ export interface ICartItem {
   color?: ProductColor;
   size?: string;
   note?: string;
+  productNumber?: string;
 }
 
 export type GroupedPrintProductTypes = Record<

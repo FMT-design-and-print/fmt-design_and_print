@@ -14,8 +14,8 @@ export const OrderStatuses = ({ orders }: Props) => {
   useEffect(() => {
     const supabase = createClient();
 
-    const channels = supabase
-      .channel("custom-update-channel")
+    const orderChannel = supabase
+      .channel("orders-update-channel")
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "orders" },
@@ -32,8 +32,27 @@ export const OrderStatuses = ({ orders }: Props) => {
       )
       .subscribe();
 
+    const customOrderChannel = supabase
+      .channel("custom-orders-update-channel")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "custom-orders" },
+        (payload) => {
+          setNewOrders((prevState) => {
+            return prevState.map((obj) => {
+              if (obj.id === (payload.new as IOrder).id) {
+                return { ...obj, ...payload.new };
+              }
+              return obj;
+            });
+          });
+        }
+      )
+      .subscribe();
+
     return () => {
-      channels.unsubscribe();
+      orderChannel.unsubscribe();
+      customOrderChannel.unsubscribe();
     };
   }, []);
 

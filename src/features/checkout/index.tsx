@@ -79,7 +79,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
             <PaymentDetails />
           </Box>
         </Grid.Col>
-        <Grid.Col span={{ base: 4, lg: 3 }} visibleFrom="md">
+        <Grid.Col span={4} visibleFrom="md">
           <PaymentDetails />
         </Grid.Col>
       </Grid>

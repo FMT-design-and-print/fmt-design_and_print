@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 import { ConfirmOrder } from "./ConfirmOrder";
 import { useUpdateOrder } from "@/hooks/admin/useUpdateOrder";
 import { toast } from "react-toastify";
+import { SendQuote } from "./SendQuote";
 
 interface Props {
   status: OrderStatus;
@@ -45,6 +46,10 @@ export function OrderStatusOptions({
         numberOfItems={numberOfItems}
       />
     );
+  }
+
+  if (status === "requested") {
+    return <SendQuote orderId={orderId} orderNumber={orderNumber} />;
   }
 
   if (status === "placed") {

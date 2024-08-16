@@ -9,6 +9,7 @@ type CartStore = {
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
   clearCart: () => void;
+  clearItemsFromCart: (selectedIds: string[]) => void;
 };
 
 export const useCart = create<CartStore, [["zustand/persist", unknown]]>(
@@ -38,6 +39,10 @@ export const useCart = create<CartStore, [["zustand/persist", unknown]]>(
         })),
 
       clearCart: () => set(() => ({ items: [] })),
+      clearItemsFromCart: (ids) =>
+        set((prevItems) => ({
+          items: prevItems.items.filter((item) => !ids.includes(item.id)),
+        })),
     }),
     {
       name: "fmt_dp_cart",
