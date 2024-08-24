@@ -1,13 +1,13 @@
 import { OrderStatusTextRenderer } from "@/components/OrderStatusTextRenderer";
 import { formatOrderStatus } from "@/functions/orders";
+import { useUpdateOrder } from "@/hooks/admin/useUpdateOrder";
 import { OrderStatus } from "@/types/order";
 import { ActionIcon, Loader, Menu, Text } from "@mantine/core";
 import { IconArrowRight, IconDotsVertical } from "@tabler/icons-react";
 import { ReactNode } from "react";
-import { ConfirmOrder } from "./ConfirmOrder";
-import { useUpdateOrder } from "@/hooks/admin/useUpdateOrder";
 import { toast } from "react-toastify";
-import { SendQuote } from "./SendQuote";
+import { ConfirmOrder } from "./ConfirmOrder";
+import { QuoteModal } from "./Quote/QuoteModal";
 
 interface Props {
   status: OrderStatus;
@@ -49,7 +49,14 @@ export function OrderStatusOptions({
   }
 
   if (status === "requested") {
-    return <SendQuote orderId={orderId} orderNumber={orderNumber} />;
+    return (
+      <QuoteModal
+        title="Create quote for order"
+        orderId={orderId}
+        orderNumber={orderNumber}
+        triggerLabel="Create Quote"
+      />
+    );
   }
 
   if (status === "placed") {

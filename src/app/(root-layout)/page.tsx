@@ -1,8 +1,8 @@
 import { Landing } from "@/features/landing";
 import { IFeaturedProducts } from "@/types";
-import { client } from "../../sanity/lib/client";
-import { featuredProductsQuery } from "../../sanity/queries";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { client } from "@/lib/client";
+import { featuredProductsQuery } from "@/queries";
 
 export const revalidate = 0;
 

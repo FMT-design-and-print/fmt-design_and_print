@@ -77,3 +77,29 @@ body {
   margin: 0px !important;
   width: 100% !important;
 }
+
+.printable-content {
+  display: none;
+}
+
+@media print {
+  .printable-content {
+    display: block;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .printable-content,
+  .printable-content * {
+    visibility: visible;
+  }
+
+  .printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

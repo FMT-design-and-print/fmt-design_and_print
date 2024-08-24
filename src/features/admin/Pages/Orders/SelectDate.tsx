@@ -1,6 +1,6 @@
 import { areDatesEqual } from "@/functions";
 import { getFormattedDaysToFuture } from "@/functions/durations";
-import { Badge, Group } from "@mantine/core";
+import { Badge, Flex, Group } from "@mantine/core";
 import { DatePicker, DatePickerInput, DatePickerProps } from "@mantine/dates";
 import { Dispatch, SetStateAction } from "react";
 
@@ -26,7 +26,7 @@ export function SelectDate({ value, setValue }: Props) {
   };
 
   return (
-    <>
+    <Flex direction={{ base: "column", sm: "row" }} align="flex-start" gap={8}>
       <DatePicker
         defaultDate={now}
         value={value}
@@ -35,11 +35,12 @@ export function SelectDate({ value, setValue }: Props) {
         getDayProps={getDayProps}
         bg="white"
         style={{ overflowX: "auto" }}
+        w="fit-content"
+        size="xs"
       />
-      <Group align="center">
+      <Group align="center" mt={{ base: "md", sm: "0" }}>
         <DatePickerInput
           miw={200}
-          mt="md"
           value={value}
           onChange={setValue}
           valueFormat="ddd, MMM DD YYYY"
@@ -47,11 +48,11 @@ export function SelectDate({ value, setValue }: Props) {
           readOnly
         />
         {value && (
-          <Badge variant="light" color="teal" mt="md">
+          <Badge variant="light" color="teal">
             {getFormattedDaysToFuture(value)}
           </Badge>
         )}
       </Group>
-    </>
+    </Flex>
   );
 }

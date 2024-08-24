@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { PrimaryButton } from "../../../components/PrimaryButton";
+import { PrimaryButton } from "@/components/PrimaryButton";
 
 type LoginData = z.infer<typeof LoginDataSchema>;
 

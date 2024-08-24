@@ -7,7 +7,8 @@ export const useUrlSearchParams = () => {
   const updateUrlSearchParams = (
     paramsToUpdate: Record<string, string | number | null | undefined>
   ) => {
-    const queryParams = new URLSearchParams(window?.location.search);
+    const search = typeof window !== "undefined" ? window?.location.search : "";
+    const queryParams = new URLSearchParams(search);
 
     Object.keys(paramsToUpdate).forEach((key) => {
       const value = paramsToUpdate[key];

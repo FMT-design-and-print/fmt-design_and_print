@@ -8,7 +8,7 @@ import {
   MessageStatus,
   SelectedProductOptions,
 } from "@/types";
-import { OrderStatus } from "@/types/order";
+import { DeliveryType, OrderStatus } from "@/types/order";
 import { DefaultMantineColor } from "@mantine/core";
 
 export const getAlertColor = (
@@ -81,6 +81,13 @@ export function calculateTotalPrice(cart: ICartItem[]): number {
   return totalPrice;
 }
 
+export function calculateTotal(items: number[]): number {
+  return items.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+}
+
 export function getRandomLength<T>(arr: T[]): T {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
@@ -113,14 +120,14 @@ export function removeDuplicateCategories(
   return resultArray;
 }
 
-export function verifyAddressDetails(details: IShippingAddress) {
-  const keysToCheck: (keyof IShippingAddress)[] = [
-    "contactName",
-    "phone1",
-    "address",
-    "region",
-    "town",
-  ];
+export function verifyAddressDetails(
+  details: IShippingAddress,
+  deliveryType?: DeliveryType
+) {
+  const keysToCheck: (keyof IShippingAddress)[] =
+    deliveryType === "delivery"
+      ? ["contactName", "phone1", "address", "region", "town"]
+      : ["contactName", "phone1"];
 
   const emptyFields = keysToCheck.filter((key) => !details[key]);
   const isValid = emptyFields.length === 0;

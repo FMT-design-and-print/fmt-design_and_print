@@ -1,5 +1,4 @@
 import { AuthCard } from "@/components/AuthCard";
-import { LoginForm } from "@/app/(auth)/login/LoginForm";
 import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
@@ -9,6 +8,7 @@ import { Alert, Box, Divider } from "@mantine/core";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
 import { Metadata } from "next";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = {
   title: "Login | FMT Design and Print",
