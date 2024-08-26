@@ -1,20 +1,19 @@
-import { Button, Group, Modal, Text } from "@mantine/core";
+import { IQuote } from "@/types/quote";
+import { Button, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowRight } from "@tabler/icons-react";
-import React, { useState } from "react";
-import { CreateOrEditQuote } from "./CreateOrEditQuote";
+import { useState } from "react";
+// import { v4 as uid } from "uuid";
 import { SendQuote } from "./SendQuote";
-import { IQuote } from "@/types/quote";
 import { QuoteFormMode, QuoteModalScreen } from "./types";
-import { v4 as uid } from "uuid";
 
-const initialQuoteItem = {
-  id: uid(),
-  description: "",
-  quantity: 0,
-  unitAmount: 0,
-  totalAmount: 0,
-};
+// const initialQuoteItem = {
+//   id: uid(),
+//   description: "",
+//   quantity: 0,
+//   unitAmount: 0,
+//   totalAmount: 0,
+// };
 
 interface Props {
   mode?: QuoteFormMode;
@@ -37,7 +36,7 @@ export const QuoteModal = ({
 }: Props) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [activeScreen, setActiveScreen] = useState<QuoteModalScreen>(screen);
-  const [quoteDetails, setQuoteDetails] = useState<IQuote>();
+  // const [quoteDetails, setQuoteDetails] = useState<IQuote>();
 
   return (
     <>
@@ -54,7 +53,7 @@ export const QuoteModal = ({
           </Text>
         }
       >
-        {activeScreen === "form" && (
+        {/* {activeScreen === "form" && (
           <>
             <CreateOrEditQuote
               orderId={orderId}
@@ -63,7 +62,7 @@ export const QuoteModal = ({
               setActiveScreen={setActiveScreen}
             />
           </>
-        )}
+        )} */}
 
         {activeScreen === "send" && (
           <SendQuote orderId={orderId} setActiveScreen={setActiveScreen} />
