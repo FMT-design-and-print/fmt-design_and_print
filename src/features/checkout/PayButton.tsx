@@ -4,12 +4,11 @@ import { getOrderId, verifyAddressDetails } from "@/functions";
 import { useSession } from "@/store";
 import { useCart } from "@/store/cart";
 import { useCheckout } from "@/store/checkout";
-import { CheckoutDetails } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 import { Alert, Box, Button, Text } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { HookConfig } from "react-paystack/dist/types";
 
@@ -26,7 +25,7 @@ export const PayButton = ({ total }: IProps) => {
   const router = useRouter();
   const { details } = useCheckout((state) => state);
   const { clearItemsFromCart } = useCart((state) => state);
-  const [emptyFields, setEmptyFields] = useState<(keyof CheckoutDetails)[]>([]);
+  const [emptyFields, setEmptyFields] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const initializePayment = usePaystackPayment(config);
   const user = useSession((state) => state.user);
