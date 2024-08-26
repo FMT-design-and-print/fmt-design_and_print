@@ -69,7 +69,7 @@ export const Bags = ({ image }: { image: string }) => {
     const urls = await uploadArtworkFiles(context?.artworkFiles || []);
 
     const requestDetails = {
-      itemType: productType,
+      itemTypes: [productType],
       user_id: user?.id,
     };
 
@@ -103,7 +103,7 @@ export const Bags = ({ image }: { image: string }) => {
         <ItemTypeSelect
           value={bagType}
           onChange={handleItemTypeChange}
-          label="Mug Type"
+          label="Bag Type"
           types={bagTypes.map((bag) => bag.type)}
         />
         <Quantity minQty={minQty} />

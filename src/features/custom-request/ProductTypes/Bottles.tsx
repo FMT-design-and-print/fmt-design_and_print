@@ -6,7 +6,7 @@ import { v4 as uid } from "uuid";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
 import { ErrorsRenderer } from "../ErrorsRenderer";
-import { ImagesCardSelect } from "../ItemCardSelect copy";
+import { ImagesCardSelect } from "../ImagesCardSelect";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";
@@ -77,7 +77,7 @@ export const Bottles = ({ image }: { image: string }) => {
     const urls = await uploadArtworkFiles(context?.artworkFiles || []);
 
     const requestDetails = {
-      itemType: productType,
+      itemTypes: [productType],
       user_id: user?.id,
     };
 
@@ -92,12 +92,14 @@ export const Bottles = ({ image }: { image: string }) => {
       orderDetails,
       context
     );
-    setIsLoading(false);
-    setLoadingMessage("");
 
     if (isSuccess) {
       router.push(`/custom-request/success?reference=${data?.orderId}`);
+      return;
     }
+
+    setIsLoading(false);
+    setLoadingMessage("");
   };
 
   return (

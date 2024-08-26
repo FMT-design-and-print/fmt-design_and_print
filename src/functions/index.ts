@@ -129,7 +129,9 @@ export function verifyAddressDetails(
       ? ["contactName", "phone1", "address", "region", "town"]
       : ["contactName", "phone1"];
 
-  const emptyFields = keysToCheck.filter((key) => !details[key]);
+  const emptyFields = keysToCheck
+    .filter((key) => !details[key])
+    .map((key) => shippingAddressLabelMap(key));
   const isValid = emptyFields.length === 0;
 
   return {
@@ -270,6 +272,7 @@ export function areDatesEqual(date1: Date, date2: Date): boolean {
 }
 
 export function calculateEstimatedFulfillmentDate(
+  numberOfDays: number,
   createdAt: string | Date,
   estimatedFulfillmentDate?: string | Date
 ): Date {
@@ -277,7 +280,7 @@ export function calculateEstimatedFulfillmentDate(
 
   const fulfillmentDate = estimatedFulfillmentDate
     ? new Date(estimatedFulfillmentDate)
-    : new Date(createdDate.setDate(createdDate.getDate() + 5));
+    : new Date(createdDate.setDate(createdDate.getDate() + numberOfDays));
 
   if (fulfillmentDate.getDay() === 0) {
     fulfillmentDate.setDate(fulfillmentDate.getDate() + 1);
@@ -285,3 +288,24 @@ export function calculateEstimatedFulfillmentDate(
 
   return fulfillmentDate;
 }
+
+export const shippingAddressLabelMap = (key: keyof IShippingAddress) => {
+  switch (key) {
+    case "contactName":
+      return "Contact Name";
+    case "phone1":
+      return "Phone 1";
+    case "phone2":
+      return "Phone 2";
+    case "email":
+      return "Email";
+    case "address":
+      return "Address";
+    case "town":
+      return "Town";
+    case "region":
+      return "Region";
+    default:
+      return key;
+  }
+};

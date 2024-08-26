@@ -73,7 +73,7 @@ export const Frames = ({ image }: { image: string }) => {
     const urls = await uploadArtworkFiles(context?.artworkFiles || []);
 
     const requestDetails = {
-      itemType: productType,
+      itemTypes: [productType],
       user_id: user?.id,
     };
 

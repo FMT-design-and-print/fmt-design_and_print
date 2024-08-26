@@ -1,6 +1,11 @@
 "use client";
 import { Print } from "@/components/Print";
 import {
+  getFormattedDurationFromNow,
+  getFormattedDurationToFuture,
+} from "@/functions/durations";
+import { IQuoteItem } from "@/types/quote";
+import {
   ActionIcon,
   Badge,
   Box,
@@ -11,14 +16,10 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 import { FC } from "react";
-import { PrintableQuote } from "./PrintableQuote";
-import { QuoteTable } from "./QuoteTable";
 import { FaPrint } from "react-icons/fa6";
-import { IQuoteItem } from "@/types/quote";
-import {
-  getFormattedDurationFromNow,
-  getFormattedDurationToFuture,
-} from "@/functions/durations";
+import { PrintableQuote } from "./PrintableQuote";
+import { QuoteCards } from "./QuoteCards";
+import { QuoteTable } from "./QuoteTable";
 
 interface Props {
   clientName?: string;
@@ -70,7 +71,14 @@ export const QuoteReview: FC<Props> = (props) => {
       <Title order={3} py={16}>
         {quoteTitle}
       </Title>
-      <Flex align="flex-start" justify="space-between" my="md">
+      <Flex
+        align="flex-start"
+        justify="space-between"
+        my="md"
+        wrap="wrap"
+        direction={{ base: "column", sm: "row" }}
+        gap="md"
+      >
         <Box className="space-y-2">
           <Group>
             <Text fw="bold" size="sm">
@@ -111,12 +119,22 @@ export const QuoteReview: FC<Props> = (props) => {
 
         <Box className="space-y-2" pr="md">
           <Text fw="bold">To:</Text>
-          <Text size="sm">{clientName}</Text>
-          <Text size="sm">{clientContact}</Text>
+          <Text size="sm" c="gray">
+            {clientName}
+          </Text>
+          <Text size="sm" c="gray">
+            {clientContact}
+          </Text>
         </Box>
       </Flex>
 
-      <QuoteTable items={items} />
+      <Box hiddenFrom="sm">
+        <QuoteCards items={items} />
+      </Box>
+
+      <Box visibleFrom="sm">
+        <QuoteTable items={items} />
+      </Box>
 
       {requestPayment && (
         <Box my="lg" className="space-y-2">

@@ -15,7 +15,7 @@ export const regionsInGhana = [
   "VOLTA",
   "WESTERN",
   "WESTERN NORTH",
-];
+] as const;
 
 export const shippingFeeByRegion: { [key: string]: number } = {
   ASHANTI: 0,

@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Permission } from "./roles";
+import { GHRegion } from "./order";
 
 export type MessageStatus = "error" | "success" | "info";
 export type CouponType = "percentage" | "fixed" | "free-shipping";
@@ -150,7 +151,7 @@ export interface IShippingAddress {
   phone2?: string;
   country: string;
   address: string;
-  region: string;
+  region: GHRegion | "";
   town?: string;
 }
 
@@ -183,3 +184,12 @@ export type IAdminNavItems =
       requiredPermission?: Permission;
     }
   | "divider";
+
+export interface IMessage {
+  id: string;
+  created_at: Date;
+  subject: string;
+  content: string;
+  status: "read" | "unread";
+  metadata: object;
+}

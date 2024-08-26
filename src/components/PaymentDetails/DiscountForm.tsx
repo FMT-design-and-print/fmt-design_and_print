@@ -1,7 +1,11 @@
 import { Button, TextInput, TextInputProps } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-export function DiscountForm(props: TextInputProps) {
+interface Props extends TextInputProps {
+  setDiscount?: (value: number) => void;
+}
+
+export function DiscountForm({ setDiscount, ...rest }: Props) {
   const [discountCode, setDiscountCode] = useState("");
   const [message, setMessage] = useState("");
 
@@ -9,6 +13,10 @@ export function DiscountForm(props: TextInputProps) {
     if (discountCode.trim().length) {
       setMessage("Invalid coupon code");
     } else {
+      // load discount details from db using code
+      // calculate discount
+      const discount = 0;
+      setDiscount && setDiscount(discount);
       setMessage("");
       setDiscountCode("");
     }
@@ -36,7 +44,7 @@ export function DiscountForm(props: TextInputProps) {
             Apply
           </Button>
         }
-        {...props}
+        {...rest}
       />
       {message && <p className="px-4 pt-4 text-sm text-white">{message}</p>}
     </>

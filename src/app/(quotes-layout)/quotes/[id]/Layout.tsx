@@ -1,27 +1,16 @@
 /* eslint-disable camelcase */
 "use client";
 import { Print } from "@/components/Print";
-import { Box, Button, Group, Notification, rem } from "@mantine/core";
+import { calculateTotal } from "@/functions";
+import { IQuote } from "@/types/quote";
+import { Box, Button, Center, Group, Notification, rem } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
-import { BsArrowLeft } from "react-icons/bs";
 import { PrintableQuote } from "./PrintableQuote";
+import { QuotePayment } from "./QuotePayment";
 import { QuoteReview } from "./QuoteReview";
 import { ReActivateQuote } from "./ReActivateQuote";
-import { QuotePayment } from "./QuotePayment";
-import { calculateTotal } from "@/functions";
 import { RequestRevision } from "./RequestRevision";
-import { IQuote } from "@/types/quote";
-
-// TODO:
-// track number of reactivation request
-// track number of revision request
-// record client name and contact from custom request
-
-// revision notification
-// reactivation notification
-
-// request quote page
 
 interface Props {
   quote: IQuote;
@@ -39,7 +28,11 @@ export const Layout = ({ quote }: Props) => {
     contact,
     email,
     requestPayment,
+    reactivationReasons,
+    revisionReasons,
     numberOfRevisionsRequested,
+    numberOfReactivationRequested,
+    order_id,
   } = quote;
   const [screen, setScreen] = useState<"review" | "payment">("review");
 
@@ -51,19 +44,27 @@ export const Layout = ({ quote }: Props) => {
 
   if (isDueDatePassed()) {
     return (
-      <Box py="xl">
-        <Notification
-          icon={<IconX style={{ width: rem(20), height: rem(20) }} />}
-          color="red"
-          title="Quote Expired"
-        >
-          This quote has expired or passed the due date
-        </Notification>
-        <Group py="md" justify="flex-end">
-          <ReActivateQuote />
-          <Button size="xs">Request a New Quote</Button>
-        </Group>
-      </Box>
+      <Center py="xl">
+        <Box py="xl">
+          <Notification
+            icon={<IconX style={{ width: rem(20), height: rem(20) }} />}
+            color="red"
+            title="Quote Expired"
+          >
+            This quote has expired or passed the due date
+          </Notification>
+          <Group py="md" justify="flex-end">
+            {numberOfReactivationRequested < 3 && (
+              <ReActivateQuote
+                quoteId={id}
+                quoteNumber={quoteNumber}
+                reactivationReasons={reactivationReasons || []}
+              />
+            )}
+            <Button size="xs">Request a New Quote</Button>
+          </Group>
+        </Box>
+      </Center>
     );
   }
 
@@ -95,7 +96,11 @@ export const Layout = ({ quote }: Props) => {
                 />
               </Print>
               {numberOfRevisionsRequested < 3 && (
-                <RequestRevision quoteId={id} />
+                <RequestRevision
+                  quoteId={id}
+                  quoteNumber={quoteNumber}
+                  revisionReasons={revisionReasons || []}
+                />
               )}
             </Group>
 
@@ -104,6 +109,7 @@ export const Layout = ({ quote }: Props) => {
                 size="sm"
                 className="btn"
                 onClick={() => setScreen("payment")}
+                w={{ base: "100%", sm: "fit-content" }}
               >
                 Accept and Pay
               </Button>
@@ -112,24 +118,15 @@ export const Layout = ({ quote }: Props) => {
         </Box>
       )}
       {screen === "payment" && (
-        <Box>
-          <QuotePayment
-            quoteId={id}
-            subTotal={calculateTotal(items.map((item) => item.totalAmount))}
-            clientName={clientName}
-            contact={contact}
-            email={email}
-          />
-          <Group justify="space-between" py="sm">
-            <Button
-              variant="outline"
-              onClick={() => setScreen("review")}
-              leftSection={<BsArrowLeft />}
-            >
-              Review Items
-            </Button>
-          </Group>
-        </Box>
+        <QuotePayment
+          quoteId={id}
+          orderId={order_id}
+          subTotal={calculateTotal(items.map((item) => item.totalAmount))}
+          clientName={clientName}
+          contact={contact}
+          email={email}
+          setScreen={setScreen}
+        />
       )}
     </>
   );

@@ -1,6 +1,6 @@
+import { DeliveryType } from "@/types/order";
 import {
   Box,
-  Card,
   Divider,
   Group,
   Stack,
@@ -8,24 +8,20 @@ import {
   Textarea,
   Title,
 } from "@mantine/core";
-import { useState } from "react";
-import { DeliveryType } from "./DeliveryType";
-import { DiscountForm } from "./DiscountForm";
-import { PayButton } from "./PayButton";
-import { IShippingAddress } from "@/types";
 import { LoadingOverlay } from "../LoadingOverlay";
+import { DeliveryTypeSelect } from "./DeliveryType";
+import { DiscountForm } from "./DiscountForm";
 
 interface Props {
   subTotal: number;
   deliveryFee: number;
-  note: string;
   isLoading: boolean;
-  shippingAddress: IShippingAddress;
-  onPaySuccess?: (ref: any) => void;
+  note: string;
+  discount: number;
   setNote?: (note: string) => void;
-  style?: {
-    bg: string;
-  };
+  setDiscount?: (value: number) => void;
+  deliveryType: DeliveryType;
+  setDeliveryType: (deliveryType: DeliveryType) => void;
 }
 
 export const PaymentDetailsCard = (props: Props) => {
@@ -33,25 +29,18 @@ export const PaymentDetailsCard = (props: Props) => {
     subTotal,
     deliveryFee,
     note,
+    discount,
     setNote,
+    setDiscount,
     isLoading,
-    shippingAddress,
-    onPaySuccess,
-    style,
+    deliveryType,
+    setDeliveryType,
   } = props;
-  const { region } = shippingAddress;
-  const [discount] = useState(0);
 
-  const shippingFee = deliveryFee || 0;
-  const total = subTotal + shippingFee - discount;
+  const total = subTotal + deliveryFee - discount;
 
   return (
-    <Card
-      withBorder
-      px="xl"
-      bg={style?.bg || "var(--primary-light)"}
-      pos="relative"
-    >
+    <Box px="xl" pos="relative">
       <LoadingOverlay visible={isLoading} />
       <Title order={3} py={16}>
         Payment Details
@@ -65,11 +54,14 @@ export const PaymentDetailsCard = (props: Props) => {
         color="black"
         my={16}
       />
-      <DiscountForm />
+      <DiscountForm setDiscount={setDiscount} />
       <Divider my={16} color="black" />
 
       {/* <PaymentOptions /> */}
-      <DeliveryType />
+      <DeliveryTypeSelect
+        deliveryType={deliveryType}
+        setDeliveryType={setDeliveryType}
+      />
       <Divider my={16} />
       <Stack>
         <Group justify="space-between">
@@ -93,26 +85,10 @@ export const PaymentDetailsCard = (props: Props) => {
             Delivery Fee
           </Text>
           <Text fz="sm" fw={600}>
-            +GHS {shippingFee.toFixed(2)}
+            +GHS {deliveryFee.toFixed(2)}
           </Text>
         </Group>
 
-        {region && region !== "GREATER ACCRA" && (
-          <Box>
-            <Text fz="xs" fs="italic" c="gray.9">
-              Your region is outside Greater Accra. Delivery fee is not
-              finalized and will be confirmed later
-            </Text>
-          </Box>
-        )}
-
-        <Divider mt={16} />
-        <Textarea
-          value={note}
-          onChange={(e) => setNote?.(e.currentTarget.value)}
-          label="Additional note"
-          placeholder="any additional note on your order if any"
-        />
         <Divider mt={8} mb={16} />
         <Group justify="space-between">
           <Text fz="sm" c="gray.9">
@@ -122,12 +98,15 @@ export const PaymentDetailsCard = (props: Props) => {
             GHS {total.toFixed(1)}
           </Text>
         </Group>
-        <PayButton
-          total={total}
-          shippingAddress={shippingAddress}
-          onSuccess={onPaySuccess}
+
+        <Divider mt={16} />
+        <Textarea
+          value={note}
+          onChange={(e) => setNote?.(e.currentTarget.value)}
+          label="Additional note"
+          placeholder="any additional note on your order if any"
         />
       </Stack>
-    </Card>
+    </Box>
   );
 };

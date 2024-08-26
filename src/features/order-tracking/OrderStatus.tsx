@@ -26,6 +26,7 @@ export const OrderStatus = ({ order }: Props) => {
   const createdAt = new Date(order.created_at);
 
   const estimatedFulfillmentDate = calculateEstimatedFulfillmentDate(
+    5,
     createdAt,
     order.estimatedFulfillmentDate
   );

@@ -19,7 +19,6 @@ export const UnspecifiedProduct = ({ image }: { image: string }) => {
     errorsState: { errors, setErrors },
     user,
     router,
-    productType,
   } = useCustomReqCommonStates(image);
 
   const validateFields = () => {
@@ -55,7 +54,7 @@ export const UnspecifiedProduct = ({ image }: { image: string }) => {
     const urls = await uploadArtworkFiles(context?.artworkFiles || []);
 
     const requestDetails = {
-      itemType: productType,
+      itemTypes: [],
       user_id: user?.id,
     };
 

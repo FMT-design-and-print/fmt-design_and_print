@@ -1,10 +1,10 @@
 "use client";
 import { paystackPublicKey } from "@/constants";
 import { getOrderId, verifyAddressDetails } from "@/functions";
-import { CheckoutDetails, IShippingAddress } from "@/types";
-import { Alert, Box, Button, Text } from "@mantine/core";
-import { IconInfoCircle } from "@tabler/icons-react";
-import { useState } from "react";
+import { IShippingAddress } from "@/types";
+import { DeliveryType } from "@/types/order";
+import { Button, Text } from "@mantine/core";
+import { Dispatch, SetStateAction } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { HookConfig } from "react-paystack/dist/types";
 
@@ -15,13 +15,22 @@ const config: HookConfig = {
 };
 
 interface IProps {
+  orderNumber?: string;
   total: number;
   shippingAddress: IShippingAddress;
+  deliveryType: DeliveryType;
+  setEmptyRequiredFields?: Dispatch<SetStateAction<string[]>>;
   onSuccess?: (ref: any) => void;
 }
 
-export const PayButton = ({ total, shippingAddress, onSuccess }: IProps) => {
-  const [emptyFields, setEmptyFields] = useState<(keyof CheckoutDetails)[]>([]);
+export const PayButton = ({
+  orderNumber,
+  total,
+  shippingAddress,
+  deliveryType,
+  onSuccess,
+  setEmptyRequiredFields,
+}: IProps) => {
   const initializePayment = usePaystackPayment(config);
 
   const handleOnSuccess = async (ref: any) => {
@@ -36,17 +45,20 @@ export const PayButton = ({ total, shippingAddress, onSuccess }: IProps) => {
 
   const handleMakePayment = () => {
     if (total === 0) {
-      setEmptyFields(["Amount" as any]);
+      setEmptyRequiredFields?.(["Amount" as any]);
       return;
     }
 
-    const { isValid, fields } = verifyAddressDetails(shippingAddress);
+    const { isValid, fields } = verifyAddressDetails(
+      shippingAddress,
+      deliveryType
+    );
     if (!isValid) {
-      setEmptyFields(fields);
+      setEmptyRequiredFields?.(fields);
       return;
     }
 
-    setEmptyFields([]);
+    setEmptyRequiredFields?.([]);
 
     return initializePayment({
       config: {
@@ -57,7 +69,7 @@ export const PayButton = ({ total, shippingAddress, onSuccess }: IProps) => {
         label: shippingAddress.contactName,
         amount: total * 100,
         phone: shippingAddress.phone1,
-        reference: getOrderId(),
+        reference: orderNumber || getOrderId(),
         firstname: shippingAddress.contactName.split(" ")[0] || "",
         lastname: shippingAddress.contactName.split(" ")[1] || "",
       },
@@ -68,24 +80,15 @@ export const PayButton = ({ total, shippingAddress, onSuccess }: IProps) => {
 
   return (
     <>
-      <Button onClick={handleMakePayment} className="btn">
+      <Button
+        onClick={handleMakePayment}
+        className="btn"
+        w={{ base: "100%", sm: "fit-content" }}
+      >
         <Text component="span" fw={600}>
           Pay GHS {total.toFixed(1)}
         </Text>
       </Button>
-
-      <Box bg="white">
-        {emptyFields.length > 0 && (
-          <Alert
-            variant="light"
-            color="red"
-            title={"Empty fields"}
-            icon={<IconInfoCircle />}
-          >
-            {emptyFields.join(", ").toUpperCase()}
-          </Alert>
-        )}
-      </Box>
     </>
   );
 };

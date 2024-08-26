@@ -27,7 +27,8 @@ export interface IQuote {
   clientName?: string;
   contact?: string;
   email?: string;
-  revisions: string[];
+  revisionReasons?: string[];
+  reactivationReasons?: string[];
   numberOfRevisionsRequested: number;
   numberOfReactivationRequested: number;
   requestPayment: boolean;

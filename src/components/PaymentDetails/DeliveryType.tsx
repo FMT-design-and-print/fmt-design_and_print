@@ -1,12 +1,15 @@
-import { useCheckout } from "@/store/checkout";
+import { DeliveryType } from "@/types/order";
 import { Box, Radio, Stack, Text } from "@mantine/core";
 
-export const DeliveryType = () => {
-  const {
-    update,
-    details: { deliveryType },
-  } = useCheckout((state) => state);
+interface Props {
+  deliveryType: DeliveryType;
+  setDeliveryType?: (type: DeliveryType) => void;
+}
 
+export const DeliveryTypeSelect = ({
+  deliveryType,
+  setDeliveryType,
+}: Props) => {
   return (
     <Box py="md">
       <Text>Delivery Method</Text>
@@ -19,8 +22,7 @@ export const DeliveryType = () => {
           color="var(--primary-700)"
           checked={deliveryType === "pickup"}
           onChange={() => {
-            update("deliveryType", "pickup");
-            update("deliveryFee", 0);
+            setDeliveryType?.("pickup");
           }}
           label={
             <Text component="span" size="sm">
@@ -33,8 +35,7 @@ export const DeliveryType = () => {
           color="var(--primary-700)"
           checked={deliveryType === "delivery"}
           onChange={() => {
-            update("deliveryType", "delivery");
-            update("deliveryFee", 30);
+            setDeliveryType?.("delivery");
           }}
           label={
             <Text component="span" size="sm">
