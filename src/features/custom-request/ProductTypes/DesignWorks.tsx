@@ -5,7 +5,7 @@ import { Quantity } from "../Quantity";
 import { DesignInstructions } from "../DesignInstructions";
 import { ArtworkSection } from "../ArtworkSection";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { Checkbox, Text } from "@mantine/core";
 import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";

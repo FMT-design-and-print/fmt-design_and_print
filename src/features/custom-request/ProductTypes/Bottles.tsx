@@ -5,7 +5,7 @@ import { useState } from "react";
 import { v4 as uid } from "uuid";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { ImagesCardSelect } from "../ImagesCardSelect";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";

@@ -1,5 +1,6 @@
 import { CheckoutDetails, ICartItem, IShippingAddress } from "@/types";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 type CheckoutStore = {
   details: CheckoutDetails;
@@ -25,37 +26,54 @@ const initialState: CheckoutDetails = {
   items: [],
   note: "",
   deliveryType: "delivery",
-  deliveryFee: 30,
+  deliveryFee: 0,
+  discount: 0,
 };
 
-export const useCheckout = create<CheckoutStore>((set) => ({
-  details: { ...initialState },
-  setItems: (items) => set(() => ({ details: { ...initialState, items } })),
-  setDetails: (newDetails) =>
-    set((prevState) => ({ details: { ...prevState.details, ...newDetails } })),
-  clearItems: () => set(() => ({ details: { ...initialState, items: [] } })),
-  increaseQuantity: (id) =>
-    set((prevState) => ({
-      details: {
-        ...prevState.details,
-        items: prevState.details.items.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-        ),
-      },
-    })),
+export const useCheckout = create<
+  CheckoutStore,
+  [["zustand/persist", unknown]]
+>(
+  persist(
+    (set) => ({
+      details: { ...initialState },
+      setItems: (items) => set(() => ({ details: { ...initialState, items } })),
+      setDetails: (newDetails) =>
+        set((prevState) => ({
+          details: { ...prevState.details, ...newDetails },
+        })),
+      clearItems: () =>
+        set(() => ({ details: { ...initialState, items: [] } })),
+      increaseQuantity: (id) =>
+        set((prevState) => ({
+          details: {
+            ...prevState.details,
+            items: prevState.details.items.map((item) =>
+              item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+            ),
+          },
+        })),
 
-  decreaseQuantity: (id) =>
-    set((prevState) => ({
-      details: {
-        ...prevState.details,
-        items: prevState.details.items.map((item) =>
-          item.id === id && item.quantity > 1
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        ),
-      },
-    })),
+      decreaseQuantity: (id) =>
+        set((prevState) => ({
+          details: {
+            ...prevState.details,
+            items: prevState.details.items.map((item) =>
+              item.id === id && item.quantity > 1
+                ? { ...item, quantity: item.quantity - 1 }
+                : item
+            ),
+          },
+        })),
 
-  update: (key, value) =>
-    set((prevState) => ({ details: { ...prevState.details, [key]: value } })),
-}));
+      update: (key, value) =>
+        set((prevState) => ({
+          details: { ...prevState.details, [key]: value },
+        })),
+    }),
+    {
+      name: "fmt_dp_checkout",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);

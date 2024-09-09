@@ -4,7 +4,7 @@ import { Select, Text } from "@mantine/core";
 import { useState } from "react";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { FlexLayout } from "@/components/FlexLayout";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";

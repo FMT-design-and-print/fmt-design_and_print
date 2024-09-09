@@ -6,7 +6,7 @@ import { Group, Text } from "@mantine/core";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { isArtworkRequired } from "../required-artwork";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { uploadArtworkFiles } from "../upload-files";

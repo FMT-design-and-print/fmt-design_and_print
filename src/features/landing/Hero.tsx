@@ -35,13 +35,13 @@ export const Hero = () => {
             </Group>
           </Link>
 
-          <Link href="">
+          <Link href="/quote-or-invoice-request">
             <Group py="md" wrap="nowrap">
               <Avatar alt="" size={25}>
                 <IconReceipt2 />
               </Avatar>
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
-                Request Invoice
+                Request Quote/Invoice
               </Text>
             </Group>
           </Link>

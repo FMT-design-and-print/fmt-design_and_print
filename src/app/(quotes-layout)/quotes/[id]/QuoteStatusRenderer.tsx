@@ -2,6 +2,7 @@ import { QuoteStatus } from "@/types/quote";
 import { Box, Button, Group, Notification, rem } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { ReActivateQuote } from "./ReActivateQuote";
+import Link from "next/link";
 
 interface Props {
   status: QuoteStatus;
@@ -30,7 +31,9 @@ export const QuoteStatusRenderer = ({
         </Notification>
 
         <Group py="md" justify="flex-end">
-          <Button size="xs">Request a New Quote</Button>
+          <Button size="xs" component={Link} href="/quote-or-invoice-request">
+            Request a New Quote
+          </Button>
         </Group>
       </Box>
     );
@@ -55,7 +58,9 @@ export const QuoteStatusRenderer = ({
             />
           )}
 
-          <Button size="xs">Request a New Quote</Button>
+          <Button size="xs" component={Link} href="/quote-or-invoice-request">
+            Request a New Quote
+          </Button>
         </Group>
       </Box>
     );
@@ -78,7 +83,9 @@ export const QuoteStatusRenderer = ({
             reactivationReasons={reactivationReasons}
           />
         )}
-        <Button size="xs">Request a New Quote</Button>
+        <Button size="xs" component={Link} href="/quote-or-invoice-request">
+          Request a New Quote
+        </Button>
       </Group>
     </Box>
   );

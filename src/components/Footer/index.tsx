@@ -26,9 +26,10 @@ const data = [
   {
     title: "Policies",
     links: [
-      { label: "Privacy Policy", link: "/privacy-policy" },
-      { label: "Shipping and Returns", link: "/shipping-and-returns" },
-      { label: "Terms of Use", link: "/terms-of-use" },
+      { label: "Privacy policy", link: "/privacy-policy" },
+      { label: "Shipping and returns", link: "/shipping-and-returns" },
+      { label: "Terms of use", link: "/terms-of-use" },
+      { label: "Terms and conditions", link: "/terms-and-conditions" },
     ],
   },
   // {

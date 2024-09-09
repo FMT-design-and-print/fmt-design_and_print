@@ -2,7 +2,7 @@
 import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";

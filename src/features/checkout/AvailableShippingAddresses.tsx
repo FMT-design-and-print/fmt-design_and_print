@@ -68,7 +68,15 @@ export function AvailableShippingAddresses({ shippingAddresses }: Props) {
         ))}
 
         <Group justify="flex-end">
-          <Button color="gray" variant="outline" size="xs">
+          <Button
+            color="gray"
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              setSelectedId(undefined);
+              close();
+            }}
+          >
             Cancel{" "}
           </Button>
           <Button

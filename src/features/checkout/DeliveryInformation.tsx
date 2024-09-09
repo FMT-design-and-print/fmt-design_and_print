@@ -21,6 +21,7 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
       address,
       region,
       saveAddress,
+      deliveryType,
     },
     update,
   } = useCheckout((state) => state);
@@ -37,7 +38,7 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
   return (
     <Card withBorder my="sm">
       <Title order={3} pt={16} c="dimmed">
-        Shipping Address
+        {deliveryType === "delivery" ? "Delivery Address" : "Contact Details"}
       </Title>
       {session && shippingAddresses && shippingAddresses?.length !== 0 && (
         <AvailableShippingAddresses shippingAddresses={shippingAddresses} />
@@ -50,19 +51,23 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
         address={address}
         town={town}
         region={region}
+        deliveryType={deliveryType}
         update={update}
       />
-      {session && (shippingAddresses?.length ?? 0) < 5 && (
-        <Checkbox
-          checked={saveAddress || false}
-          label="Save shipping address"
-          color="pink"
-          my="lg"
-          onChange={(event) =>
-            update("saveAddress", event.currentTarget.checked)
-          }
-        />
-      )}
+
+      {session &&
+        deliveryType === "delivery" &&
+        (shippingAddresses?.length ?? 0) < 5 && (
+          <Checkbox
+            checked={saveAddress || false}
+            label="Save shipping address"
+            color="pink"
+            my="lg"
+            onChange={(event) =>
+              update("saveAddress", event.currentTarget.checked)
+            }
+          />
+        )}
     </Card>
   );
 };

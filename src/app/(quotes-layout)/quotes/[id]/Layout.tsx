@@ -11,6 +11,7 @@ import { QuotePayment } from "./QuotePayment";
 import { QuoteReview } from "./QuoteReview";
 import { ReActivateQuote } from "./ReActivateQuote";
 import { RequestRevision } from "./RequestRevision";
+import Link from "next/link";
 
 interface Props {
   quote: IQuote;
@@ -61,7 +62,9 @@ export const Layout = ({ quote }: Props) => {
                 reactivationReasons={reactivationReasons || []}
               />
             )}
-            <Button size="xs">Request a New Quote</Button>
+            <Button size="xs" component={Link} href="/quote-or-invoice-request">
+              Request a New Quote
+            </Button>
           </Group>
         </Box>
       </Center>

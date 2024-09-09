@@ -10,7 +10,7 @@ import {
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useCustomRequest } from ".";
-import { ErrorsRenderer } from "./ErrorsRenderer";
+import { ErrorsRenderer } from "../../components/ErrorsRenderer";
 import { ReceivedFilesRenderer } from "./ReceivedFilesRenderer";
 import { RejectedFilesMessages } from "./RejectedFilesMessages";
 import classes from "./Styles.module.css";

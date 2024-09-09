@@ -3,7 +3,7 @@ import { useCustomReqCommonStates } from "@/hooks/useCommonStates";
 import { Text } from "@mantine/core";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";
 import { saveCustomOrderDetails } from "../save-details";

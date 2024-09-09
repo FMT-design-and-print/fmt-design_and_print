@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ArtworkSection } from "../ArtworkSection";
 import { BrandSelect } from "../BrandSelect";
 import { DesignInstructions } from "../DesignInstructions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { FlexLayout } from "@/components/FlexLayout";
 import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";

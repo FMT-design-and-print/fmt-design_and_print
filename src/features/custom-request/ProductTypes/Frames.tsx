@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ArtworkSection } from "../ArtworkSection";
 import { DesignInstructions } from "../DesignInstructions";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
-import { ErrorsRenderer } from "../ErrorsRenderer";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { isArtworkRequired } from "../required-artwork";
 import { uploadArtworkFiles } from "../upload-files";
