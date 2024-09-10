@@ -26,12 +26,12 @@ export const AddressCard = ({ address }: Props) => {
     const { error } = await supabase
       .from("shipping-addresses")
       .delete()
-      .eq("id", address.id);
+      .eq("id", address.id ?? "");
 
     setLoading(false);
 
     if (error) {
-      console.log(error);
+      console.error(error);
       return;
     }
 

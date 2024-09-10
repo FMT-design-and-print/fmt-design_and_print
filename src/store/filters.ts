@@ -6,6 +6,8 @@ type TagsFiltersStore = {
   addTag: (tag: ITag) => void;
   removeTag: (tagId: string) => void;
   setTag: (tag: ITag) => void;
+  isExpanded: boolean;
+  setIsExpanded: (value: boolean) => void;
 };
 
 export const useTagsFilters = create<TagsFiltersStore>((set) => ({
@@ -21,4 +23,6 @@ export const useTagsFilters = create<TagsFiltersStore>((set) => ({
         ? prevState.tags.filter((item) => item.id !== tag.id)
         : [...prevState.tags, tag],
     })),
+  isExpanded: true,
+  setIsExpanded: (value) => set(() => ({ isExpanded: value })),
 }));

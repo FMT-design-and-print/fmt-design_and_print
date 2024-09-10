@@ -5,6 +5,7 @@ import { RenderLinks } from "./Links";
 import classes from "./Navbar.module.css";
 import { UserButton } from "./UserButton";
 import { ILink } from "./types";
+import { useUser } from "@/hooks/useUser";
 
 interface Props {
   name?: string;
@@ -21,13 +22,21 @@ export const DesktopMenu = ({
   topLinks,
   accountLinks,
 }: Props) => {
+  const { user } = useUser();
+
+  const userName = (user?.firstName || "") + " " + (user?.lastName || "");
+
   return (
     <nav className={classes.navbar}>
       <div className={classes.section}>
         <Text px="md" fw="bold" c="pink.6" pt="md" pb="sm" bg="gray.1">
           My Account
         </Text>
-        <UserButton name={name || ""} image={image || ""} email={email || ""} />
+        <UserButton
+          name={userName.trim() ? userName : ""}
+          image={image || ""}
+          email={email || ""}
+        />
       </div>
 
       <div className={classes.section}>

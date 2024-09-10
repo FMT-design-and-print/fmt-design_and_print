@@ -1,6 +1,5 @@
 "use server";
 import {
-  authFailedMessage,
   passwordResetFailedMessage,
   passwordResetSuccessMessage,
   signUpFailedMessage,
@@ -17,6 +16,7 @@ import {
   ResetPasswordDataSchema,
   SignUpDataSchema,
 } from "../validations";
+import { UserType } from "@/types/user";
 
 type SignUpData = z.infer<typeof SignUpDataSchema>;
 type LoginData = z.infer<typeof LoginDataSchema>;
@@ -32,20 +32,21 @@ export const signIn = async (data: LoginData) => {
 
   const {
     error,
-    data: { session },
+    data: { session, user, weakPassword },
   } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error) {
-    return redirect(`/login?message=${authFailedMessage}&${errorStatus}`);
-  }
-
-  return { session };
+  return {
+    session,
+    user,
+    weakPassword,
+    error: error ? { message: error.message } : null,
+  };
 };
 
-export const signUp = async (data: SignUpData) => {
+export const signUp = async (data: SignUpData, next?: string | null) => {
   const origin = headers().get("origin");
   const email = data.email;
   const password = data.password;
@@ -59,6 +60,8 @@ export const signUp = async (data: SignUpData) => {
     .eq("email", email);
 
   if (error) {
+    console.error(error);
+    // TODO: Error logging
     return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
   }
 
@@ -67,16 +70,23 @@ export const signUp = async (data: SignUpData) => {
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        data: {
+          userType: "regular",
+        },
+        emailRedirectTo: next
+          ? `${origin}/auth/callback?next=${next}`
+          : `${origin}/auth/callback`,
       },
     });
 
     if (signUpError) {
+      console.error(signUpError);
+      // TODO: Error logging
       return redirect(`/signup?message=${signUpFailedMessage}&${errorStatus}`);
     }
 
     // add user details to database
-    const userId = newUser.user?.id;
+    const userId = newUser.user?.id || "";
     const provider = newUser.user?.app_metadata.provider;
 
     const { error: err } = await supabase
@@ -103,19 +113,6 @@ export const resetPassword = async (data: ResetData) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  // if (searchParams.code) {
-  //   const supabase = createClient();
-  //   const { error } = await supabase.auth.exchangeCodeForSession(
-  //     searchParams.code
-  //   );
-
-  //   if (error) {
-  //     return redirect(
-  //       `/reset-password?message=Unable to reset Password. Link expired!`
-  //     );
-  //   }
-  // }
-
   const { error } = await supabase.auth.updateUser({
     password,
   });
@@ -129,10 +126,15 @@ export const resetPassword = async (data: ResetData) => {
   redirect(`/login?message=${passwordResetSuccessMessage}&messageStatus=info`);
 };
 
-export const signOut = async () => {
+export const signOut = async (userType?: UserType) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
   await supabase.auth.signOut();
+
+  if (userType === "admin") {
+    redirect("/admin/login");
+  }
+
   return redirect("/");
 };

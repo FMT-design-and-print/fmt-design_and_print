@@ -20,7 +20,7 @@ export const printServiceQuery = groq`
     }[0...10]
  `;
 
-export const productTypesQuery = groq`
+export const liveProductTypesQuery = groq`
     *[_type == "productTypes" && (title match $searchText) && live == true ]{
     "id": _id,
     title,
@@ -43,4 +43,4 @@ export const printCategoriesQuery = groq`
     }
 `;
 
-export const searchQuery = `{ "printService": ${printServiceQuery}, "productTypes": ${productTypesQuery}, "printCategories": ${printCategoriesQuery}}`;
+export const searchQuery = `{ "printService": ${printServiceQuery}, "productTypes": ${liveProductTypesQuery}, "printCategories": ${printCategoriesQuery}}`;

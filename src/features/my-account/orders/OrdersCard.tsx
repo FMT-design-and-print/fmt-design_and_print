@@ -1,5 +1,8 @@
+import { OrderStatusRenderer } from "@/components/OrderStatusRenderer";
 import { IOrder } from "@/types/order";
-import { Box, Card, Group, Text, Title } from "@mantine/core";
+import { Box, Card, Group, Text } from "@mantine/core";
+import Link from "next/link";
+import { CancelRequest } from "./CancelRequest";
 import { OrderItems } from "./OrderItems";
 
 interface Props {
@@ -11,9 +14,25 @@ export const OrdersCard = ({ orders }: Props) => {
     <Box hiddenFrom="sm">
       {orders.map((order) => (
         <Card key={order.id} withBorder my="sm">
-          <Title order={4} c="dimmed" mb="sm">
-            {order.orderId}
-          </Title>
+          <Group justify="space-between" align="center" mb="sm">
+            <Text
+              title="Track this order"
+              fz="sm"
+              component={Link}
+              c="dimmed"
+              fw="bolder"
+              href={`/order-tracking/${order.orderId}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {order.orderId}
+            </Text>
+            <OrderItems
+              orderId={order.id}
+              items={order.items}
+              btnLabel="View Items"
+            />
+          </Group>
 
           <Group>
             <Group gap="5px">
@@ -49,15 +68,16 @@ export const OrdersCard = ({ orders }: Props) => {
               <Text fz="xs" c="dimmed">
                 Status:
               </Text>
-              <Text fz="xs" fw={500}>
-                {order.status}
-              </Text>
+              <Group>
+                <OrderStatusRenderer status={order.status} />
+                {order.status === "pending" && (
+                  <CancelRequest
+                    orderId={order.id}
+                    orderNumber={order.orderId}
+                  />
+                )}
+              </Group>
             </Group>
-            <OrderItems
-              orderId={order.id}
-              items={order.items}
-              btnLabel="View Items"
-            />
           </Group>
         </Card>
       ))}

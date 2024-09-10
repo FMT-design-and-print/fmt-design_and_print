@@ -1,5 +1,6 @@
 import { regionsInGhana } from "@/constants/gh-regions";
 import { IShippingAddress } from "@/types";
+import { DeliveryType } from "@/types/order";
 import { SimpleGrid, Select, Textarea, TextInput } from "@mantine/core";
 import React from "react";
 
@@ -11,6 +12,7 @@ interface Props {
   address?: string;
   town?: string;
   region?: string;
+  deliveryType?: DeliveryType;
   update: (key: keyof IShippingAddress, value: any) => void;
 }
 
@@ -22,6 +24,7 @@ export const ShippingAddress = ({
   address,
   town,
   region,
+  deliveryType,
   update,
 }: Props) => {
   return (
@@ -53,29 +56,32 @@ export const ShippingAddress = ({
         label="Email Address (Optional)"
         placeholder="qI8gM@example.com"
       />
+      {deliveryType === "delivery" && (
+        <>
+          <Select
+            value={region}
+            onChange={(value) => update("region", value || "")}
+            comboboxProps={{ withinPortal: true }}
+            data={regionsInGhana}
+            label="Region"
+            placeholder="choose region"
+          />
 
-      <Select
-        value={region}
-        onChange={(value) => update("region", value || "")}
-        comboboxProps={{ withinPortal: true }}
-        data={regionsInGhana}
-        label="Region"
-        placeholder="choose region"
-      />
+          <TextInput
+            value={town}
+            onChange={(e) => update("town", e.currentTarget.value)}
+            label="Town"
+            placeholder="town"
+          />
 
-      <TextInput
-        value={town}
-        onChange={(e) => update("town", e.currentTarget.value)}
-        label="Town"
-        placeholder="town"
-      />
-
-      <Textarea
-        value={address}
-        onChange={(e) => update("address", e.currentTarget.value)}
-        label="Street address"
-        placeholder="Soko Park, Tantra Hills, Accra"
-      />
+          <Textarea
+            value={address}
+            onChange={(e) => update("address", e.currentTarget.value)}
+            label="Street address"
+            placeholder="Soko Park, Tantra Hills, Accra"
+          />
+        </>
+      )}
     </SimpleGrid>
   );
 };

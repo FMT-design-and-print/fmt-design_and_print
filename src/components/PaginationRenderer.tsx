@@ -9,7 +9,7 @@ interface Props {
 }
 export const PaginationRenderer = ({
   itemsLength,
-  itemsPerPage = 10,
+  itemsPerPage = 20,
   onPageChange,
 }: Props) => {
   const total = Math.ceil(itemsLength / itemsPerPage);

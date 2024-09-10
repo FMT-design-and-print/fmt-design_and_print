@@ -18,13 +18,20 @@ import { Sizes } from "../Sizes";
 import { Quantity } from "../Quantity";
 import { ErrorText } from "../ErrorText";
 import { useEffect, useState } from "react";
-import { IOptionsErrors, IPrintProduct, SelectedProductOptions } from "@/types";
+import {
+  ICartItem,
+  IOptionsErrors,
+  IPrintProduct,
+  SelectedProductOptions,
+} from "@/types";
 import { AdditionalDetails } from "../AdditionalDetails";
 import { Gallery } from "@/features/product-details/Gallery";
 import { BsCartPlus } from "react-icons/bs";
 import { getProductOptionsErrors } from "@/functions";
 import { useCart } from "@/store/cart";
 import { toast } from "react-toastify";
+import { useCheckout } from "@/store/checkout";
+import { useRouter } from "next/navigation";
 
 const defaultValue = {
   productId: "",
@@ -37,22 +44,26 @@ const defaultValue = {
 
 interface Props {
   product: IPrintProduct;
+  actionType: "buy" | "cart";
 }
-export const ProductOptions = ({ product }: Props) => {
+export const ProductOptions = ({ product, actionType }: Props) => {
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedProductOptions, setSelectedProductOptions] =
     useState<SelectedProductOptions>(defaultValue);
   const [errors, setErrors] = useState<IOptionsErrors>({});
   const addItem = useCart((state) => state.addItem);
+  const { setItems } = useCheckout();
 
-  const handleAddItemToCart = () => {
+  const handleConfirm = () => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
     });
     setErrors(errors);
 
     if (Object.keys(errors).length > 0) return false;
-    addItem({
+
+    const item: ICartItem = {
       id: product.id,
       title: product.title,
       price: product.price,
@@ -61,10 +72,20 @@ export const ProductOptions = ({ product }: Props) => {
       timestamp: new Date(),
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
-      notes: selectedProductOptions.note,
-    });
+      note: selectedProductOptions.note,
+    };
+
+    if (actionType === "cart") {
+      addItem(item);
+      toast.success("Item added to cart");
+    }
+
+    if (actionType === "buy") {
+      setItems([item]);
+      router.push("/checkout");
+    }
+
     close();
-    toast.success("Item added to cart");
   };
 
   useEffect(() => {
@@ -74,6 +95,7 @@ export const ProductOptions = ({ product }: Props) => {
       image: product.image,
       size: "",
       quantity: 1,
+      note: "Test note",
     });
   }, [product]);
 
@@ -117,6 +139,7 @@ export const ProductOptions = ({ product }: Props) => {
             )}
 
             <Colors
+              mainImage={product.image}
               mainColor={product.color}
               colors={product.colors || []}
               selectedColor={selectedProductOptions.color}
@@ -168,24 +191,31 @@ export const ProductOptions = ({ product }: Props) => {
 
             <Group justify="flex-end" my={16}>
               <Button
-                onClick={handleAddItemToCart}
+                onClick={handleConfirm}
                 className="btn"
-                leftSection={<BsCartPlus />}
+                leftSection={actionType === "cart" ? <BsCartPlus /> : null}
               >
-                Confirm
+                {actionType === "cart" ? "Add to cart" : "Buy now"}
               </Button>
             </Group>
           </Grid.Col>
         </Grid>
       </Drawer>
 
-      <CartBtn
-        handler={open}
-        productId={product.id}
-        showLabel={false}
-        disableRemove
-        size="xs"
-      />
+      {actionType === "cart" && (
+        <CartBtn
+          handler={open}
+          productId={product.id}
+          showLabel={false}
+          disableRemove
+          size="xs"
+        />
+      )}
+      {actionType === "buy" && (
+        <Button onClick={open} className="btn" size="xs" title="Buy now">
+          Buy
+        </Button>
+      )}
     </>
   );
 };

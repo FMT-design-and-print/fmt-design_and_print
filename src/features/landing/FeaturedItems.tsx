@@ -2,9 +2,9 @@
 import { Carousel } from "@mantine/carousel";
 import { Box, Button, Group, Text, Title, rem } from "@mantine/core";
 import classes from "./Style.module.css";
-import { FeaturedItemCard } from "./FeaturedItemCard";
 import { FeaturedItem } from "@/types";
 import Link from "next/link";
+import { FeaturedItemCard } from "@/components/FeaturedItemCard";
 
 interface Props {
   title: string;

@@ -1,11 +1,11 @@
 "use client";
-import { Box, Flex, Tabs } from "@mantine/core";
+import { FeatureFlagKeys, featureFlags } from "@/constants/feature-flags";
+import { GroupedPrintProductTypes } from "@/types";
+import { Container, Flex, Tabs } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DesignServices } from "./DesignServices";
 import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
-import { GroupedPrintProductTypes } from "@/types";
-import { FeatureFlagKeys, featureFlags } from "@/constants/feature-flags";
 
 const validServiceTypes = ["print", "design"];
 
@@ -18,7 +18,7 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
   const { push } = useRouter();
 
   return (
-    <Box w={{ base: "100%", sm: "90%", lg: "80%" }} mx="auto">
+    <Container size="xl">
       <Flex
         p="xl"
         justify={{ base: "center", xs: "flex-start", lg: "center" }}
@@ -88,6 +88,6 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
           </Tabs.Panel>
         )}
       </Tabs>
-    </Box>
+    </Container>
   );
 }

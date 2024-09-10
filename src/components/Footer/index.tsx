@@ -1,12 +1,9 @@
 "use client";
-import { Text, Container, ActionIcon, Group, rem } from "@mantine/core";
-import {
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconBrandInstagram,
-} from "@tabler/icons-react";
-import classes from "./Footer.module.css";
+import { Container, Group, Text } from "@mantine/core";
 import { FMTLogo } from "../FMTLogo";
+import { SocialMediaLinks } from "../SocialMediaLinks";
+import classes from "./Footer.module.css";
+import Link from "next/link";
 
 const thisYear = new Date().getFullYear();
 
@@ -14,42 +11,45 @@ const data = [
   {
     title: "About Company",
     links: [
-      { label: "Contact Us", link: "#" },
-      { label: "About Us", link: "#" },
-      { label: "Privacy Policy", link: "#" },
-      { label: "Shipping and Returns", link: "#" },
-      { label: "Terms of Use", link: "#" },
-      { label: "Mission Statement", link: "#" },
+      { label: "About Us", link: "/about-us" },
+      { label: "Contact Us", link: "/contact-us" },
     ],
   },
   {
     title: "Customer Service",
     links: [
-      { label: "All Services", link: "#" },
-      { label: "FAQ", link: "#" },
-      { label: "Support", link: "#" },
-      { label: "Artwork Help", link: "#" },
+      { label: "All Products", link: "/services" },
+      { label: "FAQ", link: "/faq" },
+      { label: "Artwork Help", link: "/artwork-help" },
     ],
   },
   {
-    title: "Tools & Resources",
+    title: "Policies",
     links: [
-      { label: "Price Calculator", link: "#" },
-      { label: "Online Editor", link: "#" },
-      { label: "Color Picker", link: "#" },
+      { label: "Privacy policy", link: "/privacy-policy" },
+      { label: "Shipping and returns", link: "/shipping-and-returns" },
+      { label: "Terms of use", link: "/terms-of-use" },
+      { label: "Terms and conditions", link: "/terms-and-conditions" },
     ],
   },
+  // {
+  //   title: "Tools & Resources",
+  //   links: [
+  //     { label: "Price Calculator", link: "#" },
+  //     { label: "Online Editor", link: "#" },
+  //     { label: "Color Picker", link: "#" },
+  //   ],
+  // },
 ];
 
 export function Footer() {
   const groups = data.map((group) => {
     const links = group.links.map((link, index) => (
-      <Text<"a">
+      <Text
         key={index}
         className={classes.link}
-        component="a"
+        component={Link}
         href={link.link}
-        onClick={(event) => event.preventDefault()}
       >
         {link.label}
       </Text>
@@ -79,30 +79,8 @@ export function Footer() {
           © {thisYear} FMT Design & Print. All rights reserved.
         </Text>
 
-        <Group
-          gap={0}
-          className={classes.social}
-          justify="flex-end"
-          wrap="nowrap"
-        >
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandTwitter
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandYoutube
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandInstagram
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
+        <Group gap={0} justify="flex-end" wrap="nowrap">
+          <SocialMediaLinks />
         </Group>
       </Container>
     </footer>

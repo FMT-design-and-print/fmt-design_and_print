@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 import classes from "./Style.module.css";
 
 interface Props {
+  mainImage: string;
   mainColor?: ProductColor;
   selectedColor?: ProductColor;
   setSelectedProductOptions: Dispatch<SetStateAction<SelectedProductOptions>>;
@@ -16,19 +17,20 @@ interface Props {
     | null;
 }
 export const Colors = ({
+  mainImage,
   mainColor,
   selectedColor,
   colors = [],
   setSelectedProductOptions,
 }: Props) => {
-  const handleColorSelect = (color: ProductColor) => {
-    const colorId = color.id;
+  const handleColorSelect = (color: ProductColor, image: string) => {
+    // const colorId = color.id;
 
     if (colors != null && colors.length !== 0) {
       setSelectedProductOptions((prevState) => ({
         ...prevState,
         color,
-        image: colors.find((color) => color.color.id === colorId)?.image || "",
+        image,
       }));
     }
   };
@@ -47,7 +49,7 @@ export const Colors = ({
               size="sm"
               src={mainColor.image}
               variant="outline"
-              onClick={() => handleColorSelect(mainColor)}
+              onClick={() => handleColorSelect(mainColor, mainImage)}
             />
             {selectedColor?.id === mainColor.id && (
               <CheckIcon className={classes["check-icon"]} />
@@ -64,7 +66,7 @@ export const Colors = ({
               size="sm"
               src={color.color.image}
               variant="outline"
-              onClick={() => handleColorSelect(color.color)}
+              onClick={() => handleColorSelect(color.color, color.image)}
             />
             {selectedColor?.id === color.color.id && (
               <CheckIcon className={classes["check-icon"]} />

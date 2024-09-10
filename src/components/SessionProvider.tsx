@@ -12,13 +12,13 @@ export const SessionProvider = () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
       setSession(session);
       setUser(session?.user);
     };
 
     readSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supabase.auth]);
+  }, [setSession, setUser, supabase]);
 
   return <></>;
 };

@@ -10,6 +10,7 @@ import {
   Flex,
   ScrollArea,
   Space,
+  Stack,
   Text,
   rem,
 } from "@mantine/core";
@@ -20,6 +21,8 @@ import { FMTLogo } from "../FMTLogo";
 import { CategoryCard } from "./CategoryCard";
 import { TopBar } from "./TopBar";
 import { featureFlags } from "@/constants/feature-flags";
+import classes from "./Style.module.css";
+import { IconGift, IconPrinter, IconTag } from "@tabler/icons-react";
 
 export const MobileNav = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -50,6 +53,10 @@ export const MobileNav = () => {
       >
         <TopBar />
 
+        <Box py="lg" mt="sm" onClick={closeDrawer}>
+          <AuthButtons grow />
+        </Box>
+
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
           <Divider my="sm" />
           <Flex direction="column" h="100%" gap={16} px="md">
@@ -57,41 +64,77 @@ export const MobileNav = () => {
               component={Link}
               href="/services"
               className="ml-6 text-primary-300"
+              onClick={closeDrawer}
             >
               All Services
             </Text>
+            <Stack pl="lg">
+              <Box onClick={closeDrawer} py="4" className={classes.link}>
+                <CategoryCard
+                  title="Request Custom Print"
+                  icon={<IconPrinter />}
+                  tagline="Submit your own artworks to be printed on products"
+                  link={`/custom-request`}
+                />
+              </Box>
+              <Box onClick={closeDrawer} py="4" className={classes.link}>
+                <CategoryCard
+                  title="Plain Items "
+                  icon={<IconTag />}
+                  tagline="Buy plain items and souvenirs"
+                  link={`/plain-items`}
+                />
+              </Box>
+              <Box onClick={closeDrawer} py="4" className={classes.link}>
+                <CategoryCard
+                  title="Gifts and Packages"
+                  icon={<IconGift />}
+                  tagline="Check out our gifts and promo packages"
+                  link={`/gifts-and-packages`}
+                />
+              </Box>
+            </Stack>
+
             <Accordion defaultValue="printing-services">
               <Accordion.Item value="printing-services">
                 <Accordion.Control>Printing Services</Accordion.Control>
                 <Accordion.Panel>
                   <Flex justify="flex-end">
                     <Anchor
+                      onClick={closeDrawer}
                       component={Link}
                       href="/services?st=print"
                       c="pink"
                       fz="xs"
                     >
-                      View all Printing Services
+                      View all Printing Products
                     </Anchor>
                   </Flex>
                   <Space />
 
                   {categories &&
                     categories.map((item) => (
-                      <CategoryCard
+                      <Box
                         key={item.id}
-                        title={item.title}
-                        icon={item.icon}
-                        tagline={item.tagline}
-                        link={`/services/print/categories/${item.slug}`}
-                      />
+                        onClick={closeDrawer}
+                        my="sm"
+                        py="4"
+                        className={classes.link}
+                      >
+                        <CategoryCard
+                          title={item.title}
+                          icon={item.icon}
+                          tagline={item.tagline}
+                          link={`/services/print/categories/${item.slug}`}
+                        />
+                      </Box>
                     ))}
                 </Accordion.Panel>
               </Accordion.Item>
 
               {featureFlags.design && (
                 <Accordion.Item value="design-services">
-                  <Accordion.Control>Design Services</Accordion.Control>
+                  <Accordion.Control>Request Design Service</Accordion.Control>
                   <Accordion.Panel>
                     <Flex justify="flex-end">
                       <Anchor
@@ -109,10 +152,6 @@ export const MobileNav = () => {
             </Accordion>
           </Flex>
           {/* <Divider my="sm" /> */}
-
-          <Box px="md">
-            <AuthButtons />
-          </Box>
         </ScrollArea>
       </Drawer>
     </>

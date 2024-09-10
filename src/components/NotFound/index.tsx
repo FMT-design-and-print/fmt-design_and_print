@@ -1,6 +1,7 @@
 "use client";
 import { Container, Title, Text, Button, Group } from "@mantine/core";
 import classes from "./NotFound.module.css";
+import Link from "next/link";
 
 export function NotFound() {
   return (
@@ -29,7 +30,7 @@ export function NotFound() {
             this is an error contact support.
           </Text>
           <Group justify="center">
-            <Button className="btn" size="md">
+            <Button component={Link} href={"/"} className="btn" size="md">
               Take me back to home page
             </Button>
           </Group>

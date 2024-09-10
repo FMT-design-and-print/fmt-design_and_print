@@ -1,20 +1,24 @@
 "use client";
+import { useTagsFilters } from "@/store/filters";
 import { IPrintProduct } from "@/types";
 import { Box, Grid } from "@mantine/core";
 import { PrintProducts } from "./PrintProducts";
-import { TagsFilters } from "./TagsFilters";
+import { DesktopFilters } from "./TagsFilters/DesktopFilters";
 
 interface Props {
   products: IPrintProduct[];
 }
 
 export const ProductType = ({ products }: Props) => {
+  const { isExpanded } = useTagsFilters();
   return (
     <Box px="xl">
       <Grid>
-        <Grid.Col span={{ base: 4, lg: 3 }} visibleFrom="md">
-          <TagsFilters />
-        </Grid.Col>
+        {isExpanded && (
+          <Grid.Col span={{ base: 4, lg: 3 }} visibleFrom="md">
+            <DesktopFilters />
+          </Grid.Col>
+        )}
         <Grid.Col span="auto">
           <PrintProducts printProducts={products} />
         </Grid.Col>

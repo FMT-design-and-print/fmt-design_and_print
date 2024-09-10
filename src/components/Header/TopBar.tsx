@@ -31,22 +31,17 @@ export const TopBar = () => {
         justify={{ base: "center", sm: "flex-start" }}
         wrap="wrap"
       >
-        <Flex
-          component={Link}
-          href="tel:+233 30 367285367"
-          align="center"
-          gap={4}
-        >
+        <Flex component={Link} href="tel:+233 537656594" align="center" gap={4}>
           <Text c="gray.6">
             <MdCall />
           </Text>
           <Text c="gray.6" size="sm">
-            +233 30 367285367
+            +233 537656594
           </Text>
         </Flex>
         <Flex
           component={Link}
-          href="mailto:customer-service@fmt.com"
+          href="mailto:support@fmtdesignprint.com"
           align="center"
           gap={4}
         >
@@ -54,7 +49,7 @@ export const TopBar = () => {
             <MdEmail />
           </Text>
           <Text c="gray.6" size="sm">
-            customer-service@fmt.com
+            support@fmtdesignprint.com
           </Text>
         </Flex>
       </Flex>

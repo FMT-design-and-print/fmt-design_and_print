@@ -55,6 +55,13 @@ const productTypes: SchemaTypeDefinition = {
       type: "boolean",
       initialValue: false,
     },
+    {
+      name: "customRequestAvailable",
+      title: "Custom Request Available",
+      description: "This Item can be requested by users",
+      type: "boolean",
+      initialValue: true,
+    },
   ],
 };
 

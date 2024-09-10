@@ -1,6 +1,16 @@
+import { ReactNode } from "react";
+import { Permission } from "./roles";
+import { GHRegion } from "./order";
+
 export type MessageStatus = "error" | "success" | "info";
 export type CouponType = "percentage" | "fixed" | "free-shipping";
 export type CouponStatus = "expired" | "active" | "disabled";
+export type ArtworkOption =
+  | "own-artwork"
+  | "fmt-to-provide"
+  | "no-artwork-needed";
+
+export type QuoteReceptionMedium = "email" | "whatsapp" | "sms";
 
 export interface ICategory {
   id: string;
@@ -75,6 +85,8 @@ export interface IPrintProduct extends FeaturedItem {
   tags: string[];
   gender?: string;
   isForKids?: boolean;
+  relatedProducts: FeaturedItem[];
+  otherProducts: FeaturedItem[];
 }
 
 export interface ICartItem {
@@ -86,7 +98,8 @@ export interface ICartItem {
   timestamp: Date;
   color?: ProductColor;
   size?: string;
-  notes?: string;
+  note?: string;
+  productNumber?: string;
 }
 
 export type GroupedPrintProductTypes = Record<
@@ -138,7 +151,7 @@ export interface IShippingAddress {
   phone2?: string;
   country: string;
   address: string;
-  region: string;
+  region: GHRegion | "";
   town?: string;
 }
 
@@ -147,6 +160,36 @@ export interface CheckoutDetails extends IShippingAddress {
   paymentType: "momo" | "card" | "cod" | "";
   discount?: number;
   discountCode?: string;
-  shippingFee?: number;
+  deliveryFee?: number;
   items: ICartItem[];
+  note?: string;
+  saveAddress?: boolean;
+  deliveryType: "pickup" | "delivery";
+}
+
+export interface IFavoriteItem {
+  id: string;
+  title: string;
+  price: number;
+  image: string;
+}
+
+export type IAdminNavItems =
+  | {
+      value: string;
+      label: string;
+      icon: ReactNode;
+      isVisible: boolean;
+      component: ReactNode;
+      requiredPermission?: Permission;
+    }
+  | "divider";
+
+export interface IMessage {
+  id: string;
+  created_at: Date;
+  subject: string;
+  content: string;
+  status: "read" | "unread";
+  metadata: object;
 }

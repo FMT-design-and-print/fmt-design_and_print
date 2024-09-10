@@ -1,0 +1,4 @@
+.rowSelected {
+  background-color: var(--primary-50);
+  /* background-color: var(--mantine-color-gray-2); */
+}

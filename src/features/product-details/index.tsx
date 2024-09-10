@@ -2,7 +2,12 @@
 import { CartBtn } from "@/components/CartBtn";
 import { getProductOptionsErrors } from "@/functions";
 import { useCart } from "@/store/cart";
-import { IOptionsErrors, IPrintProduct, SelectedProductOptions } from "@/types";
+import {
+  ICartItem,
+  IOptionsErrors,
+  IPrintProduct,
+  SelectedProductOptions,
+} from "@/types";
 import {
   AspectRatio,
   Badge,
@@ -28,6 +33,9 @@ import { Sizes } from "@/components/Sizes";
 import { AdditionalDetails } from "@/components/AdditionalDetails";
 import { Quantity } from "@/components/Quantity";
 import { ErrorText } from "@/components/ErrorText";
+import { useCheckout } from "@/store/checkout";
+import { useRouter } from "next/navigation";
+import { OtherItems } from "./OtherItems";
 
 const defaultValue = {
   productId: "",
@@ -42,7 +50,9 @@ interface Props {
   product: IPrintProduct;
 }
 export const ProductDetails = ({ product }: Props) => {
+  const router = useRouter();
   const addItem = useCart((state) => state.addItem);
+  const { setItems } = useCheckout();
   const [errors, setErrors] = useState<IOptionsErrors>({});
   const [selectedProductOptions, setSelectedProductOptions] =
     useLocalStorage<SelectedProductOptions>({
@@ -50,24 +60,34 @@ export const ProductDetails = ({ product }: Props) => {
       defaultValue,
     });
 
-  const handleAddItemToCart = () => {
+  const handleBuyOrAddItemToCart = (actionType: "buy" | "cart") => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
     });
     setErrors(errors);
 
     if (Object.keys(errors).length > 0) return false;
-    addItem({
+
+    const item: ICartItem = {
       id: product.id,
       title: product.title,
       price: product.price,
+      productNumber: product.productNumber,
       quantity: selectedProductOptions.quantity,
       image: selectedProductOptions.image,
       timestamp: new Date(),
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
-      notes: selectedProductOptions.note,
-    });
+      note: selectedProductOptions.note,
+    };
+
+    if (actionType === "buy") {
+      setItems([item]);
+      router.push("/checkout");
+      return;
+    }
+
+    addItem(item);
     toast.success("Item added to cart");
   };
 
@@ -79,6 +99,7 @@ export const ProductDetails = ({ product }: Props) => {
         image: product.image,
         size: "",
         quantity: 1,
+        note: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,6 +139,7 @@ export const ProductDetails = ({ product }: Props) => {
           )}
           <ItemRating />
           <Colors
+            mainImage={product.image}
             mainColor={product.color}
             colors={product.colors || []}
             selectedColor={selectedProductOptions.color}
@@ -167,22 +189,27 @@ export const ProductDetails = ({ product }: Props) => {
 
           <Group my="xl">
             <CartBtn
-              handler={handleAddItemToCart}
+              handler={() => handleBuyOrAddItemToCart("cart")}
               productId={product.id}
               miw={{ base: "100%", xs: 150 }}
             />
-            <Button size="md" miw={{ base: "100%", xs: 150 }} className="btn">
+            <Button
+              onClick={() => handleBuyOrAddItemToCart("buy")}
+              size="md"
+              miw={{ base: "100%", xs: 150 }}
+              className="btn"
+            >
               Buy now
             </Button>
           </Group>
           <Text>
             Click{" "}
-            <Link href="/custom-request">
+            <Link href={`/custom-request/${product.type.slug}`}>
               <Text component="span" c="pink">
                 here
               </Text>
             </Link>{" "}
-            to request for custom print service.
+            to make custom print request.
           </Text>
         </Grid.Col>
       </Grid>
@@ -192,7 +219,16 @@ export const ProductDetails = ({ product }: Props) => {
         details={product.details}
       />
 
-      <Box my="xl">
+      <OtherItems
+        label="Related Items"
+        items={product.relatedProducts.filter((item) => item.id !== product.id)}
+      />
+      <OtherItems
+        label="You may also like"
+        items={product.otherProducts.filter((item) => item.id !== product.id)}
+      />
+
+      <Box m="xl">
         <Text fw="bold" my="sm">
           Related search terms
         </Text>

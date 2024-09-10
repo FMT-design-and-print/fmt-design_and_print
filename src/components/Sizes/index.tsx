@@ -1,6 +1,6 @@
 import { SelectedProductOptions } from "@/types";
 import { Box, Card, Center, Group, Text } from "@mantine/core";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import classes from "./Style.module.css";
 
 interface Props {
@@ -17,6 +17,13 @@ export const Sizes = ({
     setSelectedProductOptions((prevState) => ({ ...prevState, size }));
   };
 
+  useEffect(() => {
+    if (sizes?.length === 1) {
+      handleSizeSelect(sizes[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sizes?.length]);
+
   if (sizes != null && sizes.length !== 0) {
     return (
       <Box mb="sm">
@@ -32,9 +39,10 @@ export const Sizes = ({
               p={0}
               withBorder
               style={{
+                borderWidth: selectedSize === size ? "2px" : "1px",
                 borderColor:
                   selectedSize === size
-                    ? "pink"
+                    ? "#f76b92"
                     : "var(--mantine-color-gray-4)",
               }}
               className={classes["size-card"]}

@@ -3,9 +3,9 @@ import React from "react";
 
 export const ProductsLoader = () => {
   return (
-    <Card w={300}>
+    <Card w={250}>
       <Center>
-        <Skeleton height={250} w="100%" mx="auto" mb="sm" />
+        <Skeleton height={200} w="100%" mx="auto" mb="sm" />
       </Center>
 
       <Skeleton height={8} radius="xl" />

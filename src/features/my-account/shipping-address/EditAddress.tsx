@@ -33,12 +33,12 @@ export const EditAddress = ({ address }: Props) => {
       const { error } = await supabase
         .from("shipping-addresses")
         .update(changedDetails)
-        .eq("id", address.id);
+        .eq("id", address.id as string);
 
       setLoading(false);
 
       if (error) {
-        console.log(error);
+        console.error(error);
         return;
       }
 

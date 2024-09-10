@@ -79,13 +79,13 @@
 
   .afterFooter {
     flex-direction: column;
+    text-align: center;
+    gap: 1rem;
   }
 
   .groups {
-    display: none;
-  }
-
-  .social {
-    margin-top: var(--mantine-spacing-xs);
+    justify-content: center;
+    margin-top: 3rem;
+    flex-direction: column;
   }
 }

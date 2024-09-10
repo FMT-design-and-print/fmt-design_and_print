@@ -127,6 +127,41 @@ export const singleProductQuery = groq`
             "id": _id,
             "slug": slug.current,
             title,
-        }
+        },
+        "relatedProducts": *[_type == "printService" && references(^.type->_id) ] { 
+            "id": _id, 
+            title, 
+            price, 
+            "slug": slug.current, 
+            "image": image.asset->url  
+        }[0..5],
+        "otherProducts": *[_type == "printService" && !references(^.type->_id)]{ 
+            "id": _id, 
+            title, 
+            price, 
+            "slug": slug.current, 
+            "image": image.asset->url 
+        }[0...10]
     }
+`;
+
+export const relatedProductsQuery = groq`
+    *[_type == "printService" && type->slug.current == $slug ] {
+        "id": _id,
+        title,
+        "slug": slug.current,
+        "image": image.asset->url,
+        price,
+        description,
+        category->{
+            "id": _id,
+            "slug": slug.current,
+            title,
+        },
+        type->{
+            "id": _id,
+            "slug": slug.current,
+            title,
+        }
+    }[0...5]
 `;

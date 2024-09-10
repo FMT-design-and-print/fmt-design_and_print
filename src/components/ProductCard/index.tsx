@@ -1,18 +1,11 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Card,
-  Center,
-  Group,
-  Text,
-  rem,
-} from "@mantine/core";
+import { IPrintProduct } from "@/types";
+import { Box, Card, Center, Group, Text } from "@mantine/core";
 import Link from "next/link";
-import { HiOutlineHeart } from "react-icons/hi";
+import { FavoriteBtn } from "./FavoriteBtn";
 import classes from "./ProductCard.module.css";
 import { ProductOptions } from "./ProductOptions";
-import { IPrintProduct } from "@/types";
+import Image from "next/image";
+import { shimmer, toBase64 } from "@/functions/shimmer";
 
 interface Props {
   product: IPrintProduct;
@@ -20,29 +13,31 @@ interface Props {
 }
 export function ProductCard({ product, link = "" }: Props) {
   return (
-    <Card withBorder radius="md" className={classes.card} w={300}>
+    <Card withBorder radius="md" className={classes.card} w="250px" mb="sm">
       <Card.Section>
         <Link href={link}>
-          <Box
+          <Image
+            src={product.image}
+            alt={product.title}
+            width={250}
+            height={200}
+            placeholder={`data:image/svg+xml;base64,${toBase64(
+              shimmer(250, 200)
+            )}`}
             style={{
-              backgroundImage: `url(${product.image})`,
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              width: "100%",
-              height: "250px",
+              maxWidth: "100%",
+              height: "auto",
             }}
           />
         </Link>
       </Card.Section>
 
-      <ActionIcon
-        className={classes.favIcon}
-        size={36}
-        variant="transparent"
-        aria-label="Add to favorites"
-      >
-        <HiOutlineHeart style={{ width: rem(24), height: rem(24) }} />
-      </ActionIcon>
+      <FavoriteBtn
+        productId={product.id}
+        title={product.title}
+        image={product.image}
+        price={product.price}
+      />
 
       <Text component={Link} href={link} mt="md" mb="sm" lineClamp={1}>
         {product.title}
@@ -53,16 +48,8 @@ export function ProductCard({ product, link = "" }: Props) {
           <Text fw="bold">GHS {product.price}</Text>
         </Box>
         <Center>
-          <ProductOptions product={product} />
-          <Button
-            component={Link}
-            href="/checkout"
-            className="btn"
-            size="xs"
-            title="Buy now"
-          >
-            Buy
-          </Button>
+          <ProductOptions product={product} actionType="cart" />
+          <ProductOptions product={product} actionType="buy" />
         </Center>
       </Group>
     </Card>

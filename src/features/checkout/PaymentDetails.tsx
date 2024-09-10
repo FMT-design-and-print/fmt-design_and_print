@@ -1,69 +1,28 @@
-import { Card, Title, Divider, Stack, Group, Text } from "@mantine/core";
-import React, { useState } from "react";
-import { DiscountForm } from "./DiscountForm";
-import { PaymentOptions } from "./PaymentOptions";
+import { PaymentDetailsCard } from "@/components/PaymentDetails/PaymentDetailsCard";
 import { calculateTotalPrice } from "@/functions";
 import { useCheckout } from "@/store/checkout";
-import { PayButton } from "./PayButton";
+import { Card } from "@mantine/core";
 
 export const PaymentDetails = () => {
-  const {
-    details: { items },
-  } = useCheckout((state) => state);
-  const [discount] = useState(0);
-  const [shippingFee] = useState(0);
+  const { details, update } = useCheckout((state) => state);
 
-  const subTotal = calculateTotalPrice(items);
-  const total = subTotal + shippingFee - discount;
+  const subTotal = calculateTotalPrice(details.items);
 
   return (
-    <Card withBorder px="xl" style={{ backgroundColor: "var(--primary-400)" }}>
-      <Title order={3} py={16} c="white">
-        Payment Details
-      </Title>
-      <Divider label="Do you have coupon code?" color="white" my={16} />
-      <DiscountForm />
-      <Divider my={16} />
-
-      <PaymentOptions />
-      <Divider my={16} />
-      <Stack>
-        <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
-            Sub Total
-          </Text>
-          <Text fz="sm" fw={600} c="white">
-            GHS {subTotal.toFixed(1)}
-          </Text>
-        </Group>
-        <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
-            Discount
-          </Text>
-          <Text fz="sm" fw={600} c="white">
-            -GHS {discount.toFixed(1)}
-          </Text>
-        </Group>
-        <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
-            Shipping
-          </Text>
-          <Text fz="sm" fw={600} c="white">
-            +GHS {shippingFee.toFixed(1)}
-          </Text>
-        </Group>
-
-        <Divider my={16} />
-        <Group justify="space-between">
-          <Text fz="sm" c="gray.1">
-            TOTAL
-          </Text>
-          <Text fz="sm" fw={600} c="white">
-            GHS {total.toFixed(1)}
-          </Text>
-        </Group>
-        <PayButton total={total} />
-      </Stack>
-    </Card>
+    <>
+      <Card withBorder my="md" bg="gray.1">
+        <PaymentDetailsCard
+          subTotal={subTotal}
+          deliveryFee={details.deliveryFee || 0}
+          note={details.note || ""}
+          isLoading={false}
+          discount={details.discount || 0}
+          setNote={(value) => update("note", value)}
+          deliveryType={details.deliveryType}
+          setDeliveryType={(value) => update("deliveryType", value)}
+          setDiscount={(value) => update("discount", value)}
+        />
+      </Card>
+    </>
   );
 };

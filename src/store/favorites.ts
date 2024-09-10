@@ -1,10 +1,10 @@
-import { IPrintProduct } from "@/types";
+import { IFavoriteItem } from "@/types";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 type FavoritesStore = {
-  items: IPrintProduct[];
-  addItem: (item: IPrintProduct) => void;
+  items: IFavoriteItem[];
+  addItem: (item: IFavoriteItem) => void;
   removeItem: (id: string) => void;
   clearFavorites: () => void;
 };

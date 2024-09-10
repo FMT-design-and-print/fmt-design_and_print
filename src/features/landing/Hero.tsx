@@ -1,35 +1,12 @@
 "use client";
-import { Button, Card, Grid, Group, Text, em } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
-import Image from "next/image";
-import { FaLongArrowAltRight } from "react-icons/fa";
+import { Avatar, Card, Divider, Grid, Group, Text, em } from "@mantine/core";
 import { CarouselCard } from "./CarouselCard";
 import { PrintCategories } from "./PrintCategories";
+import Image from "next/image";
+import { useMediaQuery } from "@mantine/hooks";
+import Link from "next/link";
 import { featureFlags } from "@/constants/feature-flags";
-
-const designItems = [
-  {
-    title: "Flyer Designs",
-    image: "/flyer.png",
-  },
-
-  {
-    title: "Logo Designs",
-    image: "/logo_d.png",
-  },
-  {
-    title: "Label Designs",
-    image: "/label.png",
-  },
-  {
-    title: "Brochures",
-    image: "/brochure.png",
-  },
-  {
-    title: "3D Designs",
-    image: "/3d-modeling.png",
-  },
-];
+import { IconPrinter, IconReceipt2 } from "@tabler/icons-react";
 
 export const Hero = () => {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -44,30 +21,58 @@ export const Hero = () => {
       <Grid.Col span="auto">
         <CarouselCard />
       </Grid.Col>
-      {featureFlags.design && (
-        <Grid.Col span={3} visibleFrom="md">
-          <Card withBorder h="100%">
-            {designItems.map((item, i) => (
-              <Group key={item.title + i} py="md" wrap="nowrap">
-                <Image src={item.image} alt="" width={25} height={25} />
-                <Text
-                  lineClamp={1}
-                  c="gray.7"
-                  size={isMobile ? "sm" : "md"}
-                  title={item.title}
-                >
-                  {item.title}
+
+      <Grid.Col span={3} visibleFrom="md">
+        <Card withBorder h="100%">
+          <Link href="/custom-request">
+            <Group py="md" wrap="nowrap">
+              <Avatar alt="" size={25}>
+                <IconPrinter />
+              </Avatar>
+              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                Request Custom Print
+              </Text>
+            </Group>
+          </Link>
+
+          <Link href="/quote-or-invoice-request">
+            <Group py="md" wrap="nowrap">
+              <Avatar alt="" size={25}>
+                <IconReceipt2 />
+              </Avatar>
+              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                Request Quote/Invoice
+              </Text>
+            </Group>
+          </Link>
+
+          {featureFlags.gifts && (
+            <>
+              <Divider />
+
+              <Link href="">
+                <Group py="md" wrap="nowrap">
+                  <Image src="" alt="" width={25} height={25} />
+                  <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                    Gift and Packages
+                  </Text>
+                </Group>
+              </Link>
+            </>
+          )}
+
+          {featureFlags.plainItems && (
+            <Link href="">
+              <Group py="md" wrap="nowrap">
+                <Image src="" alt="" width={25} height={25} />
+                <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                  Buy Plain Items
                 </Text>
               </Group>
-            ))}
-            <Group py={8} grow>
-              <Button className="btn">
-                View More <FaLongArrowAltRight style={{ margin: "0 10px" }} />
-              </Button>
-            </Group>
-          </Card>
-        </Grid.Col>
-      )}
+            </Link>
+          )}
+        </Card>
+      </Grid.Col>
     </Grid>
   );
 };

@@ -1,18 +1,9 @@
 "use client";
 import { useCategories } from "@/hooks/useCategories";
-import { Center, Loader } from "@mantine/core";
 import { ServicesDropDown } from "./ServicesDropDown";
 
 export const PrintingServicesDropDown = () => {
-  const { isLoading, categories } = useCategories();
-
-  if (isLoading) {
-    return (
-      <Center>
-        <Loader size="xs" color="pink" />
-      </Center>
-    );
-  }
+  const { categories } = useCategories();
 
   return (
     <ServicesDropDown
