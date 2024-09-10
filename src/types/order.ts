@@ -43,6 +43,6 @@ export interface IOrder extends CommonOrderDetails {
 }
 
 export interface ICustomOrder extends CommonOrderDetails {
-  itemType: string;
+  itemTypes: string[];
   orderDetails: object;
 }

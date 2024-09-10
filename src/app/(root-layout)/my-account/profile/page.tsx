@@ -47,6 +47,7 @@ const MyAccountProfilePage = async () => {
               id: session.user.id,
               email: session.user.email,
               ...data[0],
+              dateOfBirth: new Date(data[0].dateOfBirth ?? ""),
             }}
             isUserSaved={data?.length !== 0}
           />

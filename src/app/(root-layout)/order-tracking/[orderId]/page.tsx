@@ -74,7 +74,7 @@ const OrderIdPage = async ({ params }: Props) => {
     return;
   }
 
-  const trackedOrders: IOrder[] = [...orders, ...customOrders] as IOrder[];
+  const trackedOrders: IOrder[] = [...orders, ...customOrders] as any[];
 
   return (
     <>

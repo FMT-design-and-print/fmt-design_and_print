@@ -49,17 +49,21 @@ export const ProfileForm = ({ user, isUserSaved }: Props) => {
 
       if (isUserSaved) {
         setLoading(true);
-        await supabase.from("users").update(changedDetails).eq("id", user.id);
+        await supabase
+          .from("users")
+          .update(changedDetails as any)
+          .eq("id", user.id);
 
         setLoading(false);
       } else {
         const { data } = await supabase
           .from("users")
-          .insert([userDetails])
+          .insert([userDetails as any])
           .select(
             "firstName, lastName, profileImage, phone, country, region, gender, dateOfBirth"
           )
-          .limit(1);
+          .limit(1)
+          .returns<IUserDetails[]>();
         setUserDetails((prevData) => ({ ...prevData, ...data?.[0] }));
       }
 

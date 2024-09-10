@@ -3,7 +3,7 @@ import { Table } from "@mantine/core";
 import { TableRow } from "./TableRow";
 
 interface Props {
-  requests: ICustomOrder[];
+  requests: Partial<ICustomOrder[]>;
 }
 
 export const RequestsTable = ({ requests }: Props) => {
@@ -29,9 +29,9 @@ export const RequestsTable = ({ requests }: Props) => {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {requests.map((order) => (
-              <TableRow key={order.id} order={order} />
-            ))}
+            {requests.map(
+              (order) => order && <TableRow key={order.id} order={order} />
+            )}
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>

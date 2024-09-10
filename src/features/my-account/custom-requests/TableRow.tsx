@@ -31,7 +31,7 @@ export const TableRow = ({ order }: Props) => {
       </Table.Td>
 
       <Table.Td>
-        <Text size="sm">{formatString(order.itemType)}</Text>
+        <Text size="sm">{formatString(order.itemTypes.join(", "))}</Text>
       </Table.Td>
 
       <Table.Td>

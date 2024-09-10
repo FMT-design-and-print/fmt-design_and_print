@@ -86,7 +86,7 @@ export const signUp = async (data: SignUpData, next?: string | null) => {
     }
 
     // add user details to database
-    const userId = newUser.user?.id;
+    const userId = newUser.user?.id || "";
     const provider = newUser.user?.app_metadata.provider;
 
     const { error: err } = await supabase

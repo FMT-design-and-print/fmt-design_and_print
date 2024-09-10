@@ -29,14 +29,15 @@ const MyAccountCustomRequestsPage = async () => {
   const { data: customRequests } = await supabase
     .from("custom-orders")
     .select(
-      "id, created_at, orderId, status, totalAmount, orderDetails, itemType"
+      "id, created_at, orderId, status, totalAmount, orderDetails, itemTypes"
     )
-    .eq("user_id", session.user.id);
+    .eq("user_id", session.user.id)
+    .returns<Partial<ICustomOrder[]>>();
 
   return (
     <div>
       <MyAccount email={session.user.email || ""}>
-        <CustomRequests requests={(customRequests as ICustomOrder[]) || []} />
+        <CustomRequests requests={customRequests || []} />
       </MyAccount>
     </div>
   );

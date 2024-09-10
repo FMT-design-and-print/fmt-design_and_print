@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const supabase = createClient();
 
-export const useSaveInitialUserDetails = () => {
+export const useSaveInitialUserDetails = (): IUserDetails | null => {
   const [userDetails, setUserDetails] = useState<IUserDetails | null>(null);
 
   useEffect(() => {
@@ -25,7 +25,8 @@ export const useSaveInitialUserDetails = () => {
               .select(
                 "id, email, confirmed, firstName, lastName, profileImage, phone, country, region, gender, dateOfBirth"
               )
-              .eq("id", session.user.id);
+              .eq("id", session.user.id)
+              .returns<IUserDetails[]>();
 
             if (error) {
               throw error;
@@ -41,7 +42,7 @@ export const useSaveInitialUserDetails = () => {
 
               const userDetails = {
                 id: user.id,
-                email: user.email,
+                email: user.email || "",
                 provider: user.app_metadata.provider,
                 firstName: user.user_metadata.full_name || "",
                 profileImage: user.user_metadata.avatar_url || "",

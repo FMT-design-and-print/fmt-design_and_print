@@ -29,7 +29,7 @@ export default async function AdminPage() {
   const { data: admins } = await supabase
     .from("admins")
     .select("email, confirmed")
-    .eq("email", session.user.email)
+    .eq("email", session.user.email ?? "")
     .returns<{ email: String; confirmed: boolean }[]>();
 
   if (!admins?.[0].confirmed) {

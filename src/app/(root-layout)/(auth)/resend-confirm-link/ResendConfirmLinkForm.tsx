@@ -78,7 +78,7 @@ export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
         return push(getPath(alreadyConfirmedMsg));
       }
 
-      if (user[0].requestedConfirmLinkNumberOfTimes >= 3) {
+      if (user[0].requestedConfirmLinkNumberOfTimes ?? 0 >= 3) {
         setIsLoading(false);
         return push(getPath(exceededRequestLimitMsg));
       }
@@ -101,7 +101,7 @@ export const ResendConfirmLinkForm = ({ searchParams }: Props) => {
       .from("users")
       .update({
         requestedConfirmLinkNumberOfTimes:
-          user[0].requestedConfirmLinkNumberOfTimes + 1,
+          user[0].requestedConfirmLinkNumberOfTimes ?? 0 + 1,
       })
       .eq("email", email);
 

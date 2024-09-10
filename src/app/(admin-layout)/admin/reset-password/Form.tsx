@@ -51,7 +51,7 @@ export function AdminLoginForm() {
     const { error: updateError } = await supabase
       .from("admins")
       .update({ confirmed: true })
-      .eq("email", session?.user.email)
+      .eq("email", session?.user.email as string)
       .returns<{ email: String; confirmed: boolean }[]>();
 
     if (updateError) {

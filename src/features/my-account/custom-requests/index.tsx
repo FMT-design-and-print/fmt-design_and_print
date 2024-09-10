@@ -10,10 +10,12 @@ import { createClient } from "@/utils/supabase/client";
 import { RequestsCard } from "./RequestsCard";
 
 interface Props {
-  requests: ICustomOrder[];
+  requests: Partial<ICustomOrder[]>;
 }
-export const CustomRequests = ({ requests }: Props) => {
-  const [newRequests, setNewRequests] = useState(requests);
+export const CustomRequests = ({ requests = [] }: Props) => {
+  const [newRequests, setNewRequests] = useState<ICustomOrder[]>(
+    requests as ICustomOrder[]
+  );
 
   useEffect(() => {
     const supabase = createClient();
