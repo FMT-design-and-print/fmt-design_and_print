@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - dev
-  workflow_dispatch: # Enable manual triggers
+  workflow_dispatch:
+    inputs: 
+        pullRequestNumber:
+          description: Pull request number to auto-approve
+          required: false
 
 jobs:
   push-to-main:
