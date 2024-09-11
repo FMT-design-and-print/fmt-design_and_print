@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -18,15 +19,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Merge dev into main
-        run: |
-          git config --global user.name 'GitHub Actions Bot'
-          git config --global user.email 'actions@github.com'
-          git checkout main
-          git merge dev --no-ff -m "Merge dev into main"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
-          github_token: ${{ secrets.GH_PAT }}
-          branch: main
+          token: ${{ secrets.GH_PAT }}
+          commit-message: "Merge dev into main"
+          title: "Merge dev into main"
+          body: "Automatic merge from dev to main"
+          branch: main 
+          base: main
+
+      - name: Approve Pull Request (if needed)
+        uses: hmarr/auto-approve-action@v3 
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Merge Pull Request
+        uses: pascalgn/automerge-action@v0.16.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          MERGE_METHOD: "MERGE" # or "SQUASH" depending on your needs
