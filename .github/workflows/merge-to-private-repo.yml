@@ -1,7 +1,7 @@
 name: Manually merge changes to another repository
 
 on:
-  workflow_dispatch:  # Trigger the workflow manually
+  workflow_dispatch:  # Trigger the workflow manually from the GitHub Actions tab
 
 jobs:
   sync-repo:
@@ -15,10 +15,10 @@ jobs:
           repository: FMT-design-and-print/fmt-design_and_print
           ref: main # The branch to sync from
 
-      # Clone the private target repository using the personal access token
+      # Clone the target private repository using the personal access token (PAT)
       - name: Clone the target private repository
         run: |
-          git clone https://x-access-token:${{ secrets.PAT }}@github.com/FMT-design-and-print/fmt-design_and_print_prod.git
+          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/FMT-design-and-print/fmt-design_and_print_prod.git
           cd fmt-design_and_print_prod
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
