@@ -30,9 +30,10 @@ jobs:
           base: dev
 
       - name: Approve Pull Request (if needed)
-        uses: hmarr/auto-approve-action@v3 
+        uses: hmarr/auto-approve-action@v4 
         with:
           token: ${{ secrets.GH_PAT }}
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }} # Get the PR number from the previous step
 
       - name: Merge Pull Request
         uses: pascalgn/automerge-action@v0.16.0
