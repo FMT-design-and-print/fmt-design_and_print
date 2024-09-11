@@ -1,0 +1,42 @@
+name: Manually merge changes to another repository
+
+on:
+  workflow_dispatch:  # Trigger the workflow manually from the GitHub Actions tab
+
+jobs:
+  sync-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the source repository (the one where the workflow is triggered)
+      - name: Checkout source repository
+        uses: actions/checkout@v3
+        with:
+          repository: FMT-design-and-print/fmt-design_and_print
+          ref: main # The branch to sync from
+
+      # Clone the target private repository using the personal access token (PAT)
+      - name: Clone the target private repository
+        run: |
+          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/FMT-design-and-print/fmt-design_and_print_prod.git
+          cd fmt-design_and_print_prod
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Sync files from source repository to the target repository
+      - name: Sync files to target repository
+        run: |
+          rsync -av --exclude='.git' --exclude='.github' ./ fmt-design_and_print_prod/
+          cd fmt-design_and_print_prod
+          git add .
+
+      # Commit and push the changes to the private target repository
+      - name: Commit and Push Changes
+        run: |
+          cd fmt-design_and_print_prod
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync changes from fmt-design_and_print to fmt-design_and_print_prod"
+            git push https://x-access-token:${{ secrets.PAT }}@github.com/FMT-design-and-print/fmt-design_and_print_prod.git
+          fi
