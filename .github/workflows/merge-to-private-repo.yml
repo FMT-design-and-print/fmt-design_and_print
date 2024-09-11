@@ -18,12 +18,10 @@ jobs:
       # Clone the private target repository using the personal access token
       - name: Clone the target private repository
         run: |
-          git clone https://github.com/FMT-design-and-print/fmt-design_and_print_prod.git
+          git clone https://x-access-token:${{ secrets.PAT }}@github.com/FMT-design-and-print/fmt-design_and_print_prod.git
           cd fmt-design_and_print_prod
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       # Sync files from source repository to the target repository
       - name: Sync files to target repository
