@@ -27,7 +27,7 @@ jobs:
           title: "Merge dev into main"
           body: "Automatic merge from dev to main"
           branch: main 
-          base: main
+          base: dev
 
       - name: Approve Pull Request (if needed)
         uses: hmarr/auto-approve-action@v3 
