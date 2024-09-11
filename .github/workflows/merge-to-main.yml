@@ -1,32 +1,32 @@
-name: Merge Dev to Main
+name: Push from Dev to Main
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - dev
+  workflow_dispatch: # Enable manual triggers
 
 jobs:
-  merge:
+  push-to-main:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Set up Git user
+      - name: Merge dev into main
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Merge Dev into Main
-        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
           git checkout main
-          git merge dev --no-ff
+          git merge dev --no-ff -m "Merge dev into main"
 
-      - name: Push changes to Main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/FMT-design-and-print/fmt-design_and_print.git main
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          branch: main
