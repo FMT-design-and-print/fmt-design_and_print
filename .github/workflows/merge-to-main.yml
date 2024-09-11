@@ -22,7 +22,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          github-token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GH_PAT }}
           commit-message: "Merge dev into main"
           title: "Merge dev into main"
           body: "Automatic merge from dev to main"
