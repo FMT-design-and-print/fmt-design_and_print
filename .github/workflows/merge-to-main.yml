@@ -6,9 +6,9 @@ on:
       - dev
   workflow_dispatch:
     inputs: 
-        pullRequestNumber:
-          description: Pull request number to auto-approve
-          required: false
+      pullRequestNumber:
+        description: Pull request number to auto-approve
+        required: false
 
 jobs:
   push-to-main:
@@ -24,6 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Create Pull Request
+        id: create_pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_PAT }}
@@ -37,7 +38,7 @@ jobs:
         uses: hmarr/auto-approve-action@v4 
         with:
           github-token: ${{ secrets.GH_PAT }}
-          pull-request-number: ${{ github.event.inputs.pullRequestNumber }}
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
 
       - name: Merge Pull Request
         uses: pascalgn/automerge-action@v0.16.0
