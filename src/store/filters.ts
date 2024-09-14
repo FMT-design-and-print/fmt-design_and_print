@@ -23,6 +23,6 @@ export const useTagsFilters = create<TagsFiltersStore>((set) => ({
         ? prevState.tags.filter((item) => item.id !== tag.id)
         : [...prevState.tags, tag],
     })),
-  isExpanded: true,
+  isExpanded: false,
   setIsExpanded: (value) => set(() => ({ isExpanded: value })),
 }));

@@ -5,6 +5,7 @@ import { CiFilter } from "react-icons/ci";
 
 export const DesktopFiltersBtn = () => {
   const { isExpanded, setIsExpanded } = useTagsFilters();
+
   return (
     <>
       {!isExpanded && (

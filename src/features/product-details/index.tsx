@@ -209,7 +209,7 @@ export const ProductDetails = ({ product }: Props) => {
                 here
               </Text>
             </Link>{" "}
-            to make custom print request.
+            to make custom {product.type.title} print request.
           </Text>
         </Grid.Col>
       </Grid>
