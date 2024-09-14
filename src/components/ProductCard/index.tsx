@@ -14,19 +14,21 @@ interface Props {
 export function ProductCard({ product, link = "" }: Props) {
   return (
     <Card withBorder radius="md" className={classes.card} w="250px" mb="sm">
-      <Card.Section>
+      <Card.Section px="md" pt="sm" h="200px" style={{ overflowY: "hidden" }}>
         <Link href={link}>
           <Image
             src={product.image}
             alt={product.title}
             width={250}
             height={200}
+            objectPosition="top"
             placeholder={`data:image/svg+xml;base64,${toBase64(
               shimmer(250, 200)
             )}`}
             style={{
-              maxWidth: "100%",
+              width: "85%",
               height: "auto",
+              margin: "auto",
             }}
           />
         </Link>

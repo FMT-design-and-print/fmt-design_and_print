@@ -57,7 +57,7 @@ const ProductTypePage = async ({ params }: Props) => {
             here
           </Text>
         </Link>{" "}
-        to make custom print request.
+        to make custom {params.productType} print request.
       </Text>
 
       <ProductType products={products} />
