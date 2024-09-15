@@ -17,7 +17,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
-    title: `${formatString(params.tag)} ${params.productType} | FMT Design and Print`,
+    title: `${decodeURIComponent(params.tag)} ${params.productType} | FMT Design and Print`,
   };
 }
 
@@ -26,7 +26,7 @@ const CodingShirtsPage = async ({ params }: Props) => {
 
   const products: IPrintProduct[] = await client.fetch(productsByTagQuery, {
     slug: params.productType,
-    itemTag: formatString(params.tag),
+    itemTag: formatString(decodeURIComponent(params.tag)),
   });
 
   const items = [
@@ -40,7 +40,7 @@ const CodingShirtsPage = async ({ params }: Props) => {
       href: `/services/print/categories/${params.categoryId}/${params.productType}`,
     },
     {
-      title: params.tag,
+      title: decodeURIComponent(params.tag),
       href: ``,
     },
   ];

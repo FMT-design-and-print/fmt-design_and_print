@@ -17,7 +17,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
-    title: `${formatString(params.tag)} ${params.categoryId} | FMT Design and Print`,
+    title: `${decodeURIComponent(params.tag)} ${params.categoryId} | FMT Design and Print`,
   };
 }
 
@@ -28,7 +28,7 @@ const CodingShirtsPage = async ({ params }: Props) => {
     allProductsInCategoryByTagQuery,
     {
       slug: params.categoryId,
-      itemTag: formatString(params.tag),
+      itemTag: formatString(decodeURIComponent(params.tag)),
     }
   );
 
@@ -39,7 +39,7 @@ const CodingShirtsPage = async ({ params }: Props) => {
       href: `/services/print/categories/${params.categoryId}`,
     },
     {
-      title: params.tag,
+      title: decodeURIComponent(params.tag),
       href: ``,
     },
   ];
