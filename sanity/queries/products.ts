@@ -165,3 +165,101 @@ export const relatedProductsQuery = groq`
         }
     }[0...5]
 `;
+
+export const productsByTagQuery = groq`
+*[_type == "printService" && type->slug.current == $slug && ( $itemTag  in
+  [
+    ...tags[@->._type == "professionTags"]->.professionTagName, 
+    ...tags[@->._type == "productTags"]->.productTagName,
+    ...extraTags
+  ]
+) ] {
+  "id": _id,
+  title,
+  "slug": slug.current,
+  "image": image.asset->url,
+  color->{
+    "id": _id,
+    title,
+    hex,
+    "image": image.asset->url
+  },
+  "colors": colors[]{
+    "id": _key,
+    "image": image.asset->url,
+    color->{
+      "id": _id,
+      title,
+      hex,
+      "image": image.asset->url
+    }
+  },
+  "sizes": sizes[]->.title,
+  price,
+  description,
+  "tags": [
+    ...tags[@->._type == "professionTags"]->.professionTagName, 
+    ...tags[@->._type == "productTags"]->.productTagName,
+    ...extraTags
+  ],
+  category->{
+    "id": _id,
+    "slug": slug.current,
+    title
+  },
+  type->{
+    "id": _id,
+    "slug": slug.current,
+    title
+  }
+}
+`;
+
+export const allProductsInCategoryByTagQuery = groq`
+*[_type == "printService" && category->slug.current == $slug && ( $itemTag  in
+  [
+    ...tags[@->._type == "professionTags"]->.professionTagName, 
+    ...tags[@->._type == "productTags"]->.productTagName,
+    ...extraTags
+  ]
+) ] {
+  "id": _id,
+  title,
+  "slug": slug.current,
+  "image": image.asset->url,
+  color->{
+    "id": _id,
+    title,
+    hex,
+    "image": image.asset->url
+  },
+  "colors": colors[]{
+    "id": _key,
+    "image": image.asset->url,
+    color->{
+      "id": _id,
+      title,
+      hex,
+      "image": image.asset->url
+    }
+  },
+  "sizes": sizes[]->.title,
+  price,
+  description,
+  "tags": [
+    ...tags[@->._type == "professionTags"]->.professionTagName, 
+    ...tags[@->._type == "productTags"]->.productTagName,
+    ...extraTags
+  ],
+  category->{
+    "id": _id,
+    "slug": slug.current,
+    title
+  },
+  type->{
+    "id": _id,
+    "slug": slug.current,
+    title
+  }
+}
+`;

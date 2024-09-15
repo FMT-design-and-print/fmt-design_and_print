@@ -13,6 +13,7 @@ import { FiltersDrawer } from "./TagsFilters/FiltersDrawer";
 import { ProductLoaders } from "./ProductLoaders";
 import { DesktopFiltersBtn } from "./TagsFilters/DesktopFiltersBtn";
 import classes from "./Style.module.css";
+import { useParams } from "next/navigation";
 
 const itemsPerPage = 50;
 
@@ -20,6 +21,7 @@ interface Props {
   printProducts: IPrintProduct[];
 }
 export const PrintProducts = ({ printProducts }: Props) => {
+  const params = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<IPrintProduct[]>([]);
   const [visibleProducts, setVisibleProducts] = useState<IPrintProduct[]>([]);
@@ -48,7 +50,7 @@ export const PrintProducts = ({ printProducts }: Props) => {
         justify={{ base: "center", sm: "flex-start" }}
         wrap="nowrap"
       >
-        <DesktopFiltersBtn />
+        {params.tag === undefined && <DesktopFiltersBtn />}
         <Input
           placeholder="Type to Search..."
           leftSection={<BsSearch size="14px" />}
@@ -56,11 +58,13 @@ export const PrintProducts = ({ printProducts }: Props) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.currentTarget.value)}
         />
-        <FiltersDrawer />
+        {params.tag === undefined && <FiltersDrawer />}
       </Flex>
       <SelectedTags />
       <Box>
-        {(searchTerm || tags.length > 0) && filteredProducts.length === 0 ? (
+        {printProducts.length === 0 ? (
+          <NoItemsFound label="Sorry!. No items were found for your search" />
+        ) : (searchTerm || tags.length > 0) && filteredProducts.length === 0 ? (
           <NoItemsFound label="Sorry!. No items were found for your search" />
         ) : (
           filteredProducts.length === 0 && <ProductLoaders />
