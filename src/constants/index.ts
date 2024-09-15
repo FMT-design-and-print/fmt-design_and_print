@@ -1,7 +1,5 @@
 export const fmtDescription =
   "We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more";
-export const paystackPublicKey =
-  "pk_test_0b33403d1f5c398b7a71de300472d27858572427";
 
 export const authFailedMessage = "Could not authenticate user";
 export const signUpFailedMessage = "Unable to sign you up. Try again!";

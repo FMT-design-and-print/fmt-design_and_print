@@ -1,5 +1,4 @@
 "use client";
-import { paystackPublicKey } from "@/constants";
 import { getOrderId, verifyAddressDetails } from "@/functions";
 import { IShippingAddress } from "@/types";
 import { DeliveryType } from "@/types/order";
@@ -10,7 +9,7 @@ import { HookConfig } from "react-paystack/dist/types";
 
 const config: HookConfig = {
   reference: new Date().getTime().toString(),
-  publicKey: paystackPublicKey,
+  publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "",
   currency: "GHS",
 };
 
