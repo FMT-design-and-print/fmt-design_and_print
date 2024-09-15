@@ -16,7 +16,7 @@ export const EmptyFavorites = () => {
     >
       <Box py={{ base: "sm", md: "xl" }}>
         <Avatar
-          src="./favorite.png"
+          src="./favorite_11034969.png"
           size={sm ? "200px" : "300px"}
           mx="auto"
           radius="0"

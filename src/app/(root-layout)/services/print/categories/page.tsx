@@ -1,12 +1,12 @@
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
-import React from "react";
+import { redirect } from "next/navigation";
 
 export const revalidate = 0;
 
 const AllPrintCategories = async () => {
   await redirectAdminUser();
 
-  return <div>All Print Categories</div>;
+  redirect("/services");
 };
 
 export default AllPrintCategories;
