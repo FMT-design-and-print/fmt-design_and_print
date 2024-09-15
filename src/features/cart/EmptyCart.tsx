@@ -1,5 +1,7 @@
+import { PrimaryButton } from "@/components/PrimaryButton";
 import { Center, Box, Avatar, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import Link from "next/link";
 import React from "react";
 
 export const EmptyCart = () => {
@@ -25,6 +27,11 @@ export const EmptyCart = () => {
         <Text ta="center" c="dimmed" mb="lg">
           You need to add some items to your cart.
         </Text>
+        <Center my="sm">
+          <Link href="/services">
+            <PrimaryButton type="button">Continue Shopping</PrimaryButton>
+          </Link>
+        </Center>
       </Box>
     </Center>
   );
