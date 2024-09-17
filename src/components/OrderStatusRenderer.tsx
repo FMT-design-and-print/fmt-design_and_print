@@ -1,7 +1,7 @@
+import { statusColor } from "@/constants/status-colors";
 import { getOrderStatusText } from "@/functions";
 import { OrderStatus } from "@/types/order";
 import { Badge, BadgeProps } from "@mantine/core";
-import React from "react";
 
 interface Props {
   status: OrderStatus;
@@ -16,7 +16,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "pending") {
     return (
-      <Badge {...defaultBadgeProps} color="yellow">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -24,7 +24,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "pending-cancellation") {
     return (
-      <Badge {...defaultBadgeProps} color="red">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -32,7 +32,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "cancelled") {
     return (
-      <Badge {...defaultBadgeProps} color="red">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -40,7 +40,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "completed") {
     return (
-      <Badge {...defaultBadgeProps} color="green">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -48,7 +48,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "shipped") {
     return (
-      <Badge {...defaultBadgeProps} color="indigo">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -56,7 +56,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "delivered") {
     return (
-      <Badge {...defaultBadgeProps} color="lime">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -64,7 +64,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "packaging") {
     return (
-      <Badge {...defaultBadgeProps} color="orange">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -72,7 +72,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "ready") {
     return (
-      <Badge {...defaultBadgeProps} color="cyan">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -80,7 +80,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "processing") {
     return (
-      <Badge {...defaultBadgeProps} color="blue">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {statusText}
       </Badge>
     );
@@ -88,7 +88,7 @@ export const OrderStatusRenderer = ({ status }: Props) => {
 
   if (status === "placed") {
     return (
-      <Badge {...defaultBadgeProps} color="cyan">
+      <Badge {...defaultBadgeProps} color={statusColor[status]}>
         {`${statusText}`}
       </Badge>
     );

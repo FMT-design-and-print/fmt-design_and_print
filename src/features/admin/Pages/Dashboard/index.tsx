@@ -1,5 +1,10 @@
 import React from "react";
+import { OrdersStats } from "./OrdersStats";
 
 export const Dashboard = () => {
-  return <div>Dashboard</div>;
+  return (
+    <>
+      <OrdersStats />
+    </>
+  );
 };
