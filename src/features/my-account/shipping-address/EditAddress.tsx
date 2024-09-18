@@ -59,7 +59,11 @@ export const EditAddress = ({ address }: Props) => {
         pos="relative"
       >
         <LoadingOverlay visible={loading} />
-        <ShippingAddress {...editedAddress} update={update} />
+        <ShippingAddress
+          {...editedAddress}
+          update={update}
+          deliveryType="delivery"
+        />
 
         <Group justify="flex-end" grow>
           <Button onClick={updateDetailsInDB} className="btn" maw={100} my="md">

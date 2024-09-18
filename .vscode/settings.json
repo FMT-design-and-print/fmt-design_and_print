@@ -29,5 +29,8 @@
     "**/*.sass",
     "**/*.less",
     "node_modules/@mantine/core/styles.css"
-  ]
+  ],
+  "[sqlite]": {
+    "editor.defaultFormatter": "remimarsal.prettier-now"
+  }
 }

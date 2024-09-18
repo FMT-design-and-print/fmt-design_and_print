@@ -95,7 +95,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       image: product.image,
       size: "",
       quantity: 1,
-      note: "Test note",
+      note: "",
     });
   }, [product]);
 

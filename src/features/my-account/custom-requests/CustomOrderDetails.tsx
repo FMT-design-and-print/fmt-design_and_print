@@ -1,10 +1,15 @@
 import { TextEditor } from "@/components/TextEditor";
 import { formatCamelCase, formatString, isLink } from "@/functions";
-import { useCustomEditor } from "@/hooks/useCustomEditor";
+import useSanitize from "@/hooks/useSanitize";
 import { Button, Drawer, Group, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import DOMPurify from "dompurify";
+import { useEditor } from "@tiptap/react";
 import Link from "next/link";
+import EditorLink from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
+import StarterKit from "@tiptap/starter-kit";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
 
 const generalFields = [
   "quantity",
@@ -26,7 +31,18 @@ export const CustomOrderDetails = ({
   btnLabel,
 }: Props) => {
   const [opened, { open, close }] = useDisclosure(false);
-  const editor = useCustomEditor(DOMPurify.sanitize(orderDetails.instructions));
+  const sanitize = useSanitize();
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      EditorLink,
+      Highlight,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+    ],
+    content: sanitize(orderDetails.instructions),
+    editable: false,
+  });
 
   return (
     <>

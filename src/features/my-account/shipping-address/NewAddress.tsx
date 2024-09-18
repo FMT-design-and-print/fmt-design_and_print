@@ -78,6 +78,7 @@ export const NewAddress = ({ numberOfAddresses }: Props) => {
         town={newAddress.town}
         region={newAddress.region}
         update={update}
+        deliveryType="delivery"
       />
       <Group justify="flex-end" grow>
         <Button onClick={addAddressToDB} className="btn" maw={100} my="md">
