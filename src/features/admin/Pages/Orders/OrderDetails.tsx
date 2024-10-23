@@ -17,6 +17,7 @@ import {
   getFormattedDaysToFuture,
   getFormattedDurationFromNow,
 } from "@/functions/durations";
+import { CopyIcon } from "@/components/CopyIcon";
 
 export const OrderDetails = ({
   order,
@@ -42,18 +43,21 @@ export const OrderDetails = ({
       >
         <Group my="sm">
           <Text size="sm">Order Id: </Text>
-          <Text
-            title="View Order tracking page"
-            size="sm"
-            component={Link}
-            c="pink"
-            fw="bolder"
-            href={`/order-tracking/${order.orderId}`}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {order.orderId}
-          </Text>
+          <Group gap={2}>
+            <Text
+              title="View Order tracking page"
+              size="sm"
+              component={Link}
+              c="pink"
+              fw="bolder"
+              href={`/order-tracking/${order.orderId}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {order.orderId}
+            </Text>
+            <CopyIcon value={order.orderId} />
+          </Group>
         </Group>
         {order.totalAmount && (
           <Group my="sm">

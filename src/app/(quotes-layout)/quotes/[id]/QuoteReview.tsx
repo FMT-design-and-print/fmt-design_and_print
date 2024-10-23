@@ -1,8 +1,8 @@
 "use client";
 import { Print } from "@/components/Print";
 import {
+  getFormattedDaysToFuture,
   getFormattedDurationFromNow,
-  getFormattedDurationToFuture,
 } from "@/functions/durations";
 import { IQuoteItem } from "@/types/quote";
 import {
@@ -111,7 +111,7 @@ export const QuoteReview: FC<Props> = (props) => {
                 variant="light"
                 color="gray"
               >
-                {getFormattedDurationToFuture(new Date(dueDate))}
+                {getFormattedDaysToFuture(new Date(dueDate))}
               </Badge>
             </Text>
           </Group>

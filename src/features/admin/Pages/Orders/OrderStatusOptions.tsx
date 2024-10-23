@@ -7,7 +7,6 @@ import { IconArrowRight, IconDotsVertical } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { toast } from "react-toastify";
 import { ConfirmOrder } from "./ConfirmOrder";
-import { QuoteModal } from "./Quote/QuoteModal";
 
 interface Props {
   status: OrderStatus;
@@ -44,17 +43,6 @@ export function OrderStatusOptions({
         orderNumber={orderNumber}
         totalAmount={totalAmount}
         numberOfItems={numberOfItems}
-      />
-    );
-  }
-
-  if (status === "requested") {
-    return (
-      <QuoteModal
-        title="Create quote for order"
-        orderId={orderId}
-        orderNumber={orderNumber}
-        triggerLabel="Create Quote"
       />
     );
   }

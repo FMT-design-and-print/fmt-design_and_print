@@ -16,7 +16,7 @@ import {
 
 const content = ``;
 
-interface ICustomRequestContext {
+export interface ICustomRequestContext {
   isSubmitting: boolean;
   selectedArtworkOption: ArtworkOption;
   artworkFiles: FileWithPath[];
@@ -26,6 +26,9 @@ interface ICustomRequestContext {
   editor: Editor | null;
   quantity: number;
   productImageUrl: string;
+  contactName: string;
+  phone: string;
+  email: string;
   setProductImageUrl: (value: string) => void;
   setQuantity: (value: number) => void;
   setQuoteReceptionValue: (value: string) => void;
@@ -33,6 +36,9 @@ interface ICustomRequestContext {
   setSelectedArtworkOption: (value: ArtworkOption) => void;
   setIsSubmitting: (value: boolean) => void;
   setArtworkFiles: Dispatch<SetStateAction<FileWithPath[]>>;
+  setContactName: (value: string) => void;
+  setPhone: (value: string) => void;
+  setEmail: (value: string) => void;
 }
 
 export const CustomRequestContext = createContext<ICustomRequestContext | null>(
@@ -53,6 +59,9 @@ export const CustomRequest = ({ children }: Props) => {
   const [quoteReceptionValue, setQuoteReceptionValue] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [productImageUrl, setProductImageUrl] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const editor = useCustomEditor(content);
 
   useEffect(() => {
@@ -77,6 +86,9 @@ export const CustomRequest = ({ children }: Props) => {
         quantity,
         productImageUrl,
         isSubmitting,
+        contactName,
+        phone,
+        email,
         setIsSubmitting,
         setSelectedArtworkOption,
         setArtworkFiles,
@@ -84,6 +96,9 @@ export const CustomRequest = ({ children }: Props) => {
         setQuoteReceptionMedium,
         setQuantity,
         setProductImageUrl,
+        setContactName,
+        setPhone,
+        setEmail,
       }}
     >
       {children}
@@ -93,5 +108,10 @@ export const CustomRequest = ({ children }: Props) => {
 
 export const useCustomRequest = () => {
   const context = useContext(CustomRequestContext);
+  if (!context) {
+    throw new Error(
+      "useCustomRequest should be used within a CustomRequestContext provider"
+    );
+  }
   return context;
 };

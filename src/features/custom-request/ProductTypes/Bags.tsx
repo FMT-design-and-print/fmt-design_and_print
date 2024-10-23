@@ -12,6 +12,7 @@ import { validateQuoteMedium } from "../validate-quote-medium";
 import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { ItemTypeSelect } from "../ItemTypeSelect";
+import { validateContactInfo } from "../validate-contact-info";
 
 const bagTypes = [
   { type: "Paper Bag", minQty: 100 },
@@ -45,6 +46,12 @@ export const Bags = ({ image }: { image: string }) => {
       errors.push("Upload artworks");
     }
 
+    const contactInfoErrors = validateContactInfo(context.contactName);
+
+    if (contactInfoErrors.length > 0) {
+      errors = [...errors, ...contactInfoErrors];
+    }
+
     const quoteReceptionMediumErrors = validateQuoteMedium(
       context?.quoteReceptionMedium,
       context?.quoteReceptionValue
@@ -53,6 +60,7 @@ export const Bags = ({ image }: { image: string }) => {
     if (quoteReceptionMediumErrors.length > 0) {
       errors = [...errors, ...quoteReceptionMediumErrors];
     }
+
     return errors;
   };
 

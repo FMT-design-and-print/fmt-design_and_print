@@ -37,6 +37,7 @@ export const Orders = () => {
           isLoading={isLoading}
           error={error}
           statuses={statuses}
+          type="orders"
         />
       </Stack>
       <Stack my="xl">
@@ -48,6 +49,7 @@ export const Orders = () => {
           isLoading={isLoadingCustomOrder}
           error={customOrderError}
           statuses={customOrderStatuses}
+          type="custom-orders"
         />
       </Stack>
     </>
