@@ -11,6 +11,7 @@ import { isArtworkRequired } from "../required-artwork";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";
+import { validateContactInfo } from "../validate-contact-info";
 
 export const Aprons = ({ image }: { image: string }) => {
   const {
@@ -30,6 +31,12 @@ export const Aprons = ({ image }: { image: string }) => {
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
     ) {
       errors.push("Upload artworks");
+    }
+
+    const contactInfoErrors = validateContactInfo(context.contactName);
+
+    if (contactInfoErrors.length > 0) {
+      errors = [...errors, ...contactInfoErrors];
     }
 
     const quoteReceptionMediumErrors = validateQuoteMedium(

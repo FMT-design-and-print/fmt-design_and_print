@@ -12,6 +12,7 @@ import { saveCustomOrderDetails } from "../save-details";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { isArtworkRequired } from "../required-artwork";
 import { cardKeywords } from "@/constants/all-product_keywords";
+import { validateContactInfo } from "../validate-contact-info";
 
 export const DesignWorks = ({ image }: { image: string }) => {
   const {
@@ -32,6 +33,12 @@ export const DesignWorks = ({ image }: { image: string }) => {
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
     ) {
       errors.push("Upload artworks");
+    }
+
+    const contactInfoErrors = validateContactInfo(context.contactName);
+
+    if (contactInfoErrors.length > 0) {
+      errors = [...errors, ...contactInfoErrors];
     }
 
     const quoteReceptionMediumErrors = validateQuoteMedium(

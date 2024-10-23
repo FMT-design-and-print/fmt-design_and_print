@@ -45,4 +45,7 @@ export interface IOrder extends CommonOrderDetails {
 export interface ICustomOrder extends CommonOrderDetails {
   itemTypes: string[];
   orderDetails: object;
+  contactName: string;
+  phone: string;
+  email: string;
 }

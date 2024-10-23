@@ -1,13 +1,15 @@
-import { IOrder, OrderStatus } from "@/types/order";
+import { ICustomOrder, IOrder, OrderStatus } from "@/types/order";
 
 interface GroupedOrders {
-  [key: string]: IOrder[];
+  [key: string]: any[];
 }
 
-export const groupOrdersByStatus = (orders: IOrder[]): GroupedOrders => {
+export const groupOrdersByStatus = (
+  orders: IOrder[] | ICustomOrder[]
+): GroupedOrders => {
   const groupedOrders: GroupedOrders = {};
 
-  orders.forEach((order: IOrder) => {
+  orders.forEach((order) => {
     if (!groupedOrders[order.status]) {
       groupedOrders[order.status] = [];
     }

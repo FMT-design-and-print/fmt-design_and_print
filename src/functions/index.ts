@@ -93,6 +93,7 @@ export function getRandomLength<T>(arr: T[]): T {
   return arr[randomIndex];
 }
 
+// generate new order number
 export function getOrderId(): string {
   const characters = "0123456789";
 

@@ -5,6 +5,12 @@ export type QuoteStatus =
   | "cancelled"
   | "expired";
 
+export interface QuoteErrors {
+  title?: string;
+  number?: string;
+  items: { [index: number]: { [field: string]: string } };
+}
+
 export interface IQuoteItem {
   id: string;
   description: string;

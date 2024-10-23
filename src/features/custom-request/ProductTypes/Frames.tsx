@@ -14,6 +14,7 @@ import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { generalAcceptableTypes } from "@/constants/artwork-types";
 import { IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { validateContactInfo } from "../validate-contact-info";
 
 const frameSizes = ["A5", "A4", "A3", "A2", "20cm x 25cm"];
 const types = ["with Glass", "Canvas Laminated", "Rubber Laminated"];
@@ -47,6 +48,12 @@ export const Frames = ({ image }: { image: string }) => {
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
     ) {
       errors.push("Upload artworks");
+    }
+
+    const contactInfoErrors = validateContactInfo(context.contactName);
+
+    if (contactInfoErrors.length > 0) {
+      errors = [...errors, ...contactInfoErrors];
     }
 
     const quoteReceptionMediumErrors = validateQuoteMedium(
