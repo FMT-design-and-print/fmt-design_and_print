@@ -1,10 +1,11 @@
 import { ShippingAddress } from "@/components/ShippingAddress";
 import { useSession } from "@/store";
 import { useCheckout } from "@/store/checkout";
-import { IShippingAddress } from "@/types";
+import { CheckoutDetails, IShippingAddress } from "@/types";
 import { Card, Checkbox, Title } from "@mantine/core";
 import { AvailableShippingAddresses } from "./AvailableShippingAddresses";
 import { useEffect } from "react";
+import { shippingFeeByRegion } from "@/constants/gh-regions";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -23,10 +24,21 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
       saveAddress,
       deliveryType,
     },
+
     update,
   } = useCheckout((state) => state);
 
   const { session } = useSession();
+
+  const handleUpdate = (key: keyof CheckoutDetails, value: any) => {
+    if (key === "region") {
+      update(key, value);
+      update("deliveryFee", shippingFeeByRegion[value] || 0);
+      return;
+    }
+
+    update(key, value);
+  };
 
   useEffect(() => {
     if (session && (shippingAddresses?.length ?? 0) < 5) {
@@ -52,7 +64,7 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
         town={town}
         region={region}
         deliveryType={deliveryType}
-        update={update}
+        update={handleUpdate}
       />
 
       {session &&
@@ -64,7 +76,7 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
             color="pink"
             my="lg"
             onChange={(event) =>
-              update("saveAddress", event.currentTarget.checked)
+              handleUpdate("saveAddress", event.currentTarget.checked)
             }
           />
         )}
