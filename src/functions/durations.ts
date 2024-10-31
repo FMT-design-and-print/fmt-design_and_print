@@ -23,16 +23,17 @@ export function getFormattedDurationFromNow(date: Date): string {
 
   const diffInWeeks = Math.floor(diffInDays / 7);
   if (diffInWeeks < 4) {
-    return diffInWeeks === 1 ? "1 week ago" : `${diffInWeeks} weeks ago`;
+    return diffInWeeks === 1 ? "1 wk ago" : `${diffInWeeks} wks ago`;
   }
 
-  const diffInMonths = Math.floor(diffInDays / 30); // Approximate value
-  if (diffInMonths < 12) {
-    return diffInMonths === 1 ? "1 month ago" : `${diffInMonths} months ago`;
+  const yearsDiff = now.getFullYear() - date.getFullYear();
+  const monthsDiff = now.getMonth() - date.getMonth() + yearsDiff * 12;
+
+  if (monthsDiff < 12) {
+    return monthsDiff === 1 ? "1 mo ago" : `${monthsDiff} mos ago`;
   }
 
-  const diffInYears = Math.floor(diffInDays / 365); // Approximate value
-  return diffInYears === 1 ? "1 year ago" : `${diffInYears} years ago`;
+  return yearsDiff === 1 ? "1 yr ago" : `${yearsDiff} yrs ago`;
 }
 
 export function getFormattedDurationToFuture(date: Date): string {
@@ -60,16 +61,17 @@ export function getFormattedDurationToFuture(date: Date): string {
 
   const diffInWeeks = Math.floor(diffInDays / 7);
   if (diffInWeeks < 4) {
-    return diffInWeeks === 1 ? "1 week" : `${diffInWeeks} weeks`;
+    return diffInWeeks === 1 ? "1 wk" : `${diffInWeeks} wks`;
   }
 
-  const diffInMonths = Math.floor(diffInDays / 30); // Approximate value
-  if (diffInMonths < 12) {
-    return diffInMonths === 1 ? "1 month" : `${diffInMonths} months`;
+  const yearsDiff = date.getFullYear() - now.getFullYear();
+  const monthsDiff = date.getMonth() - now.getMonth() + yearsDiff * 12;
+
+  if (monthsDiff < 12) {
+    return monthsDiff === 1 ? "1 mo" : `${monthsDiff} mos`;
   }
 
-  const diffInYears = Math.floor(diffInDays / 365); // Approximate value
-  return diffInYears === 1 ? "1 year" : `${diffInYears} years`;
+  return yearsDiff === 1 ? "1 yr" : `${yearsDiff} yrs`;
 }
 
 export function getFormattedDaysToFuture(date: Date): string {
@@ -87,3 +89,12 @@ export function getFormattedDaysToFuture(date: Date): string {
 
   return `${diffInDays} days`;
 }
+
+export const getDateInDays = (days: number): Date => {
+  const today = new Date();
+  const resultDate = new Date(today);
+
+  resultDate.setDate(today.getDate() + days);
+
+  return resultDate;
+};

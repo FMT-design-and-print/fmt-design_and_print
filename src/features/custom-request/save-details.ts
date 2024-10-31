@@ -1,11 +1,12 @@
 import { getOrderId } from "@/functions";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-toastify";
+import { ICustomRequestContext } from ".";
 
 export const saveCustomOrderDetails = async (
   requestDetails: object,
   orderDetails: object,
-  context: any
+  context: ICustomRequestContext
 ) => {
   const supabase = createClient();
 
@@ -24,6 +25,18 @@ export const saveCustomOrderDetails = async (
           quoteReceptionValue: context?.quoteReceptionValue,
           instructions: context?.designInstructions,
         },
+        contactName: context.contactName,
+        phone:
+          context.phone ||
+          (context.quoteReceptionMedium === "sms" ||
+          context.quoteReceptionMedium === "whatsapp"
+            ? context.quoteReceptionValue
+            : ""),
+        email:
+          context.email ||
+          (context.quoteReceptionMedium === "email"
+            ? context.quoteReceptionValue
+            : ""),
       },
     ])
     .select("orderId")
@@ -31,6 +44,7 @@ export const saveCustomOrderDetails = async (
 
   if (error) {
     toast.error("Could not add details. Please try again.");
+    console.error(error);
     return { isSuccess: false, error };
   }
 

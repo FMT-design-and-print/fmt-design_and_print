@@ -12,6 +12,7 @@ import { saveCustomOrderDetails } from "../save-details";
 import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
+import { validateContactInfo } from "../validate-contact-info";
 
 export const Caps = ({ image }: { image: string }) => {
   const {
@@ -36,6 +37,12 @@ export const Caps = ({ image }: { image: string }) => {
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
     ) {
       errors.push("Upload artworks");
+    }
+
+    const contactInfoErrors = validateContactInfo(context.contactName);
+
+    if (contactInfoErrors.length > 0) {
+      errors = [...errors, ...contactInfoErrors];
     }
 
     const quoteReceptionMediumErrors = validateQuoteMedium(

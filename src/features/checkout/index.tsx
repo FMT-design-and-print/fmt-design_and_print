@@ -15,6 +15,7 @@ import { calculateTotalPrice } from "@/functions";
 import { createClient } from "@/utils/supabase/client";
 import { PayButton } from "@/components/PaymentDetails/PayButton";
 import { IconExclamationCircle } from "@tabler/icons-react";
+import { shippingFeeByRegion } from "@/constants/gh-regions";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -29,7 +30,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
   const { clearItemsFromCart } = useCart((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const shippingFee = details.deliveryFee || 0;
+  const shippingFee = shippingFeeByRegion[details.region] || 0;
   const subTotal = calculateTotalPrice(details.items);
   const total = subTotal + shippingFee - (details.discount || 0);
 
@@ -55,7 +56,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           user_id: user?.id,
           orderId: ref.reference,
           items: details.items as any[],
-          totalAmount: total,
+          totalAmount: total + shippingFee,
           status: "placed",
           deliveryType: details.deliveryType,
           paymentType: details.paymentType,

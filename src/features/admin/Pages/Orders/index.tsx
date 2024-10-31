@@ -29,7 +29,7 @@ export const Orders = () => {
   return (
     <>
       <Stack mb="xl">
-        <Title order={2} mb="md">
+        <Title order={3} mb="md">
           Orders
         </Title>
         <OrdersTabs
@@ -37,10 +37,11 @@ export const Orders = () => {
           isLoading={isLoading}
           error={error}
           statuses={statuses}
+          type="orders"
         />
       </Stack>
       <Stack my="xl">
-        <Title order={2} mb="md">
+        <Title order={3} mb="md">
           Custom Orders
         </Title>
         <OrdersTabs
@@ -48,6 +49,7 @@ export const Orders = () => {
           isLoading={isLoadingCustomOrder}
           error={customOrderError}
           statuses={customOrderStatuses}
+          type="custom-orders"
         />
       </Stack>
     </>

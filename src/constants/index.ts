@@ -29,3 +29,17 @@ export const emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
 
 export const invalidOrExpiredMsg =
   "Check that the link you are using is valid or not expired";
+
+export const baseStorageURl = process.env.NEXT_PUBLIC_STORAGE_BASE_URL;
+export const storageBucketName = "fmt_artworks";
+
+export const dateOptions: Intl.DateTimeFormatOptions = {
+  weekday: "short",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
+  hour12: true,
+};

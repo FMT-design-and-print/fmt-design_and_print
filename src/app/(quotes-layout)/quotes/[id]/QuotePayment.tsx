@@ -72,8 +72,8 @@ export const QuotePayment = ({
       estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
         5,
         new Date()
-      ).toString(),
-      updated_at: new Date().toString(),
+      ).toISOString(),
+      updated_at: new Date().toISOString(),
       orderId: ref.reference,
     };
     setIsLoading(true);

@@ -1,13 +1,16 @@
 import { OrderStatusTextRenderer } from "@/components/OrderStatusTextRenderer";
 import { formatOrderStatus } from "@/functions/orders";
-import { useUpdateOrder } from "@/hooks/admin/useUpdateOrder";
+import {
+  useUpdateCustomOrder,
+  useUpdateOrder,
+} from "@/hooks/admin/useUpdateOrder";
 import { OrderStatus } from "@/types/order";
 import { ActionIcon, Loader, Menu, Text } from "@mantine/core";
 import { IconArrowRight, IconDotsVertical } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { toast } from "react-toastify";
 import { ConfirmOrder } from "./ConfirmOrder";
-import { QuoteModal } from "./Quote/QuoteModal";
+import { useAdminOrdersContext } from "./OrdersContext";
 
 interface Props {
   status: OrderStatus;
@@ -23,18 +26,26 @@ export function OrderStatusOptions({
   numberOfItems,
   totalAmount,
 }: Props) {
+  const { type } = useAdminOrdersContext();
   const { mutate: updateOrder, isPending: isLoading } = useUpdateOrder();
+  const { mutate: updateCustomOrder, isPending: loading } =
+    useUpdateCustomOrder();
   const updateStatus = (status: OrderStatus) => {
-    updateOrder(
-      {
-        orderId,
-        update: { status, updated_at: new Date() },
-      },
-      {
-        onSuccess: () => close(),
-        onError: () => toast.error("Failed to update order status. Try again!"),
-      }
-    );
+    const data = {
+      orderId,
+      update: { status, updated_at: new Date() },
+    };
+
+    const callbacks = {
+      onSuccess: () => toast.success("Order status updated successfully!"),
+      onError: () => toast.error("Failed to update order status. Try again!"),
+    };
+
+    if (type === "orders") {
+      updateOrder(data, callbacks);
+    } else {
+      updateCustomOrder(data, callbacks);
+    }
   };
 
   if (status === "pending") {
@@ -48,23 +59,12 @@ export function OrderStatusOptions({
     );
   }
 
-  if (status === "requested") {
-    return (
-      <QuoteModal
-        title="Create quote for order"
-        orderId={orderId}
-        orderNumber={orderNumber}
-        triggerLabel="Create Quote"
-      />
-    );
-  }
-
   if (status === "placed") {
     return (
       <MenuContainer
         options={["processing"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
@@ -74,7 +74,7 @@ export function OrderStatusOptions({
       <MenuContainer
         options={["packaging", "shipped", "ready"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
@@ -84,7 +84,7 @@ export function OrderStatusOptions({
       <MenuContainer
         options={["shipped", "ready"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
@@ -94,7 +94,7 @@ export function OrderStatusOptions({
       <MenuContainer
         options={["delivered", "completed"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
@@ -104,7 +104,7 @@ export function OrderStatusOptions({
       <MenuContainer
         options={["completed"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
@@ -114,7 +114,7 @@ export function OrderStatusOptions({
       <MenuContainer
         options={["completed"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
@@ -124,7 +124,7 @@ export function OrderStatusOptions({
       <MenuContainer
         options={["cancelled"]}
         updateStatus={updateStatus}
-        isLoading={isLoading}
+        isLoading={isLoading || loading}
       />
     );
   }
