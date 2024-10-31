@@ -6,6 +6,7 @@ import {
   IconGauge,
   IconMail,
   IconReceipt,
+  IconSettings2,
   IconShoppingCart,
   IconStars,
   IconTicket,
@@ -19,8 +20,17 @@ import { Orders } from "../Pages/Orders";
 import { IAdminNavItems } from "@/types";
 import { AdminUsers } from "../Pages/AdminUsers";
 import { UserPermission } from "@/types/roles";
+import { Services } from "../Pages/Services";
 
 export const adminNavItems: IAdminNavItems[] = [
+  {
+    value: "services",
+    label: "Services",
+    icon: <IconSettings2 />,
+    isVisible: true,
+    component: <Services />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
+  },
   {
     value: "dashboard",
     label: "Dashboard",

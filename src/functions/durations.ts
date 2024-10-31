@@ -23,17 +23,17 @@ export function getFormattedDurationFromNow(date: Date): string {
 
   const diffInWeeks = Math.floor(diffInDays / 7);
   if (diffInWeeks < 4) {
-    return diffInWeeks === 1 ? "1 week ago" : `${diffInWeeks} weeks ago`;
+    return diffInWeeks === 1 ? "1 wk ago" : `${diffInWeeks} wks ago`;
   }
 
   const yearsDiff = now.getFullYear() - date.getFullYear();
   const monthsDiff = now.getMonth() - date.getMonth() + yearsDiff * 12;
 
   if (monthsDiff < 12) {
-    return monthsDiff === 1 ? "1 month ago" : `${monthsDiff} months ago`;
+    return monthsDiff === 1 ? "1 mo ago" : `${monthsDiff} mos ago`;
   }
 
-  return yearsDiff === 1 ? "1 year ago" : `${yearsDiff} years ago`;
+  return yearsDiff === 1 ? "1 yr ago" : `${yearsDiff} yrs ago`;
 }
 
 export function getFormattedDurationToFuture(date: Date): string {
@@ -61,17 +61,17 @@ export function getFormattedDurationToFuture(date: Date): string {
 
   const diffInWeeks = Math.floor(diffInDays / 7);
   if (diffInWeeks < 4) {
-    return diffInWeeks === 1 ? "1 week" : `${diffInWeeks} weeks`;
+    return diffInWeeks === 1 ? "1 wk" : `${diffInWeeks} wks`;
   }
 
   const yearsDiff = date.getFullYear() - now.getFullYear();
   const monthsDiff = date.getMonth() - now.getMonth() + yearsDiff * 12;
 
   if (monthsDiff < 12) {
-    return monthsDiff === 1 ? "1 month" : `${monthsDiff} months`;
+    return monthsDiff === 1 ? "1 mo" : `${monthsDiff} mos`;
   }
 
-  return yearsDiff === 1 ? "1 year" : `${yearsDiff} years`;
+  return yearsDiff === 1 ? "1 yr" : `${yearsDiff} yrs`;
 }
 
 export function getFormattedDaysToFuture(date: Date): string {

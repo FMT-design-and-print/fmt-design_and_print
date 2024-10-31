@@ -14,6 +14,14 @@ export const mapOrderDetailsKeyToLabel = (key: string) => {
       return "Quote to be received via";
     case "instructions":
       return "Design instructions";
+    case "brand":
+      return "Brand";
+    case "side":
+      return "Side";
+    case "printType":
+      return "Print Type";
+    case "sleeveType":
+      return "Sleeve";
     default:
       return key;
   }

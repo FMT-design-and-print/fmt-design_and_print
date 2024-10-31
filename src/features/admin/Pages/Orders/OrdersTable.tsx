@@ -1,7 +1,6 @@
 import { IOrder } from "@/types/order";
 import { Table } from "@mantine/core";
 import { OrderTableRow } from "./OrderTableRow";
-// import { CartItemTableRow } from "./CartItemTableRow";
 
 interface Props {
   orders: IOrder[];
@@ -16,13 +15,14 @@ export const OrdersTable = ({ orders }: Props) => {
           highlightOnHover
           withRowBorders={false}
           verticalSpacing="sm"
-          visibleFrom="sm"
+          visibleFrom="md"
           bg="white"
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Order Ref(#)</Table.Th>
-              <Table.Th>Date</Table.Th>
+              <Table.Th>Order No.</Table.Th>
+              <Table.Th>Created</Table.Th>
+              <Table.Th>Updated</Table.Th>
               <Table.Th>Amount</Table.Th>
               <Table.Th>Status</Table.Th>
               <Table.Th>Details</Table.Th>

@@ -26,16 +26,18 @@ export const QuotesManager = ({ order }: Props) => {
         }}
       />
 
-      <CreateOrEditQuote
-        orderId={order.id}
-        contactName={order.contactName || ""}
-        email={order.email || ""}
-        phone={order.phone || ""}
-        mode={mode}
-        data={quote}
-        setMode={setMode}
-        setData={setQuote}
-      />
+      {["requested", "pending"].includes(order.status) && (
+        <CreateOrEditQuote
+          orderId={order.id}
+          contactName={order.contactName || ""}
+          email={order.email || ""}
+          phone={order.phone || ""}
+          mode={mode}
+          data={quote}
+          setMode={setMode}
+          setData={setQuote}
+        />
+      )}
     </div>
   );
 };

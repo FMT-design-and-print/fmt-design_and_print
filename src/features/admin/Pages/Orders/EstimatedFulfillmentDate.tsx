@@ -6,6 +6,7 @@ import { DateInput } from "@mantine/dates";
 import { IconCheck, IconPencil, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useAdminOrdersContext } from "./OrdersContext";
 
 interface Props {
   orderId: string;
@@ -21,6 +22,7 @@ export const EstimatedFulfillmentDate = ({
   const initialFulfillmentDate = defaultFulfillmentDate
     ? new Date(defaultFulfillmentDate)
     : null;
+  const { type } = useAdminOrdersContext();
   const [editFulfillmentDate, setEditFulfillmentDate] = useState(false);
   const [fulfillmentDate, setFulfillmentDate] = useState(
     initialFulfillmentDate
@@ -42,8 +44,9 @@ export const EstimatedFulfillmentDate = ({
 
     const supabase = createClient();
     setLoading(true);
+    const dbTableName = type === "orders" ? "orders" : "custom-orders";
     const { error } = await supabase
-      .from("custom-orders")
+      .from(dbTableName)
       .update({ estimatedFulfillmentDate: new Date(fulfillmentDate) })
       .eq("id", orderId);
 

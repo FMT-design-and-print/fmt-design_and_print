@@ -41,7 +41,7 @@ export const FileDownloader: React.FC<FileDownloaderProps> = ({
   };
 
   return (
-    <Group>
+    <Group style={{ overflowX: "hidden" }}>
       {fileNames.map((fileName) => (
         <Button
           key={fileName}

@@ -1,15 +1,15 @@
 import { NoItemsFound } from "@/components/NoItemsFound";
 import { formatOrderStatus, groupOrdersByStatus } from "@/functions/orders";
 import { ICustomOrder, IOrder, OrderStatus } from "@/types/order";
-import { Alert, LoadingOverlay, Tabs } from "@mantine/core";
-import { IconShoppingCart } from "@tabler/icons-react";
-import { useState } from "react";
+import { Alert, LoadingOverlay, Tabs, TextInput } from "@mantine/core";
+import { IconSearch, IconShoppingCart } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { OrdersCard } from "./OrdersCard";
 import { OrdersTable } from "./OrdersTable";
 import { AdminOrdersContext } from "./OrdersContext";
 
 export function OrdersTabs({
-  orders,
+  orders: allOrders,
   isLoading,
   error,
   statuses,
@@ -22,6 +22,26 @@ export function OrdersTabs({
   type: "orders" | "custom-orders";
 }) {
   const [activeTab, setActiveTab] = useState<OrderStatus | null>(statuses[0]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchedOrders, setSearchedOrders] = useState<
+    (IOrder | ICustomOrder)[]
+  >(allOrders || []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (searchTerm.trim().length >= 3) {
+        const foundOrders = allOrders.filter((order) => {
+          return order.orderId.includes(searchTerm);
+        });
+        setSearchedOrders(foundOrders);
+      } else {
+        setSearchedOrders(allOrders);
+      }
+    }, 1000);
+
+    // Cleanup function to clear the timeout
+    return () => clearTimeout(timeout);
+  }, [allOrders, searchTerm]);
 
   if (error) {
     return (
@@ -32,7 +52,9 @@ export function OrdersTabs({
     );
   }
 
-  const groupedOrders = orders ? groupOrdersByStatus(orders as IOrder[]) : {};
+  const groupedOrders = searchedOrders
+    ? groupOrdersByStatus(searchedOrders as IOrder[])
+    : {};
 
   return (
     <AdminOrdersContext.Provider value={{ type }}>
@@ -57,6 +79,15 @@ export function OrdersTabs({
 
           return (
             <Tabs.Panel value={status} key={status}>
+              <TextInput
+                my="xs"
+                size="xs"
+                placeholder="Search by order number E.g 7067545"
+                rightSection={<IconSearch size="1rem" />}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.currentTarget.value)}
+              />
+
               {orders.length === 0 ? (
                 <NoItemsFound
                   label={`No ${status} orders available`}

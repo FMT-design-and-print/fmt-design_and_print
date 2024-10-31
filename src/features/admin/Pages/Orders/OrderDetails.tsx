@@ -1,4 +1,6 @@
-import React from "react";
+import { CopyIcon } from "@/components/CopyIcon";
+import { getFormattedDurationFromNow } from "@/functions/durations";
+import { IOrder } from "@/types/order";
 import {
   Badge,
   Box,
@@ -10,14 +12,9 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IOrder } from "@/types/order";
-import { OrderItem } from "./OrderItem";
 import Link from "next/link";
-import {
-  getFormattedDaysToFuture,
-  getFormattedDurationFromNow,
-} from "@/functions/durations";
-import { CopyIcon } from "@/components/CopyIcon";
+import { EstimatedFulfillmentDate } from "./EstimatedFulfillmentDate";
+import { OrderItem } from "./OrderItem";
 
 export const OrderDetails = ({
   order,
@@ -67,7 +64,6 @@ export const OrderDetails = ({
             </Text>
           </Group>
         )}
-
         <Group my="sm">
           <Text size="sm">Order placed on: </Text>
           <Badge color="gray" size="sm">
@@ -78,25 +74,11 @@ export const OrderDetails = ({
           </Badge>
         </Group>
 
-        {fulfillmentDate && (
-          <Group my="sm">
-            <Text size="sm">Estimated Fulfillment Date: </Text>
-            <Badge color="gray" size="sm">
-              {fulfillmentDate.toDateString()}
-            </Badge>
-            {![
-              "delivered",
-              "completed",
-              "cancelled",
-              "pending-cancellation",
-            ].includes(order.status) && (
-              <Badge variant="light" color="gray" size="xs">
-                {getFormattedDaysToFuture(fulfillmentDate)}
-              </Badge>
-            )}
-          </Group>
-        )}
-
+        <EstimatedFulfillmentDate
+          orderId={order.id}
+          orderStatus={order.status}
+          defaultFulfillmentDate={fulfillmentDate}
+        />
         {order.deliveryDetails && (
           <>
             <Divider
@@ -152,7 +134,6 @@ export const OrderDetails = ({
             </Box>
           </>
         )}
-
         {order.items && (
           <>
             <Divider
@@ -165,11 +146,10 @@ export const OrderDetails = ({
             ))}
           </>
         )}
-
         <Textarea label="Note" rows={5} defaultValue={order.note} readOnly />
       </Drawer>
 
-      <Button onClick={open} variant="transparent" color="pink">
+      <Button onClick={open} variant="transparent" color="pink" size="xs">
         {label || "View"}
       </Button>
     </>

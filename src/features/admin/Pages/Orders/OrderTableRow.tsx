@@ -7,6 +7,7 @@ import { OrderStatusOptions } from "./OrderStatusOptions";
 import { CopyIcon } from "@/components/CopyIcon";
 import { useAdminOrdersContext } from "./OrdersContext";
 import { CustomOrderDetails } from "./CustomOrderDetails";
+import { dateOptions } from "@/constants";
 
 interface Props {
   order: IOrder | ICustomOrder;
@@ -15,6 +16,7 @@ interface Props {
 export const OrderTableRow = ({ order }: Props) => {
   const { type } = useAdminOrdersContext();
   const createdAt = new Date(order.created_at);
+  const updatedAt = order.updated_at ? new Date(order.updated_at) : createdAt;
 
   return (
     <Table.Tr>
@@ -27,11 +29,23 @@ export const OrderTableRow = ({ order }: Props) => {
         </Group>
       </Table.Td>
       <Table.Td>
-        <Text size="xs">
-          {createdAt.toDateString()} {createdAt.toLocaleTimeString()}
-        </Text>
-        <Badge size="xs" variant="dot" color="gray">
+        <Badge
+          size="xs"
+          variant="light"
+          color="gray"
+          title={createdAt.toLocaleString("en-US", dateOptions)}
+        >
           {getFormattedDurationFromNow(createdAt)}
+        </Badge>
+      </Table.Td>
+      <Table.Td>
+        <Badge
+          size="xs"
+          variant="light"
+          color="gray"
+          title={updatedAt.toLocaleString("en-US", dateOptions)}
+        >
+          {getFormattedDurationFromNow(updatedAt)}
         </Badge>
       </Table.Td>
       <Table.Td>
@@ -53,7 +67,7 @@ export const OrderTableRow = ({ order }: Props) => {
       </Table.Td>
       <Table.Td>
         {type === "custom-orders" ? (
-          <CustomOrderDetails order={order as ICustomOrder} />
+          <CustomOrderDetails order={order as unknown as ICustomOrder} />
         ) : (
           <OrderDetails order={order as IOrder} />
         )}

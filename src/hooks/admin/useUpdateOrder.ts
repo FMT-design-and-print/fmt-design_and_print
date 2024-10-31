@@ -8,9 +8,12 @@ export interface UpdateOrderArgs {
 
 export const supabase = createClient();
 
-export const updateOrder = async ({ orderId, update }: UpdateOrderArgs) => {
+export const updateOrder = async (
+  { orderId, update }: UpdateOrderArgs,
+  tableName: "orders" | "custom-orders"
+) => {
   const { error } = await supabase
-    .from("orders")
+    .from(tableName)
     .update(update)
     .eq("id", orderId);
 
@@ -23,9 +26,20 @@ export const useUpdateOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (args: UpdateOrderArgs) => updateOrder(args),
+    mutationFn: (args: UpdateOrderArgs) => updateOrder(args, "orders"),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders", "admin"] });
+    },
+  });
+};
+
+export const useUpdateCustomOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (args: UpdateOrderArgs) => updateOrder(args, "custom-orders"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["custom-orders", "admin"] });
     },
   });
 };

@@ -167,7 +167,7 @@ export const CustomOrderDetails = ({
         </Grid>
       </Drawer>
 
-      <Button onClick={open} variant="transparent" color="pink">
+      <Button onClick={open} variant="transparent" color="pink" size="xs">
         {label || "View"}
       </Button>
     </>
