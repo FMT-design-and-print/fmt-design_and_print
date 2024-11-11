@@ -3,14 +3,13 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { sentryDSN } from "./consts";
 
 Sentry.init({
-  dsn: "https://e9f1ac83331d489e18a8c4988c482555@o4508174533001216.ingest.de.sentry.io/4508174652145744",
+  dsn: sentryDSN,
 
   // Add optional integrations for additional features
-  integrations: [
-    Sentry.replayIntegration(),
-  ],
+  integrations: [Sentry.replayIntegration()],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,

@@ -1,9 +1,7 @@
-import React from "react";
-import { AdminLoginForm } from "./Form";
-import { cookies } from "next/headers";
+import { isAdminUser } from "@/functions/user";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { isAdminUser } from "@/functions/user";
+import { AdminLoginForm } from "./Form";
 
 const AdminLogin = async ({
   searchParams,
@@ -15,20 +13,19 @@ const AdminLogin = async ({
     error_description: string;
   };
 }) => {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (session) {
+  if (user) {
     if (searchParams.error === "access_denied") {
       supabase.auth.signOut();
       return redirect("/admin/login");
     }
 
-    if (isAdminUser(session.user)) {
+    if (isAdminUser(user)) {
       return redirect("/admin");
     }
 

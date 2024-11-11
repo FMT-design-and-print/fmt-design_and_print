@@ -1,11 +1,8 @@
 import { MyAccount } from "@/features/my-account";
 import { SavedItems } from "@/features/my-account/saved-items";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
-import { createClient } from "@/utils/supabase/server";
+import { verifyLoggedOutUser } from "@/lib/actions/user-check.actions";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import React from "react";
 
 export const metadata: Metadata = {
   title: "My Account | Saved Items | FMT Design and Print",
@@ -13,21 +10,11 @@ export const metadata: Metadata = {
 
 const SavedItemsPage = async () => {
   await redirectAdminUser();
-
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session || session == null) {
-    return redirect("/");
-  }
+  const user = await verifyLoggedOutUser();
 
   return (
     <div>
-      <MyAccount email={session.user.email || ""}>
+      <MyAccount email={user.email || ""}>
         <SavedItems savedItems={[]} />
       </MyAccount>
     </div>
