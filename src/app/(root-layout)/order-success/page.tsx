@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: {
-    reference: string;
-  };
+  reference: string;
 }
 
-const OrderSuccessPage = async ({ searchParams }: Props) => {
+const OrderSuccessPage = async (props: { searchParams: Promise<Props> }) => {
   await redirectAdminUser();
+
+  const searchParams = await props.searchParams;
 
   return (
     <div>

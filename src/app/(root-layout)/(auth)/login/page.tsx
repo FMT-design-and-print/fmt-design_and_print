@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Login | FMT Design and Print",
 };
 
-interface serachParamsoptions {
+interface SearchParamsOptions {
   message: string;
   messageStatus: MessageStatus;
   err_type?: string;
@@ -21,7 +21,7 @@ interface serachParamsoptions {
 }
 
 export default async function Signup(props: {
-  searchParams: Promise<serachParamsoptions>;
+  searchParams: Promise<SearchParamsOptions>;
 }) {
   await redirectAdminUser();
   await verifyLoggedInUser();

@@ -9,15 +9,17 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: {
-    message: string;
-    messageStatus: MessageStatus;
-  };
+  message: string;
+  messageStatus: MessageStatus;
 }
 
-const ResendConfirmLinkPage = async ({ searchParams }: Props) => {
+const ResendConfirmLinkPage = async (props: {
+  searchParams: Promise<Props>;
+}) => {
   await redirectAdminUser();
   await verifyLoggedInUser();
+
+  const searchParams = await props.searchParams;
 
   return (
     <>

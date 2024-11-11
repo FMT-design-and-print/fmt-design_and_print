@@ -10,15 +10,15 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: {
-    reference: string;
-  };
+  reference: string;
 }
 
-const CustomRequestSuccessPage = async ({
-  searchParams: { reference: orderId },
-}: Props) => {
+const CustomRequestSuccessPage = async (props: {
+  searchParams: Promise<Props>;
+}) => {
   await redirectAdminUser();
+
+  const searchParams = await props.searchParams;
 
   return (
     <Container className={classes.wrapper} size={1400}>
@@ -29,12 +29,13 @@ const CustomRequestSuccessPage = async ({
           </Title>
           <Text ta="center" c="dimmed">
             Thank you for your request. We will reach out to you with a final
-            quote shortly. Your request number is <b>#{orderId}</b>.
+            quote shortly. Your request number is{" "}
+            <b>#{searchParams.reference}</b>.
           </Text>{" "}
           <Group justify="center" mt="xl">
             <Button
               component={Link}
-              href={`/order-tracking/${orderId}`}
+              href={`/order-tracking/${searchParams.reference}`}
               size="sm"
               variant="default"
               color="gray"

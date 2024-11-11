@@ -3,16 +3,17 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { AdminLoginForm } from "./Form";
 
-const AdminLogin = async ({
-  searchParams,
-}: {
-  searchParams: {
-    message: string;
-    err_type?: string;
-    error: string;
-    error_description: string;
-  };
+interface SearchParamsOptions {
+  message: string;
+  err_type?: string;
+  error: string;
+  error_description: string;
+}
+
+const AdminLogin = async (props: {
+  searchParams: Promise<SearchParamsOptions>;
 }) => {
+  const searchParams = await props.searchParams;
   const supabase = await createClient();
 
   const {
