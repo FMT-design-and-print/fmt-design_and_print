@@ -1,7 +1,6 @@
 import { IQuote } from "@/types/quote";
 import { createClient } from "@/utils/supabase/server";
 import { Alert, Card, Center, Container, Text } from "@mantine/core";
-import { cookies } from "next/headers";
 import { Layout } from "./Layout";
 import { QuoteStatusRenderer } from "./QuoteStatusRenderer";
 
@@ -10,8 +9,7 @@ interface Props {
 }
 
 const QuotePage = async ({ params }: Props) => {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("quotes")

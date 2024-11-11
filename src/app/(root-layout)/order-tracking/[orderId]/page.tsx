@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 import { IconPackage } from "@tabler/icons-react";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -54,15 +53,11 @@ const OrderIdPage = async ({ params }: Props) => {
     );
   }
 
-  const cookieStore = cookies();
-  const supabase1 = createClient(cookieStore);
-
-  const cookieStore2 = cookies();
-  const supabase2 = createClient(cookieStore2);
+  const supabase = await createClient();
 
   const [ordersResponse, customOrdersResponse] = await Promise.all([
-    supabase1.from("orders").select(columns).in("orderId", orderNumbers),
-    supabase2.from("custom-orders").select(columns).in("orderId", orderNumbers),
+    supabase.from("orders").select(columns).in("orderId", orderNumbers),
+    supabase.from("custom-orders").select(columns).in("orderId", orderNumbers),
   ]);
 
   const { data: orders, error: ordersError } = ordersResponse;
