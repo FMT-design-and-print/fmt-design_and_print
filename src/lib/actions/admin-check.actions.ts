@@ -1,18 +1,16 @@
 "use server";
 import { isAdminUser } from "@/functions/user";
 import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function redirectAdminUser() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (session && isAdminUser(session.user)) {
+  if (user && isAdminUser(user)) {
     return redirect("/admin");
   }
 }

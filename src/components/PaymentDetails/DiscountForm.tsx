@@ -46,7 +46,7 @@ export function DiscountForm({ setDiscount, ...rest }: Props) {
         }
         {...rest}
       />
-      {message && <p className="px-4 pt-4 text-sm text-white">{message}</p>}
+      {message && <p className="px-4 pt-4 text-sm">{message}</p>}
     </>
   );
 }

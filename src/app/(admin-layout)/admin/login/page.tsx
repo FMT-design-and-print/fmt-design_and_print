@@ -1,34 +1,32 @@
-import React from "react";
-import { AdminLoginForm } from "./Form";
-import { cookies } from "next/headers";
+import { isAdminUser } from "@/functions/user";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { isAdminUser } from "@/functions/user";
+import { AdminLoginForm } from "./Form";
 
-const AdminLogin = async ({
-  searchParams,
-}: {
-  searchParams: {
-    message: string;
-    err_type?: string;
-    error: string;
-    error_description: string;
-  };
+interface SearchParamsOptions {
+  message: string;
+  err_type?: string;
+  error: string;
+  error_description: string;
+}
+
+const AdminLogin = async (props: {
+  searchParams: Promise<SearchParamsOptions>;
 }) => {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const searchParams = await props.searchParams;
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (session) {
+  if (user) {
     if (searchParams.error === "access_denied") {
       supabase.auth.signOut();
       return redirect("/admin/login");
     }
 
-    if (isAdminUser(session.user)) {
+    if (isAdminUser(user)) {
       return redirect("/admin");
     }
 

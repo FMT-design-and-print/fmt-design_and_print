@@ -1,7 +1,6 @@
 import { AdminLayout } from "@/features/admin";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const revalidate = 0;
@@ -11,25 +10,24 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     return redirect("/admin/login");
   }
 
-  if (session && session.user.user_metadata.userType !== "admin") {
+  if (user.user_metadata.userType !== "admin") {
     return redirect("/");
   }
 
   const { data: admins } = await supabase
     .from("admins")
     .select("email, confirmed")
-    .eq("email", session.user.email ?? "")
+    .eq("email", user.email ?? "")
     .returns<{ email: String; confirmed: boolean }[]>();
 
   if (!admins?.[0].confirmed) {
@@ -38,7 +36,7 @@ export default async function AdminPage() {
 
   return (
     <>
-      <AdminLayout user={session.user} />
+      <AdminLayout user={user} />
     </>
   );
 }

@@ -1,12 +1,11 @@
 "use client";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { authFailedMessage } from "@/constants";
-import { signIn } from "@/lib/actions/auth.actions";
+import { sendConfirmEmail, signIn } from "@/lib/actions/auth.actions";
 import { LoginDataSchema } from "@/lib/validations";
 import { useSession } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@mantine/core";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,6 +27,7 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<LoginData>({
     resolver: zodResolver(LoginDataSchema),
@@ -40,14 +40,14 @@ export const LoginForm = () => {
     const { session, error } = await signIn(data);
 
     if (error) {
-      const msg = "Email not confirmed";
       setIsLoading(false);
+      const msg = "Email not confirmed";
       if (error.message.toLowerCase() === msg.toLowerCase()) {
         setShowConfirmLink(true);
         return router.push(`/login?message=${msg}&${errorStatus}`);
       }
+
       setShowConfirmLink(false);
-      // TODO: Error logging
       return router.push(`/login?message=${authFailedMessage}&${errorStatus}`);
     }
 
@@ -66,6 +66,23 @@ export const LoginForm = () => {
 
     setIsLoading(false);
     reset({ email: data.email, password: "" });
+  };
+
+  const confirmEmail = async () => {
+    const { email, password } = getValues();
+    setIsLoading(true);
+    const json = await sendConfirmEmail(email, password);
+
+    if (json.error) {
+      setIsLoading(false);
+      return router.push(
+        `/login?message=Error sending confirmation code&${errorStatus}`
+      );
+    }
+
+    sessionStorage.setItem("emailForOTP", email);
+    reset();
+    return router.push("/verify-otp");
   };
 
   return (
@@ -100,17 +117,14 @@ export const LoginForm = () => {
         </div>
 
         <PrimaryButton type="submit">Sign in</PrimaryButton>
-        {showConfirmLink && (
-          <Button
-            component={Link}
-            href="/resend-confirm-link"
-            variant="outline"
-            color="gray"
-          >
-            Resend confirm link
-          </Button>
-        )}
       </form>
+      {showConfirmLink && (
+        <form action={confirmEmail}>
+          <Button type="submit" variant="outline" color="gray" w="100%" mt="md">
+            Confirm email
+          </Button>
+        </form>
+      )}
     </>
   );
 };

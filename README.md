@@ -30,7 +30,20 @@ There is `eslint-plugin-tailwindcss` which handles the organization of our tailw
 
 Also, there is the `eslint-config-prettier` which removes all ESLint rules that could conflict with Prettier.
 
-> NB: To test that prettier and eslint are working properly together, make sure to install ESLint and Prettier from the Extensions Marketplace
+NB: To test that prettier and eslint are working properly together, make sure to install ESLint and Prettier from the Extensions Marketplace
+
+## Required environment variables
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_STORAGE_BASE_URL`
+- `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY`
+- `RESEND_API_KEY`
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `SENTRY_AUTH_TOKEN`
+- `SENTRY_PROJECT_ID`
+- `SENTRY_PROJECT`
 
 ## Pull Request Guide
 

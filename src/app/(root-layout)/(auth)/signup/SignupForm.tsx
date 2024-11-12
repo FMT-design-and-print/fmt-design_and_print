@@ -7,12 +7,16 @@ import { z } from "zod";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signUpFailedMessage, userExistMessage } from "@/constants";
 
 type SignUpData = z.infer<typeof SignUpDataSchema>;
 
+const errorStatus = "messageStatus=error";
+
 export const SignupForm = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectPath = searchParams.get("redirect");
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -26,17 +30,36 @@ export const SignupForm = () => {
 
   const onSubmit = async (data: SignUpData) => {
     setIsLoading(true);
-    await signUp(data, redirectPath);
-    setIsLoading(false);
-    reset();
+
+    const json = await signUp(data, redirectPath);
+
+    if (json.error) {
+      setIsLoading(false);
+      const error = json.error;
+
+      if (error.code === "email_exists") {
+        return router.push(
+          `/signup?message=${userExistMessage}&${errorStatus}`
+        );
+      }
+      return router.push(
+        `/signup?message=${signUpFailedMessage}&${errorStatus}`
+      );
+    } else {
+      sessionStorage.setItem("emailForOTP", data.email);
+      reset();
+      return router.push("/verify-otp");
+    }
   };
 
   return (
     <>
       <LoadingOverlay visible={isLoading} />
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
         <div>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email" className="text-sm">
+            Email:
+          </label>
           <input
             id="email"
             className="simple-input"
@@ -49,7 +72,9 @@ export const SignupForm = () => {
           )}
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password" className="text-sm">
+            Password:
+          </label>
           <input
             id="password"
             className="simple-input"
@@ -62,7 +87,9 @@ export const SignupForm = () => {
           )}
         </div>
         <div>
-          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <label htmlFor="confirmPassword" className="text-sm">
+            Confirm Password:
+          </label>
           <input
             id="confirmPassword"
             className="simple-input"

@@ -1,8 +1,8 @@
-@tailwind components;
-@tailwind utilities;
-
 @import url("../styles/theme.css");
 @import url("../styles/tw-preflight.css");
+
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -48,6 +48,11 @@ body {
 
   .btn:hover {
     @apply bg-primary-600 !important;
+  }
+
+  .btn:disabled,
+  .btn[disabled] {
+    opacity: 0.3;
   }
 }
 

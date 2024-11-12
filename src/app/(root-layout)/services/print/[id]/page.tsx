@@ -9,15 +9,19 @@ import { Metadata } from "next";
 
 export const revalidate = 0;
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{
+  id: string;
+}>;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { id } = await params;
+
   const product: IPrintProduct = await client.fetch(singleProductQuery, {
-    id: params.id,
+    id,
   });
 
   return {
@@ -29,8 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const ProductDetailsPage = async ({ params: { id } }: Props) => {
+const ProductDetailsPage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
+  const { id } = await params;
 
   const product: IPrintProduct = await client.fetch(singleProductQuery, {
     id,

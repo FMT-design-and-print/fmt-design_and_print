@@ -1,42 +1,32 @@
 import { AuthCard } from "@/components/AuthCard";
-import { MessageStatus } from "@/types";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { Alert, Box, Divider } from "@mantine/core";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
-import { Metadata } from "next";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { verifyLoggedInUser } from "@/lib/actions/user-check.actions";
+import { MessageStatus } from "@/types";
+import { Alert, Box, Divider } from "@mantine/core";
+import { Metadata } from "next";
+import Link from "next/link";
 import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = {
   title: "Login | FMT Design and Print",
 };
 
-export default async function Signup({
-  searchParams,
-}: {
-  searchParams: {
-    message: string;
-    messageStatus: MessageStatus;
-    err_type?: string;
-    error: string;
-    error_description: string;
-  };
+interface SearchParamsOptions {
+  message: string;
+  messageStatus: MessageStatus;
+  err_type?: string;
+  error: string;
+  error_description: string;
+}
+
+export default async function Signup(props: {
+  searchParams: Promise<SearchParamsOptions>;
 }) {
   await redirectAdminUser();
+  await verifyLoggedInUser();
 
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    return redirect("/");
-  }
+  const searchParams = await props.searchParams;
 
   return (
     <>

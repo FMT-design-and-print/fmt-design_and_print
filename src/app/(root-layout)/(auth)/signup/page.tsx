@@ -1,41 +1,34 @@
 import { AuthCard } from "@/components/AuthCard";
-import { SignupForm } from "./SignupForm";
-import { MessageStatus } from "@/types";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
 import { GoogleAuthButton } from "@/components/GoogleAuthButton";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { verifyLoggedInUser } from "@/lib/actions/user-check.actions";
+import { MessageStatus } from "@/types";
 import { Divider } from "@mantine/core";
 import { Metadata } from "next";
-import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import Link from "next/link";
+import { SignupForm } from "./SignupForm";
 
 export const metadata: Metadata = {
   title: "Signup | FMT Design and Print",
 };
 
-export default async function Signup({
-  searchParams,
-}: {
-  searchParams: { message: string; messageStatus: MessageStatus };
+interface MessageOptions {
+  message: string;
+  messageStatus: MessageStatus;
+}
+
+export default async function Signup(props: {
+  searchParams: Promise<MessageOptions>;
 }) {
   await redirectAdminUser();
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    return redirect("/");
-  }
+  await verifyLoggedInUser();
+  const searchParams = await props.searchParams;
 
   return (
     <AuthCard title="Welcome, Sign Up" searchParams={searchParams}>
       <>
         <GoogleAuthButton />
-        <Divider label="Or Continue with" labelPosition="center" my="md" />
+        <Divider label="Or Continue with" labelPosition="center" my="sm" />
         <SignupForm />
         <div className="py-2">
           <Link href="/login" className=" text-sm">

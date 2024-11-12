@@ -11,15 +11,15 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: {
-    message: string;
-    messageStatus: MessageStatus;
-    error_code: string;
-  };
+  message: string;
+  messageStatus: MessageStatus;
+  error_code: string;
 }
 
-const ResetPassword = async ({ searchParams }: Props) => {
+const ResetPassword = async (props: { searchParams: Promise<Props> }) => {
   await redirectAdminUser();
+  const searchParams = await props.searchParams;
+
   const message = searchParams?.message;
   const messageStatus = searchParams.messageStatus as MessageStatus;
   const errorCode = searchParams?.error_code;

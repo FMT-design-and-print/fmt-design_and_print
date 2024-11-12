@@ -56,15 +56,17 @@ export function AdminUsersTable() {
           <TableActions />
         </Table.Td>
       ) : (
-        <ActionIcon
-          m="md"
-          variant="transparent"
-          color="gray.4"
-          size="sm"
-          h="100%"
-        >
-          <IconLock />
-        </ActionIcon>
+        <Table.Td>
+          <ActionIcon
+            mx="md"
+            variant="transparent"
+            color="gray.4"
+            size="sm"
+            h="100%"
+          >
+            <IconLock />
+          </ActionIcon>
+        </Table.Td>
       )}
     </Table.Tr>
   ));

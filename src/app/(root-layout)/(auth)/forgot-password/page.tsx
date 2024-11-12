@@ -1,35 +1,23 @@
-import { MessageStatus } from "@/types";
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { ForgotPassword } from "./ForgotPassword";
-import { Metadata } from "next";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { verifyLoggedInUser } from "@/lib/actions/user-check.actions";
+import { MessageStatus } from "@/types";
+import { Metadata } from "next";
+import { ForgotPassword } from "./ForgotPassword";
 
 export const metadata: Metadata = {
   title: "Forgot Password | FMT Design and Print",
 };
 
 interface Props {
-  searchParams: {
-    message: string;
-    messageStatus: MessageStatus;
-  };
+  message: string;
+  messageStatus: MessageStatus;
 }
 
-const ForgotPasswordPage = async ({ searchParams }: Props) => {
+const ForgotPasswordPage = async (props: { searchParams: Promise<Props> }) => {
   await redirectAdminUser();
+  await verifyLoggedInUser();
 
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    return redirect("/");
-  }
+  const searchParams = await props.searchParams;
 
   return (
     <>

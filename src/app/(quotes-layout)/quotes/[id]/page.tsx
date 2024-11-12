@@ -1,22 +1,21 @@
 import { IQuote } from "@/types/quote";
 import { createClient } from "@/utils/supabase/server";
 import { Alert, Card, Center, Container, Text } from "@mantine/core";
-import { cookies } from "next/headers";
 import { Layout } from "./Layout";
 import { QuoteStatusRenderer } from "./QuoteStatusRenderer";
 
-interface Props {
-  params: { id: string };
-}
+type Params = Promise<{
+  id: string;
+}>;
 
-const QuotePage = async ({ params }: Props) => {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+const QuotePage = async ({ params }: { params: Params }) => {
+  const { id } = await params;
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("quotes")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .returns<IQuote[]>();
 
   if (error) {

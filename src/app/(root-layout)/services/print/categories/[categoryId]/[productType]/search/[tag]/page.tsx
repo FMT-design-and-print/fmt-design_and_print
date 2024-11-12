@@ -7,40 +7,45 @@ import { productsByTagQuery } from "@/queries/products";
 import { IPrintProduct } from "@/types";
 import { Metadata } from "next";
 
-interface Props {
-  params: {
-    categoryId: string;
-    productType: string;
-    tag: string;
-  };
-}
+type Params = Promise<{
+  categoryId: string;
+  productType: string;
+  tag: string;
+}>;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { productType, tag } = await params;
   return {
-    title: `${decodeURIComponent(params.tag)} ${params.productType} | FMT Design and Print`,
+    title: `${decodeURIComponent(tag)} ${productType} | FMT Design and Print`,
   };
 }
 
-const CodingShirtsPage = async ({ params }: Props) => {
+const CodingShirtsPage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
 
+  const { categoryId, productType, tag } = await params;
+
   const products: IPrintProduct[] = await client.fetch(productsByTagQuery, {
-    slug: params.productType,
-    itemTag: formatString(decodeURIComponent(params.tag)),
+    slug: productType,
+    itemTag: formatString(decodeURIComponent(tag)),
   });
 
   const items = [
     { title: "Printing Services", href: "/services?st=print" },
     {
-      title: products[0]?.category.title || params.categoryId,
-      href: `/services/print/categories/${params.categoryId}`,
+      title: products[0]?.category.title || categoryId,
+      href: `/services/print/categories/${categoryId}`,
     },
     {
-      title: products[0]?.type.title || params.productType,
-      href: `/services/print/categories/${params.categoryId}/${params.productType}`,
+      title: products[0]?.type.title || productType,
+      href: `/services/print/categories/${categoryId}/${productType}`,
     },
     {
-      title: decodeURIComponent(params.tag),
+      title: decodeURIComponent(tag),
       href: ``,
     },
   ];

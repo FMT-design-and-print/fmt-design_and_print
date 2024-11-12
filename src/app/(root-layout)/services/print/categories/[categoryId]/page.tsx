@@ -10,37 +10,41 @@ import { Metadata } from "next";
 
 export const revalidate = 0;
 
-interface Props {
-  params: {
-    categoryId: string;
-  };
-}
+type Params = Promise<{
+  categoryId: string;
+}>;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { categoryId } = await params;
   return {
-    title: formatString(params.categoryId) + " | FMT Design and Print ",
+    title: formatString(categoryId) + " | FMT Design and Print ",
   };
 }
 
-const PrintCategoryPage = async ({ params }: Props) => {
+const PrintCategoryPage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
+  const { categoryId } = await params;
 
   const productTypes: IProductType[] = await client.fetch(
     filteredProductTypesQuery,
     {
-      slug: params.categoryId,
+      slug: categoryId,
     }
   );
 
   const products: IPrintProduct[] = await client.fetch(printProductsQuery, {
-    slug: params.categoryId,
+    slug: categoryId,
   });
 
   const items = [
     { title: "Printing Services", href: "/services?st=print" },
     {
       title: `${productTypes[0]?.category.title}`,
-      href: `/services/print/categories/${params.categoryId}`,
+      href: `/services/print/categories/${categoryId}`,
     },
   ];
 
