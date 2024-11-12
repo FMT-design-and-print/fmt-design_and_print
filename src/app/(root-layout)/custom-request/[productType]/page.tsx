@@ -8,22 +8,26 @@ import { Metadata } from "next";
 import { formatString } from "@/functions";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 
-interface Props {
-  params: {
-    productType: string;
-  };
-}
+type Params = Promise<{
+  productType: string;
+}>;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { productType } = await params;
   return {
-    title: formatString(params.productType),
+    title: formatString(productType),
   };
 }
 
-const CustomRequestPage = async ({ params }: Props) => {
+const CustomRequestPage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
+  const { productType } = await params;
 
-  const product = params.productType;
+  const product = productType;
 
   if (!productKeywords.includes(product)) {
     redirect("/custom-request");

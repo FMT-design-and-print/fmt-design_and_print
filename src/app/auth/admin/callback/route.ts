@@ -1,8 +1,7 @@
-import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { isAuthApiError } from "@supabase/supabase-js";
 import { invalidOrExpiredMsg } from "@/constants";
+import { createClient } from "@/utils/supabase/server";
+import { isAuthApiError } from "@supabase/supabase-js";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -13,8 +12,7 @@ export async function GET(request: Request) {
     return redirectBadCode(requestUrl, invalidOrExpiredMsg, "error");
   }
 
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
+  const supabase = await createClient();
 
   try {
     const { data } = await supabase.auth.exchangeCodeForSession(code);

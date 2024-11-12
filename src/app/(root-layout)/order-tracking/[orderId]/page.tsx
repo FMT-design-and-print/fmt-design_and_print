@@ -25,15 +25,15 @@ export const metadata: Metadata = {
 export const revalidate = 0;
 
 interface Props {
-  params: { orderId: string };
+  orderId: string;
 }
 const columns =
   "id, created_at, orderId, totalAmount, status, deliveryDetails, deliveryType, estimatedFulfillmentDate, updated_at";
 
-const OrderIdPage = async ({ params }: Props) => {
+const OrderIdPage = async (props: { params: Promise<Props> }) => {
   await redirectAdminUser();
 
-  const { orderId } = params;
+  const { orderId } = await props.params;
   const orderNumbers = orderId.split("-").map((x) => x.trim());
   const areAllowedNumbers = areAllowedOrderNumbers(orderNumbers);
 

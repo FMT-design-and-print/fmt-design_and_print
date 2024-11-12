@@ -12,26 +12,30 @@ import React from "react";
 
 export const revalidate = 0;
 
-interface Props {
-  params: {
-    categoryId: string;
-    productType: string;
-  };
-}
+type Params = Promise<{
+  categoryId: string;
+  productType: string;
+}>;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { productType } = await params;
   return {
-    title: formatString(params.productType) + " | FMT Design and Print",
+    title: formatString(productType) + " | FMT Design and Print",
   };
 }
 
-const ProductTypePage = async ({ params }: Props) => {
+const ProductTypePage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
+  const { productType, categoryId } = await params;
 
   const products: IPrintProduct[] = await client.fetch(
     printProductsByTypeQuery,
     {
-      slug: params.productType,
+      slug: productType,
     }
   );
 
@@ -39,11 +43,11 @@ const ProductTypePage = async ({ params }: Props) => {
     { title: "Printing Services", href: "/services?st=print" },
     {
       title: products[0]?.category.title,
-      href: `/services/print/categories/${params.categoryId}`,
+      href: `/services/print/categories/${categoryId}`,
     },
     {
       title: products[0]?.type.title,
-      href: `/services/print/categories/${params.categoryId}/${params.productType}`,
+      href: `/services/print/categories/${categoryId}/${productType}`,
     },
   ];
 
@@ -52,12 +56,12 @@ const ProductTypePage = async ({ params }: Props) => {
       <BreadcrumbRenderer items={items} />
       <Text ta="right" mx="xl" size="sm" py="md">
         Click{" "}
-        <Link href={`/custom-request/${params.productType}`}>
+        <Link href={`/custom-request/${productType}`}>
           <Text component="span" c="pink">
             here
           </Text>
         </Link>{" "}
-        to make custom {params.productType} print request.
+        to make custom {productType} print request.
       </Text>
 
       <ProductType products={products} />
