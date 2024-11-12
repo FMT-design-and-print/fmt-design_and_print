@@ -66,7 +66,11 @@ const QuoteCard = ({ quote, handleEditQuote }: QuoteCardProps) => {
             {quote.status === "active" && (
               <Group gap={4}>
                 <CopyButton
-                  value={window.location.origin + "/quotes/" + quote.id}
+                  value={
+                    typeof window !== "undefined"
+                      ? window.location.origin + "/quotes/" + quote.id
+                      : ""
+                  }
                   timeout={2000}
                 >
                   {({ copied, copy }) => (
