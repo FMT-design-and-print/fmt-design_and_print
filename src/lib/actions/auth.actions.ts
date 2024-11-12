@@ -12,6 +12,7 @@ import {
   ResetPasswordDataSchema,
   SignUpDataSchema,
 } from "../validations";
+import { headers } from "next/headers";
 
 type SignUpData = z.infer<typeof SignUpDataSchema>;
 type LoginData = z.infer<typeof LoginDataSchema>;
@@ -40,6 +41,9 @@ export const signIn = async (data: LoginData) => {
 };
 
 export const sendConfirmEmail = async (email: string, password: string) => {
+  const nextHeaders = await headers();
+  const origin = nextHeaders.get("origin");
+
   const requestOptions = {
     method: "POST",
     headers: {
@@ -48,7 +52,7 @@ export const sendConfirmEmail = async (email: string, password: string) => {
     body: JSON.stringify({ email, password }),
   };
 
-  const res = await fetch(`${process.env.BASE_URL}/api/signup`, requestOptions);
+  const res = await fetch(`${origin}/api/signup`, requestOptions);
   const json = await res.json();
   return json;
 };
