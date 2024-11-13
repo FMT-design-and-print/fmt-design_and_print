@@ -1,6 +1,7 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import { ProductType } from "@/features/services/ProductType";
 import { formatString } from "@/functions";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/lib/client";
 import { allProductsInCategoryByTagQuery } from "@/queries/products";
@@ -20,7 +21,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { categoryId, tag } = await params;
   return {
-    title: `${decodeURIComponent(tag)} ${categoryId} | FMT Design and Print`,
+    ...generateMetaDetails(
+      `${decodeURIComponent(tag)} ${categoryId} | FMT Design and Print`
+    ),
   };
 }
 

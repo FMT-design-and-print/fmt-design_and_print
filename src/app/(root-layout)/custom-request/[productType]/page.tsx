@@ -7,6 +7,7 @@ import { Banner } from "../Banner";
 import { Metadata } from "next";
 import { formatString } from "@/functions";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 
 type Params = Promise<{
   productType: string;
@@ -19,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { productType } = await params;
   return {
-    title: formatString(productType),
+    ...generateMetaDetails(formatString(productType)),
   };
 }
 

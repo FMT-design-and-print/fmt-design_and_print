@@ -1,6 +1,7 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import { ProductType } from "@/features/services/ProductType";
 import { formatString } from "@/functions";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/lib/client";
 import { printProductsByTypeQuery } from "@/queries/products";
@@ -24,7 +25,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { productType } = await params;
   return {
-    title: formatString(productType) + " | FMT Design and Print",
+    ...generateMetaDetails(
+      formatString(productType) + " | FMT Design and Print "
+    ),
   };
 }
 

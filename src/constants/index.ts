@@ -43,3 +43,32 @@ export const dateOptions: Intl.DateTimeFormatOptions = {
   second: "numeric",
   hour12: true,
 };
+
+export const authors = [{ name: "Shadrack Ankomahene" }];
+export const keywords = [
+  "Design",
+  "FMT",
+  "Printing",
+  "Graphic Design",
+  "Digital printing",
+  "Large format printing",
+  "T-Shirts",
+  "Engraving",
+  "Frames",
+  "Packaging",
+  "Cups",
+  "Mugs",
+  "Bottles",
+  "Labels",
+  "Souvenirs",
+  "Phone Cases",
+  "Pillows",
+  "Branding",
+  "Apparel",
+  "Clothes",
+  "Glasses",
+  "T-Shirts",
+];
+
+export const bannerImage =
+  "https://res.cloudinary.com/dnbmynikp/image/upload/v1715768873/FMT/FMT-meta-bg_wu3gjc.png";

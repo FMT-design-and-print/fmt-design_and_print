@@ -1,6 +1,7 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import { NotFound } from "@/components/NotFound";
 import { ProductDetails } from "@/features/product-details";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/lib/client";
 import { singleProductQuery } from "@/queries";
@@ -25,11 +26,7 @@ export async function generateMetadata({
   });
 
   return {
-    title: product?.title,
-    description: product?.description,
-    openGraph: {
-      images: [product.image],
-    },
+    ...generateMetaDetails(product?.title, product?.description, product.image),
   };
 }
 
