@@ -1,6 +1,7 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
 import PrintCategory from "@/features/services/PrintCategory";
 import { formatString } from "@/functions";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/lib/client";
 import { filteredProductTypesQuery } from "@/queries";
@@ -21,7 +22,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { categoryId } = await params;
   return {
-    title: formatString(categoryId) + " | FMT Design and Print ",
+    ...generateMetaDetails(
+      formatString(categoryId) + " | FMT Design and Print "
+    ),
   };
 }
 

@@ -1,7 +1,6 @@
 import { Footer } from "@/components/Footer";
-import { MetaHead } from "@/components/MetaHead";
 import { SessionProvider } from "@/components/SessionProvider";
-import { fmtDescription } from "@/constants";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import "@mantine/carousel/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -13,17 +12,13 @@ import { Inter } from "next/font/google";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Providers } from "../providers";
 import "../globals.css";
+import { Providers } from "../providers";
 import { Header } from "./quotes/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 const title = "Review Quote | FMT Design and Print";
-
-export const metadata: Metadata = {
-  title,
-  description: fmtDescription,
-};
+export const metadata: Metadata = generateMetaDetails(title);
 
 export default function RootLayout({
   children,
@@ -32,7 +27,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <MetaHead title={title} />
       <body className={inter.className}>
         <Providers>
           <Header />

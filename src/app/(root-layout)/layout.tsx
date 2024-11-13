@@ -1,9 +1,8 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { AdminHeader } from "@/components/Header/AdminHeader";
-import { MetaHead } from "@/components/MetaHead";
 import { SessionProvider } from "@/components/SessionProvider";
-import { fmtDescription } from "@/constants";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import "@mantine/carousel/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -20,12 +19,7 @@ import { Providers } from "../providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "FMT Design and Print — Design and Printing Services";
-
-export const metadata: Metadata = {
-  title,
-  description: fmtDescription,
-};
+export const metadata: Metadata = generateMetaDetails();
 
 export default function RootLayout({
   children,
@@ -34,7 +28,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <MetaHead title={title} />
       <body className={inter.className}>
         <Providers>
           <Header />
