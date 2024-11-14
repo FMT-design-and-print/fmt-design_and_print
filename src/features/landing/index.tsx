@@ -2,7 +2,7 @@
 // import { Faq } from "@/components/FAQ/FAQ";
 // import { Container } from "@mantine/core";
 // import { Hero } from "./Hero";
-import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
+// import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 import { IFeaturedProducts } from "@/types";
 import { Box } from "@mantine/core";
 
@@ -19,7 +19,7 @@ interface Props {
 export const Landing = ({
   featuredProducts = defaultFeaturedProducts,
 }: Props) => {
-  useSaveInitialUserDetails();
+  // useSaveInitialUserDetails();
 
   return (
     <Box my="xl">
