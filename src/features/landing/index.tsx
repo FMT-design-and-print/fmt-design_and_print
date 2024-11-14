@@ -1,6 +1,6 @@
 "use client";
-import { Container } from "@mantine/core";
-// import { Hero } from "./Hero";
+// import { Container } from "@mantine/core";
+import { Hero } from "./Hero";
 import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 import { IFeaturedProducts } from "@/types";
 
@@ -20,8 +20,8 @@ export const Landing = ({
   useSaveInitialUserDetails();
 
   return (
-    <Container size="xl">
-      {/* <Hero /> */}
+    <>
+      <Hero />
       {/* <Box p={{ base: "md", sm: "xl" }}>
         <Group my="xl" justify="space-between">
           <Title order={3} c="gray.8">
@@ -77,6 +77,6 @@ export const Landing = ({
       {/* <Box my="xl">
         <Faq isOverview />
       </Box> */}
-    </Container>
+    </>
   );
 };
