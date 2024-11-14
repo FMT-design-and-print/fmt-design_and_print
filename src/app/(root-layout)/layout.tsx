@@ -1,7 +1,4 @@
 import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { AdminHeader } from "@/components/Header/AdminHeader";
-import { SessionProvider } from "@/components/SessionProvider";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
 import "@mantine/carousel/styles.css";
 import "@mantine/core/styles.css";
@@ -12,7 +9,6 @@ import "@mantine/tiptap/styles.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Providers } from "../providers";
@@ -30,13 +26,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header />
-          <AdminHeader />
+          {/* <Header /> */}
+          {/* <AdminHeader /> */}
           {children}
           <Footer />
         </Providers>
-        <SessionProvider />
-        <ToastContainer />
+        {/* <SessionProvider /> */}
+        {/* <ToastContainer /> */}
       </body>
     </html>
   );
