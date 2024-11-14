@@ -28,7 +28,8 @@ export default function RootLayout({
         <Providers>
           {/* <Header /> */}
           {/* <AdminHeader /> */}
-          {children}
+          {/* {children} */}
+          <h1>Hello World</h1>
           <Footer />
         </Providers>
         {/* <SessionProvider /> */}
