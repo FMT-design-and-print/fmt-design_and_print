@@ -32,8 +32,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           <AdminHeader />
-          {/* {children} */}
-          <h1>Hello World</h1>
+          {children}
           <Footer />
         </Providers>
         <SessionProvider />
