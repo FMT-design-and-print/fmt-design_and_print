@@ -4,7 +4,7 @@
 // import { Hero } from "./Hero";
 // import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 import { IFeaturedProducts } from "@/types";
-import { Box } from "@mantine/core";
+// import { Box } from "@mantine/core";
 
 const defaultFeaturedProducts = {
   tShirts: [],
@@ -22,7 +22,7 @@ export const Landing = ({
   // useSaveInitialUserDetails();
 
   return (
-    <Box my="xl">
+    <div>
       Hello
       {/* <Hero /> */}
       {/* <Box p={{ base: "md", sm: "xl" }}>
@@ -79,6 +79,6 @@ export const Landing = ({
       {/* <Box my="xl">
         <Faq isOverview />
       </Box> */}
-    </Box>
+    </div>
   );
 };
