@@ -1,4 +1,5 @@
 "use client";
+import useOrigin from "@/hooks/useOrigin";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@mantine/core";
 import { redirect, useSearchParams } from "next/navigation";
@@ -6,13 +7,9 @@ import { FcGoogle } from "react-icons/fc";
 
 export const GoogleAuthButton = () => {
   const params = useSearchParams();
+  const origin = useOrigin();
   const next = params.get("redirect");
   const signInWithGoogle = async () => {
-    const origin =
-      typeof window !== "undefined" && window.location.origin
-        ? window.location.origin
-        : "http://localhost:3000";
-
     const redirectTo = next
       ? `${origin}/auth/callback?next=${next}`
       : `${origin}/auth/callback`;
