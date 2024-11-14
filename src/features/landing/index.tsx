@@ -1,8 +1,10 @@
 "use client";
+// import { Faq } from "@/components/FAQ/FAQ";
 // import { Container } from "@mantine/core";
-import { Hero } from "./Hero";
+// import { Hero } from "./Hero";
 import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 import { IFeaturedProducts } from "@/types";
+import { Box } from "@mantine/core";
 
 const defaultFeaturedProducts = {
   tShirts: [],
@@ -20,8 +22,9 @@ export const Landing = ({
   useSaveInitialUserDetails();
 
   return (
-    <>
-      <Hero />
+    <Box my="xl">
+      Hello
+      {/* <Hero /> */}
       {/* <Box p={{ base: "md", sm: "xl" }}>
         <Group my="xl" justify="space-between">
           <Title order={3} c="gray.8">
@@ -73,10 +76,9 @@ export const Landing = ({
           )}
         </Stack>
       </Box> */}
-
       {/* <Box my="xl">
         <Faq isOverview />
       </Box> */}
-    </>
+    </Box>
   );
 };
