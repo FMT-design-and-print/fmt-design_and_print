@@ -12,6 +12,10 @@ import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Providers } from "../providers";
+import { Header } from "@/components/Header";
+import { AdminHeader } from "@/components/Header/AdminHeader";
+import { SessionProvider } from "@/components/SessionProvider";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,14 +30,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          {/* <Header /> */}
-          {/* <AdminHeader /> */}
+          <Header />
+          <AdminHeader />
           {/* {children} */}
           <h1>Hello World</h1>
           <Footer />
         </Providers>
-        {/* <SessionProvider /> */}
-        {/* <ToastContainer /> */}
+        <SessionProvider />
+        <ToastContainer />
       </body>
     </html>
   );
