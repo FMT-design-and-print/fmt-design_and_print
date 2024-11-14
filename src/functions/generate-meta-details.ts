@@ -13,7 +13,6 @@ export const generateMetaDetails = (
     description: description || fmtDescription,
     authors,
     keywords,
-    colorScheme: "light",
     openGraph: {
       title: title || defaultTitle,
       description: description || fmtDescription,

@@ -1,3 +1,4 @@
+"use client";
 import { useQuotesByOrderId } from "@/hooks/admin/useQuotesByOrderId";
 import { IQuote } from "@/types/quote";
 import {
@@ -15,10 +16,11 @@ import { QuoteStatusRenderer } from "./QuoteStatusRenderer";
 import { QuoteMenu } from "./QuoteMenu";
 import { IconCheck, IconCopy, IconExternalLink } from "@tabler/icons-react";
 import Link from "next/link";
+import useOrigin from "@/hooks/useOrigin";
 
 interface Props {
   orderId: string;
-  handleEditQuote: (quote: IQuote) => void;
+  handleEditQuote?: (quote: IQuote) => void;
 }
 export const QuoteList = ({ orderId, handleEditQuote }: Props) => {
   const { quotes, isLoading, error } = useQuotesByOrderId(orderId);
@@ -50,10 +52,12 @@ export const QuoteList = ({ orderId, handleEditQuote }: Props) => {
 
 interface QuoteCardProps {
   quote: IQuote;
-  handleEditQuote: (quote: IQuote) => void;
+  handleEditQuote?: (quote: IQuote) => void;
 }
 
 const QuoteCard = ({ quote, handleEditQuote }: QuoteCardProps) => {
+  const origin = useOrigin();
+
   return (
     <Card shadow="xs" p="sm" my="sm" radius="sm" withBorder>
       <Group justify="space-between">
@@ -66,11 +70,7 @@ const QuoteCard = ({ quote, handleEditQuote }: QuoteCardProps) => {
             {quote.status === "active" && (
               <Group gap={4}>
                 <CopyButton
-                  value={
-                    typeof window !== "undefined"
-                      ? window.location.origin + "/quotes/" + quote.id
-                      : ""
-                  }
+                  value={origin ? origin + "/quotes/" + quote.id : ""}
                   timeout={2000}
                 >
                   {({ copied, copy }) => (
@@ -108,7 +108,7 @@ const QuoteCard = ({ quote, handleEditQuote }: QuoteCardProps) => {
           quoteId={quote.id}
           orderId={quote.order_id}
           status={quote.status}
-          editQuote={() => handleEditQuote(quote)}
+          editQuote={() => handleEditQuote?.(quote)}
         />
       </Group>
     </Card>
