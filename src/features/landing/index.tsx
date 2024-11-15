@@ -1,10 +1,12 @@
 "use client";
-// import { Faq } from "@/components/FAQ/FAQ";
-// import { Container } from "@mantine/core";
-// import { Hero } from "./Hero";
-// import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
+import { Box, Button, Container, Group, Stack, Title } from "@mantine/core";
+import { FaLongArrowAltRight } from "react-icons/fa";
+import { FeaturedItems } from "./FeaturedItems";
+import { Hero } from "./Hero";
+import Link from "next/link";
 import { IFeaturedProducts } from "@/types";
-// import { Box } from "@mantine/core";
+import { Faq } from "@/components/FAQ/FAQ";
+import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 
 const defaultFeaturedProducts = {
   tShirts: [],
@@ -19,13 +21,12 @@ interface Props {
 export const Landing = ({
   featuredProducts = defaultFeaturedProducts,
 }: Props) => {
-  // useSaveInitialUserDetails();
+  useSaveInitialUserDetails();
 
   return (
-    <div>
-      Hello
-      {/* <Hero /> */}
-      {/* <Box p={{ base: "md", sm: "xl" }}>
+    <Container size="xl">
+      <Hero />
+      <Box p={{ base: "md", sm: "xl" }}>
         <Group my="xl" justify="space-between">
           <Title order={3} c="gray.8">
             Shop Our Top Products
@@ -75,10 +76,11 @@ export const Landing = ({
             />
           )}
         </Stack>
-      </Box> */}
-      {/* <Box my="xl">
+      </Box>
+
+      <Box my="xl">
         <Faq isOverview />
-      </Box> */}
-    </div>
+      </Box>
+    </Container>
   );
 };
