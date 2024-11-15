@@ -1,28 +1,25 @@
 import { Landing } from "@/features/landing";
-// import { IFeaturedProducts } from "@/types";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
-// import { client } from "@/lib/client";
-// import { featuredProductsQuery } from "@/queries";
-
-const defaultFeaturedProducts = {
-  tShirts: [],
-  hoodies: [],
-  mugs: [],
-  frames: [],
-};
+import { client } from "@/lib/client";
+import { featuredProductsQuery } from "@/queries";
+import { IFeaturedProducts } from "@/types";
 
 export const revalidate = 0;
 
 export default async function Home() {
   await redirectAdminUser();
+  let featuredProducts: IFeaturedProducts[] = [];
 
-  // const featuredProducts: IFeaturedProducts[] = await client.fetch(
-  //   featuredProductsQuery
-  // );
+  try {
+    featuredProducts = await client.fetch(featuredProductsQuery);
+    console.log(featuredProducts);
+  } catch (error) {
+    console.error(error);
+  }
 
   return (
     <>
-      <Landing featuredProducts={defaultFeaturedProducts} />
+      <Landing featuredProducts={featuredProducts[0]} />
     </>
   );
 }
