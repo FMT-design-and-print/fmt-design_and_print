@@ -1,12 +1,24 @@
 "use client";
-import { Box, Button, Container, Group, Stack, Title } from "@mantine/core";
+import { Faq } from "@/components/FAQ/FAQ";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { useFeaturedProducts } from "@/hooks/useFeaturedProducts";
+import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
+import { IFeaturedProducts } from "@/types";
+import {
+  Box,
+  Button,
+  Container,
+  Group,
+  Notification,
+  rem,
+  Stack,
+  Title,
+} from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
+import Link from "next/link";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FeaturedItems } from "./FeaturedItems";
 import { Hero } from "./Hero";
-import Link from "next/link";
-import { IFeaturedProducts } from "@/types";
-import { Faq } from "@/components/FAQ/FAQ";
-import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 
 const defaultFeaturedProducts = {
   tShirts: [],
@@ -15,18 +27,27 @@ const defaultFeaturedProducts = {
   frames: [],
 };
 
-interface Props {
-  featuredProducts: IFeaturedProducts;
-}
-export const Landing = ({
-  featuredProducts = defaultFeaturedProducts,
-}: Props) => {
+export const Landing = () => {
   useSaveInitialUserDetails();
+  const { data: products, isLoading, isError } = useFeaturedProducts();
+  const featuredProducts: IFeaturedProducts =
+    products?.[0] || defaultFeaturedProducts;
 
   return (
     <Container size="xl">
       <Hero />
-      <Box p={{ base: "md", sm: "xl" }}>
+
+      <Box p={{ base: "md", sm: "xl" }} pos="relative">
+        <LoadingOverlay visible={isLoading} />
+        {isError && (
+          <Notification
+            icon={<IconX style={{ width: rem(20), height: rem(20) }} />}
+            color="red"
+            title="Error loading featured products"
+          >
+            An error occurred while fetching the featured products.
+          </Notification>
+        )}
         <Group my="xl" justify="space-between">
           <Title order={3} c="gray.8">
             Shop Our Top Products
