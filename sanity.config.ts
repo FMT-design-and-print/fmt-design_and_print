@@ -1,3 +1,4 @@
+"use client";
 /**
  * This configuration is used to for the Sanity Studio that’s mounted on the `\src\app\admin\568763\[[...index]]\page.tsx` route
  */
