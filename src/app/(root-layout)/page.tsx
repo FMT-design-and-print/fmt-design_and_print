@@ -2,20 +2,21 @@ import { Landing } from "@/features/landing";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/lib/client";
 import { featuredProductsQuery } from "@/queries";
-import { IFeaturedProducts } from "@/types";
+// import { IFeaturedProducts } from "@/types";
 
 export const revalidate = 0;
 
 export default async function Home() {
   await redirectAdminUser();
-  let featuredProducts: IFeaturedProducts[] = [];
+  // let featuredProducts: IFeaturedProducts[] = [];
 
-  try {
-    featuredProducts = await client.fetch(featuredProductsQuery);
-    console.log(featuredProducts);
-  } catch (error) {
-    console.error(error);
-  }
+  const [{ data: featuredProducts }] = await Promise.all([
+    client.fetch(featuredProductsQuery),
+  ]);
+
+  //  featuredProducts = products;
+
+  console.log(featuredProducts);
 
   return (
     <>
