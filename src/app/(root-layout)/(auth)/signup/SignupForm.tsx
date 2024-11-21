@@ -1,0 +1,110 @@
+"use client";
+import { signUp } from "@/lib/actions/auth.actions";
+import { SignUpDataSchema } from "@/lib/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { PrimaryButton } from "@/components/PrimaryButton";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signUpFailedMessage, userExistMessage } from "@/constants";
+
+type SignUpData = z.infer<typeof SignUpDataSchema>;
+
+const errorStatus = "messageStatus=error";
+
+export const SignupForm = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const redirectPath = searchParams.get("redirect");
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignUpData>({
+    resolver: zodResolver(SignUpDataSchema),
+  });
+
+  const onSubmit = async (data: SignUpData) => {
+    setIsLoading(true);
+
+    const json = await signUp(data, redirectPath);
+
+    if (json.error) {
+      setIsLoading(false);
+      const error = json.error;
+
+      if (error.code === "email_exists") {
+        return router.push(
+          `/signup?message=${userExistMessage}&${errorStatus}`
+        );
+      }
+      return router.push(
+        `/signup?message=${signUpFailedMessage}&${errorStatus}`
+      );
+    } else {
+      sessionStorage.setItem("emailForOTP", data.email);
+      reset();
+      return router.push("/verify-otp");
+    }
+  };
+
+  return (
+    <>
+      <LoadingOverlay visible={isLoading} />
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+        <div>
+          <label htmlFor="email" className="text-sm">
+            Email:
+          </label>
+          <input
+            id="email"
+            className="simple-input"
+            type="email"
+            placeholder="you@example.com"
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-sm text-red-400">{errors.email.message}</p>
+          )}
+        </div>
+        <div>
+          <label htmlFor="password" className="text-sm">
+            Password:
+          </label>
+          <input
+            id="password"
+            className="simple-input"
+            type="password"
+            placeholder="••••••••"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="text-sm text-red-400">{errors.password.message}</p>
+          )}
+        </div>
+        <div>
+          <label htmlFor="confirmPassword" className="text-sm">
+            Confirm Password:
+          </label>
+          <input
+            id="confirmPassword"
+            className="simple-input"
+            type="password"
+            placeholder="••••••••"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-red-400">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
+        <PrimaryButton type="submit">Sign up</PrimaryButton>
+      </form>
+    </>
+  );
+};
