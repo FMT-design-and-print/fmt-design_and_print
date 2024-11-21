@@ -1,0 +1,13 @@
+.cart-add-btn,
+.cart-add-btn:hover {
+  border: 1px solid var(--primary-500);
+  color: var(--primary-500);
+  background-color: transparent;
+}
+
+.cart-remove-btn,
+.cart-remove-btn:hover {
+  border: 1px solid var(--mantine-color-gray-5);
+  color: var(--mantine-color-gray-6);
+  background-color: transparent;
+}

@@ -1,21 +1,111 @@
-@tailwind base;
+@import url("../styles/theme.css");
+@import url("../styles/tw-preflight.css");
+
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --foreground-rgb: 0, 0, 0;
+  --primary-50: #f99cb6;
+  --primary-100: #f884a4;
+  --primary-200: #f76b92;
+  --primary-300: #f4396d;
+  --primary-400: #f2215b;
+  --primary-500: #f10849;
+  --primary-600: #d90742;
+  --primary-700: #c1063a;
+  --primary-800: #a90633;
+  --primary-900: #91052c;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary-light: rgba(248, 214, 223, 0.603);
+  --dark-blue: #080e23;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: white;
+}
+
+@layer utilities {
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+
+  .flex-start {
+    @apply flex justify-start items-center;
+  }
+
+  .btn {
+    @apply bg-primary-500 text-white px-4 !important;
+    transition: all 0.5s;
+  }
+
+  .btn:hover {
+    @apply bg-primary-600 !important;
+  }
+
+  .btn:disabled,
+  .btn[disabled] {
+    opacity: 0.3;
+  }
+}
+
+.no-focus {
+  @apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.mantine-Grid-inner {
+  margin: 0px !important;
+  width: 100% !important;
+}
+
+.printable-content {
+  display: none;
+}
+
+@media print {
+  .printable-content {
+    display: block;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .printable-content,
+  .printable-content * {
+    visibility: visible;
+  }
+
+  .printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 }
