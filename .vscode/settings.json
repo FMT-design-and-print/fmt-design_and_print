@@ -16,11 +16,13 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "cSpell.words": [
+    "Ankomahene",
     "aoykawim",
     "gildan",
     "lacoste",
     "Polybag",
     "Signup",
+    "supabase",
     "TSHIRT"
   ],
   "cssVariables.lookupFiles": [
@@ -29,5 +31,8 @@
     "**/*.sass",
     "**/*.less",
     "node_modules/@mantine/core/styles.css"
-  ]
+  ],
+  "[sqlite]": {
+    "editor.defaultFormatter": "remimarsal.prettier-now"
+  }
 }
