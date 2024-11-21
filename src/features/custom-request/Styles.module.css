@@ -1,9 +1,0 @@
-.disabled {
-  background-color: var(--mantine-color-gray-0);
-  border-color: var(--mantine-color-gray-2);
-  cursor: not-allowed;
-
-  & * {
-    color: var(--mantine-color-gray-5);
-  }
-}
