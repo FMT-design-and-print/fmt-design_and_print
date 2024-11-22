@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Card } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { OrderStatus } from "./OrderStatus";
+import { Channels } from "@/constants/channels";
 
 interface Props {
   orders: IOrder[];
@@ -15,7 +16,7 @@ export const OrderStatuses = ({ orders }: Props) => {
     const supabase = createClient();
 
     const orderChannel = supabase
-      .channel("orders-update-channel")
+      .channel(Channels.OrdersUpdate)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "orders" },
@@ -33,7 +34,7 @@ export const OrderStatuses = ({ orders }: Props) => {
       .subscribe();
 
     const customOrderChannel = supabase
-      .channel("custom-orders-update-channel")
+      .channel(Channels.CustomOrdersUpdate)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "custom-orders" },

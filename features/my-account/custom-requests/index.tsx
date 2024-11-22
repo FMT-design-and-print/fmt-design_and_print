@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { RequestsTable } from "./RequestsTable";
 import { createClient } from "@/utils/supabase/client";
 import { RequestsCard } from "./RequestsCard";
+import { Channels } from "@/constants/channels";
 
 interface Props {
   requests: Partial<ICustomOrder[]>;
@@ -21,7 +22,7 @@ export const CustomRequests = ({ requests = [] }: Props) => {
     const supabase = createClient();
 
     const channels = supabase
-      .channel("custom-request-update-channel")
+      .channel(Channels.CustomOrdersUpdate)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "custom-orders" },
