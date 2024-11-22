@@ -3,7 +3,10 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { PayButton } from "@/components/PaymentDetails/PayButton";
 import { shippingFeeByRegion } from "@/constants/gh-regions";
-import { calculateTotalPrice } from "@/functions";
+import {
+  calculateEstimatedFulfillmentDate,
+  calculateTotalPrice,
+} from "@/functions";
 import { useSession } from "@/store";
 import { useCart } from "@/store/cart";
 import { useCheckout } from "@/store/checkout";
@@ -65,6 +68,10 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           reference: ref.reference,
           deliveryDetails: shippingAddress,
           note: details.note,
+          estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
+            5,
+            new Date()
+          ),
         },
       ])
       .select();
