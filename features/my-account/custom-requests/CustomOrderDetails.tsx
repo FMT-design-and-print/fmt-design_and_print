@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { TextEditor } from "@/components/TextEditor";
 import { formatCamelCase, formatString, isLink } from "@/functions";
 import useSanitize from "@/hooks/useSanitize";

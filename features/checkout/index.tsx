@@ -1,21 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { PayButton } from "@/components/PaymentDetails/PayButton";
+import { shippingFeeByRegion } from "@/constants/gh-regions";
+import {
+  calculateEstimatedFulfillmentDate,
+  calculateTotalPrice,
+} from "@/functions";
+import { useSession } from "@/store";
+import { useCart } from "@/store/cart";
+import { useCheckout } from "@/store/checkout";
+import { IShippingAddress } from "@/types";
+import { createClient } from "@/utils/supabase/client";
 import { Alert, Box, Button, Card, Grid, Group, Text } from "@mantine/core";
+import { IconExclamationCircle } from "@tabler/icons-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { DeliveryInformation } from "./DeliveryInformation";
 import { PaymentDetails } from "./PaymentDetails";
 import { ReviewItems } from "./ReviewItems";
-import { useEffect, useState } from "react";
-import { useCart } from "@/store/cart";
-import { useCheckout } from "@/store/checkout";
-import { useRouter } from "next/navigation";
-import { IShippingAddress } from "@/types";
-import Link from "next/link";
-import { useSession } from "@/store";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { calculateTotalPrice } from "@/functions";
-import { createClient } from "@/utils/supabase/client";
-import { PayButton } from "@/components/PaymentDetails/PayButton";
-import { IconExclamationCircle } from "@tabler/icons-react";
-import { shippingFeeByRegion } from "@/constants/gh-regions";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -64,6 +68,10 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           reference: ref.reference,
           deliveryDetails: shippingAddress,
           note: details.note,
+          estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
+            5,
+            new Date()
+          ),
         },
       ])
       .select();
