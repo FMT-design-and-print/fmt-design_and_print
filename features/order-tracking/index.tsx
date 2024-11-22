@@ -58,7 +58,7 @@ export const OrderStatuses = ({ orders }: Props) => {
 
   return (
     <>
-      {newOrders.map((order, i) => (
+      {newOrders.map((order) => (
         <Card withBorder key={order.id} my="lg">
           <OrderStatus order={order} />
         </Card>
