@@ -193,3 +193,12 @@ export interface IMessage {
   status: "read" | "unread";
   metadata: object;
 }
+
+export interface IWebsiteSettings {
+  id: string;
+  created_at: Date;
+  userSectionUnderMaintenance: boolean;
+  userSectionUnderConstruction: boolean;
+  adminSectionUnderConstruction: boolean;
+  adminSectionUnderMaintenance: boolean;
+}
