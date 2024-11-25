@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Providers } from "../providers";
 import { Header } from "./quotes/Header";
+import AppBootstrap from "../bootstrap";
 
 const inter = Inter({ subsets: ["latin"] });
 const title = "Review Quote | FMT Design and Print";
@@ -29,9 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header />
-          {children}
-          <Footer />
+          <AppBootstrap>
+            <Header />
+            {children}
+            <Footer />
+          </AppBootstrap>
         </Providers>
         <SessionProvider />
         <ToastContainer />

@@ -1,4 +1,3 @@
-import { Footer } from "@/components/Footer";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
 import "@mantine/carousel/styles.css";
 import "@mantine/core/styles.css";
@@ -12,10 +11,11 @@ import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import { Providers } from "../providers";
-import { Header } from "@/components/Header";
-import { AdminHeader } from "@/components/Header/AdminHeader";
 import { SessionProvider } from "@/components/SessionProvider";
 import { ToastContainer } from "react-toastify";
+import AppBootstrap from "../bootstrap";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,10 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header />
-          <AdminHeader />
-          {children}
-          <Footer />
+          <AppBootstrap>
+            <Header />
+            {children}
+            <Footer />
+          </AppBootstrap>
         </Providers>
         <SessionProvider />
         <ToastContainer />
