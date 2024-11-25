@@ -1,11 +1,16 @@
 "use client";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { PrimaryButton } from "@/components/PrimaryButton";
-import { resetPassword } from "@/lib/actions/auth.actions";
+import { AuthCard } from "@/components/AuthCard";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { PrimaryButton } from "@/components/PrimaryButton";
+import { passwordResetFailedMessage, samePasswordMessage } from "@/constants";
+import { resetPassword } from "@/lib/actions/auth.actions";
+import { MessageStatus } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Alert, Button, Center } from "@mantine/core";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const Schema = z
   .object({
@@ -21,8 +26,20 @@ const Schema = z
 
 type Data = z.infer<typeof Schema>;
 
-export const PasswordResetForm = () => {
+const getPath = (message: string, status?: string) =>
+  `/reset-password?message=${message}&messageStatus=${status || "error"}`;
+
+interface Props {
+  searchParams: {
+    message: string;
+    messageStatus?: MessageStatus;
+  };
+}
+
+export const PasswordResetForm = ({ searchParams }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(true);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -33,12 +50,39 @@ export const PasswordResetForm = () => {
 
   const onSubmit = async (data: Data) => {
     setIsLoading(true);
-    await resetPassword(data);
+    const { error } = await resetPassword(data);
+
+    if (error) {
+      setIsLoading(false);
+      return error.message === samePasswordMessage
+        ? router.push(getPath(samePasswordMessage))
+        : router.push(getPath(passwordResetFailedMessage));
+    }
+
+    setResetSuccess(true);
     setIsLoading(false);
   };
 
+  if (resetSuccess) {
+    return (
+      <Center py="10rem">
+        <Alert color="green" my="xl">
+          Your password has been reset successfully.
+          <Button
+            variant="light"
+            color="pink"
+            onClick={() => router.push("/")}
+            mx="lg"
+          >
+            Log me in
+          </Button>
+        </Alert>
+      </Center>
+    );
+  }
+
   return (
-    <>
+    <AuthCard title="Reset Password" searchParams={searchParams}>
       <LoadingOverlay visible={isLoading} />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
@@ -72,6 +116,6 @@ export const PasswordResetForm = () => {
 
         <PrimaryButton type="submit">Reset</PrimaryButton>
       </form>
-    </>
+    </AuthCard>
   );
 };

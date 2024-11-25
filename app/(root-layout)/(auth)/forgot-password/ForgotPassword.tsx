@@ -7,6 +7,7 @@ import {
   unableToVerifyEmailMessage,
   userNotFoundMessage,
 } from "@/constants";
+import { sendResetEmail } from "@/functions/send-reset-password-email";
 import { MessageStatus } from "@/types";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,8 +34,7 @@ interface Props {
 }
 export const ForgotPassword = ({ searchParams }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { push } = useRouter();
-  const [linkSent, setLinkSent] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -59,81 +59,65 @@ export const ForgotPassword = ({ searchParams }: Props) => {
       .select("email, provider, confirmed")
       .eq("email", email);
 
-    if (err) {
-      // error encountered when loading user details
+    if (err || users?.length === 0) {
       setIsLoading(false);
-      return push(getPath(userNotFoundMessage));
-    }
-
-    if (users?.length === 0) {
-      // no user was found
-      setIsLoading(false);
-      return push(getPath(userNotFoundMessage));
+      return router.push(getPath(userNotFoundMessage));
     }
 
     if (users && users[0].confirmed === false) {
       // User is not confirmed
       setIsLoading(false);
-      return push(getPath(unableToVerifyEmailMessage));
+      return router.push(getPath(unableToVerifyEmailMessage));
     }
 
     if (users && users[0].provider?.toLowerCase() !== "email") {
       // User signed up using OAuth
       setIsLoading(false);
-      return push(getPath(OAuthResetFailedMessage));
+      return router.push(getPath(OAuthResetFailedMessage));
     }
 
-    // reset the password, after user is verified to exist
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${location.origin}/auth/callback?next=/reset-password`,
-    });
-    setIsLoading(false);
+    const { error } = await sendResetEmail(email);
 
     if (error) {
-      return push(getPath(unableToVerifyEmailMessage));
+      setIsLoading(false);
+      router.push(
+        getPath("Unable to send password reset code. Try again later")
+      );
+    } else {
+      sessionStorage.setItem("emailForOTP", email);
+      reset();
+      return router.push("/verify-otp?redirect=/reset-password");
     }
-    reset();
-    setLinkSent(true);
   };
 
   return (
     <>
-      {linkSent ? (
-        <p className="mx-8 my-6 mb-1 bg-blue-200 px-4 py-2 text-center text-blue-600">
-          Password reset link has been sent to your email. Follow to reset your
-          password
-        </p>
-      ) : (
-        <AuthCard title="Forgotten Password?" searchParams={searchParams}>
-          <LoadingOverlay visible={isLoading} />
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <div>
-              <label htmlFor="email" className="text-sm leading-10">
-                Enter email address to reset your password
-              </label>
-              <input
-                id="email"
-                className="simple-input"
-                type="email"
-                placeholder="you@example.com"
-                {...register("email")}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-400">{errors.email.message}</p>
-              )}
-            </div>
-            <PrimaryButton type="submit">Continue</PrimaryButton>
-          </form>
+      <AuthCard title="Forgotten Password?" searchParams={searchParams}>
+        <LoadingOverlay visible={isLoading} />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div>
+            <label htmlFor="email" className="text-sm leading-10">
+              Enter email address to reset your password
+            </label>
+            <input
+              id="email"
+              className="simple-input"
+              type="email"
+              placeholder="you@example.com"
+              {...register("email")}
+            />
+            {errors.email && (
+              <p className="text-sm text-red-400">{errors.email.message}</p>
+            )}
+          </div>
+          <PrimaryButton type="submit">Continue</PrimaryButton>
+        </form>
 
-          <Space h="sm" />
-          <Link href="/login" className="my-4 text-sm text-gray-400">
-            I Remember my password. Login
-          </Link>
-        </AuthCard>
-      )}
+        <Space h="sm" />
+        <Link href="/login" className="my-4 text-sm text-gray-400">
+          I Remember my password. Login
+        </Link>
+      </AuthCard>
     </>
   );
 };

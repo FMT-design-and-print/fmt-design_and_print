@@ -1,8 +1,4 @@
 "use server";
-import {
-  passwordResetFailedMessage,
-  passwordResetSuccessMessage,
-} from "@/constants";
 import { UserType } from "@/types/user";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
@@ -81,17 +77,11 @@ export const resetPassword = async (data: ResetData) => {
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.updateUser({
+  const res = await supabase.auth.updateUser({
     password,
   });
 
-  if (error) {
-    return redirect(
-      `/reset-password?message=${passwordResetFailedMessage}&messageStatus=error`
-    );
-  }
-
-  redirect(`/login?message=${passwordResetSuccessMessage}&messageStatus=info`);
+  return res;
 };
 
 export const signOut = async (userType?: UserType) => {
