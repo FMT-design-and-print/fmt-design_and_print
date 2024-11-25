@@ -1,5 +1,8 @@
 "use client";
-import { FlexLayout } from "@/components/FlexLayout";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { generatePassword } from "@/functions";
+import { validateForm } from "@/functions/validate-form";
+import { createAdminClient, createClient } from "@/utils/supabase/client";
 import {
   Avatar,
   Box,
@@ -15,16 +18,12 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { adminRoles } from "../../adminRoles";
-import { useEffect, useState } from "react";
-import { generatePassword } from "@/functions";
-import { AvatarGenerator } from "random-avatar-generator";
-import { ZodSchema, z } from "zod";
-import { validateForm } from "@/functions/validate-form";
-import { createAdminClient, createClient } from "@/utils/supabase/client";
-import { toast } from "react-toastify";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useQueryClient } from "@tanstack/react-query";
+import { AvatarGenerator } from "random-avatar-generator";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { ZodSchema, z } from "zod";
+import { adminRoles } from "../../adminRoles";
 
 export const schema: ZodSchema = z.object({
   role: z.string(),
@@ -161,18 +160,19 @@ export const CreateNewAdminUser = () => {
 
       <Title order={3}>Create New Admin User</Title>
       <Divider my="sm" />
+      <Card withBorder w={{ base: "100%", md: "500px" }}>
+        <Select
+          defaultValue="editor"
+          label="Role"
+          data={adminRoles}
+          value={role}
+          onChange={(value) => setRole(value || "editor")}
+          error={errors?.role}
+        />
+        <Space my="xs" />
 
-      <Select
-        defaultValue="editor"
-        label="Role"
-        data={adminRoles}
-        value={role}
-        onChange={(value) => setRole(value || "editor")}
-        error={errors?.role}
-      />
-      <Space my="lg" />
-      <FlexLayout grow>
         <TextInput
+          size="sm"
           label="Email Address"
           description="Enter a valid email address"
           type="email"
@@ -181,8 +181,11 @@ export const CreateNewAdminUser = () => {
           onChange={(e) => setEmail(e.target.value)}
           error={errors?.email}
         />
+        <Space my="xs" />
+
         <Flex align="flex-end" gap={4}>
           <PasswordInput
+            size="sm"
             label="Password"
             description="Generate a temporal password"
             placeholder="Password"
@@ -200,56 +203,61 @@ export const CreateNewAdminUser = () => {
             Generate
           </Button>
         </Flex>
-      </FlexLayout>
-      <Space my="lg" />
-      <FlexLayout grow>
+        <Space my="xs" />
+
         <TextInput
+          size="sm"
           label="First Name"
           placeholder="John"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           error={errors?.firstName}
         />
+        <Space my="xs" />
+
         <TextInput
+          size="sm"
           label="Last Name"
           placeholder="Comrah"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           error={errors?.lastName}
         />
-      </FlexLayout>
-      <Space my="lg" />
-      <Flex gap={16} align="flex-end">
-        <Card withBorder p="xs">
-          <Avatar src={avatar} size="lg" />
-        </Card>
-        <TextInput
-          label="Avatar"
-          placeholder="avatar url"
-          value={avatar}
-          onChange={(e) => setAvatar(e.target.value)}
-          rightSection={
+        <Space my="xs" />
+
+        <Flex gap={16} align="flex-end">
+          <Card withBorder p="xs">
+            <Avatar src={avatar} size="lg" />
+          </Card>
+          <Flex align="flex-end" gap={4} style={{ flex: 1 }}>
+            <TextInput
+              size="sm"
+              label="Avatar"
+              placeholder="avatar url"
+              value={avatar}
+              onChange={(e) => setAvatar(e.target.value)}
+              style={{ flex: 1 }}
+              error={errors?.avatar}
+            />
             <Button size="sm" onClick={generateAvatar} color="gray">
               Generate
             </Button>
-          }
-          rightSectionWidth={100}
-          style={{ flex: 1 }}
-          error={errors?.avatar}
-        />
-      </Flex>
-      <Space my="xl" />
-      <Group justify="space-between">
-        <Checkbox
-          label="Send Email to User"
-          color="pink"
-          checked={sendMail}
-          onChange={(e) => setSendMail(e.target.checked)}
-        />
-        <Button className="btn" miw={200} onClick={handleCreateNewAdminUser}>
-          Create User
-        </Button>
-      </Group>
+          </Flex>
+        </Flex>
+        <Space my="xs" />
+
+        <Group justify="space-between">
+          <Checkbox
+            label="Send Email to User"
+            color="pink"
+            checked={sendMail}
+            onChange={(e) => setSendMail(e.target.checked)}
+          />
+          <Button className="btn" miw={200} onClick={handleCreateNewAdminUser}>
+            Create User
+          </Button>
+        </Group>
+      </Card>
     </Box>
   );
 };

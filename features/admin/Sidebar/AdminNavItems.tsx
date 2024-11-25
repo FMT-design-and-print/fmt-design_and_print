@@ -21,6 +21,7 @@ import { IAdminNavItems } from "@/types";
 import { AdminUsers } from "../Pages/AdminUsers";
 import { UserPermission } from "@/types/roles";
 import { Services } from "../Pages/Services";
+import MyAccount from "../Pages/MyAccount";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -144,7 +145,7 @@ export const adminNavItems: IAdminNavItems[] = [
     label: "My Account",
     icon: <IconUserCog />,
     isVisible: true,
-    component: <>My Account</>,
+    component: <MyAccount />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
 ];

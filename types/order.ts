@@ -18,10 +18,9 @@ export type DeliveryType = "pickup" | "delivery";
 export type GHRegion = (typeof regionsInGhana)[number];
 export type DiscountType = "percent" | "fixed-amount" | "bulk";
 
-export interface IOrderItem extends ICartItem {}
-
+export type IOrderItem = ICartItem;
 interface CommonOrderDetails {
-  id: any;
+  id: string;
   created_at: Date;
   updated_at?: Date;
   orderId: string;
