@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Channels } from "@/constants/channels";
 import { statusColor } from "@/constants/status-colors";
 import { formatOrderStatus } from "@/functions/orders";
 import { OrderStatus } from "@/types/order";
 import { createClient } from "@/utils/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const supabase = createClient();
 
@@ -22,70 +25,107 @@ const orderTableMap = {
   custom_orders: "Custom Orders",
 };
 
-async function getOrderCountByStatus() {
-  const { data, error } = await supabase
-    .rpc<any, null>("get_order_count_by_status")
-    .returns<StatusStat[]>();
+async function fetchRpc<T>(rpcName: string): Promise<T[]> {
+  const { data, error } = await supabase.rpc<any, null>(rpcName).returns<T[]>();
 
   if (error) {
     // TODO: send to sentry
-    return { orders: [], customOrders: [] };
-  }
-
-  const result = data.map((stat) => ({
-    source_table: stat.source_table,
-    title: formatOrderStatus(stat.status),
-    value: stat.count,
-    color: statusColor[stat.status],
-  }));
-
-  const orders = result.filter((item) => item.source_table === "orders");
-  const customOrders = result.filter(
-    (item) => item.source_table === "custom-orders"
-  );
-
-  return { orders, customOrders };
-}
-
-async function getTotalOrderCount() {
-  const { data, error } = await supabase
-    .rpc<any, null>("get_total_order_count")
-    .returns<OrderTableStat[]>();
-
-  if (error) {
-    // TODO: send to sentry
+    console.error(`${rpcName} error:`, error.message);
     return [];
   }
 
-  return data.map((stat) => ({
-    title: orderTableMap[stat.table_name],
-    value: stat.count,
-  }));
+  return data;
+}
+
+function useRealtimeSubscription(
+  tables: { tableName: string; channel: string }[],
+  queryKeyArr: string[]
+) {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const handleTableChange = () => {
+      queryClient.invalidateQueries({ queryKey: queryKeyArr });
+    };
+
+    const channels = tables.map((table) =>
+      supabase
+        .channel(table.channel)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: table.tableName },
+          handleTableChange
+        )
+        .subscribe()
+    );
+
+    return () => {
+      channels.forEach((channel) => supabase.removeChannel(channel));
+    };
+  }, [queryKeyArr, tables, queryClient]);
 }
 
 export const useOrderCountByStatus = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["order-count-by-status", "admin"],
-    queryFn: () => getOrderCountByStatus(),
+    queryFn: async () => {
+      const data = await fetchRpc<StatusStat>("get_order_count_by_status");
+
+      const result = data.map((stat) => ({
+        source_table: stat.source_table,
+        title: formatOrderStatus(stat.status),
+        value: stat.count,
+        color: statusColor[stat.status],
+      }));
+
+      return {
+        orders: result.filter((item) => item.source_table === "orders"),
+        customOrders: result.filter(
+          (item) => item.source_table === "custom-orders"
+        ),
+      };
+    },
   });
 
+  useRealtimeSubscription(
+    [
+      { tableName: "orders", channel: Channels.OrdersCountByStatus },
+      {
+        tableName: "custom-orders",
+        channel: Channels.CustomOrdersCountByStatus,
+      },
+    ],
+    ["order-count-by-status", "admin"]
+  );
+
   return {
-    orders: data?.orders,
-    customOrders: data?.customOrders,
+    orders: data?.orders ?? [],
+    customOrders: data?.customOrders ?? [],
     error,
     isLoading,
   };
 };
 
+// Hook for fetching and subscribing to total order counts
 export const useOrderCount = () => {
-  const {
-    data: orders,
-    error,
-    isLoading,
-  } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ["order-count", "admin"],
-    queryFn: () => getTotalOrderCount(),
+    queryFn: async () =>
+      await fetchRpc<OrderTableStat>("get_total_order_count").then((data) =>
+        data.map((stat) => ({
+          title: orderTableMap[stat.table_name],
+          value: stat.count,
+        }))
+      ),
   });
 
-  return { orders, error, isLoading };
+  useRealtimeSubscription(
+    [
+      { tableName: "orders", channel: Channels.OrdersCount },
+      { tableName: "custom-orders", channel: Channels.CustomOrdersCount },
+    ],
+    ["order-count", "admin"]
+  );
+
+  return { orders: data ?? [], error, isLoading };
 };

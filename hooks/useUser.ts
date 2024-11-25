@@ -3,7 +3,7 @@ import { IUserDetails } from "@/types/user";
 import { createClient } from "@/utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
-const eAP: Promise<IUserDetails[]> = new Promise((resolve, _reject) => {
+const eAP: Promise<IUserDetails[]> = new Promise((resolve) => {
   resolve([]);
 });
 
