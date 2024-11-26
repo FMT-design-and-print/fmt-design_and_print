@@ -13,6 +13,8 @@ export const passwordResetFailedMessage =
 export const unableToVerifyEmailMessage = "Unable to verify your email address";
 export const passwordResetSuccessMessage =
   "Your Password has been reset successfully. Sign in.";
+export const samePasswordMessage =
+  "New password should be different from the old password.";
 export const userNotFoundMessage = "Could not find user with this email.";
 export const OAuthResetFailedMessage = "Cannot reset password for this user.";
 export const alreadyConfirmedMsg = "This email has already been confirmed";

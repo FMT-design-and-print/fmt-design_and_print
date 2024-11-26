@@ -1,8 +1,7 @@
 import { isAdminUser } from "@/functions/user";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { AdminLoginForm } from "./Form";
-import { Alert, Center } from "@mantine/core";
+import { NewAdminUserLoginForm } from "./Form";
 
 interface SearchParamsOptions {
   message: string;
@@ -27,21 +26,24 @@ const AdminLogin = async (props: {
       return redirect("/admin/login");
     }
 
-    if (isAdminUser(user)) {
-      return redirect("/admin");
+    if (!isAdminUser(user)) {
+      return redirect("/");
     }
 
-    return redirect("/");
+    const { data: admins } = await supabase
+      .from("admins")
+      .select("email, confirmed")
+      .eq("email", user.email ?? "")
+      .returns<{ email: string; confirmed: boolean }[]>();
+
+    if (admins?.[0].confirmed) {
+      return redirect("/admin");
+    }
   }
 
   return (
     <>
-      <AdminLoginForm />
-      <Center>
-        {searchParams.err_type === "bad_code" && searchParams.message && (
-          <Alert color="gray">{searchParams.message}</Alert>
-        )}
-      </Center>
+      <NewAdminUserLoginForm />
     </>
   );
 };

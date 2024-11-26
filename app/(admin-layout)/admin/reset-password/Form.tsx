@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import {
   Alert,
   Button,
+  Center,
   Container,
   Group,
   LoadingOverlay,
@@ -16,13 +17,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function AdminLoginForm() {
+export function AdminResetPasswordForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
   const [resetSuccess, setResetSuccess] = useState(false);
+
+  const supabase = createClient();
 
   const handleSubmit = async () => {
     if (password.trim() === "") {
@@ -33,8 +36,6 @@ export function AdminLoginForm() {
       return setErrorMsg("Passwords do not match");
     }
 
-    const supabase = createClient();
-
     setIsLoading(true);
     const { error } = await supabase.auth.updateUser({
       password,
@@ -42,6 +43,11 @@ export function AdminLoginForm() {
 
     if (error) {
       setIsLoading(false);
+
+      if (error.code === "same_password") {
+        return setErrorMsg("New password cannot be the same as the old one");
+      }
+
       return setErrorMsg(passwordResetFailedMessage);
     }
 
@@ -66,12 +72,19 @@ export function AdminLoginForm() {
 
   if (resetSuccess) {
     return (
-      <Alert color="green" my="xl">
-        Your password has been reset successfully.
-        <Button variant="light" onClick={() => router.push("/admin")}>
-          Log me in
-        </Button>
-      </Alert>
+      <Center py="10rem">
+        <Alert color="green" my="xl">
+          Your password has been reset successfully.
+          <Button
+            variant="light"
+            color="pink"
+            onClick={() => router.push("/admin")}
+            mx="lg"
+          >
+            Log me in
+          </Button>
+        </Alert>
+      </Center>
     );
   }
   return (

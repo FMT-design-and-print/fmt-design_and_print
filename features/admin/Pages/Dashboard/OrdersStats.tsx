@@ -4,6 +4,7 @@ import {
   useOrderCountByStatus,
 } from "@/hooks/admin/useOrderCounts";
 import {
+  Badge,
   Card,
   DefaultMantineColor,
   Group,
@@ -24,8 +25,8 @@ type Data = {
 interface StatRendererProps {
   data: Data[];
   bgColor?: StyleProp<DefaultMantineColor>;
-  textColor?: StyleProp<DefaultMantineColor>;
   titleColor?: StyleProp<DefaultMantineColor>;
+  showBadge?: boolean;
 }
 
 export function OrdersStats() {
@@ -43,9 +44,8 @@ export function OrdersStats() {
         <SimpleGrid cols={{ base: 1, xs: 2 }}>
           <StatRenderer
             data={orders || []}
-            bgColor="pink.8"
-            textColor="white"
-            titleColor="gray.2"
+            titleColor="pink.8"
+            showBadge={false}
           />
         </SimpleGrid>
       </Card>
@@ -78,20 +78,25 @@ export function OrdersStats() {
 const StatRenderer = ({
   data,
   bgColor,
-  textColor,
   titleColor,
+  showBadge = true,
 }: StatRendererProps) =>
   data.map((stat) => {
     return (
-      <Paper withBorder p="sm" radius="md" key={stat.title} bg={bgColor}>
-        <Text size="xs" c={stat.color || titleColor || "dimmed"}>
+      <Paper withBorder shadow="sm" p="sm" key={stat.title} bg={bgColor}>
+        <Text size="xs" c={titleColor || "dimmed"}>
           {stat.title}
         </Text>
 
-        <Group align="flex-end" gap="xs" mt="xs">
-          <Text size="lg" fw="bold" c={stat.color || textColor}>
+        <Group justify="space-between" gap="xs" mt="xs">
+          <Text size="lg" fw="bold">
             {stat.value}
           </Text>
+          {showBadge && (
+            <Badge size="xs" color={stat.color} variant="light">
+              {stat.title}
+            </Badge>
+          )}
         </Group>
       </Paper>
     );

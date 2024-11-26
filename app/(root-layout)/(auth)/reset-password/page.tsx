@@ -1,10 +1,9 @@
-import { AuthCard } from "@/components/AuthCard";
-import { PasswordResetForm } from "./PasswordResetForm";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { MessageStatus } from "@/types";
-import Link from "next/link";
 import { Button } from "@mantine/core";
 import { Metadata } from "next";
-import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import Link from "next/link";
+import { PasswordResetForm } from "./PasswordResetForm";
 
 export const metadata: Metadata = {
   title: "Reset Password | FMT Design and Print",
@@ -20,7 +19,7 @@ const ResetPassword = async (props: { searchParams: Promise<Props> }) => {
   await redirectAdminUser();
   const searchParams = await props.searchParams;
 
-  const message = searchParams?.message;
+  const message = searchParams?.message || "";
   const messageStatus = searchParams.messageStatus as MessageStatus;
   const errorCode = searchParams?.error_code;
 
@@ -40,12 +39,7 @@ const ResetPassword = async (props: { searchParams: Promise<Props> }) => {
           </Link>
         </div>
       ) : (
-        <AuthCard
-          title="Reset Password"
-          searchParams={{ message: message || "", messageStatus }}
-        >
-          <PasswordResetForm />
-        </AuthCard>
+        <PasswordResetForm searchParams={{ message, messageStatus }} />
       )}
     </>
   );

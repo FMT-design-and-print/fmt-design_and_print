@@ -31,7 +31,7 @@ export default async function AdminPage() {
     .returns<{ email: string; confirmed: boolean }[]>();
 
   if (!admins?.[0].confirmed) {
-    return redirect("/admin/reset-password");
+    return redirect("/admin/new-admin-user-login");
   }
 
   return (

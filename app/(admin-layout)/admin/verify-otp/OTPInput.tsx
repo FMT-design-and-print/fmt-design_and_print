@@ -1,23 +1,27 @@
 "use client";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { sendConfirmEmail, verifyOtp } from "@/lib/actions/auth.actions";
-import { useSession } from "@/store";
-import { Alert, Box, Button, Center, PinInput, Text } from "@mantine/core";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+  Alert,
+  Box,
+  Button,
+  Center,
+  Loader,
+  PinInput,
+  Text,
+} from "@mantine/core";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const OTPInput = () => {
   const router = useRouter();
-  const { setSession, setUser } = useSession();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [codeResent, setCodeResent] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const params = useSearchParams();
-  const redirectPath = params.get("redirect");
 
   const verifyOTP = async () => {
     if (!otp) {
@@ -25,38 +29,30 @@ export const OTPInput = () => {
       return;
     }
 
-    setLoading(true);
-    const { data, error } = await verifyOtp(otp, email);
+    setIsLoading(true);
+    const { error } = await verifyOtp(otp, email);
 
     if (error) {
-      setLoading(false);
+      setIsLoading(false);
       setErrorMessage("Invalid Code");
       return;
     }
 
     sessionStorage.removeItem("emailForOTP");
-
-    if (redirectPath) {
-      return router.push(redirectPath);
-    }
-
-    toast.success("Email has been verified");
-    setSession(data.session);
-    setUser(data.session?.user);
-    router.push("/");
+    router.push("/admin/reset-password");
   };
 
   const resendCode = async () => {
-    setLoading(true);
+    setIsLoading(true);
     const json = await sendConfirmEmail(email, "");
 
     if (json.error) {
-      setLoading(false);
+      setIsLoading(false);
       return setErrorMessage("Error sending confirmation code");
     }
 
     toast.success("Confirmation code sent");
-    setLoading(false);
+    setIsLoading(false);
     setCodeResent(true);
     setCountdown(60);
   };
@@ -87,8 +83,8 @@ export const OTPInput = () => {
   }, []);
 
   return (
-    <Box>
-      <LoadingOverlay visible={loading} />
+    <Box pos="relative">
+      <LoadingOverlay visible={isLoading} />
       <Center>
         <PinInput
           oneTimeCode
@@ -105,7 +101,7 @@ export const OTPInput = () => {
           disabled={!otp || otp.length < 6}
           onClick={verifyOTP}
         >
-          {loading ? "Verifying..." : "Verify"}
+          {isLoading ? <Loader color="pink" size="xs" /> : "Verify"}
         </Button>
       </Center>
       <Center pt="sm">
