@@ -14,7 +14,7 @@ import { z } from "zod";
 import { useUserAccount } from "./hooks/useUserAccount";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -26,19 +26,28 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 export function ProfileForm() {
   const { user, isLoading, updateProfile } = useUserAccount();
-  console.log(user);
-
-  const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      firstName: user?.firstName ?? "",
-      lastName: user?.lastName ?? "",
-      avatar: user?.avatar ?? "",
-    },
-  });
-
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  const { reset, formState, register, watch, handleSubmit } =
+    useForm<ProfileFormData>({
+      resolver: zodResolver(profileSchema),
+      defaultValues: {
+        firstName: "",
+        lastName: "",
+        avatar: "",
+      },
+    });
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        firstName: user.firstName ?? "",
+        lastName: user.lastName ?? "",
+        avatar: user.avatar ?? "",
+      });
+    }
+  }, [user, reset]);
 
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -51,7 +60,7 @@ export function ProfileForm() {
   };
 
   return (
-    <Box component="form" onSubmit={form.handleSubmit(onSubmit)}>
+    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       {updateProfile.isSuccess && showSuccess && (
         <Alert
           icon={<IconCheck size={16} />}
@@ -96,28 +105,28 @@ export function ProfileForm() {
           <TextInput
             label="First Name"
             placeholder="Enter your first name"
-            {...form.register("firstName")}
-            error={form.formState.errors.firstName?.message}
+            {...register("firstName")}
+            error={formState.errors.firstName?.message}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, sm: 6 }}>
           <TextInput
             label="Last Name"
             placeholder="Enter your last name"
-            {...form.register("lastName")}
-            error={form.formState.errors.lastName?.message}
+            {...register("lastName")}
+            error={formState.errors.lastName?.message}
           />
         </Grid.Col>
         <Grid.Col span={12}>
           <Flex gap={8} align="flex-end">
             <Card withBorder p="xs">
-              <Avatar src={form.watch("avatar")} size="lg" />
+              <Avatar src={watch("avatar")} size="lg" />
             </Card>
             <TextInput
               label="Avatar URL"
               placeholder="https://example.com/avatar.jpg"
-              {...form.register("avatar")}
-              error={form.formState.errors.avatar?.message}
+              {...register("avatar")}
+              error={formState.errors.avatar?.message}
               flex={1}
             />
           </Flex>

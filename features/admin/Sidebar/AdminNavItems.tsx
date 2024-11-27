@@ -22,6 +22,7 @@ import { AdminUsers } from "../Pages/AdminUsers";
 import { UserPermission } from "@/types/roles";
 import { Services } from "../Pages/Services";
 import MyAccount from "../Pages/MyAccount";
+import PriceCalculator from "../PriceCalculator";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -135,7 +136,7 @@ export const adminNavItems: IAdminNavItems[] = [
     label: "Price Calculator",
     icon: <IconCalculator />,
     isVisible: true,
-    component: <>Price Calculator</>,
+    component: <PriceCalculator />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
 
