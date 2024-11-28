@@ -1,4 +1,16 @@
-import { Category, CalculationHistory, CalculationHistoryStore } from "./types";
+import {
+  Category,
+  CalculationHistory,
+  CalculationHistoryStore,
+  CalculatorSettings,
+} from "./types";
+import {
+  BannersStickersSettings,
+  CustomizedItemsSettings,
+  FramingSettings,
+  OthersSettings,
+  PlainItemsSettings,
+} from "./types";
 
 type Unit = "mm" | "cm" | "inch" | "ft";
 
@@ -77,3 +89,34 @@ export function saveCalculationHistory(
     console.error("Failed to save calculation history:", error);
   }
 }
+
+let calculatorSettings: CalculatorSettings[] = [];
+
+export const setCalculatorSettings = (settings: CalculatorSettings[]) => {
+  calculatorSettings = settings;
+};
+
+export const getBannersStickersSettings = () => {
+  const settings = calculatorSettings.find((s) => s.id === "banners-stickers");
+  return settings?.options as BannersStickersSettings;
+};
+
+export const getCustomizedItemsSettings = () => {
+  const settings = calculatorSettings.find((s) => s.id === "customized-items");
+  return settings?.options as CustomizedItemsSettings;
+};
+
+export const getFramingSettings = () => {
+  const settings = calculatorSettings.find((s) => s.id === "framing");
+  return settings?.options as FramingSettings;
+};
+
+export const getOthersSettings = () => {
+  const settings = calculatorSettings.find((s) => s.id === "others");
+  return settings?.options as OthersSettings;
+};
+
+export const getPlainItemsSettings = () => {
+  const settings = calculatorSettings.find((s) => s.id === "plain-items");
+  return settings?.options as PlainItemsSettings;
+};

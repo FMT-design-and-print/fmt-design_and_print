@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Select,
   NumberInput,
@@ -8,13 +8,18 @@ import {
   Group,
   Text,
 } from "@mantine/core";
-import { FRAME_TYPES, CURRENCY_SYMBOL } from "./constants";
+import { CURRENCY_SYMBOL } from "./constants";
 import { CalculationHistory, ItemSize } from "./types";
 import { CalculationHistoryPanel } from "./components/CalculationHistoryPanel";
 import { useCalculationHistory } from "./hooks/useCalculationHistory";
-import { convertMeasurement, roundToTwoDecimals } from "./utils";
+import {
+  convertMeasurement,
+  getFramingSettings,
+  roundToTwoDecimals,
+} from "./utils";
 
 export function FramingCalculator() {
+  const settings = getFramingSettings();
   const [frameType, setFrameType] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -23,12 +28,8 @@ export function FramingCalculator() {
   const { history, showHistory, setShowHistory, clearHistory, saveToHistory } =
     useCalculationHistory("framing");
 
-  useEffect(() => {
-    setSelectedSize(null);
-  }, [frameType]);
-
   const selectedFrame = frameType
-    ? FRAME_TYPES.find((f) => f.id === frameType)
+    ? settings?.frameTypes.find((f) => f.id === frameType)
     : null;
 
   const selectedFrameSize =
@@ -79,9 +80,9 @@ export function FramingCalculator() {
   };
 
   const handleLoadHistory = (item: CalculationHistory) => {
-    if (item.details.printType) {
+    if (item.details.printType && settings) {
       const [frameName, sizeName] = item.details.printType.split(" - ");
-      const frame = FRAME_TYPES.find((f) => f.name === frameName);
+      const frame = settings.frameTypes.find((f) => f.name === frameName);
       if (frame) {
         setFrameType(frame.id);
         const size = frame.sizes.find((s) => s.name === sizeName);
@@ -93,14 +94,19 @@ export function FramingCalculator() {
     setQuantity(item.details.quantity);
   };
 
+  if (!settings) return null;
+
   return (
     <Stack gap="md" mt="md">
       <Select
         label="Frame Type"
         placeholder="Select frame type"
         value={frameType}
-        onChange={setFrameType}
-        data={FRAME_TYPES.map((frame) => ({
+        onChange={(val) => {
+          setFrameType(val);
+          setSelectedSize(null);
+        }}
+        data={settings.frameTypes.map((frame) => ({
           value: frame.id,
           label: frame.name,
         }))}
@@ -142,7 +148,7 @@ export function FramingCalculator() {
       </Grid>
 
       <Select
-        label="Unit"
+        label="Display Unit"
         value={displayUnit}
         onChange={(val) => setDisplayUnit(val as ItemSize["unit"])}
         data={[

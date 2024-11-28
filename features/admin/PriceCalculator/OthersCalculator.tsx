@@ -6,15 +6,17 @@ import {
   Paper,
   Group,
   Text,
-  Textarea,
   Select,
+  Textarea,
 } from "@mantine/core";
-import { PREDEFINED_OTHER_ITEMS, CURRENCY_SYMBOL } from "./constants";
+import { CURRENCY_SYMBOL } from "./constants";
 import { CalculationHistoryPanel } from "./components/CalculationHistoryPanel";
 import { useCalculationHistory } from "./hooks/useCalculationHistory";
 import { CalculationHistory } from "./types";
+import { getOthersSettings } from "./utils";
 
 export function OthersCalculator() {
+  const settings = getOthersSettings();
   const [itemName, setItemName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
@@ -26,16 +28,19 @@ export function OthersCalculator() {
 
   const handlePredefinedItemSelect = (value: string | null) => {
     setSelectedItem(value);
-    if (value) {
-      const item = PREDEFINED_OTHER_ITEMS.find((item) => item.id === value);
-      if (item) {
-        setItemName(item.name);
-        setPrice(item.price);
+    if (value && settings) {
+      for (const category of settings.categories) {
+        const item = category.items.find((item) => item.id === value);
+        if (item) {
+          setItemName(item.name);
+          setPrice(item.price);
+          return;
+        }
       }
-    } else {
-      setItemName("");
-      setPrice(0);
     }
+    // Reset if no item selected or found
+    setItemName("");
+    setPrice(0);
   };
 
   const calculatePrice = () => {
@@ -57,13 +62,18 @@ export function OthersCalculator() {
   };
 
   const handleLoadHistory = (item: CalculationHistory) => {
-    if (item.details.printType) {
+    if (item.details.printType && settings) {
       setItemName(item.details.printType);
       // Try to find matching predefined item
-      const predefinedItem = PREDEFINED_OTHER_ITEMS.find(
-        (pi) => pi.name === item.details.printType
-      );
-      setSelectedItem(predefinedItem?.id || null);
+      for (const category of settings.categories) {
+        const predefinedItem = category.items.find(
+          (pi) => pi.name === item.details.printType
+        );
+        if (predefinedItem) {
+          setSelectedItem(predefinedItem.id);
+          break;
+        }
+      }
     }
     if (item.details.rate) {
       setPrice(item.details.rate);
@@ -71,78 +81,22 @@ export function OthersCalculator() {
     setQuantity(item.details.quantity);
   };
 
+  if (!settings) return null;
+
   return (
     <Stack gap="md" mt="md">
       <Select
-        label="Predefined Items"
+        label="Item"
         placeholder="Select a predefined item"
         value={selectedItem}
         onChange={handlePredefinedItemSelect}
-        data={[
-          {
-            group: "Pressing",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "pressing"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name}`,
-            })),
-          },
-          {
-            group: "Jersey",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "jersey"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name}`,
-            })),
-          },
-          {
-            group: "Envelopes",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "envelope"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name}`,
-            })),
-          },
-          {
-            group: "Lamination",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "lamination"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name}`,
-            })),
-          },
-          {
-            group: "Photo",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "photo"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name}`,
-            })),
-          },
-          {
-            group: "Papers",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "paper"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name}`,
-            })),
-          },
-          {
-            group: "Design",
-            items: PREDEFINED_OTHER_ITEMS.filter(
-              (item) => item.category === "design"
-            ).map((item) => ({
-              value: item.id,
-              label: `${item.name} `,
-            })),
-          },
-        ]}
+        data={settings.categories.map((category) => ({
+          group: category.name,
+          items: category.items.map((item) => ({
+            value: item.id,
+            label: item.name,
+          })),
+        }))}
         searchable
         clearable
       />

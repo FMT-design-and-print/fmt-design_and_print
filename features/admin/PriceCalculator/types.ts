@@ -4,38 +4,69 @@ export type ItemSize = {
   unit: "mm" | "cm" | "inch" | "ft";
 };
 
-export type PredefinedSize = {
-  name: string;
-  width: number;
-  height: number;
-};
-
-export type FrameSize = {
+export type BaseItem = {
   id: string;
   name: string;
-  width: number;
-  height: number;
-  price: number;
-  unit: "mm" | "cm" | "inch";
 };
 
-export type FrameType = {
-  id: string;
-  name: string;
-  sizes: FrameSize[];
+export type PrintType = BaseItem & {
+  category: "banner" | "sticker";
+  rate: number;
 };
 
-export type CustomizedItem = {
-  id: string;
-  name: string;
+export type BannersStickersSettings = {
+  printTypes: PrintType[];
+  units: string[];
+};
+
+export type CustomizedItem = BaseItem & {
   price: number;
   minQuantity?: number;
 };
 
-export type PlainItem = {
-  id: string;
-  name: string;
+export type CustomizedItemsSettings = {
+  items: CustomizedItem[];
+};
+
+export type FrameSize = BaseItem & {
+  width: number;
+  height: number;
   price: number;
+  unit: ItemSize["unit"];
+};
+
+export type FrameType = BaseItem & {
+  sizes: FrameSize[];
+};
+
+export type FramingSettings = {
+  frameTypes: FrameType[];
+};
+
+export type OtherItem = BaseItem & {
+  price: number;
+};
+
+export type OtherCategory = BaseItem & {
+  items: OtherItem[];
+};
+
+export type OthersSettings = {
+  categories: OtherCategory[];
+};
+
+export type CalculatorSettings = {
+  id: string;
+  display_name: string;
+  description?: string;
+  options:
+    | BannersStickersSettings
+    | CustomizedItemsSettings
+    | FramingSettings
+    | OthersSettings;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 export type Category =
@@ -45,13 +76,6 @@ export type Category =
   | "framing"
   | "plain-items"
   | "others";
-
-export type PrintType = {
-  id: string;
-  name: string;
-  category: "banner" | "sticker";
-  rate: number;
-};
 
 export type CalculationHistory = {
   id: string;
@@ -74,16 +98,16 @@ export type CalculationHistoryStore = {
   [key in Category]: CalculationHistory[];
 };
 
-export type PredefinedOtherItem = {
-  id: string;
-  name: string;
+export type PlainItem = BaseItem & {
   price: number;
-  category:
-    | "pressing"
-    | "jersey"
-    | "envelope"
-    | "lamination"
-    | "photo"
-    | "paper"
-    | "design";
+};
+
+export type PlainItemsSettings = {
+  items: PlainItem[];
+};
+
+export type PredefinedSize = {
+  name: string;
+  width: number;
+  height: number;
 };

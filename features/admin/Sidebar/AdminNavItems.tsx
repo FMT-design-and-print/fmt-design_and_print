@@ -22,7 +22,7 @@ import { AdminUsers } from "../Pages/AdminUsers";
 import { UserPermission } from "@/types/roles";
 import { Services } from "../Pages/Services";
 import MyAccount from "../Pages/MyAccount";
-import PriceCalculator from "../PriceCalculator";
+import { PriceCalculator } from "../PriceCalculator";
 
 export const adminNavItems: IAdminNavItems[] = [
   {

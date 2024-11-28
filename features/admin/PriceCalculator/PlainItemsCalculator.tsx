@@ -1,32 +1,35 @@
 import { useState } from "react";
 import { Select, NumberInput, Stack, Paper, Group, Text } from "@mantine/core";
-import { PLAIN_ITEMS, CURRENCY_SYMBOL } from "./constants";
+import { CURRENCY_SYMBOL } from "./constants";
 import { CalculationHistoryPanel } from "./components/CalculationHistoryPanel";
 import { useCalculationHistory } from "./hooks/useCalculationHistory";
 import { CalculationHistory } from "./types";
+import { getPlainItemsSettings } from "./utils";
 
 export function PlainItemsCalculator() {
+  const settings = getPlainItemsSettings();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
   const { history, showHistory, setShowHistory, clearHistory, saveToHistory } =
     useCalculationHistory("plain-items");
 
+  const selectedItemData = selectedItem
+    ? settings?.items.find((item) => item.id === selectedItem)
+    : null;
+
   const calculatePrice = () => {
-    const item = PLAIN_ITEMS.find((item) => item.id === selectedItem);
-    return item ? (item.price * quantity).toFixed(2) : "0.00";
+    if (!selectedItemData) return "0.00";
+    return (selectedItemData.price * quantity).toFixed(2);
   };
 
   const handleSaveHistory = () => {
-    if (!selectedItem) return;
-
-    const item = PLAIN_ITEMS.find((item) => item.id === selectedItem);
-    if (!item) return;
+    if (!selectedItemData) return;
 
     saveToHistory({
       category: "plain-items",
       details: {
-        printType: item.name,
+        printType: selectedItemData.name,
         quantity,
         total: Number(calculatePrice()),
       },
@@ -34,14 +37,16 @@ export function PlainItemsCalculator() {
   };
 
   const handleLoadHistory = (item: CalculationHistory) => {
-    if (item.details.printType) {
-      const plainItem = PLAIN_ITEMS.find(
+    if (item.details.printType && settings) {
+      const plainItem = settings.items.find(
         (pi) => pi.name === item.details.printType
       );
       setSelectedItem(plainItem?.id || null);
+      setQuantity(item.details.quantity);
     }
-    setQuantity(item.details.quantity);
   };
+
+  if (!settings) return null;
 
   return (
     <Stack gap="md" mt="md">
@@ -50,9 +55,9 @@ export function PlainItemsCalculator() {
         placeholder="Choose a plain item"
         value={selectedItem}
         onChange={setSelectedItem}
-        data={PLAIN_ITEMS.map((item) => ({
+        data={settings.items.map((item) => ({
           value: item.id,
-          label: `${item.name}`,
+          label: item.name,
         }))}
         searchable
       />
@@ -78,18 +83,13 @@ export function PlainItemsCalculator() {
         <Stack gap="sm">
           <Group justify="space-between">
             <Text>Selected Item:</Text>
-            <Text>
-              {PLAIN_ITEMS.find((item) => item.id === selectedItem)?.name ||
-                "Not selected"}
-            </Text>
+            <Text>{selectedItemData?.name || "Not selected"}</Text>
           </Group>
           <Group justify="space-between">
             <Text>Unit Price:</Text>
             <Text>
               {CURRENCY_SYMBOL}
-              {PLAIN_ITEMS.find(
-                (item) => item.id === selectedItem
-              )?.price.toFixed(2) || "0.00"}
+              {selectedItemData?.price.toFixed(2) || "0.00"}
             </Text>
           </Group>
           <Group justify="space-between">

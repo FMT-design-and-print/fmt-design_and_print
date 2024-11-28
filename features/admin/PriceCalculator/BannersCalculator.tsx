@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Grid,
   Group,
@@ -7,38 +8,38 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useState } from "react";
-import { CalculationHistoryPanel } from "./components/CalculationHistoryPanel";
-import { CURRENCY_SYMBOL, PREDEFINED_SIZES, PRINT_TYPES } from "./constants";
+import { CURRENCY_SYMBOL, PREDEFINED_SIZES } from "./constants";
 import { CalculationHistory, ItemSize } from "./types";
+import { CalculationHistoryPanel } from "./components/CalculationHistoryPanel";
 import {
   convertMeasurement,
-  getCalculationHistory,
+  getBannersStickersSettings,
   roundToTwoDecimals,
-  saveCalculationHistory,
 } from "./utils";
+import { useCalculationHistory } from "./hooks/useCalculationHistory";
 
 export function BannersCalculator() {
+  const settings = getBannersStickersSettings();
   const [size, setSize] = useState<ItemSize>({
     width: 0,
     height: 0,
     unit: "mm",
   });
   const [quantity, setQuantity] = useState(1);
-  const [predefinedSize, setPredefinedSize] = useState<string | null>(null);
   const [selectedPrintType, setSelectedPrintType] = useState<string | null>(
     null
   );
   const [customRate, setCustomRate] = useState<number | undefined>();
-  const [showHistory, setShowHistory] = useState(false);
-  const [history, setHistory] = useState<CalculationHistory[]>(
-    getCalculationHistory("banners-stickers")
+  const [predefinedSize, setPredefinedSize] = useState<string | null>(null);
+
+  const { history, showHistory, setShowHistory, clearHistory, saveToHistory } =
+    useCalculationHistory("banners-stickers");
+
+  const selectedPrintTypeData = settings?.printTypes.find(
+    (type) => type.id === selectedPrintType
   );
 
-  const currentRate =
-    customRate ??
-    PRINT_TYPES.find((type) => type.id === selectedPrintType)?.rate ??
-    0;
+  const currentRate = customRate ?? selectedPrintTypeData?.rate ?? 0;
 
   const handleUnitChange = (newUnit: ItemSize["unit"]) => {
     if (newUnit) {
@@ -56,37 +57,6 @@ export function BannersCalculator() {
     }
   };
 
-  const handlePredefinedSizeChange = (value: string | null) => {
-    if (value) {
-      const selected = PREDEFINED_SIZES.find((size) => size.name === value);
-      if (selected) {
-        const width =
-          size.unit === "mm"
-            ? selected.width
-            : roundToTwoDecimals(
-                convertMeasurement(selected.width, "mm", size.unit)
-              );
-        const height =
-          size.unit === "mm"
-            ? selected.height
-            : roundToTwoDecimals(
-                convertMeasurement(selected.height, "mm", size.unit)
-              );
-        setSize({
-          ...size,
-          width,
-          height,
-        });
-      }
-    }
-    setPredefinedSize(value);
-  };
-
-  const handlePrintTypeChange = (value: string | null) => {
-    setSelectedPrintType(value);
-    setCustomRate(undefined); // Reset custom rate when print type changes
-  };
-
   const calculatePrice = () => {
     if (!selectedPrintType) return "0.00";
 
@@ -96,16 +66,13 @@ export function BannersCalculator() {
     return (widthInFeet * heightInFeet * currentRate * quantity).toFixed(2);
   };
 
-  const saveToHistory = () => {
-    if (!selectedPrintType) return;
+  const handleSaveHistory = () => {
+    if (!selectedPrintType || !selectedPrintTypeData) return;
 
-    const calculation: CalculationHistory = {
-      id: Date.now().toString(),
-      timestamp: Date.now(),
+    saveToHistory({
       category: "banners-stickers",
       details: {
-        printType: PRINT_TYPES.find((type) => type.id === selectedPrintType)
-          ?.name,
+        printType: selectedPrintTypeData.name,
         size: {
           width: size.width,
           height: size.height,
@@ -115,21 +82,16 @@ export function BannersCalculator() {
         rate: currentRate,
         total: Number(calculatePrice()),
       },
-    };
-
-    saveCalculationHistory(calculation);
-    setHistory(getCalculationHistory("banners-stickers"));
+    });
   };
 
-  const clearHistory = () => {
-    localStorage.setItem(
-      "calculationHistory",
-      JSON.stringify({ "banners-stickers": [] })
-    );
-    setHistory([]);
-  };
-
-  const loadFromHistory = (item: CalculationHistory) => {
+  const handleLoadHistory = (item: CalculationHistory) => {
+    if (item.details.printType && settings) {
+      const printType = settings.printTypes.find(
+        (type) => type.name === item.details.printType
+      );
+      setSelectedPrintType(printType?.id || null);
+    }
     if (item.details.size) {
       setSize({
         width: item.details.size.width,
@@ -137,19 +99,34 @@ export function BannersCalculator() {
         unit: item.details.size.unit as ItemSize["unit"],
       });
     }
-
-    if (item.details.printType) {
-      const printType = PRINT_TYPES.find(
-        (type) => type.name === item.details.printType
-      );
-      setSelectedPrintType(printType?.id || null);
-    }
-
     setQuantity(item.details.quantity);
     if (item.details.rate) {
       setCustomRate(item.details.rate);
     }
   };
+
+  const handlePredefinedSizeChange = (value: string | null) => {
+    setPredefinedSize(value);
+    if (value) {
+      const selected = PREDEFINED_SIZES.find((s) => s.name === value);
+      if (selected) {
+        setSize({
+          width: selected.width,
+          height: selected.height,
+          unit: "mm", // Predefined sizes are in mm
+        });
+      }
+    }
+  };
+
+  if (!settings) return null;
+
+  const bannerTypes = settings.printTypes.filter(
+    (type) => type.category === "banner"
+  );
+  const stickerTypes = settings.printTypes.filter(
+    (type) => type.category === "sticker"
+  );
 
   return (
     <Stack gap="md" mt="md">
@@ -159,24 +136,23 @@ export function BannersCalculator() {
             label="Print Type"
             placeholder="Select print type"
             value={selectedPrintType}
-            onChange={handlePrintTypeChange}
+            onChange={(val) => {
+              setSelectedPrintType(val);
+              setCustomRate(undefined);
+            }}
             data={[
               {
                 group: "Banners",
-                items: PRINT_TYPES.filter(
-                  (type) => type.category === "banner"
-                ).map((type) => ({
+                items: bannerTypes.map((type) => ({
                   value: type.id,
-                  label: `${type.name}`,
+                  label: type.name,
                 })),
               },
               {
                 group: "Stickers",
-                items: PRINT_TYPES.filter(
-                  (type) => type.category === "sticker"
-                ).map((type) => ({
+                items: stickerTypes.map((type) => ({
                   value: type.id,
-                  label: `${type.name}`,
+                  label: type.name,
                 })),
               },
             ]}
@@ -190,8 +166,9 @@ export function BannersCalculator() {
             value={currentRate}
             onChange={(val) => setCustomRate(Number(val) || 0)}
             min={0}
-            decimalScale={3}
+            decimalScale={2}
             step={0.5}
+            readOnly
           />
         </Grid.Col>
       </Grid>
@@ -201,20 +178,11 @@ export function BannersCalculator() {
         placeholder="Select a standard size"
         value={predefinedSize}
         onChange={handlePredefinedSizeChange}
-        data={PREDEFINED_SIZES.map((size) => size.name)}
+        data={PREDEFINED_SIZES.map((size) => ({
+          value: size.name,
+          label: `${size.name} (${size.width} x ${size.height} mm)`,
+        }))}
         clearable
-      />
-
-      <Select
-        label="Unit"
-        value={size.unit}
-        onChange={(val) => handleUnitChange(val as ItemSize["unit"])}
-        data={[
-          { value: "mm", label: "Millimeters" },
-          { value: "cm", label: "Centimeters" },
-          { value: "inch", label: "Inches" },
-          { value: "ft", label: "Feet" },
-        ]}
       />
 
       <Grid>
@@ -222,7 +190,10 @@ export function BannersCalculator() {
           <NumberInput
             label="Width"
             value={size.width}
-            onChange={(val) => setSize({ ...size, width: Number(val) || 0 })}
+            onChange={(val) => {
+              setSize({ ...size, width: Number(val) || 0 });
+              setPredefinedSize(null); // Clear predefined size when width changes
+            }}
             min={0}
             decimalScale={3}
           />
@@ -231,12 +202,32 @@ export function BannersCalculator() {
           <NumberInput
             label="Height"
             value={size.height}
-            onChange={(val) => setSize({ ...size, height: Number(val) || 0 })}
+            onChange={(val) => {
+              setSize({ ...size, height: Number(val) || 0 });
+              setPredefinedSize(null); // Clear predefined size when height changes
+            }}
             min={0}
             decimalScale={3}
           />
         </Grid.Col>
       </Grid>
+
+      <Select
+        label="Unit"
+        value={size.unit}
+        onChange={(val) => handleUnitChange(val as ItemSize["unit"])}
+        data={settings.units.map((unit) => ({
+          value: unit,
+          label:
+            unit === "mm"
+              ? "Millimeters"
+              : unit === "cm"
+                ? "Centimeters"
+                : unit === "inch"
+                  ? "Inches"
+                  : "Feet",
+        }))}
+      />
 
       <NumberInput
         label="Quantity"
@@ -250,8 +241,8 @@ export function BannersCalculator() {
         showHistory={showHistory}
         onToggleHistory={() => setShowHistory(!showHistory)}
         onClearHistory={clearHistory}
-        onLoadHistory={loadFromHistory}
-        onSave={saveToHistory}
+        onLoadHistory={handleLoadHistory}
+        onSave={handleSaveHistory}
         canSave={!!selectedPrintType}
       />
 
@@ -259,10 +250,7 @@ export function BannersCalculator() {
         <Stack gap="sm">
           <Group justify="space-between">
             <Text>Print Type:</Text>
-            <Text>
-              {PRINT_TYPES.find((type) => type.id === selectedPrintType)
-                ?.name || "Not selected"}
-            </Text>
+            <Text>{selectedPrintTypeData?.name || "Not selected"}</Text>
           </Group>
           <Group justify="space-between">
             <Text>Rate per sq ft:</Text>

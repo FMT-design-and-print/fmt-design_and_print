@@ -1,43 +1,41 @@
 import { useState, useEffect } from "react";
 import { Select, NumberInput, Stack, Paper, Group, Text } from "@mantine/core";
-import { CUSTOMIZED_ITEMS, CURRENCY_SYMBOL } from "./constants";
+import { CURRENCY_SYMBOL } from "./constants";
 import { CalculationHistoryPanel } from "./components/CalculationHistoryPanel";
 import { useCalculationHistory } from "./hooks/useCalculationHistory";
 import { CalculationHistory } from "./types";
+import { getCustomizedItemsSettings } from "./utils";
 
 export function CustomizedItemsCalculator() {
+  const settings = getCustomizedItemsSettings();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
   const { history, showHistory, setShowHistory, clearHistory, saveToHistory } =
     useCalculationHistory("customized-items");
 
+  const selectedItemData = selectedItem
+    ? settings?.items.find((item) => item.id === selectedItem)
+    : null;
+
   useEffect(() => {
-    if (selectedItem) {
-      const item = CUSTOMIZED_ITEMS.find((item) => item.id === selectedItem);
-      if (item?.minQuantity) {
-        setQuantity(item.minQuantity);
-      } else {
-        setQuantity(1);
-      }
+    if (selectedItemData?.minQuantity) {
+      setQuantity((q) => Math.max(q, selectedItemData.minQuantity || 1));
     }
-  }, [selectedItem]);
+  }, [selectedItem, selectedItemData?.minQuantity]);
 
   const calculatePrice = () => {
-    const item = CUSTOMIZED_ITEMS.find((item) => item.id === selectedItem);
-    return item ? (item.price * quantity).toFixed(2) : "0.00";
+    if (!selectedItemData) return "0.00";
+    return (selectedItemData.price * quantity).toFixed(2);
   };
 
   const handleSaveHistory = () => {
-    if (!selectedItem) return;
-
-    const item = CUSTOMIZED_ITEMS.find((item) => item.id === selectedItem);
-    if (!item) return;
+    if (!selectedItemData) return;
 
     saveToHistory({
       category: "customized-items",
       details: {
-        printType: item.name,
+        printType: selectedItemData.name,
         quantity,
         total: Number(calculatePrice()),
       },
@@ -45,17 +43,16 @@ export function CustomizedItemsCalculator() {
   };
 
   const handleLoadHistory = (item: CalculationHistory) => {
-    if (item.details.printType) {
-      const customItem = CUSTOMIZED_ITEMS.find(
+    if (item.details.printType && settings) {
+      const customItem = settings.items.find(
         (ci) => ci.name === item.details.printType
       );
       setSelectedItem(customItem?.id || null);
+      setQuantity(item.details.quantity);
     }
   };
 
-  const selectedItemData = selectedItem
-    ? CUSTOMIZED_ITEMS.find((item) => item.id === selectedItem)
-    : null;
+  if (!settings) return null;
 
   return (
     <Stack gap="md" mt="md">
@@ -64,10 +61,11 @@ export function CustomizedItemsCalculator() {
         placeholder="Choose an item"
         value={selectedItem}
         onChange={setSelectedItem}
-        data={CUSTOMIZED_ITEMS.map((item) => ({
+        data={settings.items.map((item) => ({
           value: item.id,
           label: `${item.name}`,
         }))}
+        searchable
       />
 
       <NumberInput
