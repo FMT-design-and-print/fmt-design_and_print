@@ -23,6 +23,7 @@ import { UserPermission } from "@/types/roles";
 import { Services } from "../Pages/Services";
 import MyAccount from "../Pages/MyAccount";
 import { PriceCalculator } from "../PriceCalculator";
+import CustomersPage from "../Pages/Customers";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -46,7 +47,7 @@ export const adminNavItems: IAdminNavItems[] = [
     label: "Customers",
     icon: <IconUsersGroup />,
     isVisible: true,
-    component: <>Customers</>,
+    component: <CustomersPage />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
