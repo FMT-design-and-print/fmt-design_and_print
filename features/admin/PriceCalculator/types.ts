@@ -57,8 +57,9 @@ export type OthersSettings = {
 
 export type CalculatorSettings = {
   id: string;
-  display_name: string;
+  displayName: string;
   description?: string;
+  order: number;
   options:
     | BannersStickersSettings
     | CustomizedItemsSettings
