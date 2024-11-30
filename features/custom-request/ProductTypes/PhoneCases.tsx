@@ -11,6 +11,9 @@ import { uploadArtworkFiles } from "../upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 import { validateContactInfo } from "../validate-contact-info";
+import { sendMessage } from "@/functions/send-message";
+import { createOrderMessage } from "./messageUtils";
+import { artworkOptionLabelMap } from "@/constants/order-details-map";
 
 export const PhoneCases = ({ image }: { image: string }) => {
   const {
@@ -79,6 +82,31 @@ export const PhoneCases = ({ image }: { image: string }) => {
     setLoadingMessage("");
 
     if (isSuccess) {
+      // Send a message after successful order insertion
+      try {
+        const { subject, content } = createOrderMessage(data?.orderId);
+        await sendMessage({
+          subject,
+          content,
+          source: "custom-order",
+          metadata: {
+            orderId: data?.orderId,
+            ...requestDetails,
+            selectedArtworkOption:
+              artworkOptionLabelMap[context.selectedArtworkOption],
+            quoteReceptionMedium: context.quoteReceptionMedium,
+            quoteReceptionValue: context.quoteReceptionValue,
+            quantity: context.quantity,
+            contactName: context.contactName,
+            phone: context.phone,
+            email: context.email,
+            orderDetails,
+          },
+        });
+      } catch (messageError) {
+        console.error("Failed to send confirmation message:", messageError);
+      }
+
       router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
   };
