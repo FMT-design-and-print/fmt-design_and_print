@@ -26,7 +26,6 @@ import MyAccount from "../Pages/MyAccount";
 import { PriceCalculator } from "../PriceCalculator";
 import CustomersPage from "../Pages/Customers";
 import MessagesPage from "../Pages/Messages";
-import SalesExpenses from "../Pages/SalesExpenses";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -131,7 +130,7 @@ export const adminNavItems: IAdminNavItems[] = [
     label: "Sales & Expenses",
     icon: <IconMoneybag />,
     isVisible: true,
-    component: <SalesExpenses />,
+    component: <>Sales & Expenses</>,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
