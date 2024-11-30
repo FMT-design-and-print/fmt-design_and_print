@@ -4,6 +4,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button, Textarea, Alert, Text } from "@mantine/core";
 import { createClient } from "@/utils/supabase/client";
 import { useSession } from "@/store";
+import { sendMessage } from "@/functions/send-message";
 
 interface Props {
   quoteId: string;
@@ -24,7 +25,6 @@ export const ReActivateQuote = ({
   const [isSent, setIsSent] = useState(false);
 
   const handleReactivationRequest = async () => {
-    // TODO: Implement reactivation request
     if (!reason) {
       setErrorMsg("Provide reason");
       return;
@@ -34,19 +34,16 @@ export const ReActivateQuote = ({
     setIsSending(true);
     try {
       const [messagesRes, quotesRes] = await Promise.all([
-        supabase.from("messages").insert([
-          {
-            subject: `Quote reactivation request (Quote No. ${quoteNumber})`,
-            content: reason,
-            source: "quote",
-            metadata: {
-              quoteNumber,
-              user_id: user?.id,
-              email: user?.email,
-              phone: user?.phone,
-            },
+        sendMessage({
+          subject: `Quote reactivation request (Quote No. ${quoteNumber})`,
+          content: reason,
+          source: "quote",
+          metadata: {
+            userId: user?.id,
+            email: user?.email,
+            phone: user?.phone,
           },
-        ]),
+        }),
 
         supabase
           .from("quotes")
@@ -57,8 +54,8 @@ export const ReActivateQuote = ({
           .eq("id", quoteId),
       ]);
 
-      if (messagesRes.error || quotesRes.error) {
-        throw new Error(messagesRes.error?.message || quotesRes.error?.message);
+      if (!messagesRes || quotesRes.error) {
+        throw new Error(quotesRes.error?.message);
       }
 
       setErrorMsg("");
@@ -68,7 +65,6 @@ export const ReActivateQuote = ({
     } catch (error) {
       setErrorMsg("Failed to send request. Try again later");
       setIsSending(false);
-      // send error to sentry
       console.error(error);
     }
   };

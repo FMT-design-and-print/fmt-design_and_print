@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { DeliveryInformation } from "./DeliveryInformation";
 import { PaymentDetails } from "./PaymentDetails";
 import { ReviewItems } from "./ReviewItems";
+import { sendMessage } from "@/functions/send-message";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -80,6 +81,26 @@ export const Checkout = ({ shippingAddresses }: Props) => {
       console.error(error);
       setIsLoading(false);
       return;
+    }
+
+    // Send a message after successful order insertion
+    try {
+      await sendMessage({
+        subject: `Order Confirmation (Order No. ${ref.reference})`,
+        content: `Order with reference number ${ref.reference} has been successfully placed.`,
+        source: "order",
+        metadata: {
+          orderNumber: ref.reference,
+          userId: user?.id,
+          email: user?.email,
+          phone: user?.phone,
+          amount: total,
+          totalPayment: total + shippingFee,
+          items: details.items,
+        },
+      });
+    } catch (messageError) {
+      console.error("Failed to send confirmation message:", messageError);
     }
 
     if (details.saveAddress) {

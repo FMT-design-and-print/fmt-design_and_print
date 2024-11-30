@@ -5,6 +5,7 @@ import {
   IconFileInvoice,
   IconGauge,
   IconMail,
+  IconMoneybag,
   IconReceipt,
   IconSettings2,
   IconShoppingCart,
@@ -23,16 +24,10 @@ import { UserPermission } from "@/types/roles";
 import { Services } from "../Pages/Services";
 import MyAccount from "../Pages/MyAccount";
 import { PriceCalculator } from "../PriceCalculator";
+import CustomersPage from "../Pages/Customers";
+import MessagesPage from "../Pages/Messages";
 
 export const adminNavItems: IAdminNavItems[] = [
-  {
-    value: "services",
-    label: "Services",
-    icon: <IconSettings2 />,
-    isVisible: true,
-    component: <Services />,
-    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
-  },
   {
     value: "dashboard",
     label: "Dashboard",
@@ -46,7 +41,7 @@ export const adminNavItems: IAdminNavItems[] = [
     label: "Customers",
     icon: <IconUsersGroup />,
     isVisible: true,
-    component: <>Customers</>,
+    component: <CustomersPage />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
@@ -70,7 +65,7 @@ export const adminNavItems: IAdminNavItems[] = [
     label: "Messages",
     icon: <IconMail />,
     isVisible: true,
-    component: <>Messages</>,
+    component: <MessagesPage />,
     requiredPermission: UserPermission.MANAGER_PERMISSIONS,
   },
   {
@@ -115,22 +110,13 @@ export const adminNavItems: IAdminNavItems[] = [
   },
   "divider",
   {
-    value: "employees",
-    label: "Employees",
-    icon: <IconUser />,
+    value: "services",
+    label: "Services",
+    icon: <IconSettings2 />,
     isVisible: true,
-    component: <>Employees</>,
-    requiredPermission: UserPermission.MANAGER_PERMISSIONS,
-  },
-  {
-    value: "new-admin-user",
-    label: "Admin Users",
-    icon: <IconUserShield />,
-    isVisible: true,
-    component: <AdminUsers />,
+    component: <Services />,
     requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
-  "divider",
   {
     value: "price-calculator",
     label: "Price Calculator",
@@ -139,7 +125,31 @@ export const adminNavItems: IAdminNavItems[] = [
     component: <PriceCalculator />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
+  {
+    value: "sales-expenses",
+    label: "Sales & Expenses",
+    icon: <IconMoneybag />,
+    isVisible: true,
+    component: <>Sales & Expenses</>,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
+  },
+  {
+    value: "employees",
+    label: "Employees",
+    icon: <IconUser />,
+    isVisible: false,
+    component: <>Employees</>,
+    requiredPermission: UserPermission.MANAGER_PERMISSIONS,
+  },
 
+  {
+    value: "new-admin-user",
+    label: "Admin Users",
+    icon: <IconUserShield />,
+    isVisible: true,
+    component: <AdminUsers />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
+  },
   "divider",
   {
     value: "my-account",

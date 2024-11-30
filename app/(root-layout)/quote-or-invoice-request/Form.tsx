@@ -1,8 +1,12 @@
 "use client";
+import { ErrorsRenderer } from "@/components/ErrorsRenderer";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { TextEditor } from "@/components/TextEditor";
+import { sendMessage } from "@/functions/send-message";
 import { useCustomEditor } from "@/hooks/useCustomEditor";
-import React, { useState } from "react";
-import { QuoteReceptionOptions } from "./QuoteReceptionOptions";
+import useSanitize from "@/hooks/useSanitize";
+import { QuoteReceptionMedium } from "@/types";
+import { createClient } from "@/utils/supabase/client";
 import {
   Box,
   Button,
@@ -12,12 +16,9 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { QuoteReceptionMedium } from "@/types";
-import useSanitize from "@/hooks/useSanitize";
-import { ErrorsRenderer } from "@/components/ErrorsRenderer";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import { QuoteReceptionOptions } from "./QuoteReceptionOptions";
 
 const defaultEditorContent = "<p></p>";
 
@@ -54,7 +55,11 @@ export const Form = () => {
 
     if (!quoteReceptionValue.trim()) {
       fieldErrors.push(
-        `Enter ${quoteReceptionMedium === "email" ? "email address" : quoteReceptionMedium + " number"} to receive quote/invoice`
+        `Enter ${
+          quoteReceptionMedium === "email"
+            ? "email address"
+            : quoteReceptionMedium + " number"
+        } to receive quote/invoice`
       );
     }
 
@@ -77,8 +82,30 @@ export const Form = () => {
 
       if (error) {
         toast.error("Could not send request. Try again later");
+        setIsSubmitting(false);
         return;
       }
+
+      // Send a message after successful request insertion
+      try {
+        await sendMessage({
+          subject: "Invoice request",
+          content:
+            "An Invoice or Quote has been requested by " + name + " " + email,
+          source: "invoice-request",
+          metadata: {
+            name,
+            phone,
+            email,
+            description: editorContent,
+            receptionMedium: quoteReceptionMedium,
+            receptionValue: quoteReceptionValue,
+          },
+        });
+      } catch (messageError) {
+        console.error("Failed to send confirmation message:", messageError);
+      }
+
       toast.success("Request sent successfully");
       setIsSubmitting(false);
       setName("");
@@ -86,6 +113,7 @@ export const Form = () => {
       setEmail("");
       setQuoteReceptionValue("");
       setErrors([]);
+      editor?.commands.setContent(defaultEditorContent);
     } else {
       setErrors(fieldErrors);
     }
