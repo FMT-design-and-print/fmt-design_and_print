@@ -13,6 +13,9 @@ import { uploadArtworkFiles } from "../upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { ItemTypeSelect } from "../ItemTypeSelect";
 import { validateContactInfo } from "../validate-contact-info";
+import { sendMessage } from "@/functions/send-message";
+import { createOrderMessage } from "./messageUtils";
+import { artworkOptionLabelMap } from "@/constants/order-details-map";
 
 const bagTypes = [
   { type: "Paper Bag", minQty: 100 },
@@ -73,7 +76,7 @@ export const Bags = ({ image }: { image: string }) => {
 
     setErrors([]);
     setIsLoading(true);
-    setLoadingMessage("Uploading  Artwork files...");
+    setLoadingMessage("Uploading Artwork files...");
     const urls = await uploadArtworkFiles(context?.artworkFiles || []);
 
     const requestDetails = {
@@ -94,6 +97,31 @@ export const Bags = ({ image }: { image: string }) => {
     setLoadingMessage("");
 
     if (isSuccess) {
+      // Send a message after successful order insertion
+      try {
+        const { subject, content } = createOrderMessage(data?.orderId);
+        await sendMessage({
+          subject,
+          content,
+          source: "custom-order",
+          metadata: {
+            orderId: data?.orderId,
+            ...requestDetails,
+            selectedArtworkOption:
+              artworkOptionLabelMap[context.selectedArtworkOption],
+            quoteReceptionMedium: context.quoteReceptionMedium,
+            quoteReceptionValue: context.quoteReceptionValue,
+            quantity: context.quantity,
+            contactName: context.contactName,
+            phone: context.phone,
+            email: context.email,
+            orderDetails,
+          },
+        });
+      } catch (messageError) {
+        console.error("Failed to send confirmation message:", messageError);
+      }
+
       router.push(`/custom-request/success?reference=${data?.orderId}`);
     }
   };

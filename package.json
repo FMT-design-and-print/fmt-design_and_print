@@ -20,6 +20,7 @@
     "@mantine/nprogress": "^7.14.1",
     "@mantine/tiptap": "^7.14.1",
     "@react-email/components": "^0.0.28",
+    "@react-email/tailwind": "^1.0.2",
     "@sanity/icons": "^3.4.0",
     "@sanity/image-url": "^1.1.0",
     "@sanity/ui": "^2.8.24",

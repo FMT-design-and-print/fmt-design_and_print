@@ -188,10 +188,12 @@ export type IAdminNavItems =
 export interface IMessage {
   id: string;
   created_at: Date;
+  source?: string;
   subject: string;
   content: string;
   status: "read" | "unread";
   metadata: object;
+  group: "inbox" | "sent";
 }
 
 export interface IWebsiteSettings {

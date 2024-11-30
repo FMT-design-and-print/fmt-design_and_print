@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button, Textarea, Text, Alert } from "@mantine/core";
 import { createClient } from "@/utils/supabase/client";
 import { useSession } from "@/store";
+import { sendMessage } from "@/functions/send-message";
 
 interface Props {
   quoteId: string;
@@ -33,19 +34,16 @@ export const RequestRevision = ({
     setIsSending(true);
     try {
       const [messagesRes, quotesRes] = await Promise.all([
-        supabase.from("messages").insert([
-          {
-            subject: `Quote revision request (Quote No. ${quoteNumber})`,
-            content: description,
-            source: "quote",
-            metadata: {
-              quoteNumber,
-              user_id: user?.id,
-              email: user?.email,
-              phone: user?.phone,
-            },
+        sendMessage({
+          subject: `Quote revision request (Quote No. ${quoteNumber})`,
+          content: description,
+          source: "quote",
+          metadata: {
+            userId: user?.id,
+            email: user?.email,
+            phone: user?.phone,
           },
-        ]),
+        }),
 
         supabase
           .from("quotes")
@@ -56,8 +54,8 @@ export const RequestRevision = ({
           .eq("id", quoteId),
       ]);
 
-      if (messagesRes.error || quotesRes.error) {
-        throw new Error(messagesRes.error?.message || quotesRes.error?.message);
+      if (!messagesRes || quotesRes.error) {
+        throw new Error(quotesRes.error?.message);
       }
 
       setErrorMsg("");
@@ -67,7 +65,6 @@ export const RequestRevision = ({
     } catch (error) {
       setErrorMsg("Failed to send request. Try again later");
       setIsSending(false);
-      // send error to sentry
       console.error(error);
     }
   };

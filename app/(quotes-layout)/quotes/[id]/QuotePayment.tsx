@@ -5,6 +5,7 @@ import { PaymentDetailsCard } from "@/components/PaymentDetails/PaymentDetailsCa
 import { ShippingAddress } from "@/components/ShippingAddress";
 import { shippingFeeByRegion } from "@/constants/gh-regions";
 import { calculateEstimatedFulfillmentDate } from "@/functions";
+import { sendMessage } from "@/functions/send-message";
 import { IShippingAddress } from "@/types";
 import { DeliveryType } from "@/types/order";
 import { createClient } from "@/utils/supabase/client";
@@ -92,6 +93,30 @@ export const QuotePayment = ({
           customOrdersRes.error?.message || quoteRes.error?.message
         );
       }
+
+      // Send a message after successful payment update
+      try {
+        await sendMessage({
+          subject: "Payment for Quote",
+          content: `Quote payment has been made for an order with id (${ref.reference})`,
+          source: "payment",
+          metadata: {
+            orderId: ref.reference,
+            quoteId,
+            totalAmount: total,
+            deliveryType,
+            deliveryDetails: shippingAddress,
+            deliveryFee,
+            note,
+          },
+        });
+      } catch (messageError) {
+        console.error(
+          "Failed to send payment confirmation message:",
+          messageError
+        );
+      }
+
       router.push(`/order-success?reference=${ref.reference}`);
     } catch (error) {
       toast.error(
