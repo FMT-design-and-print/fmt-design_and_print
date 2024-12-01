@@ -3,8 +3,17 @@ import { Permission } from "./roles";
 import { GHRegion } from "./order";
 
 export type MessageStatus = "error" | "success" | "info";
-export type CouponType = "percentage" | "fixed" | "free-shipping";
+export type DiscountType =
+  | "percentage"
+  | "fixed-amount"
+  | "bulk"
+  | "free-shipping";
 export type CouponStatus = "expired" | "active" | "disabled";
+export type PaymentMethod =
+  | "Cash"
+  | "Bank Transfer"
+  | "Mobile Money"
+  | "Credit Card";
 export type ArtworkOption =
   | "own-artwork"
   | "fmt-to-provide"
