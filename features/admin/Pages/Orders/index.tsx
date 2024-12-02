@@ -7,9 +7,9 @@ import { orderStatuses } from "@/constants/order-statuses";
 const customOrderStatuses: OrderStatus[] = ["requested", ...orderStatuses];
 
 export const Orders = () => {
-  const { orders, isLoading, error } = useOrders();
+  const { data: orders, isLoading, error } = useOrders();
   const {
-    customerOrders,
+    data: customOrders,
     isLoading: isLoadingCustomOrder,
     error: customOrderError,
   } = useCustomOrders();
@@ -33,7 +33,7 @@ export const Orders = () => {
           Custom Orders
         </Title>
         <OrdersTabs
-          orders={customerOrders || []}
+          orders={customOrders || []}
           isLoading={isLoadingCustomOrder}
           error={customOrderError}
           statuses={customOrderStatuses}

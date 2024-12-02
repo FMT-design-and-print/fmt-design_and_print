@@ -1,36 +1,40 @@
-import { ISales } from "@/types/sales-expenses";
 import { createClient } from "@/utils/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { ISales } from "@/types/sales-expenses";
 
-const SALES_QUERY_KEY = ["sales"] as const;
+const supabase = createClient();
 
-async function fetchSales() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("sales")
-    .select("*")
-    .order("created_at", { ascending: false });
+export const useSales = () => {
+  const queryClient = useQueryClient();
 
-  if (error) throw error;
-  return data as ISales[];
-}
+  useEffect(() => {
+    const subscription = supabase
+      .channel("sales-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "sales" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["sales"] });
+        }
+      )
+      .subscribe();
 
-export function useSales() {
-  const {
-    data: sales,
-    isLoading: loading,
-    error,
-  } = useQuery({
-    queryKey: SALES_QUERY_KEY,
-    queryFn: fetchSales,
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [queryClient]);
+
+  return useQuery<ISales[]>({
+    queryKey: ["sales"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sales")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
   });
-
-  return {
-    sales,
-    loading,
-    error: error as Error | null,
-  };
-}
-
-// Export the query key for invalidation
-export { SALES_QUERY_KEY };
+};

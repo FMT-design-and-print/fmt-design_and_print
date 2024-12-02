@@ -2,6 +2,7 @@ import { Container, Tabs, Title } from "@mantine/core";
 import { CustomOrdersDashboard } from "./CustomOrdersDashboard";
 import { OrdersDashboard } from "./OrdersDashboard";
 import { OrdersStats } from "./OrdersStats";
+import SalesAndExpensesDashboard from "../SalesAndExpensesDashboard";
 
 export function Dashboard() {
   return (
@@ -10,6 +11,11 @@ export function Dashboard() {
         Dashboard
       </Title>
 
+      <SalesAndExpensesDashboard />
+
+      <Title order={3} my="md">
+        Counts
+      </Title>
       <Tabs defaultValue="orders">
         <Tabs.List>
           <Tabs.Tab value="all">All</Tabs.Tab>
