@@ -27,6 +27,7 @@ import { PriceCalculator } from "../PriceCalculator";
 import CustomersPage from "../Pages/Customers";
 import MessagesPage from "../Pages/Messages";
 import SalesExpenses from "../Pages/SalesExpenses";
+import { ReceiptsPage } from "../Pages/Receipts";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -86,19 +87,19 @@ export const adminNavItems: IAdminNavItems[] = [
     requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   {
+    value: "receipts",
+    label: "Receipts",
+    icon: <IconReceipt />,
+    isVisible: true,
+    component: <ReceiptsPage />,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
+  },
+  {
     value: "invoices",
     label: "Invoices",
     icon: <IconFileInvoice />,
     isVisible: false,
     component: <>Invoices</>,
-    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
-  },
-  {
-    value: "receipts",
-    label: "Receipts",
-    icon: <IconReceipt />,
-    isVisible: false,
-    component: <>Receipts</>,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
@@ -110,14 +111,7 @@ export const adminNavItems: IAdminNavItems[] = [
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   "divider",
-  {
-    value: "services",
-    label: "Services",
-    icon: <IconSettings2 />,
-    isVisible: true,
-    component: <Services />,
-    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
-  },
+
   {
     value: "price-calculator",
     label: "Price Calculator",
@@ -149,6 +143,14 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconUserShield />,
     isVisible: true,
     component: <AdminUsers />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
+  },
+  {
+    value: "services",
+    label: "Services",
+    icon: <IconSettings2 />,
+    isVisible: true,
+    component: <Services />,
     requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   "divider",
