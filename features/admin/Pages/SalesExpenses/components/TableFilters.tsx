@@ -12,46 +12,13 @@ import { DatePickerInput, DatesRangeValue } from "@mantine/dates";
 import { useMemo, useState } from "react";
 import { ISales, Expenses } from "@/types/sales-expenses";
 import { Filters, AmountFilter } from "../hooks/useFilters";
+import { DATE_PRESETS } from "@/constants/presets";
 
 interface TableFiltersProps {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
   data: (ISales | Expenses)[];
 }
-
-const DATE_PRESETS = {
-  today: { label: "Today", getValue: () => [new Date(), new Date()] },
-  thisWeek: {
-    label: "This Week",
-    getValue: () => {
-      const today = new Date();
-      const firstDayOfWeek = new Date(
-        today.setDate(today.getDate() - today.getDay())
-      );
-      const lastDayOfWeek = new Date(
-        today.setDate(firstDayOfWeek.getDate() + 6)
-      );
-      return [firstDayOfWeek, lastDayOfWeek];
-    },
-  },
-  thisMonth: {
-    label: "This Month",
-    getValue: () => {
-      const today = new Date();
-      const firstDayOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        1
-      );
-      const lastDayOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        0
-      );
-      return [firstDayOfMonth, lastDayOfMonth];
-    },
-  },
-};
 
 function areDatesEqual(date1: Date | null, date2: Date | null): boolean {
   if (!date1 || !date2) return false;
@@ -71,6 +38,13 @@ export function TableFilters({
   const [amountValue, setAmountValue] = useState<string>("");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const presets = {
+    today: DATE_PRESETS.today,
+    thisWeek: DATE_PRESETS.thisWeek,
+    thisMonth: DATE_PRESETS.thisMonth,
+    last30Days: DATE_PRESETS.last30Days,
+  };
 
   const uniqueUsers = useMemo(() => {
     if (!data?.length) return [];
@@ -169,7 +143,7 @@ export function TableFilters({
         <>
           <Title order={5}>Filter By Date</Title>
           <Group>
-            {Object.entries(DATE_PRESETS).map(([key, preset]) => {
+            {Object.entries(presets).map(([key, preset]) => {
               const presetDates = preset.getValue();
               const isSelected =
                 !showDatePicker &&
@@ -211,17 +185,19 @@ export function TableFilters({
             >
               Custom Range
             </Button>
+            {showDatePicker && (
+              <DatePickerInput
+                type="range"
+                size="xs"
+                w={{ base: "100%", md: "auto" }}
+                miw={200}
+                placeholder="Pick dates"
+                value={filters.dateRange}
+                onChange={handleDateChange}
+                clearable
+              />
+            )}
           </Group>
-          {showDatePicker && (
-            <DatePickerInput
-              type="range"
-              label="Date Range"
-              placeholder="Pick dates"
-              value={filters.dateRange}
-              onChange={handleDateChange}
-              clearable
-            />
-          )}
         </>
       )}
 

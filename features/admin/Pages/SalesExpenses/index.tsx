@@ -1,4 +1,6 @@
 import { useCurrentAdminUser } from "@/hooks/admin/useCurrentAdminUser";
+import { useExpenses } from "@/hooks/admin/useExpenses";
+import { useSales } from "@/hooks/admin/useSales";
 import { useProductTypes } from "@/hooks/useProductTypes";
 import { Expenses, ISales } from "@/types/sales-expenses";
 import { createClient } from "@/utils/supabase/client";
@@ -8,12 +10,9 @@ import { IconPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ExpensesForm from "./ExpensesForm";
+import ExpensesTable from "./ExpensesTable";
 import SalesForm from "./SalesForm";
 import SalesTable from "./SalesTable";
-import { useSales, SALES_QUERY_KEY } from "@/hooks/admin/useSales";
-import { useQueryClient } from "@tanstack/react-query";
-import { useExpenses, EXPENSES_QUERY_KEY } from "@/hooks/admin/useExpenses";
-import ExpensesTable from "./ExpensesTable";
 
 export default function SalesExpensesPage() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -25,9 +24,8 @@ export default function SalesExpensesPage() {
     loading: loadingAdmin,
     error: adminError,
   } = useCurrentAdminUser();
-  const { sales, loading: loadingSales } = useSales();
-  const { expenses, loading: loadingExpenses } = useExpenses();
-  const queryClient = useQueryClient();
+  const { data: sales, isLoading: loadingSales } = useSales();
+  const { data: expenses, isLoading: loadingExpenses } = useExpenses();
 
   const supabase = createClient();
 
@@ -54,10 +52,7 @@ export default function SalesExpensesPage() {
       toast.success(
         `${activeTab === "sales" ? "Sale" : "Expense"} recorded successfully`
       );
-      // Invalidate and refetch data based on active tab
-      await queryClient.invalidateQueries({
-        queryKey: activeTab === "sales" ? SALES_QUERY_KEY : EXPENSES_QUERY_KEY,
-      });
+
       close();
     } catch (error) {
       toast.error("Failed to record data");
@@ -80,11 +75,6 @@ export default function SalesExpensesPage() {
       toast.success(
         `${activeTab === "sales" ? "Sale" : "Expense"} updated successfully`
       );
-
-      // Invalidate and refetch data
-      await queryClient.invalidateQueries({
-        queryKey: activeTab === "sales" ? SALES_QUERY_KEY : EXPENSES_QUERY_KEY,
-      });
     } catch (error) {
       toast.error(
         `Failed to update ${activeTab === "sales" ? "sale" : "expense"}`

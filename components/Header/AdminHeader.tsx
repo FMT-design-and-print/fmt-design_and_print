@@ -4,8 +4,11 @@ import { usePathname } from "next/navigation";
 import { FMTLogo } from "../FMTLogo";
 import Link from "next/link";
 import { MessageIndicator } from "@/features/admin/components/MessageIndicator";
+import { usePermission } from "@/hooks/admin/usePermission";
+import { UserPermission } from "@/types/roles";
 
 export const AdminHeader = () => {
+  const { hasPermission } = usePermission();
   const pathname = usePathname();
 
   if (pathname.includes("/admin")) {
@@ -34,7 +37,9 @@ export const AdminHeader = () => {
           )}
         </Group>
 
-        <MessageIndicator />
+        {hasPermission(UserPermission.ADMIN_PERMISSIONS) && (
+          <MessageIndicator />
+        )}
       </Flex>
     );
   }
