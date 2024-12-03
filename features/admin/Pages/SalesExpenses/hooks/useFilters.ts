@@ -24,44 +24,6 @@ function endOfDay(date: Date): Date {
   return newDate;
 }
 
-export const DATE_PRESETS = {
-  today: {
-    label: "Today",
-    getValue: () => {
-      const today = new Date();
-      return [startOfDay(today), endOfDay(today)] as DatesRangeValue;
-    },
-  },
-  thisWeek: {
-    label: "This Week",
-    getValue: () => {
-      const today = new Date();
-      const startOfWeek = startOfDay(new Date(today));
-      startOfWeek.setDate(today.getDate() - today.getDay());
-      return [startOfWeek, endOfDay(today)] as DatesRangeValue;
-    },
-  },
-  thisMonth: {
-    label: "This Month",
-    getValue: () => {
-      const today = new Date();
-      const startOfMonth = startOfDay(
-        new Date(today.getFullYear(), today.getMonth(), 1)
-      );
-      return [startOfMonth, endOfDay(today)] as DatesRangeValue;
-    },
-  },
-  last30Days: {
-    label: "Last 30 Days",
-    getValue: () => {
-      const today = new Date();
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(today.getDate() - 30);
-      return [thirtyDaysAgo, today] as DatesRangeValue;
-    },
-  },
-} as const;
-
 export const initialFilters: Filters = {
   createdBy: null,
   dateRange: [null, null],
