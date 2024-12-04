@@ -9,36 +9,54 @@ import {
 } from "@mantine/dropzone";
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { useState } from "react";
-import { useCustomRequest } from ".";
-import { ErrorsRenderer } from "../../components/ErrorsRenderer";
-import { ReceivedFilesRenderer } from "./ReceivedFilesRenderer";
-import { RejectedFilesMessages } from "./RejectedFilesMessages";
+import { ErrorsRenderer } from "../ErrorsRenderer";
 import classes from "./Styles.module.css";
 
-export const ArtworksDropzone = (props: Partial<DropzoneProps>) => {
-  const context = useCustomRequest();
+interface ArtworksDropzoneProps extends Partial<DropzoneProps> {
+  files: FileWithPath[];
+  onFilesChange?: (files: FileWithPath[]) => void;
+  maxFiles?: number;
+  maxSize?: number;
+  acceptedFileTypes?: string[];
+  renderFiles?: () => React.ReactNode;
+  renderRejected?: (
+    rejectedFiles: FileRejection[],
+    onClear: () => void
+  ) => React.ReactNode;
+  description?: string;
+  dropzoneText?: string;
+}
+
+export const ArtworksDropzone = ({
+  files,
+  onFilesChange,
+  maxFiles = 5,
+  maxSize = 10 * 1024 ** 2,
+  acceptedFileTypes = [
+    MIME_TYPES.png,
+    MIME_TYPES.svg,
+    MIME_TYPES.pdf,
+    "application/postscript",
+  ],
+  renderFiles,
+  renderRejected,
+  description,
+  dropzoneText = "Drag files here or click to select files",
+  ...props
+}: ArtworksDropzoneProps) => {
   const [rejectedFiles, setRejectedFiles] = useState<FileRejection[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const isMax = context?.artworkFiles.length === 5;
-  const handleOnDrop = (files: FileWithPath[]) => {
-    if (
-      context?.artworkFiles &&
-      context?.artworkFiles.length + files.length > 5
-    ) {
-      setErrors(["You can only upload up to 5 files"]);
+  const isMax = files.length === maxFiles;
+
+  const handleOnDrop = (newFiles: FileWithPath[]) => {
+    if (files.length + newFiles.length > maxFiles) {
+      setErrors([`You can only upload up to ${maxFiles} files`]);
       return;
     }
 
-    const filteredFiles = filterDuplicateFiles(
-      files,
-      context?.artworkFiles || []
-    );
-
-    context?.setArtworkFiles((prevState: FileWithPath[]) => [
-      ...prevState,
-      ...filteredFiles,
-    ]);
+    const filteredFiles = filterDuplicateFiles(newFiles, files);
+    onFilesChange?.([...files, ...filteredFiles]);
   };
 
   const handleOnReject = (files: FileRejection[]) => {
@@ -50,12 +68,9 @@ export const ArtworksDropzone = (props: Partial<DropzoneProps>) => {
     existingFiles: FileWithPath[]
   ) {
     const existingFileNames = existingFiles.map((file) => file.name);
-
-    const filteredFiles = newFiles.filter((newFile) => {
-      return !existingFileNames.includes(newFile.name);
-    });
-
-    return filteredFiles;
+    return newFiles.filter(
+      (newFile) => !existingFileNames.includes(newFile.name)
+    );
   }
 
   return (
@@ -63,20 +78,15 @@ export const ArtworksDropzone = (props: Partial<DropzoneProps>) => {
       <Dropzone
         disabled={isMax}
         className={isMax ? classes.disabled : ""}
-        onDrop={(files) => handleOnDrop(files)}
-        onReject={(files) => handleOnReject(files)}
+        onDrop={handleOnDrop}
+        onReject={handleOnReject}
         onDropAny={() => {
           setErrors([]);
           setRejectedFiles([]);
         }}
-        maxFiles={5 - (context?.artworkFiles.length || 0)}
-        maxSize={10 * 1024 ** 2}
-        accept={[
-          MIME_TYPES.png,
-          MIME_TYPES.svg,
-          MIME_TYPES.pdf,
-          "application/postscript",
-        ]}
+        maxFiles={maxFiles - files.length}
+        maxSize={maxSize}
+        accept={acceptedFileTypes}
         {...props}
       >
         <Group
@@ -90,7 +100,7 @@ export const ArtworksDropzone = (props: Partial<DropzoneProps>) => {
               style={{
                 width: rem(52),
                 height: rem(52),
-                color: "var(--mantine-color-blue-6)",
+                color: "var(--mantine-color-pink-6)",
               }}
               stroke={1.5}
             />
@@ -117,28 +127,21 @@ export const ArtworksDropzone = (props: Partial<DropzoneProps>) => {
           </Dropzone.Idle>
 
           <div>
-            <Text size="xl" inline>
-              Drag files here or click to select files
+            <Text size="xl" inline c="gray.8">
+              {dropzoneText}
             </Text>
             <Text size="sm" c="dimmed" inline mt={7}>
-              You can upload a maximum of 5 artworks, each file should not
-              exceed 10mb. Accepted formats: .eps, .svg, .ai, .pdf, .png and
-              sometimes(.jpg, .jpeg)
+              {description ||
+                `You can upload a maximum of ${maxFiles} files, each file should not exceed ${maxSize / 1024 / 1024}MB. Accepted file types: eps, pdf, png, svg`}
             </Text>
           </div>
         </Group>
       </Dropzone>
 
-      {context?.artworkFiles && context?.artworkFiles.length > 0 && (
-        <ReceivedFilesRenderer />
-      )}
+      {files.length > 0 && renderFiles?.()}
 
-      {rejectedFiles.length > 0 && (
-        <RejectedFilesMessages
-          rejectedFiles={rejectedFiles}
-          handleClear={() => setRejectedFiles([])}
-        />
-      )}
+      {rejectedFiles.length > 0 &&
+        renderRejected?.(rejectedFiles, () => setRejectedFiles([]))}
 
       {errors.length > 0 && (
         <ErrorsRenderer errors={errors} showTitle={false} />

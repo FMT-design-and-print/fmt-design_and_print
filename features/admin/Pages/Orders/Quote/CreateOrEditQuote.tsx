@@ -168,7 +168,9 @@ export function CreateOrEditQuote({
         setClientName(contactName || "");
         setPhoneNumber(phone || "");
         setEmailAddress(email || "");
-        setMode && setMode("create");
+        if (setMode) {
+          setMode("create");
+        }
       }
     }
   };
@@ -184,6 +186,7 @@ export function CreateOrEditQuote({
   const handleQuoteItemFieldChange = (
     id: string,
     field: keyof IQuoteItem,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: any
   ) => {
     setQuoteItems((prevItems) =>

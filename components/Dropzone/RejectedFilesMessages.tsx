@@ -12,6 +12,7 @@ export const RejectedFilesMessages = ({
   rejectedFiles,
   handleClear,
 }: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatFileError = (error: any) => {
     switch (error.code) {
       case "file-too-large":
