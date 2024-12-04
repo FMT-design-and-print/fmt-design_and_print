@@ -28,6 +28,7 @@ import CustomersPage from "../Pages/Customers";
 import MessagesPage from "../Pages/Messages";
 import SalesExpenses from "../Pages/SalesExpenses";
 import { ReceiptsPage } from "../Pages/Receipts";
+import QuotesPage from "../Pages/quotes";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -95,11 +96,11 @@ export const adminNavItems: IAdminNavItems[] = [
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
-    value: "invoices",
-    label: "Invoices",
+    value: "quotes-invoices",
+    label: "Quotes & Invoices",
     icon: <IconFileInvoice />,
-    isVisible: false,
-    component: <>Invoices</>,
+    isVisible: true,
+    component: <QuotesPage />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {

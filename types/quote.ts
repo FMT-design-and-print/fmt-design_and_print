@@ -38,4 +38,5 @@ export interface IQuote {
   numberOfRevisionsRequested: number;
   numberOfReactivationRequested: number;
   requestPayment: boolean;
+  type: "quote" | "invoice";
 }
