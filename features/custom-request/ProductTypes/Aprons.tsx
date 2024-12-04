@@ -9,7 +9,7 @@ import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { isArtworkRequired } from "../required-artwork";
 import { validateQuoteMedium } from "../validate-quote-medium";
-import { uploadArtworkFiles } from "../upload-files";
+import { uploadArtworkFiles } from "../../../functions/upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";

@@ -7,7 +7,7 @@ import { ArtworkSection } from "../ArtworkSection";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { ErrorsRenderer } from "@/components/ErrorsRenderer";
 import { Checkbox, Text } from "@mantine/core";
-import { uploadArtworkFiles } from "../upload-files";
+import { uploadArtworkFiles } from "../../../functions/upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { isArtworkRequired } from "../required-artwork";

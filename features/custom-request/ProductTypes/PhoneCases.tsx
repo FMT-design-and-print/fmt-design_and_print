@@ -7,7 +7,7 @@ import { Quantity } from "../Quantity";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { isArtworkRequired } from "../required-artwork";
 import { saveCustomOrderDetails } from "../save-details";
-import { uploadArtworkFiles } from "../upload-files";
+import { uploadArtworkFiles } from "../../../functions/upload-files";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { Layout } from "./Layout";
 import { validateContactInfo } from "../validate-contact-info";

@@ -1,0 +1,27 @@
+.printContainer {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+}
+
+@media print {
+  .printContainer {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Hide all other elements when printing */
+  :global(body > *:not(.printContainer)) {
+    display: none !important;
+  }
+
+  /* Ensure text and borders are visible */
+  :global(*) {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
