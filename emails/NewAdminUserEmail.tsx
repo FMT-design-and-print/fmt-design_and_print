@@ -18,12 +18,14 @@ interface Props {
   firstName: string;
   email: string;
   tempPassword: string;
+  origin: string;
 }
 
 export const NewAdminUserEmail = ({
   firstName,
   email,
   tempPassword,
+  origin,
 }: Props) => (
   <Html>
     <Head />
@@ -62,7 +64,7 @@ export const NewAdminUserEmail = ({
         <Section style={btnContainer}>
           <Button
             style={button}
-            href={`https://fmtdesignprint.com/admin/login?new=true&confirmed=false`}
+            href={`${origin}/admin/new-admin-user-login?confirmed=false`}
           >
             Reset Password
           </Button>

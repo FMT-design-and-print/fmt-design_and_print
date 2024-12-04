@@ -1,4 +1,10 @@
-import { authors, bannerImage, fmtDescription, keywords } from "@/constants";
+import {
+  authors,
+  bannerImage,
+  baseUrl,
+  fmtDescription,
+  keywords,
+} from "@/constants";
 import { Metadata } from "next";
 
 const defaultTitle = "FMT Design and Print — Design and Printing Services";
@@ -18,7 +24,7 @@ export const generateMetaDetails = (
       description: description || fmtDescription,
       siteName: "FMT Design and Print",
       locale: "en_US",
-      url: "https://fmtdesignprint.com",
+      url: baseUrl,
       images: [image || bannerImage],
     },
 
