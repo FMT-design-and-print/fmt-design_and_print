@@ -251,7 +251,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
         dueDate: values.dueDate,
         items: values.items,
         order_id: orderData.id,
-        status: "created",
+        status: quoteId ? data?.quote.status : "created",
         requestPayment: true,
         totalAmount: values.items.reduce(
           (sum, item) => sum + item.totalAmount,

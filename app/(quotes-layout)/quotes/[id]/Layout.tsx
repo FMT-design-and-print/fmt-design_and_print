@@ -36,6 +36,7 @@ export const Layout = ({ quote }: Props) => {
     order_id,
   } = quote;
   const [screen, setScreen] = useState<"review" | "payment">("review");
+  const [revisionRequested, setRevisionRequested] = useState(false);
 
   const isDueDatePassed = (): boolean => {
     const currentDate = new Date();
@@ -103,6 +104,7 @@ export const Layout = ({ quote }: Props) => {
                   quoteId={id}
                   quoteNumber={quoteNumber}
                   revisionReasons={revisionReasons || []}
+                  setRevisionRequested={setRevisionRequested}
                 />
               )}
             </Group>
@@ -113,6 +115,7 @@ export const Layout = ({ quote }: Props) => {
                 className="btn"
                 onClick={() => setScreen("payment")}
                 w={{ base: "100%", sm: "fit-content" }}
+                disabled={revisionRequested}
               >
                 Accept and Pay
               </Button>

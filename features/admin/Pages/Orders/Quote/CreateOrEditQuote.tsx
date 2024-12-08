@@ -384,7 +384,7 @@ export function CreateOrEditQuote({
       <Card withBorder bg="gray.1" mt={16}>
         <Flex gap={8} direction={{ base: "column", sm: "row" }}>
           <TextInput
-            label="Individual/Business name"
+            label="Customer name"
             placeholder="name"
             className="flex-1"
             value={clientName}

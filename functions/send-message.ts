@@ -29,5 +29,5 @@ export const sendMessage = async ({
     throw new Error(error.message);
   }
 
-  return data;
+  return data || { success: true };
 };

@@ -102,7 +102,6 @@ export default function SalesExpensesPage() {
             color="pink"
             onClick={open}
             loading={loadingAdmin}
-            disabled={!adminUser}
           >
             Add {activeTab === "sales" ? "Sale" : "Expense"}
           </Button>

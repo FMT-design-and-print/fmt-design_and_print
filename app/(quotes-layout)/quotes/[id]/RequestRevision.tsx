@@ -2,21 +2,21 @@ import React, { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button, Textarea, Text, Alert } from "@mantine/core";
 import { createClient } from "@/utils/supabase/client";
-import { useSession } from "@/store";
 import { sendMessage } from "@/functions/send-message";
 
 interface Props {
   quoteId: string;
   quoteNumber: string | number;
   revisionReasons: string[];
+  setRevisionRequested: (value: boolean) => void;
 }
 
 export const RequestRevision = ({
   quoteId,
   quoteNumber,
   revisionReasons,
+  setRevisionRequested,
 }: Props) => {
-  const { user } = useSession();
   const [opened, { open, close }] = useDisclosure(false);
   const [description, setDescription] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -33,36 +33,37 @@ export const RequestRevision = ({
     const supabase = createClient();
     setIsSending(true);
     try {
-      const [messagesRes, quotesRes] = await Promise.all([
-        sendMessage({
-          subject: `Quote revision request (Quote No. ${quoteNumber})`,
-          content: description,
-          source: "quote",
-          metadata: {
-            userId: user?.id,
-            email: user?.email,
-            phone: user?.phone,
-          },
-        }),
+      const quotesRes = await supabase
+        .from("quotes")
+        .update({
+          revisionReasons: [...revisionReasons, description],
+          numberOfRevisionsRequested: revisionReasons.length + 1,
+        })
+        .eq("id", quoteId);
 
-        supabase
-          .from("quotes")
-          .update({
-            revisionReasons: [...revisionReasons, description],
-            numberOfRevisionsRequested: revisionReasons.length + 1,
-          })
-          .eq("id", quoteId),
-      ]);
-
-      if (!messagesRes || quotesRes.error) {
+      if (quotesRes.error) {
+        setRevisionRequested(false);
+        console.error(quotesRes.error);
         throw new Error(quotesRes.error?.message);
       }
+
+      await sendMessage({
+        subject: `Quote revision request (Quote No. ${quoteNumber})`,
+        content: description,
+        source: "quote",
+        metadata: {
+          quoteId,
+          quoteNumber,
+        },
+      });
 
       setErrorMsg("");
       setIsSent(true);
       setIsSending(false);
+      setRevisionRequested(true);
       close();
     } catch (error) {
+      setRevisionRequested(false);
       setErrorMsg("Failed to send request. Try again later");
       setIsSending(false);
       console.error(error);

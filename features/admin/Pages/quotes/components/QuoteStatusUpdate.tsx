@@ -26,8 +26,9 @@ export function QuoteStatusUpdate({
         <Select
           value={currentStatus}
           data={[{ value: "paid", label: "Paid" }]}
-          style={{ width: 130 }}
+          style={{ width: 100 }}
           disabled
+          size="xs"
         />
       </Group>
     );
@@ -80,7 +81,8 @@ export function QuoteStatusUpdate({
             { value: "cancelled", label: "Cancelled" },
             { value: "expired", label: "Expired" },
           ]}
-          style={{ width: 130 }}
+          style={{ width: 100 }}
+          size="xs"
         />
         {status !== currentStatus && (
           <ActionIcon

@@ -26,11 +26,21 @@ export function useQuotes({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("quotes")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .select("*, custom-orders(orderDetails)")
+        .order("created_at", { ascending: false })
+        .returns<IQuote[]>();
 
       if (error) throw error;
-      return data as IQuote[];
+
+      // Transform the data to include orderDetails
+      const transformedData = (data || []).map((quote) => ({
+        ...quote,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        orderDetails: (quote as any)["custom-orders"]?.orderDetails,
+        "custom-orders": undefined, // Remove the custom-orders array
+      })) as IQuote[];
+
+      return transformedData;
     },
   });
 

@@ -39,7 +39,7 @@ export const Form = () => {
     const fieldErrors: string[] = [];
 
     if (!name.trim()) {
-      fieldErrors.push("Individual/Business name is required");
+      fieldErrors.push("Customer name is required");
     }
 
     if (!phone.trim()) {
@@ -124,7 +124,7 @@ export const Form = () => {
       <LoadingOverlay visible={isSubmitting} />
       <Flex gap={8} direction={{ base: "column", sm: "row" }}>
         <TextInput
-          label="Individual/Business name"
+          label="Customer name"
           placeholder="name"
           className="flex-1"
           value={name}
