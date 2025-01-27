@@ -14,6 +14,7 @@ export type OrderStatus =
   | "requested";
 
 export type DeliveryType = "pickup" | "delivery";
+export type PaymentStatus = "unpaid" | "paid" | "failed";
 
 export type IOrderItem = ICartItem;
 interface CommonOrderDetails {
@@ -31,6 +32,7 @@ interface CommonOrderDetails {
   estimatedFulfillmentDate?: Date;
   paymentType: string;
   deliveryFee?: number;
+  paymentStatus?: PaymentStatus;
 }
 
 export interface IOrder extends CommonOrderDetails {

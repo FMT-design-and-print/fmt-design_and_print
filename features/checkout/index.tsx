@@ -22,7 +22,8 @@ import { DeliveryInformation } from "./DeliveryInformation";
 import { PaymentDetails } from "./PaymentDetails";
 import { ReviewItems } from "./ReviewItems";
 import { sendMessage } from "@/functions/send-message";
-import { ConfirmOrder } from "./ConfirmOrder";
+import { ConfirmOrder } from "@/components/PaymentDetails/ConfirmOrder";
+import { PaymentStatus } from "@/types/order";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -52,7 +53,10 @@ export const Checkout = ({ shippingAddresses }: Props) => {
     town: details.town,
   };
 
-  const handleOnPaymentSuccess = async (ref: any) => {
+  const handleOnPaymentSuccess = async (
+    ref: any,
+    paymentStatus: PaymentStatus
+  ) => {
     const supabase = createClient();
 
     setIsLoading(true);
@@ -71,6 +75,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           reference: ref.reference,
           deliveryDetails: shippingAddress,
           note: details.note,
+          paymentStatus: paymentStatus,
           estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
             5,
             new Date()
@@ -198,19 +203,20 @@ export const Checkout = ({ shippingAddresses }: Props) => {
             {details.paymentType === "cod" ? (
               <ConfirmOrder
                 onConfirm={() =>
-                  handleOnPaymentSuccess({ reference: getOrderId() })
+                  handleOnPaymentSuccess({ reference: getOrderId() }, "unpaid")
                 }
                 total={total}
                 shippingAddress={shippingAddress}
                 deliveryType={details.deliveryType}
                 paymentType={details.paymentType}
+                setEmptyRequiredFields={setEmptyRequiredFields}
               />
             ) : (
               <PayButton
                 total={total}
                 shippingAddress={shippingAddress}
                 deliveryType={details.deliveryType}
-                onSuccess={handleOnPaymentSuccess}
+                onSuccess={(ref: any) => handleOnPaymentSuccess(ref, "paid")}
                 setEmptyRequiredFields={setEmptyRequiredFields}
               />
             )}

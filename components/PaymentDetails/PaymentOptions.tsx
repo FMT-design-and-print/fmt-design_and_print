@@ -1,17 +1,18 @@
 import { featureFlags } from "@/constants/feature-flags";
-import { useCheckout } from "@/store/checkout";
+import { PaymentType } from "@/types";
 import { Box, Radio, Stack, Text } from "@mantine/core";
+
+interface Props {
+  amountInvolved: number;
+  paymentType: PaymentType;
+  updatePaymentType: (paymentType: PaymentType) => void;
+}
 
 export const PaymentOptions = ({
   amountInvolved,
-}: {
-  amountInvolved: number;
-}) => {
-  const {
-    update,
-    details: { paymentType },
-  } = useCheckout((state) => state);
-
+  paymentType,
+  updatePaymentType,
+}: Props) => {
   const isCodDisabled = amountInvolved > 500; // cod is disabled for orders above GHS 500
 
   return (
@@ -26,7 +27,7 @@ export const PaymentOptions = ({
           color="var(--primary-800)"
           checked={paymentType === "momo"}
           onChange={() => {
-            update("paymentType", "momo");
+            updatePaymentType("momo");
           }}
           label={
             <Text component="span" size="sm">
@@ -39,7 +40,7 @@ export const PaymentOptions = ({
           color="var(--primary-800)"
           checked={paymentType === "card"}
           onChange={() => {
-            update("paymentType", "card");
+            updatePaymentType("card");
           }}
           label={
             <Text component="span" size="sm">
@@ -54,7 +55,7 @@ export const PaymentOptions = ({
             checked={paymentType === "cod"}
             onChange={() => {
               if (!isCodDisabled) {
-                update("paymentType", "cod");
+                updatePaymentType("cod");
               }
             }}
             label={

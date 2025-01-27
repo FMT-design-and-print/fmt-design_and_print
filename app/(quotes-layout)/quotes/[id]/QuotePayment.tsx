@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { ConfirmOrder } from "@/components/PaymentDetails/ConfirmOrder";
 import { PayButton } from "@/components/PaymentDetails/PayButton";
 import { PaymentDetailsCard } from "@/components/PaymentDetails/PaymentDetailsCard";
 import { ShippingAddress } from "@/components/ShippingAddress";
 import { baseShippingFeeByRegion } from "@/constants/gh-regions";
-import { calculateEstimatedFulfillmentDate } from "@/functions";
+import { calculateEstimatedFulfillmentDate, getOrderId } from "@/functions";
 import { sendMessage } from "@/functions/send-message";
-import { IShippingAddress } from "@/types";
-import { DeliveryType } from "@/types/order";
+import { IShippingAddress, PaymentType } from "@/types";
+import { DeliveryType, PaymentStatus } from "@/types/order";
 import { createClient } from "@/utils/supabase/client";
 import { Alert, Box, Button, Card, Flex, Text, Title } from "@mantine/core";
 import { IconExclamationCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
 import { toast } from "react-toastify";
 
@@ -65,10 +66,15 @@ export const QuotePayment = ({
       baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
       0
   );
+  const [paymentType, setPaymentType] = useState<PaymentType>("momo");
 
   const total = subTotal + deliveryFee - discount;
 
-  const handleOnPaymentSuccess = async (ref: any) => {
+  const handleOnPaymentSuccess = async (
+    ref: any,
+    paymentStatus: PaymentStatus
+  ) => {
+    setEmptyRequiredFields([]);
     const supabase = createClient();
 
     const detailsToUpdate = {
@@ -83,6 +89,8 @@ export const QuotePayment = ({
       ).toISOString(),
       updated_at: new Date().toISOString(),
       orderId: ref.reference,
+      paymentStatus: paymentStatus,
+      paymentType,
     };
     setIsLoading(true);
     try {
@@ -134,6 +142,18 @@ export const QuotePayment = ({
     }
   };
 
+  useEffect(() => {
+    if (deliveryType !== "delivery") {
+      setDeliveryFee(0);
+    } else {
+      setDeliveryFee(
+        specifiedDeliveryFee ||
+          baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
+          0
+      );
+    }
+  }, [deliveryType, specifiedDeliveryFee, shippingAddress.region]);
+
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} />
@@ -151,6 +171,8 @@ export const QuotePayment = ({
           deliveryType={deliveryType}
           setDeliveryType={setDeliveryType}
           setDiscount={setDisCount}
+          paymentType={paymentType}
+          setPaymentType={setPaymentType}
         />
       </Card>
 
@@ -177,15 +199,6 @@ export const QuotePayment = ({
         />
       </Card>
 
-      {shippingAddress.region && shippingAddress.region.id !== 7 && (
-        <Box>
-          <Text fz="xs" fs="italic" c="gray.7">
-            Your region is outside Greater Accra. Delivery fee is not finalized
-            and will be confirmed later
-          </Text>
-        </Box>
-      )}
-
       <Flex
         justify="space-between"
         align="center"
@@ -203,13 +216,26 @@ export const QuotePayment = ({
           Review Items
         </Button>
 
-        <PayButton
-          total={total}
-          shippingAddress={shippingAddress}
-          deliveryType={deliveryType}
-          onSuccess={handleOnPaymentSuccess}
-          setEmptyRequiredFields={setEmptyRequiredFields}
-        />
+        {paymentType === "cod" ? (
+          <ConfirmOrder
+            total={total}
+            shippingAddress={shippingAddress}
+            deliveryType={deliveryType}
+            paymentType={paymentType}
+            onConfirm={() =>
+              handleOnPaymentSuccess({ reference: getOrderId() }, "unpaid")
+            }
+            setEmptyRequiredFields={setEmptyRequiredFields}
+          />
+        ) : (
+          <PayButton
+            total={total}
+            shippingAddress={shippingAddress}
+            deliveryType={deliveryType}
+            onSuccess={(ref: any) => handleOnPaymentSuccess(ref, "unpaid")}
+            setEmptyRequiredFields={setEmptyRequiredFields}
+          />
+        )}
       </Flex>
 
       <Box bg="white">

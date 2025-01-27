@@ -76,7 +76,11 @@ export const PaymentDetailsCard = (props: Props) => {
         setDeliveryType={setDeliveryType}
       />
 
-      <PaymentOptions amountInvolved={subTotal + deliveryFee} />
+      <PaymentOptions
+        amountInvolved={subTotal + deliveryFee}
+        paymentType={paymentType}
+        updatePaymentType={setPaymentType}
+      />
 
       <Divider my={16} />
       <Stack>

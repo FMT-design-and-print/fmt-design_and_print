@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDisclosure } from "@mantine/hooks";
 import {
   Modal,
@@ -15,6 +16,8 @@ import { IconUser } from "@tabler/icons-react";
 import { IconPhone } from "@tabler/icons-react";
 import { IconMapPin } from "@tabler/icons-react";
 import { IconMail } from "@tabler/icons-react";
+import { verifyAddressDetails } from "@/functions";
+import { Dispatch, SetStateAction } from "react";
 
 interface ConfirmOrderProps {
   total: number;
@@ -22,6 +25,7 @@ interface ConfirmOrderProps {
   deliveryType: DeliveryType;
   paymentType: PaymentType;
   onConfirm: () => void;
+  setEmptyRequiredFields?: Dispatch<SetStateAction<string[]>>;
 }
 
 export const ConfirmOrder = ({
@@ -30,8 +34,28 @@ export const ConfirmOrder = ({
   deliveryType,
   paymentType,
   onConfirm,
+  setEmptyRequiredFields,
 }: ConfirmOrderProps) => {
   const [opened, { open, close }] = useDisclosure(false);
+
+  const handleConfirm = () => {
+    if (total === 0) {
+      setEmptyRequiredFields?.(["Amount" as any]);
+      return;
+    }
+
+    const { isValid, fields } = verifyAddressDetails(
+      shippingAddress,
+      deliveryType
+    );
+    if (!isValid) {
+      setEmptyRequiredFields?.(fields);
+      return;
+    }
+
+    setEmptyRequiredFields?.([]);
+    open();
+  };
 
   return (
     <>
@@ -43,7 +67,9 @@ export const ConfirmOrder = ({
 
           <Paper withBorder p="md" radius="sm">
             <Stack gap="xs">
-              <Text fw={500}>Delivery Details</Text>
+              <Text fw={500}>
+                {deliveryType === "delivery" ? "Delivery" : "Contact"} Details
+              </Text>
 
               <Group gap="xs">
                 <IconUser size={16} />
@@ -65,13 +91,15 @@ export const ConfirmOrder = ({
                 </Group>
               )}
 
-              <Group gap="xs">
-                <IconMapPin size={16} />
-                <Text size="sm">
-                  {shippingAddress.address}, {shippingAddress.region?.name},{" "}
-                  {shippingAddress.country}
-                </Text>
-              </Group>
+              {deliveryType === "delivery" && (
+                <Group gap="xs">
+                  <IconMapPin size={16} />
+                  <Text size="sm">
+                    {shippingAddress.address}, {shippingAddress.region?.name},{" "}
+                    {shippingAddress.country}
+                  </Text>
+                </Group>
+              )}
             </Stack>
           </Paper>
 
@@ -126,7 +154,7 @@ export const ConfirmOrder = ({
       </Modal>
 
       <Button
-        onClick={open}
+        onClick={handleConfirm}
         className="btn"
         w={{ base: "100%", sm: "fit-content" }}
       >
