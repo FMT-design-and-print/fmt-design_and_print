@@ -2,10 +2,11 @@
 "use client";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { PayButton } from "@/components/PaymentDetails/PayButton";
-import { shippingFeeByRegion } from "@/constants/gh-regions";
+import { baseShippingFeeByRegion } from "@/constants/gh-regions";
 import {
   calculateEstimatedFulfillmentDate,
   calculateTotalPrice,
+  getOrderId,
 } from "@/functions";
 import { useSession } from "@/store";
 import { useCart } from "@/store/cart";
@@ -21,6 +22,7 @@ import { DeliveryInformation } from "./DeliveryInformation";
 import { PaymentDetails } from "./PaymentDetails";
 import { ReviewItems } from "./ReviewItems";
 import { sendMessage } from "@/functions/send-message";
+import { ConfirmOrder } from "./ConfirmOrder";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -35,7 +37,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
   const { clearItemsFromCart } = useCart((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const shippingFee = shippingFeeByRegion[details.region] || 0;
+  const shippingFee = baseShippingFeeByRegion[details.region?.id || 7] || 0;
   const subTotal = calculateTotalPrice(details.items);
   const total = subTotal + shippingFee - (details.discount || 0);
 
@@ -184,7 +186,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           <Box hiddenFrom="md" mb="lg">
             <DeliveryInformation shippingAddresses={shippingAddresses} />
           </Box>
-          {details.region && details.region !== "GREATER ACCRA" && (
+          {details.region && details.region.id !== 7 && (
             <Box pb="md">
               <Text fz="xs" fs="italic" c="gray.9">
                 Your region is outside Greater Accra. Delivery fee is not
@@ -193,13 +195,25 @@ export const Checkout = ({ shippingAddresses }: Props) => {
             </Box>
           )}
           <Group grow pb="lg">
-            <PayButton
-              total={total}
-              shippingAddress={shippingAddress}
-              deliveryType={details.deliveryType}
-              onSuccess={handleOnPaymentSuccess}
-              setEmptyRequiredFields={setEmptyRequiredFields}
-            />
+            {details.paymentType === "cod" ? (
+              <ConfirmOrder
+                onConfirm={() =>
+                  handleOnPaymentSuccess({ reference: getOrderId() })
+                }
+                total={total}
+                shippingAddress={shippingAddress}
+                deliveryType={details.deliveryType}
+                paymentType={details.paymentType}
+              />
+            ) : (
+              <PayButton
+                total={total}
+                shippingAddress={shippingAddress}
+                deliveryType={details.deliveryType}
+                onSuccess={handleOnPaymentSuccess}
+                setEmptyRequiredFields={setEmptyRequiredFields}
+              />
+            )}
           </Group>
           <Box bg="white">
             {emptyRequiredFields.length > 0 && (

@@ -1,3 +1,5 @@
+import { GHRegion } from "./";
+
 export interface IUserDetails {
   id: string;
   email?: string;
@@ -6,7 +8,7 @@ export interface IUserDetails {
   profileImage?: string | null;
   phone?: string | null;
   country?: string | null;
-  region?: string | null;
+  region?: GHRegion | null;
   gender?: string | null;
   dateOfBirth?: Date | null;
   created_at?: string;

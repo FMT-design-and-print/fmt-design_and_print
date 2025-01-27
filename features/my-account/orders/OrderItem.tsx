@@ -1,3 +1,4 @@
+import { CopyIcon } from "@/components/CopyIcon";
 import { IOrderItem } from "@/types/order";
 import { Avatar, Card, Group, Text } from "@mantine/core";
 
@@ -12,6 +13,10 @@ export const OrderItem = ({ item }: Props) => {
         <Avatar size="lg" src={item.image} radius="xs" />
 
         <div>
+          <Group gap={2} fz="xs" c="dimmed">
+            #{item.productNumber}
+            <CopyIcon value={item.productNumber || ""} />
+          </Group>
           <Text fz="sm" fw={500} lineClamp={2} mb="xs">
             {item.title}
           </Text>

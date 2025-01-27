@@ -2,11 +2,17 @@ import { featureFlags } from "@/constants/feature-flags";
 import { useCheckout } from "@/store/checkout";
 import { Box, Radio, Stack, Text } from "@mantine/core";
 
-export const PaymentOptions = () => {
+export const PaymentOptions = ({
+  amountInvolved,
+}: {
+  amountInvolved: number;
+}) => {
   const {
     update,
     details: { paymentType },
   } = useCheckout((state) => state);
+
+  const isCodDisabled = amountInvolved > 500; // cod is disabled for orders above GHS 500
 
   return (
     <Box py="md">
@@ -24,7 +30,7 @@ export const PaymentOptions = () => {
           }}
           label={
             <Text component="span" size="sm">
-              Mobile Money (MTN, Telecel, AT)
+              MOMO (MTN, Telecel, AT)
             </Text>
           }
         />
@@ -43,18 +49,25 @@ export const PaymentOptions = () => {
         />
         {featureFlags.cod && (
           <Radio
-            color="dark"
+            color="var(--primary-800)"
             variant="outline"
             checked={paymentType === "cod"}
             onChange={() => {
-              update("paymentType", "cod");
+              if (!isCodDisabled) {
+                update("paymentType", "cod");
+              }
             }}
             label={
-              <Text component="span" c="white" size="sm">
+              <Text component="span" size="sm">
                 Cash On Delivery
               </Text>
             }
-            hidden
+            description={
+              isCodDisabled
+                ? "This option is disabled because the order amount does not allow for this method of payment"
+                : ""
+            }
+            disabled={isCodDisabled}
           />
         )}
       </Stack>

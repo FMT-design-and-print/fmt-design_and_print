@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { regionsInGhana } from "@/constants/gh-regions";
@@ -122,10 +123,18 @@ export const ProfileForm = ({ user, isUserSaved }: Props) => {
         />
 
         <Select
-          value={userDetails?.region || ""}
-          onChange={(value) => update("region", value || "")}
+          value={userDetails?.region?.id.toString() || ""}
+          onChange={(value) => {
+            const region = regionsInGhana.find(
+              (region) => region.id.toString() === value
+            );
+            update("region", region || null);
+          }}
           comboboxProps={{ withinPortal: true }}
-          data={regionsInGhana}
+          data={regionsInGhana.map((region) => ({
+            value: region.id.toString(),
+            label: region.name,
+          }))}
           label="Region"
           placeholder="choose region"
         />

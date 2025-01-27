@@ -2,7 +2,6 @@ import { client } from "@/sanity/lib/client";
 import { searchQuery } from "@/sanity/queries/global-search";
 import { SearchItem } from "@/types";
 import {
-  Button,
   Center,
   Loader,
   Popover,
@@ -79,25 +78,14 @@ export const SearchWithButton = (props: TextInputProps) => {
       <Popover.Target>
         <TextInput
           ref={setControl}
-          radius={isMobile ? "xl" : "sm"}
-          size={isMobile ? "sm" : "md"}
-          placeholder="Search items..."
-          rightSectionWidth={isMobile ? "70px" : "90px"}
+          radius="xl"
+          size="sm"
+          placeholder="Start typing to search..."
+          rightSectionWidth={isMobile ? "50px" : "78px"}
           leftSection={<HiSearch />}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.currentTarget.value)}
           onClick={open}
-          rightSection={
-            <Button
-              radius={isMobile ? "xl" : "sm"}
-              size={isMobile ? "xs" : "sm"}
-              className={`btn`}
-            >
-              <Text c="white" size={isMobile ? "10px" : "md"} component="span">
-                Search
-              </Text>
-            </Button>
-          }
           {...props}
         />
       </Popover.Target>

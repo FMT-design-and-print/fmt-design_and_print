@@ -1,4 +1,3 @@
-import { regionsInGhana } from "@/constants/gh-regions";
 import { ICartItem, IShippingAddress } from ".";
 
 export type OrderStatus =
@@ -15,7 +14,6 @@ export type OrderStatus =
   | "requested";
 
 export type DeliveryType = "pickup" | "delivery";
-export type GHRegion = (typeof regionsInGhana)[number];
 
 export type IOrderItem = ICartItem;
 interface CommonOrderDetails {

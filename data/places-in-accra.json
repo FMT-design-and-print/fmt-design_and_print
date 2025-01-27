@@ -1,0 +1,3533 @@
+[
+  {
+    "name": "Ababio",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.6
+  },
+  {
+    "name": "Abeka",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.24
+  },
+  {
+    "name": "Abetinso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.5
+  },
+  {
+    "name": "Ablajei",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.2
+  },
+  {
+    "name": "Ablefu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.43
+  },
+  {
+    "name": "Ablekuma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.1
+  },
+  {
+    "name": "Ablemkpe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.22
+  },
+  {
+    "name": "Ablenkpe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.22
+  },
+  {
+    "name": "Aboansa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.57
+  },
+  {
+    "name": "Aboansa Number 2",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.57
+  },
+  {
+    "name": "Abochiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.35
+  },
+  {
+    "name": "Abofu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.22
+  },
+  {
+    "name": "Abokobi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.21
+  },
+  {
+    "name": "Aboman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.2
+  },
+  {
+    "name": "Abossey Okai",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.24
+  },
+  {
+    "name": "Abosumba",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.55
+  },
+  {
+    "name": "Abrekuma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.31
+  },
+  {
+    "name": "Abura",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.48
+  },
+  {
+    "name": "Accra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Accra Central",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.21
+  },
+  {
+    "name": "Accra New Town",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.21
+  },
+  {
+    "name": "Achiaman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.33
+  },
+  {
+    "name": "Achimota",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.23
+  },
+  {
+    "name": "Achimota Forest",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.22
+  },
+  {
+    "name": "Achimota Village",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.23
+  },
+  {
+    "name": "Adabraka",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.21
+  },
+  {
+    "name": "Adaiso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.49
+  },
+  {
+    "name": "Addogonno",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.07
+  },
+  {
+    "name": "Adembra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.53
+  },
+  {
+    "name": "Adenkrebi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.2
+  },
+  {
+    "name": "Adentan",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.17
+  },
+  {
+    "name": "Adiembra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.43
+  },
+  {
+    "name": "Adofin",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.6
+  },
+  {
+    "name": "Adusa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.27
+  },
+  {
+    "name": "Adzenkotoku",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.36
+  },
+  {
+    "name": "Afiaman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.28
+  },
+  {
+    "name": "Afianya",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.08
+  },
+  {
+    "name": "Afuaman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.36
+  },
+  {
+    "name": "Agblesia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.05
+  },
+  {
+    "name": "Agbogba",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.2
+  },
+  {
+    "name": "Agbogbloshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.22
+  },
+  {
+    "name": "Agboogba",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.2
+  },
+  {
+    "name": "Ahinkro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.53
+  },
+  {
+    "name": "Ahireso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.52
+  },
+  {
+    "name": "Ahunju",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.32
+  },
+  {
+    "name": "Aidan",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.42
+  },
+  {
+    "name": "Aikaidoboro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.35
+  },
+  {
+    "name": "Airport Hills Residential Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.14
+  },
+  {
+    "name": "Airport Residential Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.18
+  },
+  {
+    "name": "Aiyim",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.21
+  },
+  {
+    "name": "Aiyimensa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.18
+  },
+  {
+    "name": "Ajenkotoku",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.36
+  },
+  {
+    "name": "Ajerkotuku",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.36
+  },
+  {
+    "name": "Ajimenti",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.2
+  },
+  {
+    "name": "Ajiringano",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.13
+  },
+  {
+    "name": "Akkr",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Akkra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Akokome",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.2
+  },
+  {
+    "name": "Akomato",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.58
+  },
+  {
+    "name": "Akotoshi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.33
+  },
+  {
+    "name": "Akotuaku",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.48
+  },
+  {
+    "name": "Akpoman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.21
+  },
+  {
+    "name": "Akra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Akrabon",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.57
+  },
+  {
+    "name": "Akrabon Ahentsia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.57
+  },
+  {
+    "name": "Akrabon Kwa Tete",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.57
+  },
+  {
+    "name": "Akrabong",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.57
+  },
+  {
+    "name": "Akrabong Joma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.57
+  },
+  {
+    "name": "Akramaman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.36
+  },
+  {
+    "name": "Akraman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.54
+  },
+  {
+    "name": "Akramang",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.54
+  },
+  {
+    "name": "Akramoman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.36
+  },
+  {
+    "name": "Akrao",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Akropong",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.58
+  },
+  {
+    "name": "Akubrefa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.53
+  },
+  {
+    "name": "Akutase Medie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.32
+  },
+  {
+    "name": "Akwaman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.53
+  },
+  {
+    "name": "Akwechi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.58
+  },
+  {
+    "name": "Akweiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.49
+  },
+  {
+    "name": "Akweteyman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6115,
+    "long": -0.2408
+  },
+  {
+    "name": "Akweti",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.53
+  },
+  {
+    "name": "Akwetsi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.53
+  },
+  {
+    "name": "Aladzo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.22
+  },
+  {
+    "name": "Alajo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.22
+  },
+  {
+    "name": "Algoboshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.25
+  },
+  {
+    "name": "Amamole",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.3
+  },
+  {
+    "name": "Amamoli",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.3
+  },
+  {
+    "name": "Amamorley",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.3
+  },
+  {
+    "name": "Amanfro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.3
+  },
+  {
+    "name": "Amasaman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.3
+  },
+  {
+    "name": "Amedua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.55
+  },
+  {
+    "name": "Amontidom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.58
+  },
+  {
+    "name": "Amrahia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.14
+  },
+  {
+    "name": "Amuanda",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.58
+  },
+  {
+    "name": "Anafro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.45
+  },
+  {
+    "name": "Ankwadoboro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.33
+  },
+  {
+    "name": "Anoti",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.43
+  },
+  {
+    "name": "Anumle",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.22
+  },
+  {
+    "name": "Anunmle",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.22
+  },
+  {
+    "name": "Anyino",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.43
+  },
+  {
+    "name": "Apapa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.17
+  },
+  {
+    "name": "Apenkwa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.15
+  },
+  {
+    "name": "Aplaku",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.33
+  },
+  {
+    "name": "Apolonia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.07
+  },
+  {
+    "name": "Apomasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.5
+  },
+  {
+    "name": "Aprachiri",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.5
+  },
+  {
+    "name": "Aprachiri Awuna Kwame",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.5
+  },
+  {
+    "name": "Aprakyir",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.5
+  },
+  {
+    "name": "Apreweti",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.6
+  },
+  {
+    "name": "Asabaham",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.42
+  },
+  {
+    "name": "Asamoa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.45
+  },
+  {
+    "name": "Asebu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.58
+  },
+  {
+    "name": "Ashaaladza",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.36
+  },
+  {
+    "name": "Ashaiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.03
+  },
+  {
+    "name": "Ashaladza Botchway",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.13
+  },
+  {
+    "name": "Ashalaja",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.36
+  },
+  {
+    "name": "Ashale Anan",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.49
+  },
+  {
+    "name": "Ashalebotwe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.13
+  },
+  {
+    "name": "Ashalianan",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.49
+  },
+  {
+    "name": "Ashieye",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.15
+  },
+  {
+    "name": "Ashonman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.21
+  },
+  {
+    "name": "Ashouman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.21
+  },
+  {
+    "name": "Ashwenanmo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.33
+  },
+  {
+    "name": "Ashwenanyo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.33
+  },
+  {
+    "name": "Asikaisu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.56
+  },
+  {
+    "name": "Asikasu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.56
+  },
+  {
+    "name": "Asofa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.29
+  },
+  {
+    "name": "Asokrochona",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.04
+  },
+  {
+    "name": "Asuaba",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.43
+  },
+  {
+    "name": "Asuaba Number 2",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.43
+  },
+  {
+    "name": "Asuaba Number 3",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.43
+  },
+  {
+    "name": "Asumen",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.6
+  },
+  {
+    "name": "Asuobonta",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.52
+  },
+  {
+    "name": "Asuokyene",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.54
+  },
+  {
+    "name": "Asuom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.47
+  },
+  {
+    "name": "Asuom Number 1",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.47
+  },
+  {
+    "name": "Asylum Down",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.21
+  },
+  {
+    "name": "Atakwa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.58
+  },
+  {
+    "name": "Atoman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.49
+  },
+  {
+    "name": "Augustinesborg",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.1
+  },
+  {
+    "name": "Awchioma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.28
+  },
+  {
+    "name": "Awoshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.28
+  },
+  {
+    "name": "Awudome Estate",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.23
+  },
+  {
+    "name": "Awuku",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.03
+  },
+  {
+    "name": "Awutu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.51,
+    "long": -0.51
+  },
+  {
+    "name": "Ayaso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.29
+  },
+  {
+    "name": "Ayido",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.2
+  },
+  {
+    "name": "Ayikai Doblo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.35
+  },
+  {
+    "name": "Ayim",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.21
+  },
+  {
+    "name": "Baafa Number 1",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.6
+  },
+  {
+    "name": "Babafa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.6
+  },
+  {
+    "name": "Babafa Number 1",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.6
+  },
+  {
+    "name": "Badija",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.57
+  },
+  {
+    "name": "Banana Inn",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.25
+  },
+  {
+    "name": "Bantama",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.53
+  },
+  {
+    "name": "Bawaleshi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.17
+  },
+  {
+    "name": "Bawjiasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.56
+  },
+  {
+    "name": "Bebianeha",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.46
+  },
+  {
+    "name": "Bebianiha",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.46
+  },
+  {
+    "name": "Berekuso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.23
+  },
+  {
+    "name": "Birekuso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.23
+  },
+  {
+    "name": "Biuasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.59
+  },
+  {
+    "name": "Biwadze",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.59
+  },
+  {
+    "name": "Bleman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.55
+  },
+  {
+    "name": "Bodomasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.25
+  },
+  {
+    "name": "Bodwoase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.56
+  },
+  {
+    "name": "Boedum",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.53
+  },
+  {
+    "name": "Boi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.22
+  },
+  {
+    "name": "Bontrase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.56
+  },
+  {
+    "name": "Bontrasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.56
+  },
+  {
+    "name": "Bortianor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.51,
+    "long": -0.34
+  },
+  {
+    "name": "Botamfa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.53
+  },
+  {
+    "name": "Botiana",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.51,
+    "long": -0.34
+  },
+  {
+    "name": "Botianaw",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.51,
+    "long": -0.34
+  },
+  {
+    "name": "Botokura",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.42
+  },
+  {
+    "name": "Bowenum",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.56
+  },
+  {
+    "name": "Brayenda",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.6
+  },
+  {
+    "name": "Bruburam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.48
+  },
+  {
+    "name": "Buade",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.08
+  },
+  {
+    "name": "Bubiashie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.25
+  },
+  {
+    "name": "Buduatta",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.58
+  },
+  {
+    "name": "Buduburam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.48
+  },
+  {
+    "name": "Bunmu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.45
+  },
+  {
+    "name": "Burma Camp",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.15
+  },
+  {
+    "name": "Buruata",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.58
+  },
+  {
+    "name": "Busomabina",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.52
+  },
+  {
+    "name": "Cantonments",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.18
+  },
+  {
+    "name": "Chantan",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.27
+  },
+  {
+    "name": "Chinankama",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.53
+  },
+  {
+    "name": "Chokome",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.33
+  },
+  {
+    "name": "Chorkor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.24
+  },
+  {
+    "name": "Christian Village",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.22
+  },
+  {
+    "name": "Christians Village",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.22
+  },
+  {
+    "name": "Christiansborg",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.19
+  },
+  {
+    "name": "Chwerebuana",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.43
+  },
+  {
+    "name": "Chwinto",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.37
+  },
+  {
+    "name": "Dabanyin",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.56
+  },
+  {
+    "name": "Dabeyin",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.56
+  },
+  {
+    "name": "Dadija",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.57
+  },
+  {
+    "name": "Dakuyau",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.48
+  },
+  {
+    "name": "Dakuyau Number1",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.48
+  },
+  {
+    "name": "Dam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.24
+  },
+  {
+    "name": "Damfa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.16
+  },
+  {
+    "name": "Danchira",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.4
+  },
+  {
+    "name": "Danfa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.16
+  },
+  {
+    "name": "Dankwakroa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.58
+  },
+  {
+    "name": "Dankwakrom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.71,
+    "long": -0.52
+  },
+  {
+    "name": "Danso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.5
+  },
+  {
+    "name": "Dansoman Estate",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.26
+  },
+  {
+    "name": "Dantsera",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.4
+  },
+  {
+    "name": "Darkuman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.26
+  },
+  {
+    "name": "Djankrom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.35
+  },
+  {
+    "name": "Doboro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.3
+  },
+  {
+    "name": "Doboro Dakokurom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.3
+  },
+  {
+    "name": "Doborogonno",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.36
+  },
+  {
+    "name": "Dom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.24
+  },
+  {
+    "name": "Dome",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.24
+  },
+  {
+    "name": "Domeabra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.39
+  },
+  {
+    "name": "Domenase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.59
+  },
+  {
+    "name": "Domfaase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.39
+  },
+  {
+    "name": "Domfase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.39
+  },
+  {
+    "name": "Domiabra",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.39
+  },
+  {
+    "name": "Duayeden",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.41
+  },
+  {
+    "name": "Dukayaw",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.48
+  },
+  {
+    "name": "Dzorwulu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.2
+  },
+  {
+    "name": "Dzorwulu Residential Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.2
+  },
+  {
+    "name": "East Dzorwulu Residential Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.19
+  },
+  {
+    "name": "East Legon Residential Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.16
+  },
+  {
+    "name": "East Ridge",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.19
+  },
+  {
+    "name": "Ebron",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.32
+  },
+  {
+    "name": "Esiwukroa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.51,
+    "long": -0.6
+  },
+  {
+    "name": "Esuochwi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.54
+  },
+  {
+    "name": "Ewurukwa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.47,
+    "long": -0.55
+  },
+  {
+    "name": "Fadziemohe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.32
+  },
+  {
+    "name": "Fajiemohe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.32
+  },
+  {
+    "name": "Fanchiniko",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.38
+  },
+  {
+    "name": "Fete Gwa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.47,
+    "long": -0.48
+  },
+  {
+    "name": "Fianko",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.53
+  },
+  {
+    "name": "Fise",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.3
+  },
+  {
+    "name": "Gbawe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.31
+  },
+  {
+    "name": "Gbegbe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.27
+  },
+  {
+    "name": "Gbegbeyise",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.27
+  },
+  {
+    "name": "Giffard Camp",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.15
+  },
+  {
+    "name": "Gonse",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.27
+  },
+  {
+    "name": "Greda Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.09
+  },
+  {
+    "name": "Grefi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.28
+  },
+  {
+    "name": "Gwantenang",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.17
+  },
+  {
+    "name": "Gyantomfo Kurom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.25
+  },
+  {
+    "name": "Gyeikrodua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.5
+  },
+  {
+    "name": "Honi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.48
+  },
+  {
+    "name": "Honi Adawroma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.48
+  },
+  {
+    "name": "Honi Seh",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.46
+  },
+  {
+    "name": "Honiachim",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.45
+  },
+  {
+    "name": "Honiatsim",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.45
+  },
+  {
+    "name": "Honise",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.46
+  },
+  {
+    "name": "Honiuchim",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.45
+  },
+  {
+    "name": "Huni",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.48
+  },
+  {
+    "name": "Industrial Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.12
+  },
+  {
+    "name": "Jamestown",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.21
+  },
+  {
+    "name": "Janman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.33
+  },
+  {
+    "name": "Jeikrodrua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.5
+  },
+  {
+    "name": "Jeikrodua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.5
+  },
+  {
+    "name": "Joma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.57
+  },
+  {
+    "name": "Juabin",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.47
+  },
+  {
+    "name": "Kamuo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.52
+  },
+  {
+    "name": "Kanda Estate",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.19
+  },
+  {
+    "name": "Kaneshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.24
+  },
+  {
+    "name": "Kasoa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.42
+  },
+  {
+    "name": "Katamanso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.08
+  },
+  {
+    "name": "Kodzo Ashon",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.4
+  },
+  {
+    "name": "Kofikope",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.03
+  },
+  {
+    "name": "Kojoashon",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.4
+  },
+  {
+    "name": "Kojokrom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.25
+  },
+  {
+    "name": "Kojoman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.45
+  },
+  {
+    "name": "Kokoasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.28
+  },
+  {
+    "name": "Kokomlemle",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.21
+  },
+  {
+    "name": "Kokrobite",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.36
+  },
+  {
+    "name": "Koleman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.31
+  },
+  {
+    "name": "Korle Bu Hospital",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.23
+  },
+  {
+    "name": "Korle Dudor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.21
+  },
+  {
+    "name": "Korle Gonno",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.22
+  },
+  {
+    "name": "Korle Lagoon Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.23
+  },
+  {
+    "name": "Kotobabi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.21
+  },
+  {
+    "name": "Kpehe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.21
+  },
+  {
+    "name": "Kpomkpo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.2
+  },
+  {
+    "name": "Krodua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.6
+  },
+  {
+    "name": "Krofu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.52
+  },
+  {
+    "name": "Krokrobite",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.36
+  },
+  {
+    "name": "Kwabenya",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.23
+  },
+  {
+    "name": "Kwame Anum",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.38
+  },
+  {
+    "name": "Kwashieman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.27
+  },
+  {
+    "name": "Kwashiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.27
+  },
+  {
+    "name": "La",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.16
+  },
+  {
+    "name": "La Bone",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6063,
+    "long": -0.2503
+  },
+  {
+    "name": "Lapaz",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.16
+  },
+  {
+    "name": "La Wireless",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.17
+  },
+  {
+    "name": "Labadi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.16
+  },
+  {
+    "name": "Labone Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.16
+  },
+  {
+    "name": "Lartebiokorshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.25
+  },
+  {
+    "name": "Larteh",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.25
+  },
+  {
+    "name": "Lashibi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.05
+  },
+  {
+    "name": "Legon",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.18
+  },
+  {
+    "name": "Lomnava",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.28
+  },
+  {
+    "name": "Madina",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.17
+  },
+  {
+    "name": "Makola",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.21
+  },
+  {
+    "name": "Mallam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.29
+  },
+  {
+    "name": "Mamprobi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.24
+  },
+  {
+    "name": "Mangoase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.35
+  },
+  {
+    "name": "Manhean",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.33
+  },
+  {
+    "name": "Mamobi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.21
+  },
+  {
+    "name": "Mamomom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.41
+  },
+  {
+    "name": "Mampoase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.27
+  },
+  {
+    "name": "Manchiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.07
+  },
+  {
+    "name": "Manhia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.35
+  },
+  {
+    "name": "Manokwa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.6
+  },
+  {
+    "name": "Mataheko",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.25
+  },
+  {
+    "name": "Mayera",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.28
+  },
+  {
+    "name": "McCarthy Hill",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.28
+  },
+  {
+    "name": "Medina Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.16
+  },
+  {
+    "name": "Mensakwa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.57
+  },
+  {
+    "name": "Mepom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.6
+  },
+  {
+    "name": "Mfojoboating",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.47
+  },
+  {
+    "name": "Midie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.32
+  },
+  {
+    "name": "Mile 7",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.24
+  },
+  {
+    "name": "Mile 11",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.3
+  },
+  {
+    "name": "Milichakpo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": 0.02
+  },
+  {
+    "name": "Ministries",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Minkumidie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.57
+  },
+  {
+    "name": "Miotso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.05
+  },
+  {
+    "name": "Mpehuasem",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.16
+  },
+  {
+    "name": "Mpekadam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.22
+  },
+  {
+    "name": "Mpuase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.27
+  },
+  {
+    "name": "New Achimota",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.23
+  },
+  {
+    "name": "New Bortianor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.34
+  },
+  {
+    "name": "New Fadama",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.25
+  },
+  {
+    "name": "New Town",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.21
+  },
+  {
+    "name": "Ngleshie Amanfro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.36
+  },
+  {
+    "name": "Nima",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.2
+  },
+  {
+    "name": "North Dzorwulu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.19
+  },
+  {
+    "name": "North Industrial Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.22
+  },
+  {
+    "name": "North Kaneshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.24
+  },
+  {
+    "name": "North Labone Estate",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.18
+  },
+  {
+    "name": "North Legon",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.18
+  },
+  {
+    "name": "North Ridge",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.19
+  },
+  {
+    "name": "Nungua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.08
+  },
+  {
+    "name": "Nungua Old Town",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.08
+  },
+  {
+    "name": "Nungua Salem",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.07
+  },
+  {
+    "name": "Nungua Zongo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.08
+  },
+
+  {
+    "name": "Nankanso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.47
+  },
+  {
+    "name": "Nchechireche",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.58
+  },
+  {
+    "name": "New Mamprobi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.25
+  },
+  {
+    "name": "New Russia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.26
+  },
+  {
+    "name": "Nsakina",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.32
+  },
+  {
+    "name": "Nsumia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.35
+  },
+  {
+    "name": "Nsuobri",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.5
+  },
+  {
+    "name": "Nyamekye",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.26
+  },
+  {
+    "name": "Nyaniba Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.18
+  },
+  {
+    "name": "Obakrowa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.4
+  },
+  {
+    "name": "Obeye",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.03
+  },
+  {
+    "name": "Obeyie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.34
+  },
+  {
+    "name": "Obiliakua",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.52
+  },
+  {
+    "name": "Oblogo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.31
+  },
+  {
+    "name": "Oboasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.53
+  },
+  {
+    "name": "Obodakawa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.6
+  },
+  {
+    "name": "Obokwashi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.42
+  },
+  {
+    "name": "Obologo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.31
+  },
+  {
+    "name": "Obome",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.2
+  },
+  {
+    "name": "Obotumfa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.58
+  },
+  {
+    "name": "Obotumfo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.58
+  },
+  {
+    "name": "Obrachere",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.58
+  },
+  {
+    "name": "Obrakrawa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.6
+  },
+  {
+    "name": "Obrakyere",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.58
+  },
+  {
+    "name": "Obuasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.25
+  },
+  {
+    "name": "Obutu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.51,
+    "long": -0.51
+  },
+  {
+    "name": "Ochirekumfo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.25
+  },
+  {
+    "name": "Odawmo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.59
+  },
+  {
+    "name": "Odenki",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.47
+  },
+  {
+    "name": "Odominadzi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.59
+  },
+  {
+    "name": "Odomponiasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.77,
+    "long": -0.58
+  },
+  {
+    "name": "Odotom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.53
+  },
+  {
+    "name": "Odotum",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.53
+  },
+  {
+    "name": "Odumase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.31
+  },
+  {
+    "name": "Odumase Number 1",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.58
+  },
+  {
+    "name": "Odumasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.58
+  },
+  {
+    "name": "Odumasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.31
+  },
+  {
+    "name": "Oduntia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.39
+  },
+  {
+    "name": "Odupon",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.45
+  },
+  {
+    "name": "Oduponkpehe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.42
+  },
+  {
+    "name": "Odwobi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.53
+  },
+  {
+    "name": "Ofada",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.54
+  },
+  {
+    "name": "Ofagyato Nyamebedzi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.52
+  },
+  {
+    "name": "Ofako",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.45
+  },
+  {
+    "name": "Ofako",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.27
+  },
+  {
+    "name": "Ofakor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.45
+  },
+  {
+    "name": "Ofankor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.27
+  },
+  {
+    "name": "Ofaso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.71,
+    "long": -0.56
+  },
+  {
+    "name": "Official Town",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.59,
+    "long": -0.26
+  },
+  {
+    "name": "Ofrajato",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.52
+  },
+  {
+    "name": "Ofrajato",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.68,
+    "long": -0.51
+  },
+  {
+    "name": "Ofrajato Number 1",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.52
+  },
+  {
+    "name": "Ogbodzo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.14
+  },
+  {
+    "name": "Ogbojo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.67,
+    "long": -0.14
+  },
+  {
+    "name": "Ojubi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.48,
+    "long": -0.53
+  },
+  {
+    "name": "Okawso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.52
+  },
+  {
+    "name": "Oklu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.43
+  },
+  {
+    "name": "Oko",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.23
+  },
+  {
+    "name": "Okoman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.23
+  },
+  {
+    "name": "Okorase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.52
+  },
+  {
+    "name": "Okorasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.79,
+    "long": -0.52
+  },
+  {
+    "name": "Okponglo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.18
+  },
+  {
+    "name": "Okushibiade",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.39
+  },
+  {
+    "name": "Okushibiadi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.39
+  },
+  {
+    "name": "Okusubiri",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.05
+  },
+  {
+    "name": "Otuaplem",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.71,
+    "long": -0.39
+  },
+  {
+    "name": "Owiawosro",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.05
+  },
+  {
+    "name": "Oworatia",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.52
+  },
+  {
+    "name": "Owulabu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.47
+  },
+  {
+    "name": "Owuraman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.28
+  },
+  {
+    "name": "Oyamfa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.18
+  },
+  {
+    "name": "Oyarifa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.18
+  },
+  {
+    "name": "Oyauifa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.74,
+    "long": -0.18
+  },
+  {
+    "name": "Oyinso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.32
+  },
+  {
+    "name": "Pambros Salt Ponds",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.28
+  },
+  {
+    "name": "Pantampa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.42
+  },
+  {
+    "name": "Pantampo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.42
+  },
+  {
+    "name": "Pantan",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.19
+  },
+  {
+    "name": "Papao",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.21
+  },
+  {
+    "name": "Papase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.38
+  },
+  {
+    "name": "Papase Kwabina Atta",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.47
+  },
+  {
+    "name": "Papasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.76,
+    "long": -0.38
+  },
+  {
+    "name": "Papasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.47
+  },
+  {
+    "name": "Papasi Number 3",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.47
+  },
+  {
+    "name": "Parakuo Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.23
+  },
+  {
+    "name": "Penim",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.71,
+    "long": -0.59
+  },
+  {
+    "name": "Pig Farm",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.2
+  },
+  {
+    "name": "Pobiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.32
+  },
+  {
+    "name": "Pokoase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.28
+  },
+  {
+    "name": "Pokoasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.28
+  },
+  {
+    "name": "Pokuase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.28
+  },
+  {
+    "name": "Poukuase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.69,
+    "long": -0.28
+  },
+  {
+    "name": "Ringway Estate",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.18
+  },
+  {
+    "name": "Roman Bridge",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.2
+  },
+  {
+    "name": "Sabon Zongo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.24
+  },
+  {
+    "name": "Sachikrom",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.37
+  },
+  {
+    "name": "Sakumona",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.05
+  },
+  {
+    "name": "Sakumono Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.05
+  },
+  {
+    "name": "Salam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.8,
+    "long": -0.43
+  },
+  {
+    "name": "Samsam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.3
+  },
+  {
+    "name": "Samsamso",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.57
+  },
+  {
+    "name": "Sansame",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.78,
+    "long": -0.3
+  },
+  {
+    "name": "Santa Maria",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.26
+  },
+  {
+    "name": "Santeo",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.71,
+    "long": -0.06
+  },
+  {
+    "name": "Sapeman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": -0.31
+  },
+  {
+    "name": "Sempene",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.2
+  },
+  {
+    "name": "Serehu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": 0.0
+  },
+  {
+    "name": "Sesemi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.22
+  },
+  {
+    "name": "Shiayena",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.52,
+    "long": -0.3
+  },
+  {
+    "name": "Silehu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.73,
+    "long": 0.0
+  },
+  {
+    "name": "Sodom and Gomorah",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.22
+  },
+  {
+    "name": "Sodom and Gomorrah",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.22
+  },
+  {
+    "name": "South Industrial Area",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.22
+  },
+  {
+    "name": "South La Estate",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.16
+  },
+  {
+    "name": "South Ordokor",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.27
+  },
+  {
+    "name": "Spintex Road",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.64,
+    "long": -0.1
+  },
+  {
+    "name": "Taifa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6663374,
+    "long": -0.2522627
+  },
+  {
+    "name": "Tassi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.11
+  },
+  {
+    "name": "Tebu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.45
+  },
+  {
+    "name": "Teiman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.18
+  },
+  {
+    "name": "Tema",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.02
+  },
+  {
+    "name": "Temma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.02
+  },
+  {
+    "name": "Tenbibian",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.7,
+    "long": -0.46
+  },
+  {
+    "name": "Tesa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.63,
+    "long": -0.13
+  },
+  {
+    "name": "Tesano",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.23
+  },
+  {
+    "name": "Teshi Old Town",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.11
+  },
+  {
+    "name": "Teshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.1
+  },
+  {
+    "name": "Teshie",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.11
+  },
+  {
+    "name": "Teshie Manheam",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.61,
+    "long": -0.11
+  },
+  {
+    "name": "Teshie Nungua Estates",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.6,
+    "long": -0.09
+  },
+  {
+    "name": "Tete Ogbu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.31
+  },
+  {
+    "name": "Tetegbu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.31
+  },
+  {
+    "name": "Tipai",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.47
+  },
+  {
+    "name": "Toboase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.58
+  },
+  {
+    "name": "Toboasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.58,
+    "long": -0.58
+  },
+  {
+    "name": "Tokuse",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.37
+  },
+  {
+    "name": "Tokusee",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.37
+  },
+  {
+    "name": "Toma",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.62,
+    "long": -0.02
+  },
+  {
+    "name": "Topiase",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.52
+  },
+  {
+    "name": "Topiasi",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.52
+  },
+  {
+    "name": "Trade Center",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.15,
+    "elevation": 246,
+    "population": 490578
+  },
+  {
+    "name": "Tsabaa",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.27
+  },
+  {
+    "name": "Tsokome",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.5,
+    "long": -0.33
+  },
+  {
+    "name": "Tudu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.21
+  },
+  {
+    "name": "Tunga",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.27
+  },
+  {
+    "name": "University of Ghana",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.66,
+    "long": -0.19
+  },
+  {
+    "name": "Ussher Town",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.54,
+    "long": -0.21
+  },
+  {
+    "name": "Victoriaborg",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.55,
+    "long": -0.2
+  },
+  {
+    "name": "Weija",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.57,
+    "long": -0.33
+  },
+  {
+    "name": "West Legon Residential",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.21
+  },
+  {
+    "name": "West Ridge",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.56,
+    "long": -0.2
+  },
+  {
+    "name": "Wiaboman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.53,
+    "long": -0.23
+  },
+  {
+    "name": "Wiriman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.75,
+    "long": -0.25
+  },
+  {
+    "name": "Yahoman",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.71,
+    "long": -0.39
+  },
+  {
+    "name": "Yakagbomokpehe",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.65,
+    "long": -0.4
+  },
+  {
+    "name": "Zenu",
+    "regionId": 7,
+    "regionName": "Greater Accra",
+    "lat": 5.72,
+    "long": -0.05
+  }
+]

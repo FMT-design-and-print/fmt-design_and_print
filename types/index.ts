@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { Permission } from "./roles";
-import { GHRegion } from "./order";
 
 export type MessageStatus = "error" | "success" | "info";
 export type DiscountType =
@@ -18,6 +17,8 @@ export type ArtworkOption =
   | "own-artwork"
   | "fmt-to-provide"
   | "no-artwork-needed";
+
+export type PaymentType = "momo" | "card" | "cod";
 
 export type QuoteReceptionMedium = "email" | "whatsapp" | "sms";
 
@@ -152,6 +153,16 @@ export interface IOptionsErrors {
   quantity?: string;
 }
 
+export type GHRegion = { id: number; name: string };
+
+export type Town = {
+  name: string;
+  regionId: number;
+  regionName: string;
+  lat: number;
+  long: number;
+};
+
 export interface IShippingAddress {
   id?: string;
   contactName: string;
@@ -160,13 +171,13 @@ export interface IShippingAddress {
   phone2?: string;
   country: string;
   address: string;
-  region: GHRegion | "";
-  town?: string;
+  region: GHRegion | null;
+  town?: Town | null;
 }
 
 export interface CheckoutDetails extends IShippingAddress {
   orderId: string;
-  paymentType: "momo" | "card" | "cod" | "";
+  paymentType: PaymentType;
   discount?: number;
   discountCode?: string;
   deliveryFee?: number;

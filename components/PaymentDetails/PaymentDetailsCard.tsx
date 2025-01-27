@@ -11,6 +11,9 @@ import {
 import { LoadingOverlay } from "../LoadingOverlay";
 import { DeliveryTypeSelect } from "./DeliveryType";
 import { DiscountForm } from "./DiscountForm";
+import { PaymentOptions } from "./PaymentOptions";
+import { useEffect } from "react";
+import { PaymentType } from "@/types";
 
 interface Props {
   subTotal: number;
@@ -18,10 +21,12 @@ interface Props {
   isLoading: boolean;
   note: string;
   discount: number;
+  deliveryType: DeliveryType;
+  paymentType: PaymentType;
   setNote?: (note: string) => void;
   setDiscount?: (value: number) => void;
-  deliveryType: DeliveryType;
   setDeliveryType: (deliveryType: DeliveryType) => void;
+  setPaymentType: (paymentType: PaymentType) => void;
 }
 
 export const PaymentDetailsCard = (props: Props) => {
@@ -35,9 +40,18 @@ export const PaymentDetailsCard = (props: Props) => {
     isLoading,
     deliveryType,
     setDeliveryType,
+    paymentType,
+    setPaymentType,
   } = props;
 
   const total = subTotal + deliveryFee - discount;
+
+  useEffect(() => {
+    if (subTotal + deliveryFee > 500 && paymentType === "cod") {
+      setPaymentType("momo");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subTotal, paymentType, deliveryFee]);
 
   return (
     <Box px="xl" pos="relative">
@@ -57,11 +71,13 @@ export const PaymentDetailsCard = (props: Props) => {
       <DiscountForm setDiscount={setDiscount} />
       <Divider my={16} color="black" />
 
-      {/* <PaymentOptions /> */}
       <DeliveryTypeSelect
         deliveryType={deliveryType}
         setDeliveryType={setDeliveryType}
       />
+
+      <PaymentOptions amountInvolved={subTotal + deliveryFee} />
+
       <Divider my={16} />
       <Stack>
         <Group justify="space-between">

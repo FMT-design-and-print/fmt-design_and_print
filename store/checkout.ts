@@ -9,19 +9,20 @@ type CheckoutStore = {
   clearItems: () => void;
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   update: (key: keyof CheckoutDetails, value: any) => void;
 };
 
 const initialState: CheckoutDetails = {
   orderId: "",
-  paymentType: "",
+  paymentType: "momo",
   contactName: "",
   phone1: "",
   phone2: "",
   email: "",
   country: "Ghana",
-  region: "",
-  town: "",
+  region: { id: 7, name: "Greater Accra" },
+  town: null,
   address: "",
   items: [],
   note: "",

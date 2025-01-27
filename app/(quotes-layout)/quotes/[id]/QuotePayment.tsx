@@ -3,7 +3,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { PayButton } from "@/components/PaymentDetails/PayButton";
 import { PaymentDetailsCard } from "@/components/PaymentDetails/PaymentDetailsCard";
 import { ShippingAddress } from "@/components/ShippingAddress";
-import { shippingFeeByRegion } from "@/constants/gh-regions";
+import { baseShippingFeeByRegion } from "@/constants/gh-regions";
 import { calculateEstimatedFulfillmentDate } from "@/functions";
 import { sendMessage } from "@/functions/send-message";
 import { IShippingAddress } from "@/types";
@@ -23,6 +23,7 @@ interface Props {
   clientName?: string;
   contact?: string;
   email?: string;
+  specifiedDeliveryFee?: number;
   setScreen?: Dispatch<SetStateAction<"review" | "payment">>;
 }
 
@@ -32,8 +33,8 @@ const initialAddress: IShippingAddress = {
   phone2: "",
   email: "",
   address: "",
-  town: "",
-  region: "",
+  town: { name: "", lat: 0, long: 0, regionId: 0, regionName: "" },
+  region: { id: 7, name: "Greater Accra" },
   country: "Ghana",
 };
 
@@ -44,6 +45,7 @@ export const QuotePayment = ({
   clientName,
   contact,
   email,
+  specifiedDeliveryFee,
   setScreen,
 }: Props) => {
   const router = useRouter();
@@ -58,8 +60,12 @@ export const QuotePayment = ({
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("delivery");
   const [emptyRequiredFields, setEmptyRequiredFields] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [deliveryFee, setDeliveryFee] = useState(
+    specifiedDeliveryFee ||
+      baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
+      0
+  );
 
-  const deliveryFee = shippingFeeByRegion[shippingAddress.region] || 0;
   const total = subTotal + deliveryFee - discount;
 
   const handleOnPaymentSuccess = async (ref: any) => {
@@ -153,21 +159,25 @@ export const QuotePayment = ({
           {deliveryType === "delivery" ? "Delivery Address" : "Contact Details"}
         </Title>
         <ShippingAddress
-          contactName={shippingAddress.contactName}
-          phone1={shippingAddress.phone1}
-          phone2={shippingAddress.phone2}
-          email={shippingAddress.email}
-          address={shippingAddress.address}
-          town={shippingAddress.town}
-          region={shippingAddress.region}
+          address={{
+            contactName: shippingAddress.contactName,
+            phone1: shippingAddress.phone1,
+            phone2: shippingAddress.phone2,
+            email: shippingAddress.email,
+            address: shippingAddress.address,
+            town: shippingAddress.town,
+            region: shippingAddress.region,
+            country: shippingAddress.country,
+          }}
           deliveryType={deliveryType}
+          setDeliveryFee={specifiedDeliveryFee ? () => {} : setDeliveryFee}
           update={(key, value) =>
             setShippingAddress((prev) => ({ ...prev, [key]: value }))
           }
         />
       </Card>
 
-      {shippingAddress.region && shippingAddress.region !== "GREATER ACCRA" && (
+      {shippingAddress.region && shippingAddress.region.id !== 7 && (
         <Box>
           <Text fz="xs" fs="italic" c="gray.7">
             Your region is outside Greater Accra. Delivery fee is not finalized

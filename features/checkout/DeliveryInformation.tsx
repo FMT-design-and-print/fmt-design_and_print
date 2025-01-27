@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ShippingAddress } from "@/components/ShippingAddress";
 import { useSession } from "@/store";
 import { useCheckout } from "@/store/checkout";
@@ -5,7 +6,10 @@ import { CheckoutDetails, IShippingAddress } from "@/types";
 import { Card, Checkbox, Title } from "@mantine/core";
 import { AvailableShippingAddresses } from "./AvailableShippingAddresses";
 import { useEffect } from "react";
-import { shippingFeeByRegion } from "@/constants/gh-regions";
+import {
+  baseShippingFeeByRegion,
+  regionsInGhana,
+} from "@/constants/gh-regions";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -18,6 +22,7 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
       email,
       phone1,
       phone2,
+      country,
       town,
       address,
       region,
@@ -32,8 +37,13 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
 
   const handleUpdate = (key: keyof CheckoutDetails, value: any) => {
     if (key === "region") {
-      update(key, value);
-      update("deliveryFee", shippingFeeByRegion[value] || 0);
+      const region = regionsInGhana.find(
+        (region) => region.id.toString() === value
+      );
+      update(key, region || null);
+
+      // TODO: Calculate delivery fee based on region town
+      update("deliveryFee", baseShippingFeeByRegion[region?.id || 7] || 0);
       return;
     }
 
@@ -56,14 +66,18 @@ export const DeliveryInformation = ({ shippingAddresses }: Props) => {
         <AvailableShippingAddresses shippingAddresses={shippingAddresses} />
       )}
       <ShippingAddress
-        contactName={contactName}
-        phone1={phone1}
-        phone2={phone2}
-        email={email}
-        address={address}
-        town={town}
-        region={region}
+        address={{
+          contactName: contactName,
+          phone1: phone1,
+          phone2: phone2,
+          email: email,
+          address: address,
+          town: town,
+          region: region,
+          country: country,
+        }}
         deliveryType={deliveryType}
+        setDeliveryFee={(fee) => update("deliveryFee", fee)}
         update={handleUpdate}
       />
 

@@ -14,8 +14,8 @@ const CartAndSavedItemsButtons = () => {
   return (
     <Flex
       justify="flex-end"
-      gap={{ base: "md", sm: "xl" }}
-      miw={{ base: "fit-content", sm: "200px" }}
+      gap={{ base: "xs", sm: "md" }}
+      miw={{ base: "fit-content", sm: "120px" }}
     >
       <Indicator
         label={favoriteItems.length}
@@ -26,7 +26,7 @@ const CartAndSavedItemsButtons = () => {
         <ActionIcon
           component={Link}
           href="/favorites"
-          size={36}
+          size={32}
           variant="light"
           color="white"
           aria-label="Favorites"
@@ -45,7 +45,7 @@ const CartAndSavedItemsButtons = () => {
         <ActionIcon
           component={Link}
           href="/cart"
-          size={36}
+          size={32}
           variant="light"
           color="white"
           aria-label="Cart"

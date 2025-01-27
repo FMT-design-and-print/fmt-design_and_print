@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button, Group } from "@mantine/core";
@@ -60,7 +61,7 @@ export const EditAddress = ({ address }: Props) => {
       >
         <LoadingOverlay visible={loading} />
         <ShippingAddress
-          {...editedAddress}
+          address={editedAddress}
           update={update}
           deliveryType="delivery"
         />
