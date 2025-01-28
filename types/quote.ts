@@ -34,6 +34,7 @@ export interface IQuote {
   clientName?: string;
   contact?: string;
   email?: string;
+  note?: string;
   revisionReasons?: string[];
   reactivationReasons?: string[];
   numberOfRevisionsRequested: number;

@@ -15,6 +15,7 @@ import {
   SegmentedControl,
   Text,
   Select,
+  Textarea,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
@@ -73,6 +74,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
       itemTypes: [],
       contactName: "",
       phone: "",
+      note: "",
       orderDetails: [{ key: "", value: "" }],
       artworkOption: ARTWORK_OPTIONS.NONE,
       receptionMedium: RECEPTION_MEDIUMS.EMAIL,
@@ -101,6 +103,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
       setValue("itemTypes", customOrder.itemTypes);
       setValue("contactName", customOrder.contactName);
       setValue("phone", customOrder.phone);
+      setValue("note", quote.note || "");
       setValue(
         "estimatedFulfillmentDate",
         customOrder.estimatedFulfillmentDate
@@ -253,6 +256,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
         order_id: orderData.id,
         status: quoteId ? data?.quote.status : "created",
         requestPayment: true,
+        note: values.note,
         totalAmount: values.items.reduce(
           (sum, item) => sum + item.totalAmount,
           0
@@ -529,6 +533,14 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
                     ? "Enter email"
                     : "Enter phone number"
                 }
+              />
+
+              <Textarea
+                label="Note"
+                placeholder="Enter any additional notes, payment terms, or special instructions"
+                {...register("note")}
+                error={errors.note?.message}
+                minRows={3}
               />
             </Stack>
           </Paper>
