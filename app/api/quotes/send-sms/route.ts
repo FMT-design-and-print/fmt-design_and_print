@@ -30,14 +30,16 @@ export async function POST(req: Request) {
   }
 }
 
-export function middleware(req: Request) {
-  if (req.method !== "POST") {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Method not allowed",
-      },
-      { status: 405 }
-    );
-  }
-}
+// Build is giving an error for this
+
+// export function middleware(req: Request) {
+//   if (req.method !== "POST") {
+//     return NextResponse.json(
+//       {
+//         success: false,
+//         message: "Method not allowed",
+//       },
+//       { status: 405 }
+//     );
+//   }
+// }

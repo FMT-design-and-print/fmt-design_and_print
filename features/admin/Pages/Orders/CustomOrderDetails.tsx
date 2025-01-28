@@ -151,8 +151,8 @@ export const CustomOrderDetails = ({
 
                     <Badge size="sm" variant="outline" radius="sm" color="gray">
                       {order.deliveryDetails.country},{" "}
-                      {order.deliveryDetails.region} -{" "}
-                      {order.deliveryDetails.town},{" "}
+                      {order.deliveryDetails.region?.name} -{" "}
+                      {order.deliveryDetails.town?.name},{" "}
                       {order.deliveryDetails.address}
                     </Badge>
                   </Group>

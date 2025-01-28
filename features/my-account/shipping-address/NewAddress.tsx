@@ -15,7 +15,7 @@ const initialAddressState: IShippingAddress = {
   phone2: "",
   email: "",
   address: "",
-  town: "",
+  town: null,
   region: { id: 7, name: "Greater Accra" },
   country: "Ghana",
 };
