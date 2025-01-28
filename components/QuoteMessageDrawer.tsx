@@ -58,7 +58,7 @@ export function QuoteMessageDrawer({
   onClose,
   title = "Send Message",
   defaultRecipient = "",
-  initialMessageType = "sms",
+  initialMessageType = "email",
   defaultMessage = "",
   defaultName = "",
   quoteUrl = "",
@@ -94,8 +94,6 @@ export function QuoteMessageDrawer({
         whatsapp: "/api/quotes/send-whatsapp-msg",
         email: "/api/quotes/send-email",
       };
-
-      console.log(endpoints[messageType]);
 
       const response = await fetch(endpoints[messageType], {
         method: "POST",
