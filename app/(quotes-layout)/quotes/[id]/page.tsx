@@ -14,7 +14,7 @@ type Params = {
 export async function generateMetadata({
   params,
 }: {
-  params: Params;
+  params: Promise<Params>;
 }): Promise<Metadata> {
   const { id } = await params;
   const supabase = await createClient();
