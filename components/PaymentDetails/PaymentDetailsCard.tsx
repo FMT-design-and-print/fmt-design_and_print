@@ -27,6 +27,8 @@ interface Props {
   setDiscount?: (value: number) => void;
   setDeliveryType: (deliveryType: DeliveryType) => void;
   setPaymentType: (paymentType: PaymentType) => void;
+  requiresDelivery?: boolean;
+  acceptCOD: boolean;
 }
 
 export const PaymentDetailsCard = (props: Props) => {
@@ -42,6 +44,8 @@ export const PaymentDetailsCard = (props: Props) => {
     setDeliveryType,
     paymentType,
     setPaymentType,
+    requiresDelivery = true,
+    acceptCOD = true,
   } = props;
 
   const total = subTotal + deliveryFee - discount;
@@ -52,6 +56,20 @@ export const PaymentDetailsCard = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subTotal, paymentType, deliveryFee]);
+
+  useEffect(() => {
+    if (!requiresDelivery) {
+      setDeliveryType("pickup");
+    }
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requiresDelivery]);
+
+  useEffect(() => {
+    if (!acceptCOD && paymentType === "cod") {
+      setPaymentType("momo");
+    }
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [acceptCOD]);
 
   return (
     <Box px="xl" pos="relative">
@@ -71,15 +89,18 @@ export const PaymentDetailsCard = (props: Props) => {
       <DiscountForm setDiscount={setDiscount} />
       <Divider my={16} color="black" />
 
-      <DeliveryTypeSelect
-        deliveryType={deliveryType}
-        setDeliveryType={setDeliveryType}
-      />
+      {requiresDelivery && (
+        <DeliveryTypeSelect
+          deliveryType={deliveryType}
+          setDeliveryType={setDeliveryType}
+        />
+      )}
 
       <PaymentOptions
         amountInvolved={subTotal + deliveryFee}
         paymentType={paymentType}
         updatePaymentType={setPaymentType}
+        acceptCOD={acceptCOD}
       />
 
       <Divider my={16} />
@@ -100,14 +121,16 @@ export const PaymentDetailsCard = (props: Props) => {
             -GHS {discount.toFixed(1)}
           </Text>
         </Group>
-        <Group justify="space-between">
-          <Text fz="sm" c="gray.9">
-            Delivery Fee
-          </Text>
-          <Text fz="sm" fw={600}>
-            +GHS {deliveryFee.toFixed(2)}
-          </Text>
-        </Group>
+        {requiresDelivery && (
+          <Group justify="space-between">
+            <Text fz="sm" c="gray.9">
+              Delivery Fee
+            </Text>
+            <Text fz="sm" fw={600}>
+              +GHS {deliveryFee.toFixed(2)}
+            </Text>
+          </Group>
+        )}
 
         <Divider mt={8} mb={16} />
         <Group justify="space-between">

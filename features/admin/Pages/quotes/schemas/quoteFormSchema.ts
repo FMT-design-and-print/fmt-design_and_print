@@ -37,7 +37,17 @@ export const quoteFormSchema = z
     itemTypes: z.array(z.string()).min(1, "At least one item type is required"),
     contactName: z.string().min(1, "Contact name is required"),
     phone: z.string().regex(/^\+?[\d\s-]{8,}$/, "Invalid phone number format"),
-    note: z.string().optional(),
+    note: z
+      .object({
+        paymentDetails: z.string().optional(),
+        AdditionalInformation: z.string().optional(),
+        thankYou: z.string().optional(),
+      })
+      .optional(),
+    showDueDate: z.boolean().default(false),
+    requiresDelivery: z.boolean().default(false),
+    acceptCOD: z.boolean().default(false),
+    initialPaymentPercentage: z.number().min(0).max(100).default(100),
     orderDetails: z
       .array(
         z.object({

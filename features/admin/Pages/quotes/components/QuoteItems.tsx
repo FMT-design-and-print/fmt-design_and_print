@@ -10,6 +10,7 @@ import {
   Title,
   Box,
   Text,
+  Stack,
 } from "@mantine/core";
 import {
   IconTrash,
@@ -25,9 +26,17 @@ interface QuoteItemsProps {
   type: "quote" | "invoice";
   items: IQuoteItem[];
   onChange: (items: IQuoteItem[]) => void;
+  initialPaymentPercentage: number;
+  onInitialPaymentChange: (value: number) => void;
 }
 
-export function QuoteItems({ type, items, onChange }: QuoteItemsProps) {
+export function QuoteItems({
+  type,
+  items,
+  onChange,
+  initialPaymentPercentage,
+  onInitialPaymentChange,
+}: QuoteItemsProps) {
   const [newItem, setNewItem] = useState<Partial<IQuoteItem>>({
     description: "",
     quantity: 1,
@@ -246,10 +255,40 @@ export function QuoteItems({ type, items, onChange }: QuoteItemsProps) {
             p="sm"
             bg="var(--mantine-color-gray-0)"
           >
-            <Text fw={500} size="md">
-              Total Amount: {CURRENCY_SYMBOL}
-              {calculateTotal().toFixed(2)}
-            </Text>
+            <Stack gap="xs">
+              <Group>
+                <Text fw={500} size="md">
+                  Total Amount: {CURRENCY_SYMBOL}
+                  {calculateTotal().toFixed(2)}
+                </Text>
+              </Group>
+              <Group>
+                <Text size="sm" c="dimmed">
+                  Initial Payment:
+                </Text>
+                <Group gap="xs">
+                  <NumberInput
+                    value={initialPaymentPercentage ?? 100}
+                    onChange={(value) =>
+                      onInitialPaymentChange(Number(value) || 100)
+                    }
+                    min={0}
+                    max={100}
+                    w={100}
+                    hideControls
+                    rightSection={<Text size="sm">%</Text>}
+                  />
+                  <Text size="sm" c="dimmed">
+                    ({CURRENCY_SYMBOL}
+                    {(
+                      (calculateTotal() * (initialPaymentPercentage ?? 100)) /
+                      100
+                    ).toFixed(2)}
+                    )
+                  </Text>
+                </Group>
+              </Group>
+            </Stack>
           </Group>
 
           {!showAddForm && (

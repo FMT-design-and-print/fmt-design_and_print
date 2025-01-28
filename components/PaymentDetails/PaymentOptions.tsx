@@ -5,12 +5,14 @@ import { Box, Radio, Stack, Text } from "@mantine/core";
 interface Props {
   amountInvolved: number;
   paymentType: PaymentType;
+  acceptCOD: boolean;
   updatePaymentType: (paymentType: PaymentType) => void;
 }
 
 export const PaymentOptions = ({
   amountInvolved,
   paymentType,
+  acceptCOD = true,
   updatePaymentType,
 }: Props) => {
   const isCodDisabled = amountInvolved > 500; // cod is disabled for orders above GHS 500
@@ -48,7 +50,7 @@ export const PaymentOptions = ({
             </Text>
           }
         />
-        {featureFlags.cod && (
+        {featureFlags.cod && acceptCOD && (
           <Radio
             color="var(--primary-800)"
             variant="outline"

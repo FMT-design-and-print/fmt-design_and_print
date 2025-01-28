@@ -1,7 +1,8 @@
-import { FMTLogo } from "@/components/FMTLogo";
-import { Box, Flex, Group, Text, Title } from "@mantine/core";
-import { QuoteTable } from "./QuoteTable";
 import { IQuoteItem } from "@/types/quote";
+import { Box, Flex, Group, Text, Title } from "@mantine/core";
+import { useQuoteDetails } from "../../QuoteTypeProvider";
+import { NoteSection } from "./NoteSection";
+import { QuoteTable } from "./QuoteTable";
 
 interface PrintableQuoteProps {
   clientName?: string;
@@ -11,6 +12,12 @@ interface PrintableQuoteProps {
   createdDate: Date;
   dueDate: Date;
   items: IQuoteItem[];
+  note?: {
+    paymentDetails?: string;
+    AdditionalInformation?: string;
+    thankYou?: string;
+  };
+  showDueDate?: boolean;
 }
 
 export const PrintableQuote = ({
@@ -21,14 +28,20 @@ export const PrintableQuote = ({
   createdDate,
   dueDate,
   items,
+  note,
+  showDueDate,
 }: PrintableQuoteProps) => {
+  const { type } = useQuoteDetails();
   return (
-    <div className="p-10">
-      <Title order={3} c="gray.6">
-        #{quoteNumber}
-      </Title>
+    <div className="p-8">
+      <Group justify="space-between">
+        <Title order={3} c="gray.6">
+          {type === "quote" ? "Quote-" : "Invoice-"}
+          (#{quoteNumber})
+        </Title>
+      </Group>
 
-      <Title order={3} py={16}>
+      <Title order={2} py={16}>
         {quoteTitle}
       </Title>
 
@@ -43,34 +56,34 @@ export const PrintableQuote = ({
             </Text>
           </Group>
 
-          <Group>
-            <Text fw="bold" size="sm">
-              Due date:{" "}
-            </Text>
-            <Text c="gray.7" size="sm">
-              {new Date(dueDate).toDateString()}
-            </Text>
-          </Group>
+          {showDueDate && (
+            <Group>
+              <Text fw="bold" size="sm">
+                Due date:{" "}
+              </Text>
+              <Text c="gray.7" size="sm">
+                {new Date(dueDate).toDateString()}
+              </Text>
+            </Group>
+          )}
         </Box>
 
         <Box className="space-y-2" pr="md">
-          <Text fw="bold">To:</Text>
-          <Text size="sm">{clientName}</Text>
-          <Text size="sm">{clientContact}</Text>
+          <Text fw="bold" ta="right">
+            To:
+          </Text>
+          <Text size="sm" ta="right">
+            {clientName}
+          </Text>
+          <Text size="sm" ta="right">
+            {clientContact}
+          </Text>
         </Box>
       </Flex>
 
       <QuoteTable items={items} />
-      <Box my="xl" className="space-y-2">
-        <FMTLogo image="https://res.cloudinary.com/dnbmynikp/image/upload/v1703264782/FMT/logo1_tpiges.png" />
-        <Title order={3}></Title>
-        <Text size="sm" c="muted">
-          fmtdesignprint@gmail.com
-        </Text>
-        <Text size="sm" c="muted">
-          +233559617959
-        </Text>
-      </Box>
+
+      {note && <NoteSection note={note} />}
     </div>
   );
 };

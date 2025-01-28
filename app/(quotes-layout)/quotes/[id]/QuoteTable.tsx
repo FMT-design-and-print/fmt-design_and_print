@@ -52,7 +52,7 @@ export function QuoteTable({ items }: Props) {
         <Title
           order={4}
           px="xl"
-          className="border-y border-gray-300 bg-gray-100 py-3 "
+          className="border-y border-gray-300 bg-gray-100 py-2 "
         >
           {" "}
           Subtotal:{" "}

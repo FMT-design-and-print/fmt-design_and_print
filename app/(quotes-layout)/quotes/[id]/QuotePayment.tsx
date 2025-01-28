@@ -26,6 +26,9 @@ interface Props {
   email?: string;
   specifiedDeliveryFee?: number;
   setScreen?: Dispatch<SetStateAction<"review" | "payment">>;
+  requiresDelivery?: boolean;
+  acceptCOD?: boolean;
+  percentageAmount: number;
 }
 
 const initialAddress: IShippingAddress = {
@@ -47,6 +50,8 @@ export const QuotePayment = ({
   contact,
   email,
   specifiedDeliveryFee,
+  requiresDelivery = true,
+  acceptCOD = true,
   setScreen,
 }: Props) => {
   const router = useRouter();
@@ -173,6 +178,8 @@ export const QuotePayment = ({
           setDiscount={setDisCount}
           paymentType={paymentType}
           setPaymentType={setPaymentType}
+          requiresDelivery={requiresDelivery}
+          acceptCOD={acceptCOD}
         />
       </Card>
 

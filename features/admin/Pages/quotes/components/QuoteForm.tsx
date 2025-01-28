@@ -16,6 +16,7 @@ import {
   Text,
   Select,
   Textarea,
+  Checkbox,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
@@ -74,7 +75,15 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
       itemTypes: [],
       contactName: "",
       phone: "",
-      note: "",
+      note: {
+        paymentDetails: "",
+        AdditionalInformation: "",
+        thankYou: "",
+      },
+      showDueDate: false,
+      requiresDelivery: false,
+      acceptCOD: false,
+      initialPaymentPercentage: 100,
       orderDetails: [{ key: "", value: "" }],
       artworkOption: ARTWORK_OPTIONS.NONE,
       receptionMedium: RECEPTION_MEDIUMS.EMAIL,
@@ -103,7 +112,21 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
       setValue("itemTypes", customOrder.itemTypes);
       setValue("contactName", customOrder.contactName);
       setValue("phone", customOrder.phone);
-      setValue("note", quote.note || "");
+      setValue(
+        "note",
+        quote.note || {
+          paymentDetails: "",
+          AdditionalInformation: "",
+          thankYou: "",
+        }
+      );
+      setValue("showDueDate", quote.showDueDate || false);
+      setValue("requiresDelivery", quote.requiresDelivery || false);
+      setValue("acceptCOD", quote.acceptCOD || false);
+      setValue(
+        "initialPaymentPercentage",
+        quote.initialPaymentPercentage || 100
+      );
       setValue(
         "estimatedFulfillmentDate",
         customOrder.estimatedFulfillmentDate
@@ -257,6 +280,10 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
         status: quoteId ? data?.quote.status : "created",
         requestPayment: true,
         note: values.note,
+        showDueDate: values.showDueDate,
+        requiresDelivery: values.requiresDelivery,
+        acceptCOD: values.acceptCOD,
+        initialPaymentPercentage: values.initialPaymentPercentage,
         totalAmount: values.items.reduce(
           (sum, item) => sum + item.totalAmount,
           0
@@ -341,18 +368,26 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
                   error={errors.contact?.message}
                 />
               </Group>
-              <Controller
-                name="dueDate"
-                control={control}
-                render={({ field }) => (
-                  <DateInput
-                    label="Due Date"
-                    required
-                    error={errors.dueDate?.message}
-                    {...field}
-                  />
-                )}
-              />
+              <Group align="flex-end">
+                <Controller
+                  name="dueDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DateInput
+                      label="Due Date"
+                      required
+                      error={errors.dueDate?.message}
+                      {...field}
+                      flex={1}
+                    />
+                  )}
+                />
+                <Checkbox
+                  label="Show Due Date"
+                  {...register("showDueDate")}
+                  mb={10}
+                />
+              </Group>
             </Stack>
           </Paper>
 
@@ -360,13 +395,54 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
             type={watch("type")}
             items={watch("items")}
             onChange={(items) => setValue("items", items)}
+            initialPaymentPercentage={watch("initialPaymentPercentage")}
+            onInitialPaymentChange={(value) =>
+              setValue("initialPaymentPercentage", value)
+            }
           />
+
+          <Stack>
+            <Textarea
+              label="Note - Payment Terms"
+              placeholder="Enter payment details"
+              {...register("note.paymentDetails")}
+              error={errors.note?.paymentDetails?.message}
+              minRows={2}
+            />
+
+            <Textarea
+              label="Note - Additional Information"
+              placeholder="Enter any additional information"
+              {...register("note.AdditionalInformation")}
+              error={errors.note?.AdditionalInformation?.message}
+              minRows={2}
+            />
+
+            <Textarea
+              label="Note - Thank You Message"
+              placeholder="Enter thank you message"
+              {...register("note.thankYou")}
+              error={errors.note?.thankYou?.message}
+              minRows={2}
+            />
+          </Stack>
 
           <Paper p="md" withBorder>
             <Title order={4} mb="md">
               Custom Order Details
             </Title>
             <Stack>
+              <Group>
+                <Checkbox
+                  label="Requires Delivery"
+                  {...register("requiresDelivery")}
+                />
+                <Checkbox
+                  label="Accept 'Cash-on-Delivery'"
+                  {...register("acceptCOD")}
+                />
+              </Group>
+
               <Controller
                 name="estimatedFulfillmentDate"
                 control={control}
@@ -533,14 +609,6 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
                     ? "Enter email"
                     : "Enter phone number"
                 }
-              />
-
-              <Textarea
-                label="Note"
-                placeholder="Enter any additional notes, payment terms, or special instructions"
-                {...register("note")}
-                error={errors.note?.message}
-                minRows={3}
               />
             </Stack>
           </Paper>

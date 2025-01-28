@@ -34,6 +34,10 @@ export const Layout = ({ quote }: Props) => {
     numberOfRevisionsRequested,
     numberOfReactivationRequested,
     order_id,
+    note,
+    requiresDelivery,
+    acceptCOD,
+    initialPaymentPercentage,
   } = quote;
   const [screen, setScreen] = useState<"review" | "payment">("review");
   const [revisionRequested, setRevisionRequested] = useState(false);
@@ -43,6 +47,11 @@ export const Layout = ({ quote }: Props) => {
     const dueDateObj = new Date(dueDate);
     return currentDate > dueDateObj;
   };
+
+  const totalAmountToPay =
+    (calculateTotal(items.map((item) => item.totalAmount)) *
+      (initialPaymentPercentage ?? 100)) /
+    100;
 
   if (isDueDatePassed()) {
     return (
@@ -85,6 +94,7 @@ export const Layout = ({ quote }: Props) => {
             dueDate={dueDate}
             items={items}
             requestPayment={requestPayment}
+            note={note}
           />
           <Group justify="space-between" py="sm">
             <Group>
@@ -97,6 +107,7 @@ export const Layout = ({ quote }: Props) => {
                   createdDate={created_at}
                   dueDate={dueDate}
                   items={items}
+                  note={note}
                 />
               </Print>
               {numberOfRevisionsRequested < 3 && (
@@ -127,11 +138,14 @@ export const Layout = ({ quote }: Props) => {
         <QuotePayment
           quoteId={id}
           orderId={order_id}
-          subTotal={calculateTotal(items.map((item) => item.totalAmount))}
+          subTotal={totalAmountToPay}
           clientName={clientName}
           contact={contact}
           email={email}
           setScreen={setScreen}
+          requiresDelivery={requiresDelivery}
+          acceptCOD={acceptCOD}
+          percentageAmount={initialPaymentPercentage}
         />
       )}
     </>

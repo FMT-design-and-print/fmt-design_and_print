@@ -34,7 +34,7 @@ export interface IQuote {
   clientName?: string;
   contact?: string;
   email?: string;
-  note?: string;
+
   revisionReasons?: string[];
   reactivationReasons?: string[];
   numberOfRevisionsRequested: number;
@@ -46,4 +46,15 @@ export interface IQuote {
     quoteReceptionValue?: string;
     [key: string]: any;
   };
+
+  // ---------------
+  note?: {
+    paymentDetails?: string;
+    AdditionalInformation?: string;
+    thankYou?: string;
+  };
+  showDueDate?: boolean;
+  requiresDelivery?: boolean;
+  acceptCOD?: boolean;
+  initialPaymentPercentage: number;
 }
