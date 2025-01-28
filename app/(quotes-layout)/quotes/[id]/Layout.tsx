@@ -37,7 +37,8 @@ export const Layout = ({ quote }: Props) => {
     note,
     requiresDelivery,
     acceptCOD,
-    initialPaymentPercentage,
+    paymentPercentage,
+    showDueDate,
   } = quote;
   const [screen, setScreen] = useState<"review" | "payment">("review");
   const [revisionRequested, setRevisionRequested] = useState(false);
@@ -50,10 +51,14 @@ export const Layout = ({ quote }: Props) => {
 
   const totalAmountToPay =
     (calculateTotal(items.map((item) => item.totalAmount)) *
-      (initialPaymentPercentage ?? 100)) /
+      (paymentPercentage ?? 100)) /
     100;
 
-  if (isDueDatePassed()) {
+  const totalQuoteAmount = calculateTotal(
+    items.map((item) => item.totalAmount)
+  );
+
+  if (isDueDatePassed() && showDueDate) {
     return (
       <Center py="xl">
         <Box py="xl">
@@ -95,6 +100,7 @@ export const Layout = ({ quote }: Props) => {
             items={items}
             requestPayment={requestPayment}
             note={note}
+            paymentPercentage={paymentPercentage}
           />
           <Group justify="space-between" py="sm">
             <Group>
@@ -108,6 +114,7 @@ export const Layout = ({ quote }: Props) => {
                   dueDate={dueDate}
                   items={items}
                   note={note}
+                  paymentPercentage={paymentPercentage}
                 />
               </Print>
               {numberOfRevisionsRequested < 3 && (
@@ -145,7 +152,8 @@ export const Layout = ({ quote }: Props) => {
           setScreen={setScreen}
           requiresDelivery={requiresDelivery}
           acceptCOD={acceptCOD}
-          percentageAmount={initialPaymentPercentage}
+          percentageAmount={paymentPercentage}
+          totalQuoteAmount={totalQuoteAmount}
         />
       )}
     </>

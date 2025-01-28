@@ -47,7 +47,7 @@ export const quoteFormSchema = z
     showDueDate: z.boolean().default(false),
     requiresDelivery: z.boolean().default(false),
     acceptCOD: z.boolean().default(false),
-    initialPaymentPercentage: z.number().min(0).max(100).default(100),
+    paymentPercentage: z.number().min(0).max(100).default(100),
     orderDetails: z
       .array(
         z.object({

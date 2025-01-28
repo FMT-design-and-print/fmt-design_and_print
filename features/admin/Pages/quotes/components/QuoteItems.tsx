@@ -26,7 +26,7 @@ interface QuoteItemsProps {
   type: "quote" | "invoice";
   items: IQuoteItem[];
   onChange: (items: IQuoteItem[]) => void;
-  initialPaymentPercentage: number;
+  paymentPercentage: number;
   onInitialPaymentChange: (value: number) => void;
 }
 
@@ -34,7 +34,7 @@ export function QuoteItems({
   type,
   items,
   onChange,
-  initialPaymentPercentage,
+  paymentPercentage,
   onInitialPaymentChange,
 }: QuoteItemsProps) {
   const [newItem, setNewItem] = useState<Partial<IQuoteItem>>({
@@ -268,7 +268,7 @@ export function QuoteItems({
                 </Text>
                 <Group gap="xs">
                   <NumberInput
-                    value={initialPaymentPercentage ?? 100}
+                    value={paymentPercentage ?? 100}
                     onChange={(value) =>
                       onInitialPaymentChange(Number(value) || 100)
                     }
@@ -281,7 +281,7 @@ export function QuoteItems({
                   <Text size="sm" c="dimmed">
                     ({CURRENCY_SYMBOL}
                     {(
-                      (calculateTotal() * (initialPaymentPercentage ?? 100)) /
+                      (calculateTotal() * (paymentPercentage ?? 100)) /
                       100
                     ).toFixed(2)}
                     )

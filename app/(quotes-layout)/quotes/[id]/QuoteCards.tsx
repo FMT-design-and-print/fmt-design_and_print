@@ -1,13 +1,15 @@
 "use client";
+import { CURRENCY_SYMBOL } from "@/features/admin/PriceCalculator/constants";
 import { calculateTotal } from "@/functions";
 import { IQuoteItem } from "@/types/quote";
-import { Box, Card, Group, Text, Title } from "@mantine/core";
+import { Box, Card, Group, Stack, Text, Title } from "@mantine/core";
 
 interface Props {
   items: IQuoteItem[];
+  paymentPercentage: number;
 }
 
-export function QuoteCards({ items }: Props) {
+export function QuoteCards({ items, paymentPercentage }: Props) {
   return (
     <Box>
       {items.map((item) => (
@@ -38,17 +40,29 @@ export function QuoteCards({ items }: Props) {
         </Card>
       ))}
 
-      <Group justify="flex-end" my="xl">
+      <Stack align="flex-end" my="xl">
         <Title
           order={4}
           px="xl"
-          className="border-y border-gray-300 bg-gray-100 py-3 "
+          className="border-y border-gray-300 bg-gray-100 py-2 "
         >
           {" "}
-          Subtotal:{" "}
+          Subtotal: {CURRENCY_SYMBOL}
           {calculateTotal(items.map((item) => item.totalAmount)).toFixed(2)}
         </Title>
-      </Group>
+        <Text px="xl" size="sm">
+          {" "}
+          Amount Due:{" "}
+          <span className="font-bold">
+            {CURRENCY_SYMBOL}
+            {(
+              (calculateTotal(items.map((item) => item.totalAmount)) *
+                paymentPercentage) /
+              100
+            ).toFixed(2)}
+          </span>
+        </Text>
+      </Stack>
     </Box>
   );
 }

@@ -83,7 +83,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
       showDueDate: false,
       requiresDelivery: false,
       acceptCOD: false,
-      initialPaymentPercentage: 100,
+      paymentPercentage: 100,
       orderDetails: [{ key: "", value: "" }],
       artworkOption: ARTWORK_OPTIONS.NONE,
       receptionMedium: RECEPTION_MEDIUMS.EMAIL,
@@ -123,10 +123,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
       setValue("showDueDate", quote.showDueDate || false);
       setValue("requiresDelivery", quote.requiresDelivery || false);
       setValue("acceptCOD", quote.acceptCOD || false);
-      setValue(
-        "initialPaymentPercentage",
-        quote.initialPaymentPercentage || 100
-      );
+      setValue("paymentPercentage", quote.paymentPercentage || 100);
       setValue(
         "estimatedFulfillmentDate",
         customOrder.estimatedFulfillmentDate
@@ -283,7 +280,7 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
         showDueDate: values.showDueDate,
         requiresDelivery: values.requiresDelivery,
         acceptCOD: values.acceptCOD,
-        initialPaymentPercentage: values.initialPaymentPercentage,
+        paymentPercentage: values.paymentPercentage,
         totalAmount: values.items.reduce(
           (sum, item) => sum + item.totalAmount,
           0
@@ -395,9 +392,9 @@ export function QuoteForm({ quoteId, onSuccess }: QuoteFormProps) {
             type={watch("type")}
             items={watch("items")}
             onChange={(items) => setValue("items", items)}
-            initialPaymentPercentage={watch("initialPaymentPercentage")}
+            paymentPercentage={watch("paymentPercentage")}
             onInitialPaymentChange={(value) =>
-              setValue("initialPaymentPercentage", value)
+              setValue("paymentPercentage", value)
             }
           />
 

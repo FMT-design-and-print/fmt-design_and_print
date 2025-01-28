@@ -38,6 +38,7 @@ interface Props {
     thankYou?: string;
   };
   showDueDate?: boolean;
+  paymentPercentage: number;
 }
 
 export const QuoteReview: FC<Props> = (props) => {
@@ -52,6 +53,7 @@ export const QuoteReview: FC<Props> = (props) => {
     requestPayment,
     note,
     showDueDate,
+    paymentPercentage,
   } = props;
 
   const { type } = useQuoteDetails();
@@ -79,6 +81,7 @@ export const QuoteReview: FC<Props> = (props) => {
             dueDate={dueDate}
             items={items}
             note={note}
+            paymentPercentage={paymentPercentage}
           />
         </Print>
       </Group>
@@ -147,11 +150,11 @@ export const QuoteReview: FC<Props> = (props) => {
       </Flex>
 
       <Box hiddenFrom="sm" mt="xl">
-        <QuoteCards items={items} />
+        <QuoteCards items={items} paymentPercentage={paymentPercentage} />
       </Box>
 
       <Box visibleFrom="sm" mt="xl">
-        <QuoteTable items={items} />
+        <QuoteTable items={items} paymentPercentage={paymentPercentage} />
       </Box>
 
       {note && <NoteSection note={note} />}

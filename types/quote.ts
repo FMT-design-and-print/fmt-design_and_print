@@ -56,5 +56,5 @@ export interface IQuote {
   showDueDate?: boolean;
   requiresDelivery?: boolean;
   acceptCOD?: boolean;
-  initialPaymentPercentage: number;
+  paymentPercentage: number;
 }

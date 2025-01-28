@@ -18,6 +18,7 @@ interface PrintableQuoteProps {
     thankYou?: string;
   };
   showDueDate?: boolean;
+  paymentPercentage: number;
 }
 
 export const PrintableQuote = ({
@@ -30,6 +31,7 @@ export const PrintableQuote = ({
   items,
   note,
   showDueDate,
+  paymentPercentage,
 }: PrintableQuoteProps) => {
   const { type } = useQuoteDetails();
   return (
@@ -81,7 +83,7 @@ export const PrintableQuote = ({
         </Box>
       </Flex>
 
-      <QuoteTable items={items} />
+      <QuoteTable items={items} paymentPercentage={paymentPercentage} />
 
       {note && <NoteSection note={note} />}
     </div>

@@ -14,7 +14,7 @@ export type OrderStatus =
   | "requested";
 
 export type DeliveryType = "pickup" | "delivery";
-export type PaymentStatus = "unpaid" | "paid" | "failed";
+export type PaymentStatus = "unpaid" | "paid" | "partly-paid" | "failed";
 
 export type IOrderItem = ICartItem;
 interface CommonOrderDetails {
@@ -46,4 +46,5 @@ export interface ICustomOrder extends CommonOrderDetails {
   contactName: string;
   phone: string;
   email: string;
+  amountPaid?: number;
 }
