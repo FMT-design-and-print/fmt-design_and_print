@@ -1,15 +1,9 @@
-import { Container } from "@mantine/core";
 import React from "react";
-import { Banner } from "./Banner";
-import { Form } from "./Form";
+
+import QuoteOrInvoiceRequest from ".";
 
 const QuoteOrInvoiceRequestPage = () => {
-  return (
-    <Container size="xl">
-      <Banner />
-      <Form />
-    </Container>
-  );
+  return <QuoteOrInvoiceRequest />;
 };
 
 export default QuoteOrInvoiceRequestPage;

@@ -38,7 +38,7 @@ interface Props {
 
 export const PasswordResetForm = ({ searchParams }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [resetSuccess, setResetSuccess] = useState(true);
+  const [resetSuccess, setResetSuccess] = useState(false);
   const router = useRouter();
   const {
     register,

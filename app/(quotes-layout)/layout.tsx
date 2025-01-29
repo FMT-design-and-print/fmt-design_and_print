@@ -7,6 +7,7 @@ import { Providers } from "../providers";
 import { Header } from "./quotes/Header";
 import AppBootstrap from "../bootstrap";
 import { QuoteDetailsProvider } from "./QuoteTypeProvider";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
               <Header />
               {children}
               <Footer />
+              <CookieConsent />
             </QuoteDetailsProvider>
           </AppBootstrap>
         </Providers>
