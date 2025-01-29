@@ -23,6 +23,7 @@ export const PaymentDetails = () => {
           setDiscount={(value) => update("discount", value)}
           paymentType={details.paymentType}
           setPaymentType={(value) => update("paymentType", value)}
+          acceptCOD
         />
       </Card>
     </>

@@ -28,7 +28,7 @@ interface Props {
   setDeliveryType: (deliveryType: DeliveryType) => void;
   setPaymentType: (paymentType: PaymentType) => void;
   requiresDelivery?: boolean;
-  acceptCOD: boolean;
+  acceptCOD?: boolean;
 }
 
 export const PaymentDetailsCard = (props: Props) => {
