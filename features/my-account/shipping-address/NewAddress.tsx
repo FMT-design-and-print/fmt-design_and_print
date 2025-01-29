@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { ShippingAddress } from "@/components/ShippingAddress";
 import { verifyAddressDetails } from "@/functions";
@@ -14,8 +15,8 @@ const initialAddressState: IShippingAddress = {
   phone2: "",
   email: "",
   address: "",
-  town: "",
-  region: "",
+  town: null,
+  region: { id: 7, name: "Greater Accra" },
   country: "Ghana",
 };
 
@@ -70,13 +71,16 @@ export const NewAddress = ({ numberOfAddresses }: Props) => {
         New Shipping Address
       </Title>
       <ShippingAddress
-        contactName={newAddress.contactName}
-        phone1={newAddress.phone1}
-        phone2={newAddress.phone2}
-        email={newAddress.email}
-        address={newAddress.address}
-        town={newAddress.town}
-        region={newAddress.region}
+        address={{
+          contactName: newAddress.contactName,
+          phone1: newAddress.phone1,
+          phone2: newAddress.phone2,
+          email: newAddress.email,
+          address: newAddress.address,
+          town: newAddress.town,
+          region: newAddress.region,
+          country: newAddress.country,
+        }}
         update={update}
         deliveryType="delivery"
       />

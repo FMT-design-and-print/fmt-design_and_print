@@ -57,7 +57,11 @@ export function AvailableShippingAddresses({ shippingAddresses }: Props) {
           >
             <Text>{address.contactName}</Text>
             <Text c="dimmed" size="sm">
-              {address.region}, {address.town}, {address.address}
+              {address.region?.name},{" "}
+              {typeof address.town === "string"
+                ? address.town
+                : address.town?.name}{" "}
+              , {address.address}
             </Text>
             <Group justify="space-between">
               <Text c="dimmed" size="sm" mt="sm">
@@ -99,7 +103,7 @@ export function AvailableShippingAddresses({ shippingAddresses }: Props) {
         px="0"
         rightSection={<IconChevronDown size="1rem" />}
       >
-        Select Shipping Address
+        Select from saved addresses
       </Button>
     </>
   );

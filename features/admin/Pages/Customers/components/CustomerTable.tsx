@@ -187,9 +187,9 @@ export function CustomerTable({
         </Tooltip>
       </Table.Td>
       <Table.Td>
-        <Tooltip label={customer.region}>
+        <Tooltip label={customer.region?.name}>
           <Text size="sm" truncate>
-            {customer.region}
+            {customer.region?.name}
           </Text>
         </Tooltip>
       </Table.Td>

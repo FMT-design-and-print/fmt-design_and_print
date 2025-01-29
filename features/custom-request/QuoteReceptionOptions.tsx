@@ -33,7 +33,7 @@ export const QuoteReceptionOptions = ({ handleReceiveQuote }: Props) => {
 
       <Flex gap={8} direction={{ base: "column", sm: "row" }}>
         <TextInput
-          label="Individual/Business name"
+          label="Customer name"
           placeholder="name"
           className="flex-1"
           value={context.contactName}

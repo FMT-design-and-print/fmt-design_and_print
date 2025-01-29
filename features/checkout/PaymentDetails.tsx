@@ -21,6 +21,9 @@ export const PaymentDetails = () => {
           deliveryType={details.deliveryType}
           setDeliveryType={(value) => update("deliveryType", value)}
           setDiscount={(value) => update("discount", value)}
+          paymentType={details.paymentType}
+          setPaymentType={(value) => update("paymentType", value)}
+          acceptCOD
         />
       </Card>
     </>

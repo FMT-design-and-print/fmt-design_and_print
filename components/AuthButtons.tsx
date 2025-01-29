@@ -20,6 +20,7 @@ export function AuthButtons({ grow = false }: { grow?: boolean }) {
     return (
       <Group wrap="nowrap" grow={grow}>
         <Button
+          size="xs"
           component={Link}
           href={
             excludedRedirectPaths.includes(pathname)
@@ -31,6 +32,7 @@ export function AuthButtons({ grow = false }: { grow?: boolean }) {
           Log in
         </Button>
         <Button
+          size="xs"
           component={Link}
           href={
             excludedRedirectPaths.includes(pathname)

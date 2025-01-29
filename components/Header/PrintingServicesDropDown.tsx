@@ -7,7 +7,7 @@ export const PrintingServicesDropDown = () => {
 
   return (
     <ServicesDropDown
-      title="Print Services"
+      title="Print Products"
       link="/services"
       items={
         categories

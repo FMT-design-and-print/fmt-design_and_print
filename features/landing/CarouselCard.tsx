@@ -1,13 +1,13 @@
 import React from "react";
 import { Carousel } from "@mantine/carousel";
-import { AspectRatio, Image } from "@mantine/core";
+import { AspectRatio } from "@mantine/core";
 import classes from "./Style.module.css";
+import Image from "next/image";
 
 const images = [
   "https://res.cloudinary.com/dnbmynikp/image/upload/v1709546397/FMT/t-shirt_banner_wns0f9.png",
-  "https://res.cloudinary.com/dnbmynikp/image/upload/v1709552624/FMT/FMT-web_banner_Caps_he6htz.png",
-  "https://res.cloudinary.com/dnbmynikp/image/upload/v1709552624/FMT/FMT-web_banner_Mug_yoha5p.png",
-  "https://res.cloudinary.com/dnbmynikp/image/upload/v1709543205/FMT/Photo_Framepsd_xfawem.jpg",
+  "https://res.cloudinary.com/dnbmynikp/image/upload/v1737932440/FMT/FMT-web_banner_caps_qa1lxx.png",
+  "https://res.cloudinary.com/dnbmynikp/image/upload/v1737932439/FMT/FMT-web_banner_mugs_ihofu7.png",
   "https://res.cloudinary.com/dnbmynikp/image/upload/v1709543373/FMT/Stelle_Catering_Business_Card-mockup_r7t74m.png",
   "https://res.cloudinary.com/dnbmynikp/image/upload/v1709543257/FMT/Ceramic-mug-mom-fmt_erkged.jpg",
 ];
@@ -26,8 +26,8 @@ export const CarouselCard = () => {
     >
       {images.map((image) => (
         <Carousel.Slide key={image}>
-          <AspectRatio ratio={1080 / 720} mah={400} mx="auto" p={4}>
-            <Image src={image} height={220} alt="banner image" />
+          <AspectRatio ratio={16 / 9} mah={400} mx="auto" p={4}>
+            <Image src={image} alt="banner image" width={1080} height={720} />
           </AspectRatio>
         </Carousel.Slide>
       ))}

@@ -11,6 +11,7 @@ import {
   Table,
   Text,
   TextInput,
+  Tooltip,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import {
@@ -27,6 +28,20 @@ import { ConfirmationDialog } from "./ConfirmationDialog";
 import { QuoteStatusUpdate } from "./QuoteStatusUpdate";
 import { SortableHeader } from "./SortableHeader";
 import { useClipboard } from "@mantine/hooks";
+import { QuoteMessageButton } from "@/components/QuoteMessageButton";
+
+const getDefaultMessage = (quote: IQuote) => {
+  const documentType = quote.type === "invoice" ? "invoice" : "quote";
+
+  return `We received a custom order request from you. we've create ${documentType} for you to review and make payment upon acceptance.`;
+};
+
+const cellStyle = {
+  maxWidth: "200px",
+  whiteSpace: "nowrap" as const,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
 
 export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
   const [search, setSearch] = useState("");
@@ -83,17 +98,14 @@ export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
     setSorting((current) => {
       const currentSort = current[0];
 
-      // If no current sort, sort ascending
       if (!currentSort || currentSort.id !== field) {
         return [{ id: field, desc: false }];
       }
 
-      // If currently sorting ascending, switch to descending
       if (!currentSort.desc) {
         return [{ id: field, desc: true }];
       }
 
-      // If currently sorting descending, remove sort
       return [];
     });
   };
@@ -149,7 +161,7 @@ export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
         <Table.Thead>
           <Table.Tr>
             <SortableHeader
-              label="Quote Number"
+              label="No.(#)"
               field="quoteNumber"
               currentSort={currentSort}
               onSort={handleSort}
@@ -201,9 +213,21 @@ export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
           ) : (
             quotes.map((quote: IQuote) => (
               <Table.Tr key={quote.id}>
-                <Table.Td>{quote.quoteNumber}</Table.Td>
-                <Table.Td>{quote.title}</Table.Td>
-                <Table.Td>{quote.clientName}</Table.Td>
+                <Table.Td style={{ width: 100 }}>{quote.quoteNumber}</Table.Td>
+                <Table.Td style={cellStyle}>
+                  <Tooltip label={quote.title} multiline>
+                    <Text size="sm" truncate>
+                      {quote.title}
+                    </Text>
+                  </Tooltip>
+                </Table.Td>
+                <Table.Td style={cellStyle}>
+                  <Tooltip label={quote.clientName} multiline>
+                    <Text size="sm" truncate>
+                      {quote.clientName}
+                    </Text>
+                  </Tooltip>
+                </Table.Td>
                 <Table.Td>${quote.totalAmount.toFixed(2)}</Table.Td>
                 <Table.Td>
                   <QuoteStatusUpdate
@@ -212,9 +236,11 @@ export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
                     onUpdate={refetch}
                   />
                 </Table.Td>
-                <Table.Td>{formatDate(quote.dueDate)}</Table.Td>
                 <Table.Td>
-                  <Group gap="xs">
+                  <Text size="xs">{formatDate(quote.dueDate)}</Text>
+                </Table.Td>
+                <Table.Td>
+                  <Group gap={8}>
                     <ActionIcon
                       variant="subtle"
                       color="pink"
@@ -225,30 +251,50 @@ export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
                           ? "Paid quotes cannot be edited"
                           : ""
                       }
+                      size="sm"
                     >
                       <IconEdit size={16} />
                     </ActionIcon>
-                    <ActionIcon
-                      variant="subtle"
-                      color="blue"
-                      onClick={() => handleCopyUrl(quote.id)}
-                      title="Copy URL"
-                    >
-                      <IconCopy size={16} />
-                    </ActionIcon>
-                    <ActionIcon
-                      variant="subtle"
-                      color="gray"
-                      onClick={() => handleOpenInNewTab(quote.id)}
-                      title="Open in new tab"
-                    >
-                      <IconExternalLink size={16} />
-                    </ActionIcon>
+                    {quote.status === "active" && (
+                      <QuoteMessageButton
+                        variant="icon"
+                        label={`Message ${quote.clientName}`}
+                        title={`Send Message to ${quote.clientName}`}
+                        defaultMessage={getDefaultMessage(quote)}
+                        orderDetails={quote.orderDetails}
+                        clientName={quote.clientName}
+                        quoteUrl={getQuoteUrl(quote.id)}
+                        quoteTitle={quote.title}
+                      />
+                    )}
+                    {quote.status === "active" && (
+                      <ActionIcon
+                        variant="subtle"
+                        color="blue"
+                        onClick={() => handleCopyUrl(quote.id)}
+                        title="Copy URL"
+                        size="sm"
+                      >
+                        <IconCopy size={16} />
+                      </ActionIcon>
+                    )}
+                    {quote.status === "active" && (
+                      <ActionIcon
+                        variant="subtle"
+                        color="gray"
+                        onClick={() => handleOpenInNewTab(quote.id)}
+                        title="Open in new tab"
+                        size="sm"
+                      >
+                        <IconExternalLink size={16} />
+                      </ActionIcon>
+                    )}
                     {quote.status !== "active" && quote.status !== "paid" && (
                       <ActionIcon
                         variant="subtle"
                         color="red"
                         onClick={() => setDeleteQuoteId(quote.id)}
+                        size="sm"
                       >
                         <IconTrash size={16} />
                       </ActionIcon>

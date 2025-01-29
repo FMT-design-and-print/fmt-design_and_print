@@ -41,6 +41,10 @@ export function hasPermission(
   userRole: Role,
   requiredPermission: Permission
 ): boolean {
+  if (!userRole || !roleHierarchy[userRole]) {
+    return false;
+  }
+
   let permissions: string[] = [];
 
   if (userRole === "super-admin") {

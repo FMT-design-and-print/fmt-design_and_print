@@ -4,8 +4,11 @@ import { Sidebar } from "./Sidebar/Sidebar";
 import { Box, Group } from "@mantine/core";
 import { SidebarMobile } from "./Sidebar/SidebarMobile";
 import { PageRenderer } from "./PageRenderer";
+import { useCurrentAdminUser } from "@/hooks/admin/useCurrentAdminUser";
 
-export const AdminLayout = ({ user }: { user: any }) => {
+export const AdminLayout = () => {
+  useCurrentAdminUser();
+
   return (
     <Group align="flex-start" wrap="nowrap" mih={500}>
       <Box visibleFrom="sm">

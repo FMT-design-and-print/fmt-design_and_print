@@ -10,6 +10,7 @@ const QUOTE_FIELDS_TO_COMPARE = [
   "contact",
   "dueDate",
   "items",
+  "note",
 ] as const;
 
 const ORDER_FIELDS_TO_COMPARE = [

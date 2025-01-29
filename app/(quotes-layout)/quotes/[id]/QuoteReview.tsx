@@ -17,6 +17,8 @@ import {
 import Link from "next/link";
 import { FC } from "react";
 import { FaPrint } from "react-icons/fa6";
+import { useQuoteDetails } from "../../QuoteTypeProvider";
+import { NoteSection } from "./NoteSection";
 import { PrintableQuote } from "./PrintableQuote";
 import { QuoteCards } from "./QuoteCards";
 import { QuoteTable } from "./QuoteTable";
@@ -30,6 +32,13 @@ interface Props {
   dueDate: Date;
   items: IQuoteItem[];
   requestPayment: boolean;
+  note?: {
+    paymentDetails?: string;
+    AdditionalInformation?: string;
+    thankYou?: string;
+  };
+  showDueDate?: boolean;
+  paymentPercentage: number;
 }
 
 export const QuoteReview: FC<Props> = (props) => {
@@ -42,13 +51,19 @@ export const QuoteReview: FC<Props> = (props) => {
     dueDate,
     items,
     requestPayment,
+    note,
+    showDueDate,
+    paymentPercentage,
   } = props;
+
+  const { type } = useQuoteDetails();
 
   return (
     <div>
       <Group justify="space-between">
         <Title order={3} c="gray">
-          #{quoteNumber}
+          {type === "quote" ? "Quote-" : "Invoice-"}
+          (#{quoteNumber})
         </Title>
         <Print
           triggerBtn={
@@ -65,6 +80,8 @@ export const QuoteReview: FC<Props> = (props) => {
             createdDate={createdDate}
             dueDate={dueDate}
             items={items}
+            note={note}
+            paymentPercentage={paymentPercentage}
           />
         </Print>
       </Group>
@@ -82,7 +99,7 @@ export const QuoteReview: FC<Props> = (props) => {
         <Box className="space-y-2">
           <Group>
             <Text fw="bold" size="sm">
-              Created Date:{" "}
+              Date:{" "}
             </Text>
             <Text c="gray.7" size="sm">
               {new Date(createdDate).toDateString()}
@@ -98,43 +115,49 @@ export const QuoteReview: FC<Props> = (props) => {
             </Text>
           </Group>
 
-          <Group>
-            <Text fw="bold" size="sm">
-              Due date:{" "}
-            </Text>
-            <Text c="gray.7" size="sm">
-              {new Date(dueDate).toDateString()}
-              <Badge
-                component="span"
-                size="xs"
-                mx="sm"
-                variant="light"
-                color="gray"
-              >
-                {getFormattedDaysToFuture(new Date(dueDate))}
-              </Badge>
-            </Text>
-          </Group>
+          {showDueDate && (
+            <Group>
+              <Text fw="bold" size="sm">
+                Due date:{" "}
+              </Text>
+              <Text c="gray.7" size="sm">
+                {new Date(dueDate).toDateString()}
+                <Badge
+                  component="span"
+                  size="xs"
+                  mx="sm"
+                  variant="light"
+                  color="gray"
+                >
+                  {getFormattedDaysToFuture(new Date(dueDate))}
+                </Badge>
+              </Text>
+            </Group>
+          )}
         </Box>
 
         <Box className="space-y-2" pr="md">
-          <Text fw="bold">To:</Text>
-          <Text size="sm" c="gray">
+          <Text fw="bold" ta="right">
+            To:
+          </Text>
+          <Text size="sm" c="gray.8" ta="right">
             {clientName}
           </Text>
-          <Text size="sm" c="gray">
+          <Text size="sm" c="gray" ta="right">
             {clientContact}
           </Text>
         </Box>
       </Flex>
 
-      <Box hiddenFrom="sm">
-        <QuoteCards items={items} />
+      <Box hiddenFrom="sm" mt="xl">
+        <QuoteCards items={items} paymentPercentage={paymentPercentage} />
       </Box>
 
-      <Box visibleFrom="sm">
-        <QuoteTable items={items} />
+      <Box visibleFrom="sm" mt="xl">
+        <QuoteTable items={items} paymentPercentage={paymentPercentage} />
       </Box>
+
+      {note && <NoteSection note={note} />}
 
       {requestPayment && (
         <Box my="lg" className="space-y-2">

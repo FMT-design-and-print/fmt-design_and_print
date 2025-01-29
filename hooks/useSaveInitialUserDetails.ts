@@ -67,6 +67,7 @@ export const useSaveInitialUserDetails = (): IUserDetails | null => {
             // Details are already saved
           }
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error("Error fetching user details:", error.message);
       }

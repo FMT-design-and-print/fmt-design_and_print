@@ -5,7 +5,7 @@ export const featureFlags = {
   plainItems: false,
   gifts: false,
   deals: false,
-  cod: false, // availability of "cash on delivery"
+  cod: true, // availability of "cash on delivery"
   recentlyViewed: false,
   recentlySearched: false,
   inbox: false,
