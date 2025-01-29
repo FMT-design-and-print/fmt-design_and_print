@@ -2,6 +2,7 @@ import { MyAccount } from "@/features/my-account";
 import { ProfileForm } from "@/features/my-account/profile/Form";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { verifyLoggedOutUser } from "@/lib/actions/user-check.actions";
+import { IUserDetails } from "@/types/user";
 import { createClient } from "@/utils/supabase/server";
 import { Alert } from "@mantine/core";
 import { Metadata } from "next";
@@ -33,12 +34,14 @@ const MyAccountProfilePage = async () => {
           </Alert>
         ) : (
           <ProfileForm
-            user={{
-              id: user.id,
-              email: user.email,
-              ...data[0],
-              dateOfBirth: new Date(data[0].dateOfBirth ?? ""),
-            }}
+            user={
+              {
+                id: user.id,
+                email: user.email,
+                ...data[0],
+                dateOfBirth: new Date(data[0].dateOfBirth ?? ""),
+              } as IUserDetails
+            }
             isUserSaved={data?.length !== 0}
           />
         )}

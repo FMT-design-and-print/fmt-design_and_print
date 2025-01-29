@@ -12,7 +12,7 @@ const CartAndSavedItemsButtons = dynamic(
 
 export const SearchSection = () => {
   return (
-    <Grid align="flex-end" gutter={{ base: "md", sm: "xl" }} pt="md">
+    <Grid align="flex-end" gutter="sm">
       <Grid.Col span="auto">
         <SearchWithButton />
       </Grid.Col>

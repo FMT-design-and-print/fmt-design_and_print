@@ -1,8 +1,12 @@
 "use client";
 import SiteUnderConstruction from "@/components/UnderConstruction";
-import useWebsiteSettings from "@/hooks/useWebsiteSettings";
+import useWebsiteSettings, {
+  prefetchWebsiteSettings,
+} from "@/hooks/useWebsiteSettings";
 import { nprogress, NavigationProgress } from "@mantine/nprogress";
 import React, { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AppBootstrap = ({
   children,
@@ -11,7 +15,14 @@ const AppBootstrap = ({
   children: React.ReactNode;
   section?: "user" | "admin";
 }) => {
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
   const { data: settings, isLoading } = useWebsiteSettings();
+
+  // Prefetch settings for future navigations
+  useEffect(() => {
+    prefetchWebsiteSettings(queryClient);
+  }, [queryClient]);
 
   useEffect(() => {
     if (isLoading) {
@@ -23,6 +34,16 @@ const AppBootstrap = ({
 
   if (isLoading) {
     return null;
+  }
+
+  // Skip settings check for quote/[id] page
+  if (pathname.startsWith("/quote/")) {
+    return (
+      <>
+        <NavigationProgress />
+        {children}
+      </>
+    );
   }
 
   if (settings) {

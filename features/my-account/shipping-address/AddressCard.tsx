@@ -43,7 +43,9 @@ export const AddressCard = ({ address }: Props) => {
     <Card style={{ backgroundColor: "#fcfcfb" }} withBorder>
       <Text>{address.contactName}</Text>
       <Text c="dimmed" size="sm">
-        {address.region}, {address.town}, {address.address}
+        {address.region?.name},{" "}
+        {typeof address.town === "string" ? address.town : address.town?.name},{" "}
+        {address.address}
       </Text>
       <Group justify="space-between">
         <Text c="dimmed" size="sm" mt="sm">

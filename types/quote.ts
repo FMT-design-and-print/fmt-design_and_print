@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type QuoteStatus =
   | "created"
   | "active"
@@ -33,10 +34,27 @@ export interface IQuote {
   clientName?: string;
   contact?: string;
   email?: string;
+
   revisionReasons?: string[];
   reactivationReasons?: string[];
   numberOfRevisionsRequested: number;
   numberOfReactivationRequested: number;
   requestPayment: boolean;
   type: "quote" | "invoice";
+  orderDetails?: {
+    quoteReceptionMedium?: "email" | "whatsapp" | "sms";
+    quoteReceptionValue?: string;
+    [key: string]: any;
+  };
+
+  // ---------------
+  note?: {
+    paymentDetails?: string;
+    AdditionalInformation?: string;
+    thankYou?: string;
+  };
+  showDueDate?: boolean;
+  requiresDelivery?: boolean;
+  acceptCOD?: boolean;
+  paymentPercentage: number;
 }

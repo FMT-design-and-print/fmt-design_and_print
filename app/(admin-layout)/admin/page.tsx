@@ -36,7 +36,7 @@ export default async function AdminPage() {
 
   return (
     <>
-      <AdminLayout user={user} />
+      <AdminLayout />
     </>
   );
 }

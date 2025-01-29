@@ -16,6 +16,7 @@ export const FMTLogo = ({ image }: Props) => {
         alt="FMT Logo"
         width={60}
         height={50}
+        className="mb-1"
       />
     </Link>
   );

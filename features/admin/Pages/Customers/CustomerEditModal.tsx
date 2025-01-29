@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Modal, TextInput, Select, Stack, Button, Group } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
@@ -7,9 +9,9 @@ import { createClient } from "@/utils/supabase/client";
 
 interface CustomerEditModalProps {
   opened: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   customer: IUserDetails | null;
-  onUpdate: () => void;
+  onUpdate?: () => void;
 }
 
 export default function CustomerEditModal({
@@ -41,7 +43,7 @@ export default function CustomerEditModal({
         color: "green",
       });
 
-      onUpdate();
+      onUpdate?.();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       notifications.show({
@@ -57,7 +59,7 @@ export default function CustomerEditModal({
   return (
     <Modal
       opened={opened}
-      onClose={onClose}
+      onClose={onClose || (() => {})}
       title="Edit Customer Details"
       size="lg"
     >
@@ -122,9 +124,12 @@ export default function CustomerEditModal({
 
           <TextInput
             label="Region"
-            defaultValue={customer?.region || ""}
+            defaultValue={customer?.region?.name || ""}
             onChange={(e) =>
-              setFormData({ ...formData, region: e.target.value })
+              setFormData({
+                ...formData,
+                region: { id: customer?.region?.id || 0, name: e.target.value },
+              })
             }
           />
 

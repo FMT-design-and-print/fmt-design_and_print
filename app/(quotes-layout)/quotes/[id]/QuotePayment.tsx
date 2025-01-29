@@ -1,20 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { ConfirmOrder } from "@/components/PaymentDetails/ConfirmOrder";
 import { PayButton } from "@/components/PaymentDetails/PayButton";
 import { PaymentDetailsCard } from "@/components/PaymentDetails/PaymentDetailsCard";
 import { ShippingAddress } from "@/components/ShippingAddress";
-import { shippingFeeByRegion } from "@/constants/gh-regions";
-import { calculateEstimatedFulfillmentDate } from "@/functions";
+import { baseShippingFeeByRegion } from "@/constants/gh-regions";
+import { calculateEstimatedFulfillmentDate, getOrderId } from "@/functions";
 import { sendMessage } from "@/functions/send-message";
-import { IShippingAddress } from "@/types";
-import { DeliveryType } from "@/types/order";
+import { IShippingAddress, PaymentType } from "@/types";
+import { DeliveryType, ICustomOrder } from "@/types/order";
 import { createClient } from "@/utils/supabase/client";
-import { Alert, Box, Button, Card, Flex, Text, Title } from "@mantine/core";
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Text,
+  Title,
+  Group,
+} from "@mantine/core";
 import { IconExclamationCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
 import { toast } from "react-toastify";
+import { useOrderDetails } from "./hooks/useOrderDetails";
+import { CURRENCY_SYMBOL } from "@/features/admin/PriceCalculator/constants";
 
 interface Props {
   quoteId: string;
@@ -23,7 +35,12 @@ interface Props {
   clientName?: string;
   contact?: string;
   email?: string;
+  specifiedDeliveryFee?: number;
   setScreen?: Dispatch<SetStateAction<"review" | "payment">>;
+  requiresDelivery?: boolean;
+  acceptCOD?: boolean;
+  percentageAmount: number;
+  totalQuoteAmount: number;
 }
 
 const initialAddress: IShippingAddress = {
@@ -32,8 +49,8 @@ const initialAddress: IShippingAddress = {
   phone2: "",
   email: "",
   address: "",
-  town: "",
-  region: "",
+  town: { name: "", lat: 0, long: 0, regionId: 0, regionName: "" },
+  region: { id: 7, name: "Greater Accra" },
   country: "Ghana",
 };
 
@@ -44,9 +61,15 @@ export const QuotePayment = ({
   clientName,
   contact,
   email,
+  specifiedDeliveryFee,
+  requiresDelivery = true,
+  acceptCOD = true,
   setScreen,
+  percentageAmount,
+  totalQuoteAmount,
 }: Props) => {
   const router = useRouter();
+  const { orderDetails, calculatePaymentStatus } = useOrderDetails(orderId);
   const [shippingAddress, setShippingAddress] = useState<IShippingAddress>({
     ...initialAddress,
     contactName: clientName || initialAddress.contactName,
@@ -58,26 +81,41 @@ export const QuotePayment = ({
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("delivery");
   const [emptyRequiredFields, setEmptyRequiredFields] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [deliveryFee, setDeliveryFee] = useState(
+    specifiedDeliveryFee ||
+      baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
+      0
+  );
+  const [paymentType, setPaymentType] = useState<PaymentType>("momo");
 
-  const deliveryFee = shippingFeeByRegion[shippingAddress.region] || 0;
   const total = subTotal + deliveryFee - discount;
 
   const handleOnPaymentSuccess = async (ref: any) => {
+    setEmptyRequiredFields([]);
     const supabase = createClient();
 
+    const { quoteStatus, remainingPercentage, paymentStatus, orderStatus } =
+      calculatePaymentStatus(total, totalQuoteAmount, percentageAmount);
+
     const detailsToUpdate = {
-      status: "placed",
-      totalAmount: total,
+      totalAmount: totalQuoteAmount,
+      amountPaid: (orderDetails?.amountPaid || 0) + total,
       deliveryType,
       deliveryDetails: { ...shippingAddress },
       deliveryFee,
-      estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
-        5,
-        new Date()
-      ).toISOString(),
-      updated_at: new Date().toISOString(),
+      ...(orderDetails?.estimatedFulfillmentDate === null && {
+        estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
+          5,
+          new Date()
+        ),
+      }),
+      updated_at: new Date(),
       orderId: ref.reference,
-    };
+      paymentStatus: paymentStatus,
+      status: orderStatus,
+      paymentType,
+    } as Partial<ICustomOrder>;
+
     setIsLoading(true);
     try {
       const [customOrdersRes, quoteRes] = await Promise.all([
@@ -85,7 +123,14 @@ export const QuotePayment = ({
           .from("custom-orders")
           .update(detailsToUpdate)
           .eq("id", orderId),
-        supabase.from("quotes").update({ status: "paid" }).eq("id", quoteId),
+        supabase
+          .from("quotes")
+          .update({
+            status: quoteStatus,
+            paymentPercentage: remainingPercentage,
+            updated_at: new Date(),
+          })
+          .eq("id", quoteId),
       ]);
 
       if (customOrdersRes.error || quoteRes.error) {
@@ -103,7 +148,7 @@ export const QuotePayment = ({
           metadata: {
             orderId: ref.reference,
             quoteId,
-            totalAmount: total,
+            totalAmount: totalQuoteAmount,
             deliveryType,
             deliveryDetails: shippingAddress,
             deliveryFee,
@@ -128,12 +173,40 @@ export const QuotePayment = ({
     }
   };
 
+  useEffect(() => {
+    if (deliveryType !== "delivery") {
+      setDeliveryFee(0);
+    } else {
+      setDeliveryFee(
+        specifiedDeliveryFee ||
+          baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
+          0
+      );
+    }
+  }, [deliveryType, specifiedDeliveryFee, shippingAddress.region]);
+
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} />
       <Title order={2} py="sm">
-        Make Payment
+        {orderDetails?.amountPaid ? "Complete Payment" : "Make Initial Payment"}
       </Title>
+
+      {orderDetails?.amountPaid ? (
+        <Alert color="blue" mb="md">
+          <Group justify="space-between">
+            <Text>
+              Amount Already Paid: {CURRENCY_SYMBOL}
+              {orderDetails.amountPaid.toFixed(2)}
+            </Text>
+            <Text>
+              Remaining Amount: {CURRENCY_SYMBOL}
+              {(totalQuoteAmount - orderDetails.amountPaid).toFixed(2)}
+            </Text>
+          </Group>
+        </Alert>
+      ) : null}
+
       <Card withBorder my="md" bg="gray.1">
         <PaymentDetailsCard
           subTotal={subTotal}
@@ -145,6 +218,10 @@ export const QuotePayment = ({
           deliveryType={deliveryType}
           setDeliveryType={setDeliveryType}
           setDiscount={setDisCount}
+          paymentType={paymentType}
+          setPaymentType={setPaymentType}
+          requiresDelivery={requiresDelivery}
+          acceptCOD={acceptCOD}
         />
       </Card>
 
@@ -153,28 +230,23 @@ export const QuotePayment = ({
           {deliveryType === "delivery" ? "Delivery Address" : "Contact Details"}
         </Title>
         <ShippingAddress
-          contactName={shippingAddress.contactName}
-          phone1={shippingAddress.phone1}
-          phone2={shippingAddress.phone2}
-          email={shippingAddress.email}
-          address={shippingAddress.address}
-          town={shippingAddress.town}
-          region={shippingAddress.region}
+          address={{
+            contactName: shippingAddress.contactName,
+            phone1: shippingAddress.phone1,
+            phone2: shippingAddress.phone2,
+            email: shippingAddress.email,
+            address: shippingAddress.address,
+            town: shippingAddress.town,
+            region: shippingAddress.region,
+            country: shippingAddress.country,
+          }}
           deliveryType={deliveryType}
+          setDeliveryFee={specifiedDeliveryFee ? () => {} : setDeliveryFee}
           update={(key, value) =>
             setShippingAddress((prev) => ({ ...prev, [key]: value }))
           }
         />
       </Card>
-
-      {shippingAddress.region && shippingAddress.region !== "GREATER ACCRA" && (
-        <Box>
-          <Text fz="xs" fs="italic" c="gray.7">
-            Your region is outside Greater Accra. Delivery fee is not finalized
-            and will be confirmed later
-          </Text>
-        </Box>
-      )}
 
       <Flex
         justify="space-between"
@@ -193,13 +265,26 @@ export const QuotePayment = ({
           Review Items
         </Button>
 
-        <PayButton
-          total={total}
-          shippingAddress={shippingAddress}
-          deliveryType={deliveryType}
-          onSuccess={handleOnPaymentSuccess}
-          setEmptyRequiredFields={setEmptyRequiredFields}
-        />
+        {paymentType === "cod" ? (
+          <ConfirmOrder
+            total={total}
+            shippingAddress={shippingAddress}
+            deliveryType={deliveryType}
+            paymentType={paymentType}
+            onConfirm={() =>
+              handleOnPaymentSuccess({ reference: getOrderId() })
+            }
+            setEmptyRequiredFields={setEmptyRequiredFields}
+          />
+        ) : (
+          <PayButton
+            total={total}
+            shippingAddress={shippingAddress}
+            deliveryType={deliveryType}
+            onSuccess={handleOnPaymentSuccess}
+            setEmptyRequiredFields={setEmptyRequiredFields}
+          />
+        )}
       </Flex>
 
       <Box bg="white">

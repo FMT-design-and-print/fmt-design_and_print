@@ -1,4 +1,3 @@
-import { regionsInGhana } from "@/constants/gh-regions";
 import { ICartItem, IShippingAddress } from ".";
 
 export type OrderStatus =
@@ -15,7 +14,7 @@ export type OrderStatus =
   | "requested";
 
 export type DeliveryType = "pickup" | "delivery";
-export type GHRegion = (typeof regionsInGhana)[number];
+export type PaymentStatus = "unpaid" | "paid" | "partly-paid" | "failed";
 
 export type IOrderItem = ICartItem;
 interface CommonOrderDetails {
@@ -33,6 +32,7 @@ interface CommonOrderDetails {
   estimatedFulfillmentDate?: Date;
   paymentType: string;
   deliveryFee?: number;
+  paymentStatus?: PaymentStatus;
 }
 
 export interface IOrder extends CommonOrderDetails {
@@ -46,4 +46,5 @@ export interface ICustomOrder extends CommonOrderDetails {
   contactName: string;
   phone: string;
   email: string;
+  amountPaid?: number;
 }
