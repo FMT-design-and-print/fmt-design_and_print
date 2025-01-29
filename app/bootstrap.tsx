@@ -36,8 +36,8 @@ const AppBootstrap = ({
     return null;
   }
 
-  // Skip settings check for quote/[id] page
-  if (pathname.startsWith("/quote/")) {
+  // Skip settings check for quotes/[id] page
+  if (pathname.startsWith("/quotes/")) {
     return (
       <>
         <NavigationProgress />
