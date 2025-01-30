@@ -110,6 +110,7 @@ export interface ICartItem {
   size?: string;
   note?: string;
   productNumber?: string;
+  selectedProductType?: "regular" | "jersey" | string;
 }
 
 export type GroupedPrintProductTypes = Record<
@@ -145,6 +146,7 @@ export type SelectedProductOptions = {
   quantity: number;
   color?: ProductColor;
   note?: string;
+  selectedProductType?: "regular" | "jersey";
 };
 
 export interface IOptionsErrors {
