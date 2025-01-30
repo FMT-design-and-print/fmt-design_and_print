@@ -13,8 +13,8 @@ export const ResultItem = ({ item, link, badgeLabel, close }: Props) => (
   <Box
     component={Link}
     href={link}
-    w={{ base: "95%", md: "45%" }}
-    m="xs"
+    w={{ base: "95%", lg: "45%" }}
+    m="2px"
     p="xs"
     onClick={close}
   >
@@ -23,7 +23,9 @@ export const ResultItem = ({ item, link, badgeLabel, close }: Props) => (
         <Avatar size="sm" src={item.image}>
           {item.title.charAt(0)}
         </Avatar>
-        <Text lineClamp={1}>{item.title}</Text>
+        <Text lineClamp={1} size="sm">
+          {item.title}
+        </Text>
       </Group>
       <Flex justify="flex-end">
         <Badge variant="light" color="pink" size="xs">
