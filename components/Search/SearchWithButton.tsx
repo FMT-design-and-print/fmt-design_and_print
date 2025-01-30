@@ -16,6 +16,7 @@ import { HiSearch } from "react-icons/hi";
 import { CategoriesResults } from "./CategoriesResults";
 import { ProductTypesResults } from "./ProductTypesResults";
 import { ProductsResults } from "./ProductsResults";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface ISearchResults {
   printService: SearchItem[];
@@ -35,6 +36,7 @@ export const SearchWithButton = (props: TextInputProps) => {
   const [opened, { close, open }] = useDisclosure(false);
   const [dropdown, setDropdown] = useState<HTMLDivElement | null>(null);
   const [control, setControl] = useState<HTMLInputElement | null>(null);
+  const { trackSearch } = useAnalytics();
   useClickOutside(() => close(), null, [control, dropdown]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] =
@@ -49,12 +51,13 @@ export const SearchWithButton = (props: TextInputProps) => {
         searchText: `*${searchTerm}*`,
       });
       setSearchResults(res);
+      trackSearch(searchTerm);
     } catch (error) {
       console.error("Error fetching search results:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm, setSearchResults, setIsLoading]);
+  }, [searchTerm, setSearchResults, setIsLoading, trackSearch]);
 
   const noItemAvailable = Object.entries(searchResults).every(
     ([, value]) => value.length === 0

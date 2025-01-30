@@ -8,6 +8,7 @@ import { Header } from "./quotes/Header";
 import AppBootstrap from "../bootstrap";
 import { QuoteDetailsProvider } from "./QuoteTypeProvider";
 import { CookieConsent } from "@/components/CookieConsent";
+import GoogleAnalytics from "@/components/providers/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
         </Providers>
         <SessionProvider />
         <ToastContainer />
+        <GoogleAnalytics />
       </body>
     </html>
   );
