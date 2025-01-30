@@ -36,6 +36,7 @@ import { ErrorText } from "@/components/ErrorText";
 import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
 import { OtherItems } from "./OtherItems";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const defaultValue = {
   productId: "",
@@ -53,12 +54,18 @@ export const ProductDetails = ({ product }: Props) => {
   const router = useRouter();
   const addItem = useCart((state) => state.addItem);
   const { setItems } = useCheckout();
+  const { trackProductView, trackAddToCart } = useAnalytics();
   const [errors, setErrors] = useState<IOptionsErrors>({});
   const [selectedProductOptions, setSelectedProductOptions] =
     useLocalStorage<SelectedProductOptions>({
       key: "fmt_dp_selected_product_options",
       defaultValue,
     });
+
+  useEffect(() => {
+    // Track product view when component mounts
+    trackProductView(product.id, product.title);
+  }, [product.id, product.title, trackProductView]);
 
   const handleBuyOrAddItemToCart = (actionType: "buy" | "cart") => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
@@ -88,6 +95,8 @@ export const ProductDetails = ({ product }: Props) => {
     }
 
     addItem(item);
+    // Track add to cart event
+    trackAddToCart(product.id, product.title, product.price);
     toast.success("Item added to cart");
   };
 

@@ -1,7 +1,7 @@
 "use client";
 import { NoItemsFound } from "@/components/NoItemsFound";
 import { ICustomOrder } from "@/types/order";
-import { Box, Button, Title } from "@mantine/core";
+import { Box, Button, Container, Title } from "@mantine/core";
 import { IconPackage } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ export const CustomRequests = ({ requests = [] }: Props) => {
     };
   }, []);
   return (
-    <>
+    <Container size="lg">
       <Title order={3} c="dimmed" mb="md">
         Custom Requests
       </Title>
@@ -63,6 +63,6 @@ export const CustomRequests = ({ requests = [] }: Props) => {
           <RequestsCard requests={newRequests} />
         </Box>
       )}
-    </>
+    </Container>
   );
 };

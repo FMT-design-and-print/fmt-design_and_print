@@ -13,14 +13,15 @@ export const OrderItem = ({ item }: Props) => {
         <Avatar size="lg" src={item.image} radius="xs" />
 
         <div>
-          <Group gap={2} fz="xs" c="dimmed">
-            #{item.productNumber}
-            <CopyIcon value={item.productNumber || ""} />
-          </Group>
+          {item.productNumber && (
+            <Group gap={2} fz="xs" c="dimmed">
+              #{item.productNumber}
+              <CopyIcon value={item.productNumber || ""} />
+            </Group>
+          )}
           <Text fz="sm" fw={500} lineClamp={2} mb="xs">
             {item.title}
           </Text>
-
           <Group>
             <Group gap="5px">
               <Text fz="xs" c="dimmed">

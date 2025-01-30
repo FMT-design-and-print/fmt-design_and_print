@@ -1,6 +1,6 @@
 "use client";
 import { NoItemsFound } from "@/components/NoItemsFound";
-import { Title } from "@mantine/core";
+import { Container, Title } from "@mantine/core";
 import { IconTicket } from "@tabler/icons-react";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 export const Coupons = ({ coupons }: Props) => {
   return (
-    <>
+    <Container size="lg">
       <Title order={3} c="dimmed" mb="md">
         Coupons
       </Title>
@@ -21,6 +21,6 @@ export const Coupons = ({ coupons }: Props) => {
       ) : (
         <>{/* coupon list */}</>
       )}
-    </>
+    </Container>
   );
 };

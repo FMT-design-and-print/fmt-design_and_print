@@ -24,6 +24,7 @@ import { ReviewItems } from "./ReviewItems";
 import { sendMessage } from "@/functions/send-message";
 import { ConfirmOrder } from "@/components/PaymentDetails/ConfirmOrder";
 import { PaymentStatus } from "@/types/order";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -34,6 +35,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
   const router = useRouter();
   const cartItems = useCart((state) => state.items);
   const { setItems, details } = useCheckout((state) => state);
+  const { trackPurchase } = useAnalytics();
   const [emptyRequiredFields, setEmptyRequiredFields] = useState<string[]>([]);
   const { clearItemsFromCart } = useCart((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,9 +59,9 @@ export const Checkout = ({ shippingAddresses }: Props) => {
     ref: any,
     paymentStatus: PaymentStatus
   ) => {
+    setIsLoading(true);
     const supabase = createClient();
 
-    setIsLoading(true);
     const { error } = await supabase
       .from("orders")
       .insert([
@@ -89,6 +91,9 @@ export const Checkout = ({ shippingAddresses }: Props) => {
       setIsLoading(false);
       return;
     }
+
+    // Track successful purchase after order is saved
+    trackPurchase(ref.reference, total + shippingFee);
 
     // Send a message after successful order insertion
     try {

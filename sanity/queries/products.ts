@@ -3,6 +3,44 @@ import { groq } from "next-sanity";
 // "professionTags": tags[@->._type == "professionTags"]->.professionTagName,
 // "productTags": tags[@->._type == "productTags"]->.productTagName,
 
+export const allProductsQuery = groq`
+    *[_type == "printService"] | order(_createdAt desc) [0...24] {
+        "id": _id,
+        title,
+        "slug": slug.current,
+        "image": image.asset->url,
+        color->{
+            "id": _id,
+            title,
+            hex,
+            "image": image.asset->url
+        },
+        "colors": colors[]{
+            "id": _key,
+            "image": image.asset->url,
+            color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+            }, 
+        },
+        "sizes": sizes[]->.title,
+        price,
+        description,
+        category->{
+            "id": _id,
+            "slug": slug.current,
+            title,
+        },
+        type->{
+            "id": _id,
+            "slug": slug.current,
+            title,
+        }
+    }
+`;
+
 export const printProductsQuery = groq`
     *[_type == "printService" && category->slug.current == $slug ] {
         "id": _id,

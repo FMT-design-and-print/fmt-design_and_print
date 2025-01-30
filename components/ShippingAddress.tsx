@@ -135,7 +135,6 @@ export const ShippingAddress = ({
               setSearchValue(townData.name);
               update("town", townData);
 
-              console.log(townData);
               if (setDeliveryFee) {
                 const fee =
                   calculateDeliveryFeeFromDomeBranchByDistance(townData);

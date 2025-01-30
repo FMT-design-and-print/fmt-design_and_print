@@ -22,7 +22,11 @@ import { QuoteReceptionOptions } from "./QuoteReceptionOptions";
 
 const defaultEditorContent = "<p></p>";
 
-export const Form = () => {
+interface Props {
+  setScreen?: (screen: "request" | "success") => void;
+}
+
+export const Form = ({ setScreen }: Props) => {
   const sanitize = useSanitize();
   const editor = useCustomEditor(defaultEditorContent);
   const [quoteReceptionMedium, setQuoteReceptionMedium] =
@@ -114,6 +118,7 @@ export const Form = () => {
       setQuoteReceptionValue("");
       setErrors([]);
       editor?.commands.setContent(defaultEditorContent);
+      setScreen?.("success");
     } else {
       setErrors(fieldErrors);
     }

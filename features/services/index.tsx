@@ -6,19 +6,23 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { DesignServices } from "./DesignServices";
 import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
+import { AllProducts } from "./AllProducts";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
 const validServiceTypes = ["print", "design"];
 
 interface Props {
   printCategoriesWithProductTypes: GroupedPrintProductTypes;
 }
-export function AllServices({ printCategoriesWithProductTypes }: Props) {
+
+// Inner component with search params logic
+const ServicesContent = ({ printCategoriesWithProductTypes }: Props) => {
   const searchParams = useSearchParams();
   const serviceType = searchParams.get("st");
   const { push } = useRouter();
 
   return (
-    <Container size="xl">
+    <Container size="lg">
       <Flex
         p="xl"
         justify={{ base: "center", xs: "flex-start", lg: "center" }}
@@ -50,6 +54,7 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
           />
         )}
       </Flex>
+
       <Tabs
         variant="pills"
         color="gray"
@@ -64,7 +69,7 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
         onChange={(value) => {
           push(`/services?st=${value}`);
         }}
-        px="xl"
+        px="md"
       >
         <Tabs.List py="md">
           <Tabs.Tab value="print" px="xl" py="md">
@@ -88,6 +93,17 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
           </Tabs.Panel>
         )}
       </Tabs>
+
+      <AllProducts />
     </Container>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export function AllServices(props: Props) {
+  return (
+    <SearchParamsProvider>
+      <ServicesContent {...props} />
+    </SearchParamsProvider>
   );
 }

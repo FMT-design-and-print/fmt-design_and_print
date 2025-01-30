@@ -1,12 +1,12 @@
 "use client";
-import { Avatar, Card, Divider, Grid, Group, Text, em } from "@mantine/core";
+import { featureFlags } from "@/constants/feature-flags";
+import { Card, Divider, Grid, Group, Stack, Text, em } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { IconMap, IconPrinter, IconReceipt2 } from "@tabler/icons-react";
+import Image from "next/image";
+import Link from "next/link";
 import { CarouselCard } from "./CarouselCard";
 import { PrintCategories } from "./PrintCategories";
-import Image from "next/image";
-import { useMediaQuery } from "@mantine/hooks";
-import Link from "next/link";
-import { featureFlags } from "@/constants/feature-flags";
-import { IconPrinter, IconReceipt2 } from "@tabler/icons-react";
 
 export const Hero = () => {
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -26,9 +26,8 @@ export const Hero = () => {
         <Card withBorder h="100%">
           <Link href="/custom-request">
             <Group py="md" wrap="nowrap">
-              <Avatar alt="" size={25}>
-                <IconPrinter />
-              </Avatar>
+              <IconPrinter className="text-gray-500" size="1.4rem" />
+
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                 Request Custom Print
               </Text>
@@ -37,14 +36,33 @@ export const Hero = () => {
 
           <Link href="/quote-or-invoice-request">
             <Group py="md" wrap="nowrap">
-              <Avatar alt="" size={25}>
-                <IconReceipt2 />
-              </Avatar>
+              <IconReceipt2 className="text-gray-500" size="1.4rem" />
+
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                 Request Quote/Invoice
               </Text>
             </Group>
           </Link>
+
+          <Link href="/order-tracking">
+            <Group py="md" wrap="nowrap">
+              <IconMap className="text-gray-500" size="1.4rem" />
+
+              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                Track my order
+              </Text>
+            </Group>
+          </Link>
+          <Group py="md" wrap="nowrap">
+            <IconMap className="text-gray-500" size="1.4rem" />
+
+            <Stack gap={0}>
+              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                Call to order
+              </Text>
+              <Text size="xs">0559617959</Text>
+            </Stack>
+          </Group>
 
           {featureFlags.gifts && (
             <>

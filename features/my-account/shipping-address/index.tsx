@@ -2,7 +2,7 @@
 
 import { NoItemsFound } from "@/components/NoItemsFound";
 import { IShippingAddress } from "@/types";
-import { Button, Stack, Title } from "@mantine/core";
+import { Button, Container, Stack, Title } from "@mantine/core";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { AddressCard } from "./AddressCard";
 import { NewAddress } from "./NewAddress";
@@ -15,7 +15,7 @@ interface Props {
 
 export const ShippingAddresses = ({ addresses }: Props) => {
   return (
-    <>
+    <Container size="lg">
       <Title order={3} c="dimmed" mb="md">
         My Shipping Addresses
       </Title>
@@ -44,6 +44,6 @@ export const ShippingAddresses = ({ addresses }: Props) => {
       <Element name="new-shipping-address">
         <NewAddress numberOfAddresses={addresses.length} />
       </Element>
-    </>
+    </Container>
   );
 };

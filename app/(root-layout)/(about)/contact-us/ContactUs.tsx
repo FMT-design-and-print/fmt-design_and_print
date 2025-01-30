@@ -1,3 +1,4 @@
+"use client";
 import { SocialMediaLinks } from "@/components/SocialMediaLinks";
 import {
   Button,
@@ -7,11 +8,73 @@ import {
   TextInput,
   Textarea,
   Title,
+  LoadingOverlay,
 } from "@mantine/core";
 import { ContactIconsList } from "./ContactIcons";
 import classes from "./ContactUs.module.css";
+import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { useState } from "react";
+
+interface FormValues {
+  email: string;
+  name: string;
+  message: string;
+}
 
 export function ContactUs() {
+  const [isLoading, setIsLoading] = useState(false);
+  const form = useForm<FormValues>({
+    initialValues: {
+      email: "",
+      name: "",
+      message: "",
+    },
+    validate: {
+      email: (value: string) =>
+        /^\S+@\S+$/.test(value) ? null : "Invalid email",
+      message: (value: string) =>
+        value.length < 10 ? "Message is too short" : null,
+    },
+  });
+
+  const handleSubmit = async (values: FormValues) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      notifications.show({
+        title: "Success",
+        message:
+          "Your message has been sent successfully. We'll get back to you within 24 hours.",
+        color: "green",
+      });
+
+      form.reset();
+    } catch (error) {
+      console.error("Error sending message:", error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to send message. Please try again later.",
+        color: "red",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={classes.wrapper}>
       <SimpleGrid
@@ -32,32 +95,50 @@ export function ContactUs() {
             <SocialMediaLinks />
           </Group>
         </div>
-        <div className={classes.form}>
+
+        <form className={classes.form} onSubmit={form.onSubmit(handleSubmit)}>
+          <LoadingOverlay
+            visible={isLoading}
+            zIndex={1000}
+            overlayProps={{ radius: "sm", blur: 2 }}
+          />
           <TextInput
             label="Email"
             placeholder="your@email.com"
             required
             classNames={{ input: classes.input, label: classes.inputLabel }}
+            {...form.getInputProps("email")}
+            disabled={isLoading}
           />
           <TextInput
             label="Name"
             placeholder="John Doe"
             mt="md"
             classNames={{ input: classes.input, label: classes.inputLabel }}
+            {...form.getInputProps("name")}
+            disabled={isLoading}
           />
           <Textarea
             required
             label="Your message"
             placeholder="I want to order your goods"
-            minRows={4}
+            minRows={8}
             mt="md"
             classNames={{ input: classes.input, label: classes.inputLabel }}
+            {...form.getInputProps("message")}
+            disabled={isLoading}
           />
 
           <Group justify="flex-end" mt="md">
-            <Button className={classes.control}>Send message</Button>
+            <Button
+              className={classes.control}
+              type="submit"
+              loading={isLoading}
+            >
+              Send message
+            </Button>
           </Group>
-        </div>
+        </form>
       </SimpleGrid>
     </div>
   );

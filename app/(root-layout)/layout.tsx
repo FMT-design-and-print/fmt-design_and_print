@@ -8,6 +8,8 @@ import { ToastContainer } from "react-toastify";
 import AppBootstrap from "../bootstrap";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CookieConsent } from "@/components/CookieConsent";
+import GoogleAnalytics from "@/components/providers/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,10 +28,12 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
+            <CookieConsent />
           </AppBootstrap>
         </Providers>
         <SessionProvider />
         <ToastContainer />
+        <GoogleAnalytics />
       </body>
     </html>
   );

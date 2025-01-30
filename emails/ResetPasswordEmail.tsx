@@ -30,8 +30,8 @@ const ResetPasswordEmail = ({ verificationCode = "678567" }: Props) => (
         />
         <Heading as="h4">Reset Password</Heading>
         <Text style={paragraph}>
-          You recently requested to reset your password for your FMT account.
-          Use the code below to reset your password:
+          You&apos;ve requested to reset your password for your FMT account. Use
+          the code below to confirm your email and reset your password:
         </Text>
 
         <Section style={verificationSection}>
