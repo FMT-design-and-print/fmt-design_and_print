@@ -11,6 +11,7 @@ interface UpdateProgress {
   totalProducts: number;
   processedProducts: number;
   percentage: number;
+  skippedProducts: number;
 }
 
 interface PriceUpdateOptions {
@@ -30,6 +31,7 @@ interface UpdateSummary {
   priceValue: number;
   categoryName?: string;
   productTypeName?: string;
+  skippedProducts: number;
 }
 
 interface SanityDocument {
@@ -43,13 +45,15 @@ export const usePriceUpdate = () => {
     totalProducts: 0,
     processedProducts: 0,
     percentage: 0,
+    skippedProducts: 0,
   });
   const [isUpdating, setIsUpdating] = useState(false);
 
   const processBatch = async (
     batch: string[],
     options: PriceUpdateOptions,
-    updateSummary: UpdateSummary
+    updateSummary: UpdateSummary,
+    startIndex: number
   ) => {
     const { client, updateType, priceValue } = options;
 
@@ -64,15 +68,21 @@ export const usePriceUpdate = () => {
         if (!doc) return null;
 
         const oldPrice = doc.price || 0;
-        updateSummary.oldPrices[doc.title] = oldPrice;
-
         let newPrice;
+
         if (updateType === "percentage") {
           newPrice = Math.round(oldPrice * (1 + priceValue / 100) * 100) / 100;
         } else {
           newPrice = priceValue;
         }
 
+        // Skip if the price is already the same
+        if (Math.abs(oldPrice - newPrice) < 0.01) {
+          updateSummary.skippedProducts++;
+          return null;
+        }
+
+        updateSummary.oldPrices[doc.title] = oldPrice;
         updateSummary.newPrices[doc.title] = newPrice;
 
         return {
@@ -83,11 +93,28 @@ export const usePriceUpdate = () => {
       .filter(Boolean);
 
     // Create and execute a transaction for this batch
-    const transaction = updates.map((update) =>
-      client.patch(update!.id).set({ price: update!.price })
-    );
+    if (updates.length > 0) {
+      const transaction = updates.map((update) =>
+        client.patch(update!.id).set({ price: update!.price })
+      );
+      await Promise.all(transaction.map((tx) => tx.commit()));
+    }
 
-    await Promise.all(transaction.map((tx) => tx.commit()));
+    // Update progress notification with current numbers
+    notifications.update({
+      id: "price-update-progress",
+      title: "Updating Prices",
+      message: `Processing ${startIndex + 1} to ${Math.min(
+        startIndex + BATCH_SIZE,
+        progress.totalProducts
+      )} of ${progress.totalProducts} products...${
+        updateSummary.skippedProducts > 0
+          ? `\n(${updateSummary.skippedProducts} products skipped - already at target price)`
+          : ""
+      }`,
+      loading: true,
+      autoClose: false,
+    });
   };
 
   const mutation = useMutation<UpdateSummary, Error, PriceUpdateOptions>({
@@ -113,6 +140,7 @@ export const usePriceUpdate = () => {
         priceValue,
         categoryName,
         productTypeName,
+        skippedProducts: 0,
       };
 
       // Initialize progress
@@ -120,25 +148,13 @@ export const usePriceUpdate = () => {
         totalProducts: products.length,
         processedProducts: 0,
         percentage: 0,
+        skippedProducts: 0,
       });
 
       // Process in batches
       for (let i = 0; i < products.length; i += BATCH_SIZE) {
         const batch = products.slice(i, i + BATCH_SIZE);
-
-        // Show progress notification
-        notifications.show({
-          id: "price-update-progress",
-          title: "Updating Prices",
-          message: `Processing ${i + 1} to ${Math.min(
-            i + BATCH_SIZE,
-            products.length
-          )} of ${products.length} products...`,
-          loading: true,
-          autoClose: false,
-        });
-
-        await processBatch(batch, options, updateSummary);
+        await processBatch(batch, options, updateSummary, i);
 
         // Update progress
         const processedProducts = Math.min(i + BATCH_SIZE, products.length);
@@ -149,6 +165,7 @@ export const usePriceUpdate = () => {
           totalProducts: products.length,
           processedProducts,
           percentage,
+          skippedProducts: updateSummary.skippedProducts,
         });
 
         // Add delay between batches
@@ -177,7 +194,11 @@ export const usePriceUpdate = () => {
       notifications.update({
         id: "price-update-progress",
         title: "Update Complete ✓",
-        message: "All products have been successfully updated!",
+        message: `All products have been successfully updated!\n${
+          summary.skippedProducts > 0
+            ? `(${summary.skippedProducts} products skipped - already at target price)`
+            : ""
+        }`,
         loading: false,
         color: "green",
         autoClose: 4000,
@@ -187,10 +208,13 @@ export const usePriceUpdate = () => {
       setTimeout(() => {
         const message = [
           `✓ Successfully updated ${totalUpdated} products`,
-          summary.categoryName
-            ? ` in ${summary.categoryName} (${summary.productTypeName})`
+          summary.skippedProducts > 0
+            ? `\n(${summary.skippedProducts} products skipped - already at target price)`
             : "",
-          ` with ${
+          summary.categoryName
+            ? `\nin ${summary.categoryName} (${summary.productTypeName})`
+            : "",
+          `\nwith ${
             summary.updateType === "fixed"
               ? `fixed price of GH₵${summary.priceValue}`
               : `${summary.priceValue}% change`

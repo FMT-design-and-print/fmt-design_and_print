@@ -73,6 +73,6 @@ export const keywords = [
 ];
 
 export const bannerImage =
-  "https://res.cloudinary.com/dnbmynikp/image/upload/v1738253221/FMT/fmt-preview-banner_1_vtawbm.png";
+  "https://res.cloudinary.com/dnbmynikp/image/upload/v1738272353/fmt-preview-banner1_rko7sw.png";
 
 export const baseUrl = "https://fmtdesignprint.com";
