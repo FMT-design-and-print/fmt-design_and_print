@@ -15,6 +15,7 @@ import {
   IconUserCog,
   IconUserShield,
   IconUsersGroup,
+  IconAdjustments,
 } from "@tabler/icons-react";
 import { Dashboard } from "../Pages/Dashboard";
 import { Orders } from "../Pages/Orders";
@@ -29,6 +30,7 @@ import MessagesPage from "../Pages/Messages";
 import SalesExpenses from "../Pages/SalesExpenses";
 import { ReceiptsPage } from "../Pages/Receipts";
 import QuotesPage from "../Pages/quotes";
+import { SystemControl } from "../Pages/SystemControl";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -162,5 +164,13 @@ export const adminNavItems: IAdminNavItems[] = [
     isVisible: true,
     component: <MyAccount />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
+  },
+  {
+    value: "system-control",
+    label: "System Control",
+    icon: <IconAdjustments />,
+    isVisible: true,
+    component: <SystemControl />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
 ];

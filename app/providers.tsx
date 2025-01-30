@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NavigationProgress } from "@mantine/nprogress";
+import { Notifications } from "@mantine/notifications";
 import "@mantine/carousel/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -24,6 +25,7 @@ export const Providers = ({ children }: Props) => {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <MantineProvider defaultColorScheme="light">
+        <Notifications position="top-right" />
         <NavigationProgress />
         {children}
       </MantineProvider>

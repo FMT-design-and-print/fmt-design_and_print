@@ -11,6 +11,7 @@ import {
   Image,
   Text,
   Title,
+  Select,
 } from "@mantine/core";
 import { CartBtn } from "../CartBtn";
 import { Colors } from "../Colors";
@@ -32,6 +33,8 @@ import { useCart } from "@/store/cart";
 import { toast } from "react-toastify";
 import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
+import { featureFlags } from "@/constants/feature-flags";
+import { ItemRating } from "@/features/product-details/Rating";
 
 const defaultValue = {
   productId: "",
@@ -40,6 +43,7 @@ const defaultValue = {
   size: "",
   quantity: 1,
   note: "",
+  selectedProductType: "regular" as const,
 };
 
 interface Props {
@@ -55,6 +59,12 @@ export const ProductOptions = ({ product, actionType }: Props) => {
   const addItem = useCart((state) => state.addItem);
   const { setItems } = useCheckout();
 
+  const isTshirt = product.type.slug === "t-shirts";
+  const adjustedPrice =
+    isTshirt && selectedProductOptions.selectedProductType === "jersey"
+      ? product.price - 5
+      : product.price;
+
   const handleConfirm = () => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
@@ -66,13 +76,16 @@ export const ProductOptions = ({ product, actionType }: Props) => {
     const item: ICartItem = {
       id: product.id,
       title: product.title,
-      price: product.price,
+      price: adjustedPrice,
       quantity: selectedProductOptions.quantity,
       image: selectedProductOptions.image || "",
       timestamp: new Date(),
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
       note: selectedProductOptions.note,
+      selectedProductType: isTshirt
+        ? selectedProductOptions.selectedProductType
+        : undefined,
     };
 
     if (actionType === "cart") {
@@ -96,6 +109,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       size: "",
       quantity: 1,
       note: "",
+      selectedProductType: "regular" as const,
     });
   }, [product]);
 
@@ -138,6 +152,32 @@ export const ProductOptions = ({ product, actionType }: Props) => {
               </Title>
             )}
 
+            {featureFlags.productRatings && <ItemRating />}
+
+            {isTshirt && (
+              <>
+                <Select
+                  label="T-Shirt Type"
+                  value={
+                    selectedProductOptions.selectedProductType || "regular"
+                  }
+                  onChange={(value) =>
+                    setSelectedProductOptions((prev) => ({
+                      ...prev,
+                      selectedProductType:
+                        (value as "regular" | "jersey") || "regular",
+                    }))
+                  }
+                  data={[
+                    { value: "regular", label: "Regular T-Shirt" },
+                    { value: "jersey", label: "Jersey Shirt" },
+                  ]}
+                  mb="md"
+                />
+                <Divider />
+              </>
+            )}
+
             <Colors
               mainImage={product.image}
               mainColor={product.color}
@@ -171,13 +211,13 @@ export const ProductOptions = ({ product, actionType }: Props) => {
               <Box>
                 {selectedProductOptions.quantity > 1 && (
                   <Text size="xs" ta="right">
-                    {product.price} x {selectedProductOptions.quantity} =
+                    {adjustedPrice} x {selectedProductOptions.quantity} =
                   </Text>
                 )}
                 <Group align="flex-start" gap={1}>
                   <Text pt="5px">GHS</Text>
                   <Title>
-                    {product.price * selectedProductOptions.quantity}
+                    {adjustedPrice * selectedProductOptions.quantity}
                   </Title>
                 </Group>
               </Box>

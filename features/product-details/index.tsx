@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { CartBtn } from "@/components/CartBtn";
 import { getProductOptionsErrors } from "@/functions";
@@ -20,6 +21,7 @@ import {
   Image,
   Text,
   Title,
+  Select,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import Link from "next/link";
@@ -37,6 +39,7 @@ import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
 import { OtherItems } from "./OtherItems";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { featureFlags } from "@/constants/feature-flags";
 
 const defaultValue = {
   productId: "",
@@ -45,7 +48,8 @@ const defaultValue = {
   size: "",
   quantity: 1,
   note: "",
-};
+  selectedProductType: "regular",
+} as any;
 
 interface Props {
   product: IPrintProduct;
@@ -75,10 +79,16 @@ export const ProductDetails = ({ product }: Props) => {
 
     if (Object.keys(errors).length > 0) return false;
 
+    const isTshirt = product.type.slug === "t-shirts";
+    const adjustedPrice =
+      isTshirt && selectedProductOptions.selectedProductType === "jersey"
+        ? product.price - 5
+        : product.price;
+
     const item: ICartItem = {
       id: product.id,
       title: product.title,
-      price: product.price,
+      price: adjustedPrice,
       productNumber: product.productNumber,
       quantity: selectedProductOptions.quantity,
       image: selectedProductOptions.image || "",
@@ -86,6 +96,9 @@ export const ProductDetails = ({ product }: Props) => {
       color: selectedProductOptions.color,
       size: selectedProductOptions.size,
       note: selectedProductOptions.note,
+      selectedProductType: isTshirt
+        ? selectedProductOptions.selectedProductType
+        : product.type.slug || undefined,
     };
 
     if (actionType === "buy") {
@@ -109,10 +122,17 @@ export const ProductDetails = ({ product }: Props) => {
         size: "",
         quantity: 1,
         note: "",
+        selectedProductType: "regular" as const,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product]);
+
+  const isTshirt = product.type.slug === "t-shirts";
+  const adjustedPrice =
+    isTshirt && selectedProductOptions.selectedProductType === "jersey"
+      ? product.price - 5
+      : product.price;
 
   return (
     <Box px="xl" py="lg">
@@ -146,7 +166,30 @@ export const ProductDetails = ({ product }: Props) => {
               #{product.productNumber}
             </Title>
           )}
-          <ItemRating />
+          {featureFlags.productRatings && <ItemRating />}
+
+          {isTshirt && (
+            <>
+              <Select
+                label="T-Shirt Type"
+                value={selectedProductOptions.selectedProductType || "regular"}
+                onChange={(value) =>
+                  setSelectedProductOptions((prev) => ({
+                    ...prev,
+                    selectedProductType:
+                      (value as "regular" | "jersey") || "regular",
+                  }))
+                }
+                data={[
+                  { value: "regular", label: "Regular T-Shirt" },
+                  { value: "jersey", label: "Jersey Shirt" },
+                ]}
+                mb="md"
+              />
+              <Divider />
+            </>
+          )}
+
           <Colors
             mainImage={product.image}
             mainColor={product.color}
@@ -180,12 +223,12 @@ export const ProductDetails = ({ product }: Props) => {
             <Box>
               {selectedProductOptions.quantity > 1 && (
                 <Text size="xs" ta="right">
-                  {product.price} x {selectedProductOptions.quantity} =
+                  {adjustedPrice} x {selectedProductOptions.quantity} =
                 </Text>
               )}
               <Group align="flex-start" gap={1}>
                 <Text pt="5px">GHS</Text>
-                <Title>{product.price * selectedProductOptions.quantity}</Title>
+                <Title>{adjustedPrice * selectedProductOptions.quantity}</Title>
               </Group>
             </Box>
           </Flex>
