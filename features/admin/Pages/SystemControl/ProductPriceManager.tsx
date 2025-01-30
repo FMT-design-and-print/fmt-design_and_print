@@ -351,6 +351,7 @@ export function ProductPriceManager() {
               (updateScope === "selected" && selectedProducts.length === 0)
             }
             loading={isUpdating}
+            className="btn"
           >
             Update Prices
           </Button>

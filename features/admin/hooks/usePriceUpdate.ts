@@ -173,24 +173,41 @@ export const usePriceUpdate = () => {
         })
         .join("\n");
 
-      const message = [
-        `Updated ${totalUpdated} products`,
-        summary.categoryName
-          ? ` in ${summary.categoryName} (${summary.productTypeName})`
-          : "",
-        ` with ${summary.updateType === "fixed" ? `fixed price of GH₵${summary.priceValue}` : `${summary.priceValue}% change`}`,
-        "\n\nSample changes:",
-        priceChangeExamples,
-        hasMoreProducts ? `\n...and ${totalUpdated - 3} more` : "",
-      ].join("");
-
-      notifications.show({
+      // First, update the progress notification to show completion
+      notifications.update({
         id: "price-update-progress",
-        title: "Prices Updated Successfully",
-        message,
+        title: "Update Complete ✓",
+        message: "All products have been successfully updated!",
+        loading: false,
         color: "green",
-        autoClose: 8000,
+        autoClose: 4000,
       });
+
+      // Then, show the detailed summary notification
+      setTimeout(() => {
+        const message = [
+          `✓ Successfully updated ${totalUpdated} products`,
+          summary.categoryName
+            ? ` in ${summary.categoryName} (${summary.productTypeName})`
+            : "",
+          ` with ${
+            summary.updateType === "fixed"
+              ? `fixed price of GH₵${summary.priceValue}`
+              : `${summary.priceValue}% change`
+          }`,
+          "\n\nSample changes:",
+          priceChangeExamples,
+          hasMoreProducts ? `\n...and ${totalUpdated - 3} more` : "",
+        ].join("");
+
+        notifications.show({
+          id: "price-update-summary",
+          title: "Price Update Summary ✓",
+          message,
+          color: "green",
+          autoClose: false,
+        });
+      }, 4000);
     },
     onError: (error: Error) => {
       setIsUpdating(false);
