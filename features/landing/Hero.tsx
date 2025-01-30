@@ -1,6 +1,6 @@
 "use client";
 import { featureFlags } from "@/constants/feature-flags";
-import { Card, Divider, Grid, Group, Text, em } from "@mantine/core";
+import { Card, Divider, Grid, Group, Stack, Text, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconMap, IconPrinter, IconReceipt2 } from "@tabler/icons-react";
 import Image from "next/image";
@@ -53,6 +53,16 @@ export const Hero = () => {
               </Text>
             </Group>
           </Link>
+          <Group py="md" wrap="nowrap">
+            <IconMap className="text-gray-500" size="1.4rem" />
+
+            <Stack gap={0}>
+              <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
+                Call to order
+              </Text>
+              <Text size="xs">0559617959</Text>
+            </Stack>
+          </Group>
 
           {featureFlags.gifts && (
             <>
