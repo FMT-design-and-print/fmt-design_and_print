@@ -8,4 +8,8 @@
   top: var(--mantine-spacing-xs);
   right: rem(8px);
   color: var(--primary-400);
+
+  &:hover {
+    color: var(--primary-500);
+  }
 }

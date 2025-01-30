@@ -10,23 +10,38 @@ import { shimmer, toBase64 } from "@/functions/shimmer";
 interface Props {
   product: IPrintProduct;
   link: string;
+  size?: "default" | "small" | "large";
 }
-export function ProductCard({ product, link = "" }: Props) {
+export function ProductCard({ product, link = "", size = "default" }: Props) {
   return (
-    <Card withBorder radius="md" className={classes.card} w="250px" mb="sm">
-      <Card.Section px="md" pt="sm" h="200px" style={{ overflowY: "hidden" }}>
+    <Card
+      withBorder
+      radius="md"
+      className={classes.card}
+      w={size === "small" ? "160px" : "250px"}
+      mb={size === "small" ? "xs" : "sm"}
+    >
+      <Card.Section
+        px={size === "small" ? "xs" : "md"}
+        pt={size === "small" ? "5px" : "sm"}
+        h={size === "small" ? "100px" : "200px"}
+        style={{ overflowY: "hidden" }}
+      >
         <Link href={link}>
           <Image
             src={product.image}
             alt={product.title}
-            width={250}
-            height={200}
-            objectPosition="top"
+            width={size === "small" ? 150 : 250}
+            height={size === "small" ? 100 : 200}
+            // objectPosition="top
             placeholder={`data:image/svg+xml;base64,${toBase64(
-              shimmer(250, 200)
+              shimmer(
+                size === "small" ? 150 : 250,
+                size === "small" ? 100 : 200
+              )
             )}`}
             style={{
-              width: "85%",
+              width: size === "small" ? "100%" : "85%",
               height: "auto",
               margin: "auto",
             }}
@@ -41,18 +56,29 @@ export function ProductCard({ product, link = "" }: Props) {
         price={product.price}
       />
 
-      <Text component={Link} href={link} mt="md" mb="sm" lineClamp={1}>
+      <Text
+        component={Link}
+        href={link}
+        mt="sm"
+        mb={size === "small" ? 0 : "sm"}
+        lineClamp={size === "small" ? 2 : 1}
+        size={size === "small" ? "xs" : "sm"}
+      >
         {product.title}
       </Text>
 
-      <Group justify="space-between" mt="md">
+      <Group justify="space-between" mt={size === "small" ? "5px" : "md"}>
         <Box>
-          <Text fw="bold">GHS {product.price}</Text>
+          <Text fw="bold" size={size === "small" ? "sm" : "md"}>
+            GHS {product.price}
+          </Text>
         </Box>
-        <Center>
-          <ProductOptions product={product} actionType="cart" />
-          <ProductOptions product={product} actionType="buy" />
-        </Center>
+        {size !== "small" && (
+          <Center>
+            <ProductOptions product={product} actionType="cart" />
+            <ProductOptions product={product} actionType="buy" />
+          </Center>
+        )}
       </Group>
     </Card>
   );
