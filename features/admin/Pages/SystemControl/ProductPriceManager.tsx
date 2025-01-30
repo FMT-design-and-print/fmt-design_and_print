@@ -12,13 +12,14 @@ import {
   MultiSelect,
   NumberInput,
   TextInput,
+  Progress,
   Loader,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { client, writableClient } from "@/sanity/lib/client";
 import { IconPercentage, IconSearch } from "@tabler/icons-react";
 import debounce from "lodash/debounce";
+import { usePriceUpdate } from "../../hooks/usePriceUpdate";
 
 type PriceUpdateType = "fixed" | "percentage";
 type UpdateScope = "category" | "selected";
@@ -47,15 +48,6 @@ interface Category {
   productTypes: ProductType[];
 }
 
-interface UpdateSummary {
-  totalProducts: number;
-  oldPrices: { [key: string]: number };
-  newPrices: { [key: string]: number };
-  updateType: PriceUpdateType;
-  categoryName?: string;
-  productTypeName?: string;
-}
-
 export function ProductPriceManager() {
   const [updateType, setUpdateType] = useState<PriceUpdateType>("fixed");
   const [updateScope, setUpdateScope] = useState<UpdateScope>("category");
@@ -66,6 +58,12 @@ export function ProductPriceManager() {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [priceValue, setPriceValue] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { updatePrices, progress, isUpdating } = usePriceUpdate() || {
+    updatePrices: undefined,
+    progress: { totalProducts: 0, processedProducts: 0, percentage: 0 },
+    isUpdating: false,
+  };
 
   const handleNumberInputChange = (value: string | number | undefined) => {
     if (typeof value === "undefined") {
@@ -151,141 +149,40 @@ export function ProductPriceManager() {
     },
   });
 
-  // Update prices mutation
-  const updatePricesMutation = useMutation({
-    mutationFn: async () => {
-      let productsToUpdate: string[] = [];
-      const updateSummary: UpdateSummary = {
-        totalProducts: 0,
-        oldPrices: {},
-        newPrices: {},
-        updateType,
-      };
+  const handlePriceUpdate = async () => {
+    let productsToUpdate: string[] = [];
+    let categoryName: string | undefined;
+    let productTypeName: string | undefined;
 
-      if (
-        updateScope === "category" &&
-        selectedCategory &&
-        selectedProductType
-      ) {
-        const query = `*[_type == "printService" && references("${selectedCategory}") && references("${selectedProductType}")]{
-          "id": _id,
-          title,
-          price,
-          category->{
-            title
-          },
-          type->{
-            title
-          }
-        }`;
-        const products = await client.fetch(query);
-        productsToUpdate = products.map((p: { id: string }) => p.id);
-        updateSummary.categoryName = products[0]?.category?.title;
-        updateSummary.productTypeName = products[0]?.type?.title;
-      } else if (updateScope === "selected") {
-        productsToUpdate = selectedProducts;
-      }
+    if (updateScope === "category" && selectedCategory && selectedProductType) {
+      const query = `*[_type == "printService" && references("${selectedCategory}") && references("${selectedProductType}")]{
+        "id": _id,
+        title,
+        price,
+        category->{
+          title
+        },
+        type->{
+          title
+        }
+      }`;
+      const products = await client.fetch(query);
+      productsToUpdate = products.map((p: { id: string }) => p.id);
+      categoryName = products[0]?.category?.title;
+      productTypeName = products[0]?.type?.title;
+    } else if (updateScope === "selected") {
+      productsToUpdate = selectedProducts;
+    }
 
-      if (productsToUpdate.length === 0) {
-        throw new Error("No products selected for update");
-      }
-
-      updateSummary.totalProducts = productsToUpdate.length;
-
-      // For percentage updates, we need to fetch current prices first
-      if (updateType === "percentage") {
-        const currentPrices = await Promise.all(
-          productsToUpdate.map(async (id) => {
-            const doc = await writableClient.getDocument(id);
-            if (!doc) {
-              throw new Error(`Product with ID ${id} not found`);
-            }
-            updateSummary.oldPrices[doc.title] = doc.price || 0;
-            const newPrice = (doc.price || 0) * (1 + priceValue / 100);
-            updateSummary.newPrices[doc.title] =
-              Math.round(newPrice * 100) / 100;
-            return {
-              id,
-              currentPrice: doc.price || 0,
-            };
-          })
-        );
-
-        // Update each product with calculated price
-        await Promise.all(
-          currentPrices.map(({ id, currentPrice }) => {
-            const newPrice = currentPrice * (1 + priceValue / 100);
-            return writableClient
-              .patch(id)
-              .set({ price: Math.round(newPrice * 100) / 100 })
-              .commit();
-          })
-        );
-      } else {
-        // For fixed price updates
-        await Promise.all(
-          productsToUpdate.map(async (id) => {
-            const doc = await writableClient.getDocument(id);
-            if (!doc) {
-              throw new Error(`Product with ID ${id} not found`);
-            }
-            updateSummary.oldPrices[doc.title] = doc.price || 0;
-            updateSummary.newPrices[doc.title] = priceValue;
-            return writableClient.patch(id).set({ price: priceValue }).commit();
-          })
-        );
-      }
-
-      return updateSummary;
-    },
-    onSuccess: (summary) => {
-      const sampleProducts = Object.keys(summary.oldPrices).slice(0, 3);
-      const hasMoreProducts = Object.keys(summary.oldPrices).length > 3;
-
-      const priceChangeExamples = sampleProducts
-        .map((title) => {
-          const oldPrice = summary.oldPrices[title];
-          const newPrice = summary.newPrices[title];
-          return `${title}: GH₵${oldPrice} → GH₵${newPrice}`;
-        })
-        .join("\n");
-
-      notifications.show({
-        title: "Prices Updated Successfully",
-        message: (
-          <>
-            <Text>
-              Updated {summary.totalProducts} products{" "}
-              {summary.categoryName
-                ? `in ${summary.categoryName} (${summary.productTypeName})`
-                : ""}{" "}
-              with{" "}
-              {summary.updateType === "fixed"
-                ? `fixed price of GH₵${priceValue}`
-                : `${priceValue}% change`}
-            </Text>
-            <Text size="sm" mt="xs">
-              Sample changes:
-            </Text>
-            <Text size="sm" component="pre" mt={5}>
-              {priceChangeExamples}
-              {hasMoreProducts && "\n...and more"}
-            </Text>
-          </>
-        ),
-        color: "green",
-        autoClose: 8000,
-      });
-    },
-    onError: (error) => {
-      console.error("Error updating prices:", error);
-      notifications.show({
-        title: "Error",
-        message: "Failed to update prices",
-        color: "red",
-      });
-    },
-  });
+    updatePrices({
+      products: productsToUpdate,
+      updateType,
+      priceValue,
+      categoryName,
+      productTypeName,
+      client: writableClient,
+    });
+  };
 
   // Debounced search handler
   const debouncedSearch = debounce((value: string) => {
@@ -401,22 +298,26 @@ export function ProductPriceManager() {
                 w={200}
               />
             )}
-
-            <Button
-              onClick={() => updatePricesMutation.mutate()}
-              loading={updatePricesMutation.isPending}
-              disabled={
-                priceValue === 0 ||
-                (updateScope === "category" &&
-                  (!selectedCategory || !selectedProductType)) ||
-                (updateScope === "selected" && selectedProducts.length === 0)
-              }
-              className="btn"
-            >
-              Update Prices
-            </Button>
           </Group>
         </Stack>
+
+        {isUpdating && (
+          <Stack gap="xs">
+            <Text size="sm" fw={500}>
+              Updating {progress.processedProducts} of {progress.totalProducts}{" "}
+              products
+            </Text>
+            <Progress
+              value={progress.percentage}
+              size="xl"
+              radius="xl"
+              striped
+              animated
+            >
+              {`${progress.percentage}%`}
+            </Progress>
+          </Stack>
+        )}
 
         {/* Preview Section - Only for selected products */}
         {updateScope === "selected" &&
@@ -439,6 +340,21 @@ export function ProductPriceManager() {
               ))}
             </Stack>
           )}
+
+        <Group justify="flex-end">
+          <Button
+            onClick={handlePriceUpdate}
+            disabled={
+              isUpdating ||
+              (updateScope === "category" &&
+                (!selectedCategory || !selectedProductType)) ||
+              (updateScope === "selected" && selectedProducts.length === 0)
+            }
+            loading={isUpdating}
+          >
+            Update Prices
+          </Button>
+        </Group>
       </Stack>
     </Paper>
   );
