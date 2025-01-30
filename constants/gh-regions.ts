@@ -26,7 +26,7 @@ export const baseShippingFeeByRegion: { [key: number]: number } = {
   4: 0, // Brong Ahafo
   5: 0, // Central
   6: 0, // Eastern
-  7: 30, // Greater Accra
+  7: 0, // Greater Accra
   8: 0, // North East
   9: 0, // Northern
   10: 0, // Oti
