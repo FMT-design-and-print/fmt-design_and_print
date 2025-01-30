@@ -16,7 +16,7 @@ export const SearchSection = () => {
       <Grid.Col span="auto">
         <SearchWithButton />
       </Grid.Col>
-      <Grid.Col span="content" visibleFrom="sm">
+      <Grid.Col span="content" visibleFrom="md">
         <CartAndSavedItemsButtons />
       </Grid.Col>
     </Grid>

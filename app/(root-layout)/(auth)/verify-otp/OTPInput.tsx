@@ -6,8 +6,10 @@ import { Alert, Box, Button, Center, PinInput, Text } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
-export const OTPInput = () => {
+// Inner component with search params logic
+const OTPInputContent = () => {
   const router = useRouter();
   const { setSession, setUser } = useSession();
   const [email, setEmail] = useState("");
@@ -125,5 +127,14 @@ export const OTPInput = () => {
         </Alert>
       )}
     </Box>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export const OTPInput = () => {
+  return (
+    <SearchParamsProvider>
+      <OTPInputContent />
+    </SearchParamsProvider>
   );
 };

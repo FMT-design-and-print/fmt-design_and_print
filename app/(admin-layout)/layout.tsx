@@ -8,6 +8,7 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import { Providers } from "../providers";
 import AppBootstrap from "../bootstrap";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
             <AdminHeader />
             {children}
             <Footer />
+            <CookieConsent />
           </AppBootstrap>
         </Providers>
         <SessionProvider />

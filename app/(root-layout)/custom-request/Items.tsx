@@ -18,8 +18,10 @@ import { IProductType } from "@/types";
 import { useEffect, useState } from "react";
 import { useUrlSearchParams } from "@/hooks/useUpdateURLSearchParams";
 import { useSearchParams } from "next/navigation";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
-export const CustomRequestItems = () => {
+// Separate component that uses useSearchParams
+const CustomRequestItemsContent = () => {
   const { productTypes, isLoading } = useProductTypes();
   const searchParams = useSearchParams();
   const searchText = searchParams.get("search");
@@ -116,5 +118,14 @@ export const CustomRequestItems = () => {
         </Text>
       </Group>
     </>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export const CustomRequestItems = () => {
+  return (
+    <SearchParamsProvider>
+      <CustomRequestItemsContent />
+    </SearchParamsProvider>
   );
 };

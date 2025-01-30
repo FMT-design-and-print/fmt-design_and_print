@@ -16,6 +16,8 @@ import { HiSearch } from "react-icons/hi";
 import { CategoriesResults } from "./CategoriesResults";
 import { ProductTypesResults } from "./ProductTypesResults";
 import { ProductsResults } from "./ProductsResults";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
 interface ISearchResults {
   printService: SearchItem[];
@@ -31,10 +33,12 @@ const initialSearchRes: ISearchResults = {
   pages: [],
 };
 
-export const SearchWithButton = (props: TextInputProps) => {
+// Component that uses search params
+const SearchWithButtonContent = (props: TextInputProps) => {
   const [opened, { close, open }] = useDisclosure(false);
   const [dropdown, setDropdown] = useState<HTMLDivElement | null>(null);
   const [control, setControl] = useState<HTMLInputElement | null>(null);
+  const { trackSearch } = useAnalytics();
   useClickOutside(() => close(), null, [control, dropdown]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] =
@@ -49,12 +53,13 @@ export const SearchWithButton = (props: TextInputProps) => {
         searchText: `*${searchTerm}*`,
       });
       setSearchResults(res);
+      trackSearch(searchTerm);
     } catch (error) {
       console.error("Error fetching search results:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [searchTerm, setSearchResults, setIsLoading]);
+  }, [searchTerm, setSearchResults, setIsLoading, trackSearch]);
 
   const noItemAvailable = Object.entries(searchResults).every(
     ([, value]) => value.length === 0
@@ -69,7 +74,6 @@ export const SearchWithButton = (props: TextInputProps) => {
       }
     }, 1000);
 
-    // Cleanup function to clear the timeout
     return () => clearTimeout(timeout);
   }, [search, searchTerm]);
 
@@ -111,5 +115,14 @@ export const SearchWithButton = (props: TextInputProps) => {
         )}
       </Popover.Dropdown>
     </Popover>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export const SearchWithButton = (props: TextInputProps) => {
+  return (
+    <SearchParamsProvider>
+      <SearchWithButtonContent {...props} />
+    </SearchParamsProvider>
   );
 };

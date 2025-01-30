@@ -35,7 +35,7 @@ export const NewAddress = ({ numberOfAddresses }: Props) => {
   };
 
   const addAddressToDB = async () => {
-    const { isValid } = verifyAddressDetails(newAddress);
+    const { isValid } = verifyAddressDetails(newAddress, "delivery");
     if (!isValid) {
       toast.error("Please fill in all required fields");
       return;

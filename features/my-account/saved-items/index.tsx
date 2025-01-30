@@ -1,14 +1,15 @@
 "use client";
 import { NoItemsFound } from "@/components/NoItemsFound";
-import { Title } from "@mantine/core";
+import { Container, Title } from "@mantine/core";
 import { FiInbox } from "react-icons/fi";
 
 interface Props {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   savedItems: any[];
 }
 export const SavedItems = ({ savedItems }: Props) => {
   return (
-    <>
+    <Container size="lg">
       <Title order={3} c="dimmed" mb="md">
         Saved Items
       </Title>
@@ -22,6 +23,6 @@ export const SavedItems = ({ savedItems }: Props) => {
       ) : (
         <>{/* saved items */}</>
       )}
-    </>
+    </Container>
   );
 };

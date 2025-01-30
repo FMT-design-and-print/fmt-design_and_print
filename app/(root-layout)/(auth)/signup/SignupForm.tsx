@@ -15,9 +15,7 @@ type SignUpData = z.infer<typeof SignUpDataSchema>;
 const errorStatus = "messageStatus=error";
 
 export const SignupForm = () => {
-  // const searchParams = useSearchParams();
   const router = useRouter();
-  // const redirectPath = searchParams.get("redirect");
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,

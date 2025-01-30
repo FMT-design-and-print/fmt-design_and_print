@@ -1,6 +1,6 @@
+import { MessageEmail } from "@/emails/MessageEmail";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import MessageEmail from "@/emails/MessageEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

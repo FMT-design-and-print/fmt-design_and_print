@@ -47,20 +47,23 @@ export function Header() {
               {featureFlags.design && <DesignServicesDropDown />}
             </Group>
 
-            <Box flex={1}>
+            <Box flex={1} visibleFrom="md">
               <SearchSection />
             </Box>
 
             <MobileNav />
 
             <Group align="center" wrap="nowrap">
-              <Box hiddenFrom="sm">
+              <Box hiddenFrom="md">
                 <CartAndSavedItemsButtons />
               </Box>
               <ProfileMenu />
             </Group>
           </Flex>
         </Flex>
+      </Box>
+      <Box p={4} hiddenFrom="md">
+        <SearchSection />
       </Box>
     </>
   );

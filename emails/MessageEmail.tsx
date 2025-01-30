@@ -1,14 +1,14 @@
 import {
+  Html,
+  Head,
   Body,
   Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Preview,
   Section,
   Text,
+  Preview,
+  Heading,
+  Hr,
+  Img,
 } from "@react-email/components";
 import { Tailwind } from "@react-email/tailwind";
 
@@ -17,7 +17,7 @@ interface MessageEmailProps {
   content: string;
 }
 
-export default function MessageEmail({ subject, content }: MessageEmailProps) {
+export function MessageEmail({ subject, content }: MessageEmailProps) {
   return (
     <Html>
       <Head />
@@ -26,7 +26,7 @@ export default function MessageEmail({ subject, content }: MessageEmailProps) {
         <Body className="bg-white">
           <Container className="mx-auto py-5 px-4">
             <Img
-              src={`https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png`}
+              src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703546097/FMT/fmt-logo__znsjjh.png"
               width="70"
               height="45"
               alt="FMT"

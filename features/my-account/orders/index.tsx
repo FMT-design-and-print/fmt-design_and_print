@@ -1,7 +1,7 @@
 "use client";
 import { NoItemsFound } from "@/components/NoItemsFound";
 import { IOrder } from "@/types/order";
-import { Box, Button, Title } from "@mantine/core";
+import { Box, Button, Container, Title } from "@mantine/core";
 import { IconPackage } from "@tabler/icons-react";
 import Link from "next/link";
 import { OrdersCard } from "./OrdersCard";
@@ -42,7 +42,7 @@ export const Orders = ({ orders }: Props) => {
     };
   }, []);
   return (
-    <>
+    <Container size="lg">
       <Title order={3} c="dimmed" mb="md">
         Orders
       </Title>
@@ -61,6 +61,6 @@ export const Orders = ({ orders }: Props) => {
           <OrdersCard orders={newOrders} />
         </Box>
       )}
-    </>
+    </Container>
   );
 };
