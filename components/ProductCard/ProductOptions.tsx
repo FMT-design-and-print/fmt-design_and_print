@@ -59,7 +59,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
   const addItem = useCart((state) => state.addItem);
   const { setItems } = useCheckout();
 
-  const isTshirt = product.type.slug === "t-shirts";
+  const isTshirt = product.type?.slug === "t-shirts";
   const adjustedPrice =
     isTshirt && selectedProductOptions.selectedProductType === "jersey"
       ? product.price - 5
