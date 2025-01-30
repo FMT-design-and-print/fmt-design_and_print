@@ -5,8 +5,10 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { pageview } from "@/lib/analytics/gtag";
 import { GA_MEASUREMENT_ID } from "@/lib/analytics/gtag";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
-export default function GoogleAnalytics() {
+// Inner component with search params logic
+const GoogleAnalyticsContent = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -41,5 +43,14 @@ export default function GoogleAnalytics() {
         }}
       />
     </>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export default function GoogleAnalytics() {
+  return (
+    <SearchParamsProvider>
+      <GoogleAnalyticsContent />
+    </SearchParamsProvider>
   );
 }

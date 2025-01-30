@@ -7,6 +7,7 @@ import { DesignServices } from "./DesignServices";
 import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
 import { AllProducts } from "./AllProducts";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
 const validServiceTypes = ["print", "design"];
 
@@ -14,7 +15,8 @@ interface Props {
   printCategoriesWithProductTypes: GroupedPrintProductTypes;
 }
 
-export function AllServices({ printCategoriesWithProductTypes }: Props) {
+// Inner component with search params logic
+const ServicesContent = ({ printCategoriesWithProductTypes }: Props) => {
   const searchParams = useSearchParams();
   const serviceType = searchParams.get("st");
   const { push } = useRouter();
@@ -94,5 +96,14 @@ export function AllServices({ printCategoriesWithProductTypes }: Props) {
 
       <AllProducts />
     </Container>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export function AllServices(props: Props) {
+  return (
+    <SearchParamsProvider>
+      <ServicesContent {...props} />
+    </SearchParamsProvider>
   );
 }

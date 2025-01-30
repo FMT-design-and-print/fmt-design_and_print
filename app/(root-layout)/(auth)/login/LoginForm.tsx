@@ -11,12 +11,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PrimaryButton } from "@/components/PrimaryButton";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
 type LoginData = z.infer<typeof LoginDataSchema>;
 
 const errorStatus = "messageStatus=error";
 
-export const LoginForm = () => {
+// Inner component with search params logic
+const LoginFormContent = () => {
   const searchParams = useSearchParams();
   const { setSession, setUser } = useSession((state) => state);
   const router = useRouter();
@@ -126,5 +128,14 @@ export const LoginForm = () => {
         </form>
       )}
     </>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export const LoginForm = () => {
+  return (
+    <SearchParamsProvider>
+      <LoginFormContent />
+    </SearchParamsProvider>
   );
 };

@@ -4,8 +4,10 @@ import { createClient } from "@/utils/supabase/client";
 import { Button } from "@mantine/core";
 import { redirect, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
-export const GoogleAuthButton = () => {
+// Inner component with search params logic
+const GoogleAuthButtonContent = () => {
   const params = useSearchParams();
   const origin = useOrigin();
   const next = params.get("redirect");
@@ -42,5 +44,14 @@ export const GoogleAuthButton = () => {
     >
       Google
     </Button>
+  );
+};
+
+// Wrapper component with Suspense boundary
+export const GoogleAuthButton = () => {
+  return (
+    <SearchParamsProvider>
+      <GoogleAuthButtonContent />
+    </SearchParamsProvider>
   );
 };
