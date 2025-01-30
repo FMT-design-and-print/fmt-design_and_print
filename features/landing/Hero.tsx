@@ -2,7 +2,12 @@
 import { featureFlags } from "@/constants/feature-flags";
 import { Card, Divider, Grid, Group, Stack, Text, em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconMap, IconPrinter, IconReceipt2 } from "@tabler/icons-react";
+import {
+  IconMap,
+  IconPhone,
+  IconPrinter,
+  IconReceipt2,
+} from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { CarouselCard } from "./CarouselCard";
@@ -54,7 +59,7 @@ export const Hero = () => {
             </Group>
           </Link>
           <Group py="md" wrap="nowrap">
-            <IconMap className="text-gray-500" size="1.4rem" />
+            <IconPhone className="text-gray-500" size="1.4rem" />
 
             <Stack gap={0}>
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>

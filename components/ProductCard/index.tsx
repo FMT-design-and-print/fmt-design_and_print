@@ -24,7 +24,7 @@ export function ProductCard({ product, link = "", size = "default" }: Props) {
       <Card.Section
         px={size === "small" ? "xs" : "md"}
         pt={size === "small" ? "5px" : "sm"}
-        h={size === "small" ? "100px" : "200px"}
+        h={size === "small" ? "130px" : "200px"}
         style={{ overflowY: "hidden" }}
       >
         <Link href={link}>
@@ -32,12 +32,12 @@ export function ProductCard({ product, link = "", size = "default" }: Props) {
             src={product.image}
             alt={product.title}
             width={size === "small" ? 150 : 250}
-            height={size === "small" ? 100 : 200}
+            height={size === "small" ? 130 : 200}
             // objectPosition="top
             placeholder={`data:image/svg+xml;base64,${toBase64(
               shimmer(
                 size === "small" ? 150 : 250,
-                size === "small" ? 100 : 200
+                size === "small" ? 130 : 200
               )
             )}`}
             style={{
