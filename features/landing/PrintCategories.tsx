@@ -42,7 +42,7 @@ export const PrintCategories = () => {
       {categories &&
         categories
           .filter((item) => item.slug !== "others")
-          .map((item, i) => (
+          .map((item) => (
             <HeroLink
               key={item.id}
               item={item}
