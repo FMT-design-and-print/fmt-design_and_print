@@ -283,6 +283,7 @@ export const QuotePayment = ({
             deliveryType={deliveryType}
             onSuccess={handleOnPaymentSuccess}
             setEmptyRequiredFields={setEmptyRequiredFields}
+            paymentType={paymentType}
           />
         )}
       </Flex>

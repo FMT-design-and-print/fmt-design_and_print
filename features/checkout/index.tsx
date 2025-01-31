@@ -223,6 +223,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
                 deliveryType={details.deliveryType}
                 onSuccess={(ref: any) => handleOnPaymentSuccess(ref, "paid")}
                 setEmptyRequiredFields={setEmptyRequiredFields}
+                paymentType={details.paymentType}
               />
             )}
           </Group>
