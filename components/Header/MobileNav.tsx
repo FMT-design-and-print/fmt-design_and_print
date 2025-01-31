@@ -22,7 +22,14 @@ import { CategoryCard } from "./CategoryCard";
 import { TopBar } from "./TopBar";
 import { featureFlags } from "@/constants/feature-flags";
 import classes from "./Style.module.css";
-import { IconGift, IconPrinter, IconTag } from "@tabler/icons-react";
+import {
+  IconGift,
+  IconMap,
+  IconPhone,
+  IconPrinter,
+  IconReceipt2,
+  IconTag,
+} from "@tabler/icons-react";
 
 export const MobileNav = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -77,22 +84,54 @@ export const MobileNav = () => {
                   link={`/custom-request`}
                 />
               </Box>
+
               <Box onClick={closeDrawer} py="4" className={classes.link}>
                 <CategoryCard
-                  title="Plain Items "
-                  icon={<IconTag />}
-                  tagline="Buy plain items and souvenirs"
-                  link={`/plain-items`}
+                  title="Request Quote/Invoice"
+                  icon={<IconReceipt2 />}
+                  tagline="Send a request and we will create a quote or invoice for you"
+                  link={`/quote-or-invoice-request`}
                 />
               </Box>
+
               <Box onClick={closeDrawer} py="4" className={classes.link}>
                 <CategoryCard
-                  title="Gifts and Packages"
-                  icon={<IconGift />}
-                  tagline="Check out our gifts and promo packages"
-                  link={`/gifts-and-packages`}
+                  title="Track my order"
+                  icon={<IconMap />}
+                  tagline="Track the status or your order"
+                  link={`/order-tracking`}
                 />
               </Box>
+
+              <Box onClick={closeDrawer} py="4" className={classes.link}>
+                <CategoryCard
+                  title="Call to order"
+                  icon={<IconPhone />}
+                  tagline="You can also call.Whatsapp us on (0559617959) to place an order manually"
+                  link={`/order-tracking`}
+                />
+              </Box>
+
+              {featureFlags.plainItems && (
+                <Box onClick={closeDrawer} py="4" className={classes.link}>
+                  <CategoryCard
+                    title="Plain Items "
+                    icon={<IconTag />}
+                    tagline="Buy plain items and souvenirs"
+                    link={`/plain-items`}
+                  />
+                </Box>
+              )}
+              {featureFlags.gifts && (
+                <Box onClick={closeDrawer} py="4" className={classes.link}>
+                  <CategoryCard
+                    title="Gifts and Packages"
+                    icon={<IconGift />}
+                    tagline="Check out our gifts and promo packages"
+                    link={`/gifts-and-packages`}
+                  />
+                </Box>
+              )}
             </Stack>
 
             <Accordion defaultValue="printing-services">

@@ -19,9 +19,16 @@ const CartAndSavedItemsButtons = dynamic(
   }
 );
 
+const excludedPathnamesForSearchOnMobile = ["/order-success"];
+
 export function Header() {
   useUserType();
   const pathname = usePathname();
+
+  // Check if the current pathname is excluded
+  const isExcludedPathForSearchOnMobile =
+    excludedPathnamesForSearchOnMobile.includes(pathname) ||
+    pathname.startsWith("/order-tracking");
 
   if (pathname.includes("/admin")) {
     return null;
@@ -62,9 +69,11 @@ export function Header() {
           </Flex>
         </Flex>
       </Box>
-      <Box p={4} hiddenFrom="md">
-        <SearchSection />
-      </Box>
+      {!isExcludedPathForSearchOnMobile && (
+        <Box p={4} hiddenFrom="md">
+          <SearchSection />
+        </Box>
+      )}
     </>
   );
 }

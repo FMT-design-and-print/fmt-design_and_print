@@ -1,3 +1,5 @@
+import { SearchParamsProvider } from "@/components/SearchParamsProvider";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { client } from "@/sanity/lib/client";
 import { searchQuery } from "@/sanity/queries/global-search";
 import { SearchItem } from "@/types";
@@ -16,8 +18,6 @@ import { HiSearch } from "react-icons/hi";
 import { CategoriesResults } from "./CategoriesResults";
 import { ProductTypesResults } from "./ProductTypesResults";
 import { ProductsResults } from "./ProductsResults";
-import { useAnalytics } from "@/hooks/useAnalytics";
-import { SearchParamsProvider } from "@/components/SearchParamsProvider";
 
 interface ISearchResults {
   printService: SearchItem[];
@@ -84,7 +84,7 @@ const SearchWithButtonContent = (props: TextInputProps) => {
           ref={setControl}
           radius="xl"
           size="sm"
-          placeholder="Start typing to search..."
+          placeholder="Start typing to search products..."
           rightSectionWidth={isMobile ? "50px" : "78px"}
           leftSection={<HiSearch />}
           value={searchTerm}

@@ -1,5 +1,5 @@
 import { ICategory } from "@/types";
-import { Group, Text } from "@mantine/core";
+import { Avatar, Group, Text } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,8 +11,10 @@ interface HeroLinkProps {
 
 export const HeroLink = ({ item, link, isMobile }: HeroLinkProps) => (
   <Link href={link}>
-    <Group py="md" wrap="nowrap">
-      <Image src={item.icon} alt={item.tagline} width={25} height={25} />
+    <Group py="xs" wrap="nowrap">
+      <Avatar className="border border-1">
+        <Image src={item.icon} alt={item.tagline} width={20} height={20} />
+      </Avatar>
       <Text
         lineClamp={1}
         c="gray.7"
