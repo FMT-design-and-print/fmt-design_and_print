@@ -40,7 +40,10 @@ export const Checkout = ({ shippingAddresses }: Props) => {
   const { clearItemsFromCart } = useCart((state) => state);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const shippingFee = baseShippingFeeByRegion[details.region?.id || 7] || 0;
+  const shippingFee =
+    details.deliveryFee ||
+    baseShippingFeeByRegion[details.region?.id || 7] ||
+    0;
   const subTotal = calculateTotalPrice(details.items);
   const total = subTotal + shippingFee - (details.discount || 0);
 
@@ -69,7 +72,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           user_id: user?.id,
           orderId: ref.reference,
           items: details.items as any[],
-          totalAmount: total + shippingFee,
+          totalAmount: total,
           status: "placed",
           deliveryType: details.deliveryType,
           paymentType: details.paymentType,
@@ -107,7 +110,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
           email: user?.email,
           phone: user?.phone,
           amount: total,
-          totalPayment: total + shippingFee,
+          totalPayment: total,
           items: details.items,
         },
       });
@@ -223,6 +226,7 @@ export const Checkout = ({ shippingAddresses }: Props) => {
                 deliveryType={details.deliveryType}
                 onSuccess={(ref: any) => handleOnPaymentSuccess(ref, "paid")}
                 setEmptyRequiredFields={setEmptyRequiredFields}
+                paymentType={details.paymentType}
               />
             )}
           </Group>
