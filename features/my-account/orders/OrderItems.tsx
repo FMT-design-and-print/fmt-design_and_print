@@ -1,6 +1,8 @@
+"use client";
 import { IOrderItem } from "@/types/order";
 import { Button, Drawer, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useUser } from "@/hooks/useUser";
 import { OrderItem } from "./OrderItem";
 
 interface Props {
@@ -8,8 +10,10 @@ interface Props {
   items: IOrderItem[];
   btnLabel?: string;
 }
+
 export const OrderItems = ({ orderId, items, btnLabel }: Props) => {
   const [opened, { open, close }] = useDisclosure(false);
+  const { user } = useUser();
 
   return (
     <>
@@ -24,7 +28,7 @@ export const OrderItems = ({ orderId, items, btnLabel }: Props) => {
           Items
         </Title>
         {items.map((item) => (
-          <OrderItem key={item.id} item={item} />
+          <OrderItem key={item.id} item={item} user={user ?? null} />
         ))}
       </Drawer>
 

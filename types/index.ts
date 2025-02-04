@@ -226,3 +226,30 @@ export interface IWebsiteSettings {
   adminSectionUnderConstruction: boolean;
   adminSectionUnderMaintenance: boolean;
 }
+
+export type RatingUpdateType = "original" | "update";
+
+export interface IRating {
+  id: string;
+  product_id: string;
+  user_id: string;
+  rating: number;
+  comment?: string;
+  created_at: string;
+  updated_at?: string;
+  update_type: RatingUpdateType;
+  update_comment?: string;
+  update_date?: string;
+}
+
+export interface IRatingStats {
+  averageRating: number;
+  totalRatings: number;
+  ratingDistribution: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
+}

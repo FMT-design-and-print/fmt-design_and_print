@@ -34,7 +34,7 @@ import { toast } from "react-toastify";
 import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
 import { featureFlags } from "@/constants/feature-flags";
-import { ItemRating } from "@/features/product-details/Rating";
+import { RatingStars } from "@/features/ratings/RatingStars";
 
 const defaultValue = {
   productId: "",
@@ -147,12 +147,15 @@ export const ProductOptions = ({ product, actionType }: Props) => {
           <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md">
             <Title order={3}>{product.title}</Title>
             {product.productNumber && product.productNumber != null && (
-              <Title order={4} my="md" c="dimmed">
-                #{product.productNumber}
-              </Title>
+              <Group>
+                <Text>Item Number: </Text>
+                <Title order={4} my="md" c="dimmed">
+                  #{product.productNumber}
+                </Title>
+              </Group>
             )}
 
-            {featureFlags.productRatings && <ItemRating />}
+            {featureFlags.productRatings && <RatingStars />}
 
             {isTshirt && (
               <>

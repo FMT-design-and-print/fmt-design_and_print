@@ -7,6 +7,9 @@ import { client } from "@/sanity/lib/client";
 import { singleProductQuery } from "@/sanity/queries";
 import { IPrintProduct } from "@/types";
 import { Metadata } from "next";
+import { ProductRating } from "@/features/ratings/ProductRating";
+import { ProductReviews } from "@/features/ratings/ProductReviews";
+import { createClient } from "@/utils/supabase/server";
 
 export const revalidate = 0;
 
@@ -33,6 +36,10 @@ export async function generateMetadata({
 const ProductDetailsPage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
   const { id } = await params;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const product: IPrintProduct = await client.fetch(singleProductQuery, {
     id,
@@ -59,6 +66,10 @@ const ProductDetailsPage = async ({ params }: { params: Params }) => {
     <>
       <BreadcrumbRenderer items={items} />
       <ProductDetails product={product} />
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <ProductRating productId={id} user={user} />
+        <ProductReviews productId={id} user={user} />
+      </div>
     </>
   );
 };
