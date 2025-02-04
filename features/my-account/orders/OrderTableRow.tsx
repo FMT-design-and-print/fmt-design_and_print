@@ -46,7 +46,11 @@ export const OrderTableRow = ({ order }: Props) => {
         </Group>
       </Table.Td>
       <Table.Td>
-        <OrderItems orderId={order.orderId} items={order.items} />
+        <OrderItems
+          orderId={order.id}
+          orderNumber={order.orderId}
+          items={order.items}
+        />
       </Table.Td>
     </Table.Tr>
   );

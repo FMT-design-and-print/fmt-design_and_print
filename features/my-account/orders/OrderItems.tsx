@@ -7,11 +7,17 @@ import { OrderItem } from "./OrderItem";
 
 interface Props {
   orderId: string;
+  orderNumber: string;
   items: IOrderItem[];
   btnLabel?: string;
 }
 
-export const OrderItems = ({ orderId, items, btnLabel }: Props) => {
+export const OrderItems = ({
+  orderId,
+  orderNumber,
+  items,
+  btnLabel,
+}: Props) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { user } = useUser();
 
@@ -22,13 +28,18 @@ export const OrderItems = ({ orderId, items, btnLabel }: Props) => {
         size="lg"
         opened={opened}
         onClose={close}
-        title={<Title order={4}> ORDER: {orderId}</Title>}
+        title={<Title order={4}> ORDER: {orderNumber}</Title>}
       >
         <Title order={5} mb="sm">
           Items
         </Title>
         {items.map((item) => (
-          <OrderItem key={item.id} item={item} user={user ?? null} />
+          <OrderItem
+            key={item.id}
+            item={item}
+            user={user ?? null}
+            orderId={orderId}
+          />
         ))}
       </Drawer>
 
