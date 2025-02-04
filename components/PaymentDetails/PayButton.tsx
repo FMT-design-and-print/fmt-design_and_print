@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { getOrderId, verifyAddressDetails } from "@/functions";
-import { IShippingAddress } from "@/types";
+import { IShippingAddress, PaymentType } from "@/types";
 import { DeliveryType } from "@/types/order";
 import { Button, Text } from "@mantine/core";
 import { Dispatch, SetStateAction } from "react";
@@ -21,6 +21,7 @@ interface IProps {
   deliveryType: DeliveryType;
   setEmptyRequiredFields?: Dispatch<SetStateAction<string[]>>;
   onSuccess?: (ref: any) => void;
+  paymentType?: PaymentType;
 }
 
 export const PayButton = ({
@@ -30,6 +31,7 @@ export const PayButton = ({
   deliveryType,
   onSuccess,
   setEmptyRequiredFields,
+  paymentType,
 }: IProps) => {
   const initializePayment = usePaystackPayment(config);
 
@@ -72,6 +74,12 @@ export const PayButton = ({
         reference: orderNumber || getOrderId(),
         firstname: shippingAddress.contactName.split(" ")[0] || "",
         lastname: shippingAddress.contactName.split(" ")[1] || "",
+        channels:
+          paymentType === "momo"
+            ? ["mobile_money"]
+            : paymentType === "card"
+              ? ["card"]
+              : ["mobile_money", "card"],
       },
       onSuccess: (reference) => handleOnSuccess(reference),
       onClose: () => handleOnClose(),

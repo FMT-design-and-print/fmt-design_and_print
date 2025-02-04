@@ -10,7 +10,7 @@ export const featureFlags = {
   recentlyViewed: false,
   recentlySearched: false,
   inbox: false,
-  productRatings: false,
+  productRatings: true,
 };
 
 export type FeatureFlagKeys = keyof typeof featureFlags;

@@ -28,7 +28,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Gallery } from "./Gallery";
 import { ProductDescription } from "./ProductDescription";
-import { ItemRating } from "./Rating";
 import { toast } from "react-toastify";
 import { Colors } from "@/components/Colors";
 import { Sizes } from "@/components/Sizes";
@@ -40,6 +39,8 @@ import { useRouter } from "next/navigation";
 import { OtherItems } from "./OtherItems";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { featureFlags } from "@/constants/feature-flags";
+import { RatingStars } from "../ratings/RatingStars";
+import { CopyIcon } from "@/components/CopyIcon";
 
 const defaultValue = {
   productId: "",
@@ -162,11 +163,22 @@ export const ProductDetails = ({ product }: Props) => {
         <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md">
           <Title order={3}>{product.title}</Title>
           {product.productNumber && product.productNumber != null && (
-            <Title order={4} my="md" c="dimmed">
-              #{product.productNumber}
-            </Title>
+            <Group>
+              <Text>Item no: </Text>
+              <Flex align="center">
+                <Title order={4} my="md" c="dimmed">
+                  #{product.productNumber}
+                </Title>
+                <CopyIcon value={product.productNumber} />
+              </Flex>
+            </Group>
           )}
-          {featureFlags.productRatings && <ItemRating />}
+
+          {featureFlags.productRatings && (
+            <Box mb="md">
+              <RatingStars productId={product.id} size="sm" />
+            </Box>
+          )}
 
           {isTshirt && (
             <>
