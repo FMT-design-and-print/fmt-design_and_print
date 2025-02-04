@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/client";
 import { IRating, ICartItem } from "@/types";
 import { notifications } from "@mantine/notifications";
 import { IUserDetails } from "@/types/user";
+import { ratingEvents } from "../utils/ratingEvents";
 
 interface UseRatingProps {
   productId: string;
@@ -139,6 +140,10 @@ export const useRating = ({
         message: "Rating submitted successfully!",
         color: "green",
       });
+
+      // Emit event before fetching new data
+      ratingEvents.emit(productId);
+
       fetchUserRating();
       onSuccess?.();
     } catch (error) {

@@ -57,7 +57,6 @@ export const RatingStars = ({
       <Rating
         size={size}
         value={value ?? averageRating}
-        fractions={2}
         readOnly={readOnly}
         color={color}
         onChange={onChange}

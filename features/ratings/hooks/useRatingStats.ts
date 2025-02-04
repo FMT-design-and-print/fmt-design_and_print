@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { IRatingStats } from "@/types";
+import { ratingEvents } from "../utils/ratingEvents";
 
 export const useRatingStats = (productId: string) => {
   const [ratingStats, setRatingStats] = useState<IRatingStats>({
@@ -19,6 +20,13 @@ export const useRatingStats = (productId: string) => {
 
   useEffect(() => {
     fetchRatingStats();
+
+    // Subscribe to rating updates
+    const unsubscribe = ratingEvents.subscribe(productId, fetchRatingStats);
+
+    return () => {
+      unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
@@ -56,5 +64,5 @@ export const useRatingStats = (productId: string) => {
     setLoading(false);
   };
 
-  return { ratingStats, loading };
+  return { ratingStats, loading, refetch: fetchRatingStats };
 };

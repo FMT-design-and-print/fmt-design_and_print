@@ -17,6 +17,7 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { RatingStars } from "./RatingStars";
+import { ratingEvents } from "./utils/ratingEvents";
 
 interface ProductReviewsProps {
   productId: string;
@@ -38,11 +39,17 @@ export const ProductReviews = ({ productId, user }: ProductReviewsProps) => {
 
   useEffect(() => {
     fetchReviews();
+
+    // Subscribe to rating updates
+    const unsubscribe = ratingEvents.subscribe(productId, fetchReviews);
+
+    return () => {
+      unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
   const fetchReviews = async () => {
-    console.log("Fetching reviews for product:", productId);
     const { data, error } = await supabase
       .from("ratings")
       .select(
@@ -57,8 +64,6 @@ export const ProductReviews = ({ productId, user }: ProductReviewsProps) => {
       )
       .eq("product_id", productId)
       .order("created_at", { ascending: false });
-
-    console.log("Reviews response:", { data, error });
 
     if (data && !error) {
       setReviews(data as unknown as ReviewWithUser[]);
@@ -123,7 +128,7 @@ export const ProductReviews = ({ productId, user }: ProductReviewsProps) => {
       <Stack gap="md">
         <ScrollArea.Autosize mah="800px" type="hover">
           {reviews.map((review) => (
-            <Card key={review.id} withBorder>
+            <Card key={review.id} withBorder my={16}>
               <Stack gap="md">
                 <Group>
                   <Avatar
