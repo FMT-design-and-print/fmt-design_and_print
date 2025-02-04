@@ -10,6 +10,7 @@ import {
   getOrderCompletedDate,
   getOrderStatusText,
 } from "@/functions";
+import { CURRENCY_SYMBOL } from "../admin/PriceCalculator/constants";
 
 interface Props {
   order: IOrder;
@@ -50,11 +51,11 @@ export const OrderStatus = ({ order }: Props) => {
               Total
             </Text>
             <Text size="xs" c="dimmed">
-              {order.totalAmount}
+              {CURRENCY_SYMBOL} {order.totalAmount}
             </Text>
           </Stack>
 
-          {order.deliveryDetails && (
+          {order.deliveryDetails && order.deliveryType === "delivery" && (
             <Stack align="center" gap={4}>
               <Text size="sm" fw={500}>
                 Ship to

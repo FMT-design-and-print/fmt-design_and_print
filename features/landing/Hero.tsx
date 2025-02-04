@@ -1,6 +1,15 @@
 "use client";
 import { featureFlags } from "@/constants/feature-flags";
-import { Card, Divider, Grid, Group, Stack, Text, em } from "@mantine/core";
+import {
+  Avatar,
+  Card,
+  Divider,
+  Grid,
+  Group,
+  Stack,
+  Text,
+  em,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   IconMap,
@@ -30,8 +39,10 @@ export const Hero = () => {
       <Grid.Col span={3} visibleFrom="md">
         <Card withBorder h="100%">
           <Link href="/custom-request">
-            <Group py="md" wrap="nowrap">
-              <IconPrinter className="text-gray-500" size="1.4rem" />
+            <Group py="xs" wrap="nowrap">
+              <Avatar className="border border-1">
+                <IconPrinter className="text-gray-500" size="1.4rem" />
+              </Avatar>
 
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                 Request Custom Print
@@ -40,8 +51,10 @@ export const Hero = () => {
           </Link>
 
           <Link href="/quote-or-invoice-request">
-            <Group py="md" wrap="nowrap">
-              <IconReceipt2 className="text-gray-500" size="1.4rem" />
+            <Group py="xs" wrap="nowrap">
+              <Avatar className="border border-1">
+                <IconReceipt2 className="text-gray-500" size="1.4rem" />
+              </Avatar>
 
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                 Request Quote/Invoice
@@ -50,16 +63,21 @@ export const Hero = () => {
           </Link>
 
           <Link href="/order-tracking">
-            <Group py="md" wrap="nowrap">
-              <IconMap className="text-gray-500" size="1.4rem" />
+            <Group py="xs" wrap="nowrap">
+              <Avatar className="border border-1">
+                <IconMap className="text-gray-500" size="1.4rem" />
+              </Avatar>
 
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                 Track my order
               </Text>
             </Group>
           </Link>
-          <Group py="md" wrap="nowrap">
-            <IconPhone className="text-gray-500" size="1.4rem" />
+
+          <Group py="xs" wrap="nowrap">
+            <Avatar className="border border-1">
+              <IconPhone className="text-gray-500" size="1.4rem" />
+            </Avatar>
 
             <Stack gap={0}>
               <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
@@ -74,7 +92,7 @@ export const Hero = () => {
               <Divider />
 
               <Link href="">
-                <Group py="md" wrap="nowrap">
+                <Group py="xs" wrap="nowrap">
                   <Image src="" alt="" width={25} height={25} />
                   <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                     Gift and Packages
@@ -86,7 +104,7 @@ export const Hero = () => {
 
           {featureFlags.plainItems && (
             <Link href="">
-              <Group py="md" wrap="nowrap">
+              <Group py="xs" wrap="nowrap">
                 <Image src="" alt="" width={25} height={25} />
                 <Text lineClamp={1} c="gray.7" size={isMobile ? "sm" : "md"}>
                   Buy Plain Items
