@@ -9,6 +9,7 @@ interface RatingModalProps {
   user: IUserDetails | null;
   opened: boolean;
   onClose: () => void;
+  orderId: string;
 }
 
 export const RatingModal = ({
@@ -16,6 +17,7 @@ export const RatingModal = ({
   user,
   opened,
   onClose,
+  orderId,
 }: RatingModalProps) => {
   const {
     userRating,
@@ -25,12 +27,14 @@ export const RatingModal = ({
     setComment,
     loading,
     isWithinThreeDays,
+    canRate,
     handleSubmit,
   } = useRating({
     productId,
     user,
     onSuccess: onClose,
     skipPurchaseCheck: true,
+    orderId,
   });
 
   if (loading) {
@@ -45,15 +49,19 @@ export const RatingModal = ({
       size="lg"
       centered
     >
-      <RatingForm
-        userRating={userRating}
-        newRating={newRating}
-        setNewRating={setNewRating}
-        comment={comment}
-        setComment={setComment}
-        isWithinThreeDays={isWithinThreeDays}
-        onSubmit={handleSubmit}
-      />
+      {canRate ? (
+        <RatingForm
+          userRating={userRating}
+          newRating={newRating}
+          setNewRating={setNewRating}
+          comment={comment}
+          setComment={setComment}
+          isWithinThreeDays={isWithinThreeDays}
+          onSubmit={handleSubmit}
+        />
+      ) : (
+        <Text c="dimmed">You can only rate products from paid orders.</Text>
+      )}
     </Modal>
   );
 };

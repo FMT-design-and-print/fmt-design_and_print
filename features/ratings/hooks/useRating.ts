@@ -10,6 +10,7 @@ interface UseRatingProps {
   user: IUserDetails | null;
   onSuccess?: () => void;
   skipPurchaseCheck?: boolean;
+  orderId?: string;
 }
 
 export const useRating = ({
@@ -17,6 +18,7 @@ export const useRating = ({
   user,
   onSuccess,
   skipPurchaseCheck = false,
+  orderId,
 }: UseRatingProps) => {
   const [userRating, setUserRating] = useState<IRating | null>(null);
   const [newRating, setNewRating] = useState(0);
@@ -33,14 +35,29 @@ export const useRating = ({
 
   useEffect(() => {
     if (user) {
-      if (!skipPurchaseCheck) {
+      if (skipPurchaseCheck && orderId) {
+        verifyOrderPayment();
+      } else if (!skipPurchaseCheck) {
         checkUserCanRate();
       }
       fetchUserRating();
     } else {
       setLoading(false);
     }
-  }, [user, productId, skipPurchaseCheck]);
+  }, [user, productId, skipPurchaseCheck, orderId]);
+
+  const verifyOrderPayment = async () => {
+    if (!user || !orderId) return;
+
+    const { data: order } = await supabase
+      .from("orders")
+      .select("paymentStatus")
+      .eq("id", orderId)
+      .single();
+
+    setCanRate(order?.paymentStatus === "paid");
+    setLoading(false);
+  };
 
   const checkUserCanRate = async () => {
     if (!user) return;

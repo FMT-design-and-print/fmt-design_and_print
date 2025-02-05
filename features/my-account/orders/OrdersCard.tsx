@@ -28,9 +28,10 @@ export const OrdersCard = ({ orders }: Props) => {
               {order.orderId}
             </Text>
             <OrderItems
-              orderId={order.id}
               items={order.items}
               btnLabel="View Items"
+              orderId={order.id}
+              orderNumber={order.orderId}
             />
           </Group>
 

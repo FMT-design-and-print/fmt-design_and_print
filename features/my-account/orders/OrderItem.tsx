@@ -9,9 +9,10 @@ import { IUserDetails } from "@/types/user";
 interface Props {
   item: IOrderItem;
   user: IUserDetails | null;
+  orderId: string;
 }
 
-export const OrderItem = ({ item, user }: Props) => {
+export const OrderItem = ({ item, user, orderId }: Props) => {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -74,14 +75,13 @@ export const OrderItem = ({ item, user }: Props) => {
         </Group>
       </Card>
 
-      {user && (
-        <RatingModal
-          productId={item.id}
-          user={user}
-          opened={opened}
-          onClose={close}
-        />
-      )}
+      <RatingModal
+        productId={item.id}
+        user={user}
+        opened={opened}
+        onClose={close}
+        orderId={orderId}
+      />
     </>
   );
 };
