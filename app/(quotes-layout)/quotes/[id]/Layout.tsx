@@ -49,7 +49,7 @@ export const Layout = ({ quote }: Props) => {
     return currentDate > dueDateObj;
   };
 
-  const totalAmountToPay =
+  const totalAmountDueNow =
     (calculateTotal(items.map((item) => item.totalAmount)) *
       (paymentPercentage ?? 100)) /
     100;
@@ -145,7 +145,7 @@ export const Layout = ({ quote }: Props) => {
         <QuotePayment
           quoteId={id}
           orderId={order_id}
-          subTotal={totalAmountToPay}
+          amountDueNow={totalAmountDueNow}
           clientName={clientName}
           contact={contact}
           email={email}
