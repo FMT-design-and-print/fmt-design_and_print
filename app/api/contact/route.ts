@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     // Send email notification
-    const { data: emailData, error: emailError } = await resend.emails.send({
+    const { error: emailError } = await resend.emails.send({
       from: "FMT Design & Print <noreply@fmtdesignprint.com>",
       to: RECIPIENT_EMAILS,
       replyTo: email,
@@ -69,8 +69,6 @@ export async function POST(request: Request) {
     if (emailError) {
       console.error("Email error:", emailError);
       // We don't return error here since the message was saved to Supabase
-    } else {
-      console.log("Email sent successfully:", emailData);
     }
 
     return Response.json(

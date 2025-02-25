@@ -12,8 +12,11 @@ import {
   Input,
   useCombobox,
   ScrollArea,
+  Text,
+  Anchor,
 } from "@mantine/core";
-import React, { useState, useMemo } from "react";
+import Link from "next/link";
+import React, { useState, useMemo, useEffect } from "react";
 
 interface Props {
   address: IShippingAddress;
@@ -35,6 +38,16 @@ export const ShippingAddress = ({
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
+
+  // Add useEffect to update searchValue when town changes
+  useEffect(() => {
+    if (town?.name) {
+      setSearchValue(town.name);
+      const fee = calculateDeliveryFeeFromDomeBranchByDistance(town);
+      setDeliveryFee(fee);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [town]);
 
   // Filter only visible regions
   const visibleRegions = regionsInGhana
@@ -106,7 +119,20 @@ export const ShippingAddress = ({
       {deliveryType === "delivery" && (
         <Select
           label="Region"
-          description="At the moment, we only deliver to Greater Accra. Make a custom request if you need us to deliver to your region."
+          description={
+            <Text size="xs" c="dimmed">
+              At the moment, we only deliver to Greater Accra.{" "}
+              <Anchor
+                component={Link}
+                href="/custom-request"
+                size="xs"
+                c="pink"
+              >
+                Make a custom request
+              </Anchor>{" "}
+              if you need us to deliver to your region.
+            </Text>
+          }
           placeholder="Select region"
           value={region?.id?.toString()}
           onChange={(value) => {
@@ -138,7 +164,6 @@ export const ShippingAddress = ({
               if (setDeliveryFee) {
                 const fee =
                   calculateDeliveryFeeFromDomeBranchByDistance(townData);
-                console.log(fee);
                 setDeliveryFee(fee);
               }
               combobox.closeDropdown();
