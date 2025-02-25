@@ -233,7 +233,7 @@ export const QuotePayment = ({
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} />
       <Title order={2} py="sm">
-        {orderDetails?.amountPaid ? "Complete Payment" : "Make Initial Payment"}
+        Make Payment
       </Title>
 
       {orderDetails?.amountPaid ? (
