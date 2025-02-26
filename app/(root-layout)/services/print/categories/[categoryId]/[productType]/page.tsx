@@ -1,4 +1,5 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
+import { bannerImage, fmtDescription } from "@/constants";
 import { ProductType } from "@/features/services/ProductType";
 import { formatString } from "@/functions";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
@@ -24,9 +25,21 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { productType } = await params;
+
+  const type = await client.fetch(
+    `*[_type == "productTypes" && slug.current == $slug][0]{
+      title,
+      tagline,
+      "image": image.asset->url
+    }`,
+    { slug: productType }
+  );
+
   return {
     ...generateMetaDetails(
-      formatString(productType) + " | FMT Design and Print "
+      (type.title || formatString(productType)) + " | FMT Design and Print",
+      type?.tagline || fmtDescription,
+      type?.image || bannerImage
     ),
   };
 }

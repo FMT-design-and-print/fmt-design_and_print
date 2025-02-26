@@ -7,6 +7,7 @@ import { client } from "@/sanity/lib/client";
 import { allProductsInCategoryByTagQuery } from "@/sanity/queries/products";
 import { IPrintProduct } from "@/types";
 import { Metadata } from "next";
+import { baseUrl } from "@/constants";
 
 type Params = Promise<{
   categoryId: string;
@@ -20,14 +21,19 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { categoryId, tag } = await params;
+  const decodedTag = decodeURIComponent(tag);
+  const title = `${decodedTag} ${categoryId} | FMT Design and Print`;
+  const ogImageUrl = new URL("/api/og", baseUrl);
+  ogImageUrl.searchParams.set("title", title);
+  ogImageUrl.searchParams.set("tag", decodedTag);
+  ogImageUrl.searchParams.set("type", categoryId);
+
   return {
-    ...generateMetaDetails(
-      `${decodeURIComponent(tag)} ${categoryId} | FMT Design and Print`
-    ),
+    ...generateMetaDetails(title, undefined, ogImageUrl.toString()),
   };
 }
 
-const CodingShirtsPage = async ({ params }: { params: Params }) => {
+const CategorySearchPage = async ({ params }: { params: Params }) => {
   await redirectAdminUser();
   const { categoryId, tag } = await params;
 
@@ -59,4 +65,4 @@ const CodingShirtsPage = async ({ params }: { params: Params }) => {
   );
 };
 
-export default CodingShirtsPage;
+export default CategorySearchPage;

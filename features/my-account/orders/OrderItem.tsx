@@ -5,6 +5,7 @@ import { Avatar, Card, Group, Text, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { RatingModal } from "@/features/ratings/RatingModal";
 import { IUserDetails } from "@/types/user";
+import { CURRENCY_SYMBOL } from "@/features/admin/PriceCalculator/constants";
 
 interface Props {
   item: IOrderItem;
@@ -63,7 +64,7 @@ export const OrderItem = ({ item, user, orderId }: Props) => {
                   Price:
                 </Text>
                 <Text fz="xs" fw={500}>
-                  GHS {item.price * item.quantity}
+                  {CURRENCY_SYMBOL} {item.price * item.quantity}
                 </Text>
               </Group>
             </Group>

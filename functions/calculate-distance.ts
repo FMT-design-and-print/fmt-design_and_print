@@ -50,13 +50,3 @@ export function calculateDistance(
     miles: Number(miles.toFixed(2)), // Two decimal places
   };
 }
-
-/**
- * Example usage:
- * const distance = calculateDistance(
- *   { lat: 5.55, long: -0.2 }, // Accra
- *   { lat: 5.6, long: -0.187 }  // Another location
- * );
- * console.log(distance);
- * // Output: { meters: 5823, kilometers: 5.82, miles: 3.62 }
- */

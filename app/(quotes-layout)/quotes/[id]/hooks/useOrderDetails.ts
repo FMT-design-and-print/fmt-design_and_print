@@ -17,7 +17,8 @@ interface UseOrderDetailsReturn {
   calculatePaymentStatus: (
     paymentAmount: number,
     quoteAmount: number,
-    paymentPercentage: number
+    paymentPercentage: number,
+    currentDeliveryFee: number
   ) => PaymentStatusResult;
 }
 
@@ -33,7 +34,9 @@ export function useOrderDetails(orderId: string): UseOrderDetailsReturn {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("custom-orders")
-        .select("id, totalAmount, amountPaid, status, estimatedFulfillmentDate")
+        .select(
+          "id, totalAmount, amountPaid, status, estimatedFulfillmentDate, deliveryFee, deliveryDetails"
+        )
         .eq("id", orderId)
         .single();
 
@@ -45,16 +48,30 @@ export function useOrderDetails(orderId: string): UseOrderDetailsReturn {
   const calculatePaymentStatus = (
     paymentAmount: number,
     quoteAmount: number,
-    paymentPercentage: number
+    paymentPercentage: number,
+    currentDeliveryFee: number
   ): PaymentStatusResult => {
-    const currentAmountPaid = orderDetails?.amountPaid || 0;
-    const totalPaidAfterPayment = currentAmountPaid + paymentAmount;
+    // For initial payment, we don't subtract delivery fee since it hasn't been paid yet
+    // For subsequent payments, we subtract the stored delivery fee
+    const currentAmountPaid = orderDetails?.amountPaid
+      ? orderDetails.amountPaid - (orderDetails.deliveryFee || 0)
+      : 0;
+
+    // For initial payment, we need to subtract the current delivery fee from the payment amount
+    // since it will be included in the payment
+    const paymentAmountForItems =
+      currentAmountPaid === 0
+        ? paymentAmount - currentDeliveryFee
+        : paymentAmount;
+
+    const totalPaidAfterPayment = currentAmountPaid + paymentAmountForItems;
     const expectedInitialPayment = (quoteAmount * paymentPercentage) / 100;
 
     // Check if this is the initial payment
     const isInitialPayment = currentAmountPaid === 0;
 
     // Calculate the percentage of total amount that will be paid after this payment
+    // Exclude delivery fee from the calculation
     const percentagePaidAfterPayment =
       (totalPaidAfterPayment / quoteAmount) * 100;
     const remainingPercentage = 100 - percentagePaidAfterPayment;
@@ -65,13 +82,14 @@ export function useOrderDetails(orderId: string): UseOrderDetailsReturn {
     let orderStatus: OrderStatus =
       (orderDetails?.status as OrderStatus) || "requested";
 
-    if (isInitialPayment && paymentAmount >= expectedInitialPayment) {
+    if (isInitialPayment && paymentAmountForItems >= expectedInitialPayment) {
       // If this is initial payment and meets the required percentage
       quoteStatus = "active";
-      paymentStatus = paymentAmount >= quoteAmount ? "paid" : "partly-paid";
+      paymentStatus =
+        paymentAmountForItems >= quoteAmount ? "paid" : "partly-paid";
       orderStatus = "placed";
     } else if (totalPaidAfterPayment >= quoteAmount) {
-      // If total paid equals or exceeds quote amount
+      // If total paid equals or exceeds quote amount (excluding delivery fee)
       quoteStatus = "paid";
       paymentStatus = "paid";
     } else if (totalPaidAfterPayment > 0) {

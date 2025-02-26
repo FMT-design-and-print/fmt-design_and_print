@@ -18,7 +18,7 @@ const MyAccountOrdersPage = async () => {
 
   const { data: orders } = await supabase
     .from("orders")
-    .select("id,created_at,orderId,items,totalAmount,status,deliveryDetails")
+    .select("*")
     .eq("user_id", user.id)
     .returns<Partial<IOrder[]>>();
 
