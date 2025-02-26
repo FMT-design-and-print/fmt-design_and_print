@@ -42,6 +42,7 @@ export async function generateMetadata({
     tag: decodedTag,
     type: categoryId,
     fallbackImage: products[0]?.image,
+    previewImages: products.map((product) => product.image),
   });
 
   const metadata = generateMetaDetails(title, fmtDescription, imageUrl);
