@@ -1,4 +1,5 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
+import { bannerImage, fmtDescription } from "@/constants";
 import PrintCategory from "@/features/services/PrintCategory";
 import { formatString } from "@/functions";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
@@ -21,9 +22,21 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { categoryId } = await params;
+
+  const category = await client.fetch(
+    `*[_type == "printCategories" && slug.current == $slug][0]{
+      title,
+      tagline,
+      "image": image.asset->url
+    }`,
+    { slug: categoryId }
+  );
+
   return {
     ...generateMetaDetails(
-      formatString(categoryId) + " | FMT Design and Print "
+      (category.title || formatString(categoryId)) + " | FMT Design and Print",
+      category?.tagline || fmtDescription,
+      category?.image || bannerImage
     ),
   };
 }

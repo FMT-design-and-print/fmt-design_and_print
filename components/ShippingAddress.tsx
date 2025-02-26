@@ -1,22 +1,10 @@
-import { regionsInGhana, visibleRegionIds } from "@/constants/gh-regions";
-import placesInAccraData from "@/data/places-in-accra.json";
 import { calculateDeliveryFeeFromDomeBranchByDistance } from "@/functions/calculateDeliveryFeeByDistance";
 import { GHRegion, IShippingAddress, Town } from "@/types";
 import { DeliveryType } from "@/types/order";
-import {
-  SimpleGrid,
-  Select,
-  Textarea,
-  TextInput,
-  Combobox,
-  Input,
-  useCombobox,
-  ScrollArea,
-  Text,
-  Anchor,
-} from "@mantine/core";
-import Link from "next/link";
-import React, { useState, useMemo, useEffect } from "react";
+import { SimpleGrid, TextInput, Textarea } from "@mantine/core";
+import React from "react";
+import { RegionSelect } from "./RegionSelect";
+import { TownCombobox } from "./TownCombobox";
 
 interface Props {
   address: IShippingAddress;
@@ -34,55 +22,6 @@ export const ShippingAddress = ({
   deliveryType,
   setDeliveryFee,
 }: Props) => {
-  const [searchValue, setSearchValue] = useState(town?.name || "");
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-  });
-
-  // Add useEffect to update searchValue when town changes
-  useEffect(() => {
-    if (town?.name) {
-      setSearchValue(town.name);
-      const fee = calculateDeliveryFeeFromDomeBranchByDistance(town);
-      setDeliveryFee(fee);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [town]);
-
-  // Filter only visible regions
-  const visibleRegions = regionsInGhana
-    .filter((region) => visibleRegionIds.includes(region.id))
-    .map((region) => ({
-      value: region.id.toString(),
-      label: region.name,
-    }));
-
-  // Filter towns based on selected region and search value
-  const getTownsForRegion = useMemo(() => {
-    if (region?.id === 7) {
-      // Greater Accra
-      const uniqueTownNames = new Set();
-
-      return (placesInAccraData as Town[])
-        .filter((place) =>
-          place.name.toLowerCase().includes(searchValue.toLowerCase())
-        )
-        .filter((place) => {
-          const townName = place.name.toLowerCase();
-          if (!uniqueTownNames.has(townName)) {
-            uniqueTownNames.add(townName);
-            return true;
-          }
-          return false;
-        })
-        .map((place) => ({
-          value: JSON.stringify(place),
-          label: place.name,
-        }));
-    }
-    return [];
-  }, [region?.id, searchValue]);
-
   return (
     <SimpleGrid cols={{ base: 1, md: 2 }}>
       <TextInput
@@ -117,89 +56,28 @@ export const ShippingAddress = ({
       />
 
       {deliveryType === "delivery" && (
-        <Select
-          label="Region"
-          description={
-            <Text size="xs" c="dimmed">
-              At the moment, we only deliver to Greater Accra.{" "}
-              <Anchor
-                component={Link}
-                href="/custom-request"
-                size="xs"
-                c="pink"
-              >
-                Make a custom request
-              </Anchor>{" "}
-              if you need us to deliver to your region.
-            </Text>
-          }
-          placeholder="Select region"
+        <RegionSelect
           value={region?.id?.toString()}
-          onChange={(value) => {
-            const selectedRegion = regionsInGhana.find(
-              (r) => r.id.toString() === value
-            );
-            update("region", selectedRegion || null);
-            setSearchValue(""); // Reset search value when region changes
-          }}
-          data={visibleRegions}
+          onChange={(selectedRegion) => update("region", selectedRegion)}
           required
           allowDeselect={false}
         />
       )}
 
       {deliveryType === "delivery" && (
-        <Input.Wrapper
-          label="Town"
-          description="If you can't find your exact town, please select the closest one to your location"
+        <TownCombobox
+          value={town}
+          onChange={(selectedTown) => {
+            update("town", selectedTown);
+            if (setDeliveryFee && selectedTown) {
+              const fee =
+                calculateDeliveryFeeFromDomeBranchByDistance(selectedTown);
+              setDeliveryFee(fee);
+            }
+          }}
+          regionId={region?.id}
           required
-        >
-          <Combobox
-            store={combobox}
-            onOptionSubmit={(value: string) => {
-              const townData = JSON.parse(value) as Town;
-              setSearchValue(townData.name);
-              update("town", townData);
-
-              if (setDeliveryFee) {
-                const fee =
-                  calculateDeliveryFeeFromDomeBranchByDistance(townData);
-                setDeliveryFee(fee);
-              }
-              combobox.closeDropdown();
-            }}
-          >
-            <Combobox.Target>
-              <TextInput
-                placeholder="Search for your town"
-                value={searchValue}
-                onChange={(event) => {
-                  setSearchValue(event.currentTarget.value);
-                  combobox.openDropdown();
-                }}
-                onClick={() => combobox.openDropdown()}
-                onFocus={() => combobox.openDropdown()}
-                rightSection={<Combobox.Chevron />}
-              />
-            </Combobox.Target>
-
-            <Combobox.Dropdown>
-              <ScrollArea.Autosize type="scroll" mah={200}>
-                <Combobox.Options>
-                  {getTownsForRegion.length > 0 ? (
-                    getTownsForRegion.map((item) => (
-                      <Combobox.Option key={item.value} value={item.value}>
-                        {item.label}
-                      </Combobox.Option>
-                    ))
-                  ) : (
-                    <Combobox.Empty>No towns found</Combobox.Empty>
-                  )}
-                </Combobox.Options>
-              </ScrollArea.Autosize>
-            </Combobox.Dropdown>
-          </Combobox>
-        </Input.Wrapper>
+        />
       )}
 
       {deliveryType === "delivery" && (

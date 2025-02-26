@@ -84,12 +84,13 @@ export const useRating = ({
       .select("*")
       .eq("product_id", productId)
       .eq("user_id", user.id)
-      .single();
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-    if (data) {
-      setUserRating(data as IRating);
-      setNewRating(data.rating);
-      setComment(data.update_comment || data.comment || "");
+    if (data && data.length > 0) {
+      setUserRating(data[0] as IRating);
+      setNewRating(data[0].rating);
+      setComment(data[0].update_comment || data[0].comment || "");
     }
     if (skipPurchaseCheck) {
       setLoading(false);
