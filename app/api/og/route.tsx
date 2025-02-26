@@ -24,9 +24,6 @@ export async function GET(req: NextRequest) {
       searchParams.get("preview4"),
     ].filter((url): url is string => url !== null);
 
-    // Log the image URLs for debugging
-    console.log("Preview Images:", previewImages);
-
     const isDark = theme === "dark";
 
     // Ensure all image URLs are absolute
@@ -37,14 +34,6 @@ export async function GET(req: NextRequest) {
         // If URL is relative, assume it's from Sanity CDN
         return url.startsWith("http") ? url : `https://cdn.sanity.io${url}`;
       }
-    });
-
-    console.log("Generating OG image with:", {
-      title,
-      tag,
-      type,
-      theme,
-      images: absolutePreviewImages,
     });
 
     return new ImageResponse(
@@ -58,7 +47,7 @@ export async function GET(req: NextRequest) {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
-            padding: 80,
+            padding: 40,
           }}
         >
           <div
@@ -66,15 +55,26 @@ export async function GET(req: NextRequest) {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 20,
+              gap: 16,
             }}
           >
+            <img
+              src="https://res.cloudinary.com/dnbmynikp/image/upload/v1703264782/FMT/logo1_tpiges.png"
+              alt="FMT Logo"
+              style={{
+                width: 120,
+                height: 120,
+                marginBottom: 16,
+              }}
+            />
             <h1
               style={{
-                fontSize: 60,
+                fontSize: 48,
                 fontWeight: 800,
                 textAlign: "center",
                 color: isDark ? "#ffffff" : "#000000",
+                margin: 0,
+                lineHeight: 1.2,
               }}
             >
               {title}
@@ -88,8 +88,9 @@ export async function GET(req: NextRequest) {
             >
               <p
                 style={{
-                  fontSize: 30,
+                  fontSize: 24,
                   color: isDark ? "#d1d1d1" : "#666666",
+                  margin: 0,
                 }}
               >
                 {tag} • {type}
@@ -100,13 +101,13 @@ export async function GET(req: NextRequest) {
           {absolutePreviewImages.length > 0 && (
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns:
-                  absolutePreviewImages.length > 1 ? "1fr 1fr" : "1fr",
-                gap: 20,
-                marginTop: 40,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 16,
+                marginTop: 32,
                 width: "100%",
                 maxWidth: 800,
+                justifyContent: "center",
               }}
             >
               {absolutePreviewImages.map((url, i) => (
@@ -115,10 +116,10 @@ export async function GET(req: NextRequest) {
                   src={url}
                   alt={`Preview ${i + 1}`}
                   style={{
-                    width: "100%",
-                    height: 200,
+                    width: 160,
+                    height: 160,
                     objectFit: "cover",
-                    borderRadius: 10,
+                    borderRadius: 8,
                   }}
                 />
               ))}

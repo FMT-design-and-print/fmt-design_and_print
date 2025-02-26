@@ -47,7 +47,6 @@ export async function generateOGImage({
     ogImageUrl.searchParams.set("t", Date.now().toString());
 
     const finalUrl = ogImageUrl.toString();
-    console.log("Generated OG Image URL:", finalUrl);
     return finalUrl;
   } catch (error) {
     console.error("Error generating OG image URL:", error);

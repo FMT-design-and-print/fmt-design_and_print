@@ -1,5 +1,4 @@
 import { BreadcrumbRenderer } from "@/components/BreadcrumbRenderer";
-import { bannerImage, fmtDescription } from "@/constants";
 import PrintCategory from "@/features/services/PrintCategory";
 import { formatString } from "@/functions";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
@@ -9,6 +8,8 @@ import { filteredProductTypesQuery } from "@/sanity/queries";
 import { printProductsQuery } from "@/sanity/queries/products";
 import { IPrintProduct, IProductType } from "@/types";
 import { Metadata } from "next";
+import { fmtDescription } from "@/constants";
+import { generateOGImage, addMetadataCacheControl } from "@/lib/utils/metadata";
 
 export const revalidate = 0;
 
@@ -22,23 +23,38 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const { categoryId } = await params;
+  const formattedCategory = formatString(categoryId).replace(/-/g, " ");
 
-  const category = await client.fetch(
-    `*[_type == "printCategories" && slug.current == $slug][0]{
-      title,
-      tagline,
-      "image": image.asset->url
-    }`,
-    { slug: categoryId }
-  );
+  const products = await client.fetch(printProductsQuery, {
+    slug: categoryId,
+  });
 
-  return {
-    ...generateMetaDetails(
-      (category.title || formatString(categoryId)) + " | FMT Design and Print",
-      category?.tagline || fmtDescription,
-      category?.image || bannerImage
-    ),
-  };
+  const productTypes = await client.fetch(filteredProductTypesQuery, {
+    slug: categoryId,
+  });
+
+  // Use category title if available, otherwise use formatted URL parameter
+  const categoryTitle = productTypes[0]?.category.title || formattedCategory;
+  const title = `${categoryTitle} | FMT Design and Print`;
+
+  // Get valid image URLs from products, or empty array if no products
+  const productImages = products
+    ? products
+        .filter((product: IPrintProduct) => product.image)
+        .map((product: IPrintProduct) => product.image)
+        .slice(0, 4)
+    : [];
+
+  const imageUrl = await generateOGImage({
+    title,
+    tag: "",
+    type: formatString(categoryId),
+    fallbackImage: productImages[0],
+    previewImages: productImages,
+  });
+
+  const metadata = generateMetaDetails(title, fmtDescription, imageUrl);
+  return addMetadataCacheControl(metadata);
 }
 
 const PrintCategoryPage = async ({ params }: { params: Params }) => {

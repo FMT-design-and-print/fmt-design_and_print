@@ -33,24 +33,30 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { productType, tag } = await params;
   const decodedTag = decodeURIComponent(tag);
+  const formattedType = formatString(productType).replace(/-/g, " ");
 
   const products = await getProducts(productType, decodedTag);
-  const title = `${decodedTag} ${products[0]?.type.title} | FMT Design and Print`;
 
-  // Get valid image URLs from products
+  // Use product type if available, otherwise use formatted URL parameter
+  const typeTitle = products[0]?.type.title || formattedType;
+  const title = `${decodedTag} ${typeTitle} | FMT Design and Print`;
+
+  // Get valid image URLs from products, or empty array if no products
   const productImages = products
-    .filter((product) => product.image)
-    .map((product) => product.image);
+    ? products
+        .filter((product) => product.image)
+        .map((product) => product.image)
+        .slice(0, 4)
+    : [];
 
   const imageUrl = await generateOGImage({
     title,
-    tag: decodedTag,
-    type: productType,
+    tag: formatString(decodedTag),
+    type: formatString(productType),
     fallbackImage: productImages[0],
     previewImages: productImages,
   });
 
-  console.log("Generated metadata with image URL:", imageUrl);
   const metadata = generateMetaDetails(title, fmtDescription, imageUrl);
   return addMetadataCacheControl(metadata);
 }
