@@ -61,6 +61,7 @@ export const OrderStatus = ({ order }: Props) => {
                 Ship to
               </Text>
               <Text size="xs" c="dimmed">
+                {order.deliveryDetails.address},{" "}
                 {order.deliveryDetails.town?.name},{" "}
                 {order.deliveryDetails.region?.name}
               </Text>

@@ -22,7 +22,7 @@ import {
 } from "@mantine/core";
 import { IconExclamationCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState, useMemo } from "react";
 import { BsArrowLeft } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { useOrderDetails } from "./hooks/useOrderDetails";
@@ -31,7 +31,7 @@ import { CURRENCY_SYMBOL } from "@/features/admin/PriceCalculator/constants";
 interface Props {
   quoteId: string;
   orderId: string;
-  subTotal: number;
+  amountDueNow: number;
   clientName?: string;
   contact?: string;
   email?: string;
@@ -57,7 +57,7 @@ const initialAddress: IShippingAddress = {
 export const QuotePayment = ({
   quoteId,
   orderId,
-  subTotal,
+  amountDueNow,
   clientName,
   contact,
   email,
@@ -81,28 +81,55 @@ export const QuotePayment = ({
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("delivery");
   const [emptyRequiredFields, setEmptyRequiredFields] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [deliveryFee, setDeliveryFee] = useState(
-    specifiedDeliveryFee ||
-      baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
-      0
-  );
   const [paymentType, setPaymentType] = useState<PaymentType>("momo");
 
-  const total = subTotal + deliveryFee - discount;
+  // Calculate if delivery fee has already been paid
+  const hasDeliveryFeePaid = useMemo(() => {
+    if (!orderDetails?.amountPaid || !orderDetails?.deliveryFee) return false;
+
+    // If initial percentage + delivery fee is less than or equal to amount paid,
+    // it means delivery fee was included in the initial payment
+    const initialPaymentWithDelivery =
+      totalQuoteAmount * (percentageAmount / 100) + orderDetails.deliveryFee;
+    return orderDetails.amountPaid >= initialPaymentWithDelivery;
+  }, [
+    orderDetails?.amountPaid,
+    orderDetails?.deliveryFee,
+    totalQuoteAmount,
+    percentageAmount,
+  ]);
+
+  const [deliveryFee, setDeliveryFee] = useState(
+    hasDeliveryFeePaid
+      ? orderDetails?.deliveryFee || 0
+      : specifiedDeliveryFee ||
+          baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
+          0
+  );
+
+  const total =
+    amountDueNow + (hasDeliveryFeePaid ? 0 : deliveryFee) - discount;
 
   const handleOnPaymentSuccess = async (ref: any) => {
     setEmptyRequiredFields([]);
     const supabase = createClient();
 
     const { quoteStatus, remainingPercentage, paymentStatus, orderStatus } =
-      calculatePaymentStatus(total, totalQuoteAmount, percentageAmount);
+      calculatePaymentStatus(
+        total,
+        totalQuoteAmount,
+        percentageAmount,
+        deliveryFee
+      );
 
     const detailsToUpdate = {
-      totalAmount: totalQuoteAmount,
+      totalAmount:
+        totalQuoteAmount +
+        (hasDeliveryFeePaid ? orderDetails?.deliveryFee || 0 : deliveryFee),
       amountPaid: (orderDetails?.amountPaid || 0) + total,
       deliveryType,
       deliveryDetails: { ...shippingAddress },
-      deliveryFee,
+      deliveryFee: hasDeliveryFeePaid ? orderDetails?.deliveryFee : deliveryFee,
       ...(orderDetails?.estimatedFulfillmentDate === null && {
         estimatedFulfillmentDate: calculateEstimatedFulfillmentDate(
           5,
@@ -177,19 +204,36 @@ export const QuotePayment = ({
     if (deliveryType !== "delivery") {
       setDeliveryFee(0);
     } else {
-      setDeliveryFee(
-        specifiedDeliveryFee ||
-          baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
-          0
-      );
+      // Only update delivery fee if it hasn't been paid already
+      if (!hasDeliveryFeePaid) {
+        setDeliveryFee(
+          specifiedDeliveryFee ||
+            baseShippingFeeByRegion[shippingAddress.region?.id || 7] ||
+            0
+        );
+      } else {
+        setDeliveryFee(orderDetails?.deliveryFee || 0);
+      }
     }
-  }, [deliveryType, specifiedDeliveryFee, shippingAddress.region]);
+  }, [
+    deliveryType,
+    specifiedDeliveryFee,
+    shippingAddress.region,
+    hasDeliveryFeePaid,
+    orderDetails?.deliveryFee,
+  ]);
+
+  useEffect(() => {
+    if (orderDetails?.deliveryDetails) {
+      setShippingAddress(orderDetails.deliveryDetails);
+    }
+  }, [orderDetails?.deliveryDetails]);
 
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isLoading} />
       <Title order={2} py="sm">
-        {orderDetails?.amountPaid ? "Complete Payment" : "Make Initial Payment"}
+        Make Payment
       </Title>
 
       {orderDetails?.amountPaid ? (
@@ -197,11 +241,16 @@ export const QuotePayment = ({
           <Group justify="space-between">
             <Text>
               Amount Already Paid: {CURRENCY_SYMBOL}
-              {orderDetails.amountPaid.toFixed(2)}
+              {(
+                orderDetails.amountPaid - (orderDetails?.deliveryFee || 0)
+              ).toFixed(2)}
             </Text>
             <Text>
               Remaining Amount: {CURRENCY_SYMBOL}
-              {(totalQuoteAmount - orderDetails.amountPaid).toFixed(2)}
+              {(
+                totalQuoteAmount -
+                (orderDetails.amountPaid - (orderDetails?.deliveryFee || 0))
+              ).toFixed(2)}
             </Text>
           </Group>
         </Alert>
@@ -209,8 +258,8 @@ export const QuotePayment = ({
 
       <Card withBorder my="md" bg="gray.1">
         <PaymentDetailsCard
-          subTotal={subTotal}
-          deliveryFee={deliveryFee}
+          subTotal={amountDueNow}
+          deliveryFee={hasDeliveryFeePaid ? 0 : deliveryFee}
           note={note}
           isLoading={false}
           discount={0}

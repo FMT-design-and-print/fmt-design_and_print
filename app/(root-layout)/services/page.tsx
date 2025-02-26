@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export const revalidate = 0;
 
-const AllServicesPage = async () => {
+const AllPrintServicesPage = async () => {
   await redirectAdminUser();
 
   const productTypes: IProductType[] = await client.fetch(
@@ -29,4 +29,4 @@ const AllServicesPage = async () => {
   );
 };
 
-export default AllServicesPage;
+export default AllPrintServicesPage;

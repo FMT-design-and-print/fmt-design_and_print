@@ -27,7 +27,7 @@ export const RatingForm = ({
     <Stack gap="md">
       <Box>
         <Text fw={500} mb="xs">
-          {isWithinThreeDays ? "Your Rating" : "Your Rating (Read Only)"}
+          Your Rating
         </Text>
         <RatingStars
           value={newRating}

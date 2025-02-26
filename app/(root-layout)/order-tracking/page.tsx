@@ -1,11 +1,16 @@
 import { TrackingForm } from "@/features/order-tracking/TrackingForm";
+import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { Container, Stack, Text, Title } from "@mantine/core";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Order Tracking | FMT Design and Print",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMetaDetails(
+    "Order Tracking | FMT Design and Print",
+    "Track the status of your orders. Delivery date is subject to change without advanced notice",
+    "https://res.cloudinary.com/dnbmynikp/image/upload/v1740591477/FMT/track-order_olx7ls.svg"
+  );
+}
 
 const title = "Track your Orders";
 const description =
