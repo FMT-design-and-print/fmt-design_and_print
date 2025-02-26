@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return generateMetaDetails(
     "Order Tracking | FMT Design and Print",
     "Track the status of your orders. Delivery date is subject to change without advanced notice",
-    "./track-order.svg"
+    "https://res.cloudinary.com/dnbmynikp/image/upload/v1740591477/FMT/track-order_olx7ls.svg"
   );
 }
 
