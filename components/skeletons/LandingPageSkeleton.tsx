@@ -1,4 +1,4 @@
-import { Container, Flex, Grid, Skeleton } from "@mantine/core";
+import { Box, Container, Flex, Grid, Skeleton, Stack } from "@mantine/core";
 
 const LandingPageSkeleton = () => {
   return (
@@ -8,18 +8,27 @@ const LandingPageSkeleton = () => {
 
       {/* Hero Section with Search */}
       <Container size="xl" mt="xl">
-        <Flex gap="xl" align="center">
-          {/* Left side menu */}
-          <div style={{ width: 300 }}>
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" />
-          </div>
+        <Flex
+          gap="xl"
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "stretch", md: "center" }}
+        >
+          {/* Left side menu - Hidden on mobile */}
+          <Box
+            display={{ base: "none", md: "block" }}
+            w={{ base: "100%", md: 300 }}
+          >
+            <Stack>
+              <Skeleton height={40} radius="md" />
+              <Skeleton height={40} radius="md" />
+              <Skeleton height={40} radius="md" />
+              <Skeleton height={40} radius="md" />
+            </Stack>
+          </Box>
 
           {/* Center banner */}
-          <div style={{ flex: 1 }}>
-            <Skeleton height={400} radius="md" />
+          <Box style={{ flex: 1 }}>
+            <Skeleton h={{ base: 200, sm: 300, md: 400 }} radius="md" />
             <Flex gap="sm" mt="sm" justify="center">
               <Skeleton circle height={12} />
               <Skeleton circle height={12} />
@@ -27,28 +36,30 @@ const LandingPageSkeleton = () => {
               <Skeleton circle height={12} />
               <Skeleton circle height={12} />
             </Flex>
-          </div>
+          </Box>
 
-          {/* Right side actions */}
-          <div style={{ width: 300 }}>
-            <Skeleton height={50} radius="md" mb="md" />
-            <Skeleton height={50} radius="md" mb="md" />
-            <Skeleton height={50} radius="md" mb="md" />
-            <Skeleton height={50} radius="md" />
-          </div>
+          {/* Right side actions - Moves below banner on mobile */}
+          <Box w={{ base: "100%", md: 300 }}>
+            <Stack>
+              <Skeleton height={50} radius="md" />
+              <Skeleton height={50} radius="md" />
+              <Skeleton height={50} radius="md" />
+              <Skeleton height={50} radius="md" />
+            </Stack>
+          </Box>
         </Flex>
       </Container>
 
       {/* Products Section */}
       <Container size="xl" mt={50}>
-        <Skeleton height={40} width={300} mb="xl" />
+        <Skeleton height={40} w={{ base: "100%", sm: 300 }} mb="xl" />
         <Grid>
           {[1, 2, 3, 4, 5].map((item) => (
             <Grid.Col
-              span={{ base: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }}
+              span={{ base: 12, xs: 6, sm: 4, md: 3, xl: 2.4 }}
               key={item}
             >
-              <Skeleton height={350} radius="md" />
+              <Skeleton h={{ base: 250, sm: 300, md: 350 }} radius="md" />
             </Grid.Col>
           ))}
         </Grid>

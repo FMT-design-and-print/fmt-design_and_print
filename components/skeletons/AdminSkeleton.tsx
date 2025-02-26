@@ -1,4 +1,4 @@
-import { Container, Flex, Skeleton } from "@mantine/core";
+import { Box, Container, Flex, Grid, Skeleton, Stack } from "@mantine/core";
 
 const AdminSkeleton = () => {
   return (
@@ -7,14 +7,16 @@ const AdminSkeleton = () => {
       <Skeleton height={60} radius={0} />
 
       {/* Main Content */}
-      <Container size="100%" mt={0} p={0}>
+      <Container fluid p={0}>
         <Flex
           gap={0}
           align="flex-start"
           style={{ minHeight: "calc(100vh - 60px)" }}
         >
-          {/* Sidebar */}
-          <div
+          {/* Sidebar - Hidden on mobile */}
+          <Flex
+            direction="column"
+            display={{ base: "none", md: "flex" }}
             style={{
               width: 280,
               flexShrink: 0,
@@ -47,16 +49,15 @@ const AdminSkeleton = () => {
             </Flex>
 
             {/* Navigation Links */}
-            <div style={{ padding: "0 20px" }}>
+            <Stack gap="xl" px="md">
               {/* Dashboard Section */}
-              <Skeleton
-                height={16}
-                width={100}
-                radius="md"
-                mb="md"
-                style={{ backgroundColor: "#2C2E33" }}
-              />
-              <Flex direction="column" gap="sm" mb="xl">
+              <Stack gap="sm">
+                <Skeleton
+                  height={16}
+                  width={100}
+                  radius="md"
+                  style={{ backgroundColor: "#2C2E33" }}
+                />
                 {[1, 2, 3].map((item) => (
                   <Skeleton
                     key={item}
@@ -65,17 +66,16 @@ const AdminSkeleton = () => {
                     style={{ backgroundColor: "#2C2E33" }}
                   />
                 ))}
-              </Flex>
+              </Stack>
 
               {/* Orders Section */}
-              <Skeleton
-                height={16}
-                width={100}
-                radius="md"
-                mb="md"
-                style={{ backgroundColor: "#2C2E33" }}
-              />
-              <Flex direction="column" gap="sm" mb="xl">
+              <Stack gap="sm">
+                <Skeleton
+                  height={16}
+                  width={100}
+                  radius="md"
+                  style={{ backgroundColor: "#2C2E33" }}
+                />
                 {[1, 2, 3].map((item) => (
                   <Skeleton
                     key={item}
@@ -84,17 +84,16 @@ const AdminSkeleton = () => {
                     style={{ backgroundColor: "#2C2E33" }}
                   />
                 ))}
-              </Flex>
+              </Stack>
 
               {/* Products Section */}
-              <Skeleton
-                height={16}
-                width={100}
-                radius="md"
-                mb="md"
-                style={{ backgroundColor: "#2C2E33" }}
-              />
-              <Flex direction="column" gap="sm" mb="xl">
+              <Stack gap="sm">
+                <Skeleton
+                  height={16}
+                  width={100}
+                  radius="md"
+                  style={{ backgroundColor: "#2C2E33" }}
+                />
                 {[1, 2, 3, 4].map((item) => (
                   <Skeleton
                     key={item}
@@ -103,50 +102,68 @@ const AdminSkeleton = () => {
                     style={{ backgroundColor: "#2C2E33" }}
                   />
                 ))}
-              </Flex>
-            </div>
-          </div>
+              </Stack>
+            </Stack>
+          </Flex>
 
           {/* Main Content Area */}
-          <div
+          <Flex
+            direction="column"
             style={{
               flex: 1,
-              padding: "30px",
               background: "#F8F9FA",
               minHeight: "calc(100vh - 60px)",
             }}
+            p={{ base: "md", sm: "lg", md: "xl" }}
           >
             {/* Page Header */}
-            <Flex justify="space-between" align="center" mb="xl">
+            <Flex
+              justify="space-between"
+              align={{ base: "stretch", sm: "center" }}
+              direction={{ base: "column", sm: "row" }}
+              gap={{ base: "md", sm: 0 }}
+              mb="xl"
+            >
               <div>
-                <Skeleton height={32} width={200} radius="md" mb="xs" />
-                <Skeleton height={16} width={300} radius="md" />
+                <Skeleton
+                  height={32}
+                  w={{ base: "100%", sm: 200 }}
+                  radius="md"
+                  mb="xs"
+                />
+                <Skeleton
+                  height={16}
+                  w={{ base: "100%", sm: 300 }}
+                  radius="md"
+                />
               </div>
-              <Skeleton height={36} width={120} radius="md" />
+              <Skeleton height={36} w={{ base: "100%", sm: 120 }} radius="md" />
             </Flex>
 
             {/* Content Area */}
-            <div
-              style={{ background: "white", padding: "20px", borderRadius: 8 }}
+            <Box
+              bg="white"
+              style={{ borderRadius: 8 }}
+              p={{ base: "md", sm: "lg" }}
             >
               {/* Stats Row */}
-              <Flex gap="md" mb="xl">
+              <Grid mb="xl">
                 {[1, 2, 3, 4].map((item) => (
-                  <div key={item} style={{ flex: 1 }}>
-                    <Skeleton height={100} radius="md" />
-                  </div>
+                  <Grid.Col key={item} span={{ base: 12, xs: 6, md: 3 }}>
+                    <Skeleton h={{ base: 80, md: 100 }} radius="md" />
+                  </Grid.Col>
                 ))}
-              </Flex>
+              </Grid>
 
               {/* Table/List View */}
-              <Flex direction="column" gap="sm">
+              <Stack gap="sm">
                 <Skeleton height={50} radius="md" />
                 {[1, 2, 3, 4, 5].map((item) => (
-                  <Skeleton key={item} height={60} radius="md" />
+                  <Skeleton key={item} h={{ base: 50, md: 60 }} radius="md" />
                 ))}
-              </Flex>
-            </div>
-          </div>
+              </Stack>
+            </Box>
+          </Flex>
         </Flex>
       </Container>
     </>

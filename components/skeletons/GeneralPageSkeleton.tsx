@@ -1,4 +1,4 @@
-import { Container, Flex, Skeleton } from "@mantine/core";
+import { Box, Container, Flex, Skeleton } from "@mantine/core";
 
 const GeneralPageSkeleton = () => {
   return (
@@ -8,41 +8,88 @@ const GeneralPageSkeleton = () => {
 
       {/* Main Content */}
       <Container size="xl" mt="xl">
-        {/* Breadcrumbs */}
-        <Flex gap="sm" align="center" mb="xl">
-          <Skeleton height={20} width={100} radius="xl" />
-          <Skeleton height={16} width={16} radius="xl" />
-          <Skeleton height={20} width={120} radius="xl" />
-          <Skeleton height={16} width={16} radius="xl" />
-          <Skeleton height={20} width={140} radius="xl" />
-        </Flex>
+        {/* Breadcrumbs - Scrollable on mobile */}
+        <Box style={{ overflowX: "auto" }}>
+          <Flex
+            gap="sm"
+            align="center"
+            mb="xl"
+            style={{ minWidth: "max-content" }}
+          >
+            <Skeleton height={20} w={100} radius="xl" />
+            <Skeleton height={16} w={16} radius="xl" />
+            <Skeleton height={20} w={120} radius="xl" />
+            <Skeleton height={16} w={16} radius="xl" />
+            <Skeleton height={20} w={140} radius="xl" />
+          </Flex>
+        </Box>
 
         {/* Page Title */}
-        <Skeleton height={40} width="50%" mb="xl" />
+        <Skeleton height={40} w={{ base: "100%", sm: "50%" }} mb="xl" />
 
         {/* Content Grid */}
-        <Flex gap="xl">
-          {/* Sidebar */}
-          <div style={{ width: 250 }}>
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" mb="md" />
-            <Skeleton height={40} radius="md" mb="md" />
-          </div>
+        <Flex gap="xl" direction={{ base: "column", md: "row" }}>
+          {/* Sidebar - Horizontal scroll on mobile */}
+          <Box w={{ base: "100%", md: 250 }} style={{ flexShrink: 0 }}>
+            <Box style={{ overflowX: "auto" }}>
+              <Flex
+                gap="md"
+                direction={{ base: "row", md: "column" }}
+                style={{ minWidth: "max-content" }}
+              >
+                <Skeleton
+                  height={40}
+                  w={{ base: 150, md: "100%" }}
+                  radius="md"
+                />
+                <Skeleton
+                  height={40}
+                  w={{ base: 150, md: "100%" }}
+                  radius="md"
+                />
+                <Skeleton
+                  height={40}
+                  w={{ base: 150, md: "100%" }}
+                  radius="md"
+                />
+                <Skeleton
+                  height={40}
+                  w={{ base: 150, md: "100%" }}
+                  radius="md"
+                />
+                <Skeleton
+                  height={40}
+                  w={{ base: 150, md: "100%" }}
+                  radius="md"
+                />
+              </Flex>
+            </Box>
+          </Box>
 
           {/* Main Content Area */}
-          <div style={{ flex: 1 }}>
+          <Box style={{ flex: 1 }}>
             <Flex wrap="wrap" gap="md">
               {[1, 2, 3, 4, 5, 6, 8, 9].map((item) => (
-                <div key={item} style={{ width: "calc(25% - 12px)" }}>
-                  <Skeleton height={280} radius="md" mb="sm" />
-                  <Skeleton height={20} width="80%" radius="xl" mb="xs" />
-                  <Skeleton height={20} width="40%" radius="xl" />
-                </div>
+                <Box
+                  key={item}
+                  w={{
+                    base: "100%",
+                    xs: "calc(50% - 8px)",
+                    sm: "calc(33.333% - 11px)",
+                    md: "calc(25% - 12px)",
+                  }}
+                >
+                  <Skeleton
+                    h={{ base: 200, sm: 250, md: 280 }}
+                    radius="md"
+                    mb="sm"
+                  />
+                  <Skeleton height={20} w="80%" radius="xl" mb="xs" />
+                  <Skeleton height={20} w="40%" radius="xl" />
+                </Box>
               ))}
             </Flex>
-          </div>
+          </Box>
         </Flex>
       </Container>
     </>
