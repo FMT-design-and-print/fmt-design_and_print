@@ -37,14 +37,20 @@ export async function generateMetadata({
   const products = await getProducts(categoryId, decodedTag);
   const title = `${decodedTag} ${products[0]?.type.title} | FMT Design and Print`;
 
+  // Get valid image URLs from products
+  const productImages = products
+    .filter((product) => product.image)
+    .map((product) => product.image);
+
   const imageUrl = await generateOGImage({
     title,
     tag: decodedTag,
     type: categoryId,
-    fallbackImage: products[0]?.image,
-    previewImages: products.map((product) => product.image),
+    fallbackImage: productImages[0],
+    previewImages: productImages,
   });
 
+  console.log("Generated metadata with image URL:", imageUrl);
   const metadata = generateMetaDetails(title, fmtDescription, imageUrl);
   return addMetadataCacheControl(metadata);
 }

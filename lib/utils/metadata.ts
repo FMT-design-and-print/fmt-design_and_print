@@ -36,20 +36,33 @@ export async function generateOGImage({
     ogImageUrl.searchParams.set("theme", theme);
 
     // Add preview images (limit to 4)
-    previewImages.slice(0, 4).forEach((img, index) => {
-      ogImageUrl.searchParams.set(`preview${index + 1}`, img);
-    });
+    previewImages
+      .filter(Boolean)
+      .slice(0, 4)
+      .forEach((img, index) => {
+        ogImageUrl.searchParams.set(`preview${index + 1}`, img);
+      });
 
     // Add cache busting parameter
     ogImageUrl.searchParams.set("t", Date.now().toString());
 
-    return ogImageUrl.toString();
-  } catch {
+    const finalUrl = ogImageUrl.toString();
+    console.log("Generated OG Image URL:", finalUrl);
+    return finalUrl;
+  } catch (error) {
+    console.error("Error generating OG image URL:", error);
     return fallbackImage;
   }
 }
 
 export function addMetadataCacheControl(metadata: Metadata): Metadata {
-  // Add timestamp directly to the generateOGImage URL
-  return metadata;
+  return {
+    ...metadata,
+    openGraph: {
+      ...metadata.openGraph,
+      url: metadata.openGraph?.url || baseUrl,
+      siteName: metadata.openGraph?.siteName || "FMT Design and Print",
+      locale: metadata.openGraph?.locale || "en_US",
+    },
+  };
 }
