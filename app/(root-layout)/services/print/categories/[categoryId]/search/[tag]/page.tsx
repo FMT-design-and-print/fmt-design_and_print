@@ -8,7 +8,7 @@ import { allProductsInCategoryByTagQuery } from "@/sanity/queries/products";
 import { IPrintProduct } from "@/types";
 import { Metadata } from "next";
 import { fmtDescription } from "@/constants";
-import { generateOGImage } from "@/lib/utils/metadata";
+import { generateOGImage, addMetadataCacheControl } from "@/lib/utils/metadata";
 
 type Params = Promise<{
   categoryId: string;
@@ -44,9 +44,8 @@ export async function generateMetadata({
     fallbackImage: products[0]?.image,
   });
 
-  return {
-    ...generateMetaDetails(title, fmtDescription, imageUrl),
-  };
+  const metadata = generateMetaDetails(title, fmtDescription, imageUrl);
+  return addMetadataCacheControl(metadata);
 }
 
 const CategorySearchPage = async ({ params }: { params: Params }) => {
