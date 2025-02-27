@@ -10,6 +10,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/providers/GoogleAnalytics";
+import WhatsAppChat from "@/components/WhatsAppChat";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             {children}
             <Footer />
             <CookieConsent />
+            <WhatsAppChat />
           </AppBootstrap>
         </Providers>
         <SessionProvider />
