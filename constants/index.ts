@@ -26,6 +26,7 @@ export const resendLinkFailed =
 export const whatsappUrl = "https://wa.me/0559617959";
 export const artworkText = `Please I would like to send my artworks for my custom order. 
 My order number is:  `;
+export const whatsappNumber = "+233559617959";
 
 export const emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
 
