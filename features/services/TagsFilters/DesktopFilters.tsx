@@ -4,7 +4,11 @@ import { IconArrowBarLeft } from "@tabler/icons-react";
 import { CiFilter } from "react-icons/ci";
 import { TagsFilters } from ".";
 
-export const DesktopFilters = () => {
+interface Props {
+  availableTags: string[];
+}
+
+export const DesktopFilters = ({ availableTags }: Props) => {
   const { setIsExpanded } = useTagsFilters();
 
   return (
@@ -25,7 +29,7 @@ export const DesktopFilters = () => {
           </ActionIcon>
         </Group>
 
-        <TagsFilters />
+        <TagsFilters availableTags={availableTags} />
       </Card>
     </>
   );

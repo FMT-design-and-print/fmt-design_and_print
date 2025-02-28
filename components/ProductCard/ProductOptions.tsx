@@ -35,6 +35,10 @@ import { useCheckout } from "@/store/checkout";
 import { useRouter } from "next/navigation";
 import { featureFlags } from "@/constants/feature-flags";
 import { RatingStars } from "@/features/ratings/RatingStars";
+import { useCustomEditor } from "@/hooks/useCustomEditor";
+import { ArtworksDropzone } from "../Dropzone/ArtworksDropzone";
+import { TextEditor } from "../TextEditor";
+import { convertFilesToBase64 } from "@/functions/convert-files-to-base64";
 
 const defaultValue = {
   productId: "",
@@ -44,6 +48,8 @@ const defaultValue = {
   quantity: 1,
   note: "",
   selectedProductType: "regular" as const,
+  artworkFiles: [],
+  instructions: "",
 };
 
 interface Props {
@@ -58,6 +64,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
   const [errors, setErrors] = useState<IOptionsErrors>({});
   const addItem = useCart((state) => state.addItem);
   const { setItems } = useCheckout();
+  const editor = useCustomEditor("");
 
   const isTshirt = product.type?.slug === "t-shirts";
   const adjustedPrice =
@@ -65,13 +72,20 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       ? product.price - 5
       : product.price;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
+      isCustomizable: product.isCustomizable,
     });
     setErrors(errors);
 
-    if (Object.keys(errors).length > 0) return false;
+    if (Object.keys(errors).length > 0) {
+      return false;
+    }
+
+    const serializedArtworkFiles = await convertFilesToBase64(
+      selectedProductOptions.artworkFiles || []
+    );
 
     const item: ICartItem = {
       id: product.id,
@@ -86,6 +100,9 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       selectedProductType: isTshirt
         ? selectedProductOptions.selectedProductType
         : undefined,
+      isCustomizable: product.isCustomizable,
+      artworkFiles: serializedArtworkFiles,
+      instructions: editor?.getHTML(),
     };
 
     if (actionType === "cart") {
@@ -110,6 +127,8 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       quantity: 1,
       note: "",
       selectedProductType: "regular" as const,
+      artworkFiles: [],
+      instructions: "",
     });
   }, [product]);
 
@@ -144,7 +163,12 @@ export const ProductOptions = ({ product, actionType }: Props) => {
               )}
             </Box>
           </Grid.Col>
-          <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md">
+          <Grid.Col
+            span={{ base: 12, sm: 6, lg: 7 }}
+            px="md"
+            maw={700}
+            style={{ overflowY: "auto" }}
+          >
             <Title order={3}>{product.title}</Title>
             {product.productNumber && product.productNumber != null && (
               <Group>
@@ -155,7 +179,50 @@ export const ProductOptions = ({ product, actionType }: Props) => {
               </Group>
             )}
 
-            {featureFlags.productRatings && <RatingStars />}
+            {featureFlags.productRatings && (
+              <RatingStars productId={product.id} size="sm" />
+            )}
+
+            {product.isCustomizable && (
+              <Box mb="xl">
+                <Title order={4} mb="xs">
+                  Upload Your Artwork
+                </Title>
+                <Box mb="md">
+                  <ArtworksDropzone
+                    files={selectedProductOptions.artworkFiles || []}
+                    onFilesChange={(files) =>
+                      setSelectedProductOptions((prev) => ({
+                        ...prev,
+                        artworkFiles: files,
+                      }))
+                    }
+                    maxFiles={5}
+                    maxSize={10 * 1024 ** 2}
+                    dropzoneText="Drag images here or click to select files"
+                    description={`Files should not exceed 10MB (${selectedProductOptions.artworkFiles?.length || 0}/5 files)`}
+                  />
+
+                  {selectedProductOptions.artworkFiles?.length === 0 &&
+                    errors.artworkFiles && (
+                      <Box mt="xs">
+                        <ErrorText text={errors.artworkFiles} />
+                      </Box>
+                    )}
+                </Box>
+                <Box>
+                  <Text fw="bold" mb="xs">
+                    Instructions
+                  </Text>
+                  <Text size="sm" c="dimmed" mb="md">
+                    Add any specific instructions for your artwork. NB:
+                    Instructions that demand extra work may be subject to
+                    additional charges.
+                  </Text>
+                  <TextEditor editor={editor} />
+                </Box>
+              </Box>
+            )}
 
             {isTshirt && (
               <>

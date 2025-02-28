@@ -19,8 +19,9 @@ const itemsPerPage = 50;
 
 interface Props {
   printProducts: IPrintProduct[];
+  availableTags: string[];
 }
-export const PrintProducts = ({ printProducts }: Props) => {
+export const PrintProducts = ({ printProducts, availableTags }: Props) => {
   const params = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<IPrintProduct[]>([]);
@@ -58,7 +59,9 @@ export const PrintProducts = ({ printProducts }: Props) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.currentTarget.value)}
         />
-        {params.tag === undefined && <FiltersDrawer />}
+        {params.tag === undefined && (
+          <FiltersDrawer availableTags={availableTags} />
+        )}
       </Flex>
       <SelectedTags />
       <Box>

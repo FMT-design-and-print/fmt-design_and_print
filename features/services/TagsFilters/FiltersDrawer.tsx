@@ -5,7 +5,11 @@ import React from "react";
 import { CiFilter } from "react-icons/ci";
 import { TagsFilters } from ".";
 
-export const FiltersDrawer = () => {
+interface Props {
+  availableTags: string[];
+}
+
+export const FiltersDrawer = ({ availableTags }: Props) => {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -18,7 +22,7 @@ export const FiltersDrawer = () => {
         title="Filters"
         position="right"
       >
-        <TagsFilters />
+        <TagsFilters availableTags={availableTags} />
       </Drawer>
 
       <Button

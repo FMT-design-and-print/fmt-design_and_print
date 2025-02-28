@@ -8,6 +8,7 @@ import { PrintServices } from "./PrintServices";
 import { ServiceCard } from "./ServiceCard";
 import { AllProducts } from "./AllProducts";
 import { SearchParamsProvider } from "@/components/SearchParamsProvider";
+import { ErrorComponent } from "@/components/Error";
 
 const validServiceTypes = ["print", "design"];
 
@@ -104,6 +105,11 @@ export function AllServices(props: Props) {
   return (
     <SearchParamsProvider>
       <ServicesContent {...props} />
+      <ErrorComponent
+        reset={() => {
+          console.log("reset");
+        }}
+      />
     </SearchParamsProvider>
   );
 }
