@@ -1,4 +1,4 @@
-import { useCheckout } from "@/store/checkout";
+import { useCheckout, useEditCheckoutItem } from "@/store/checkout";
 import {
   Card,
   Flex,
@@ -8,15 +8,36 @@ import {
   Text,
   NumberInput,
   Title,
+  Collapse,
+  UnstyledButton,
+  Box,
 } from "@mantine/core";
-import React from "react";
+import { IconChevronDown, IconChevronUp, IconEdit } from "@tabler/icons-react";
+import { ReceivedFilesRenderer } from "@/components/Dropzone/ReceivedFilesRenderer";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const ReviewItems = () => {
+  const router = useRouter();
   const {
     details: { items },
     increaseQuantity,
     decreaseQuantity,
   } = useCheckout((state) => state);
+  const { setIsEditingProduct } = useEditCheckoutItem((state) => state);
+  const [openArtworks, setOpenArtworks] = useState<Record<string, boolean>>({});
+
+  const toggleArtworks = (itemId: string) => {
+    setOpenArtworks((prev) => ({
+      ...prev,
+      [itemId]: !prev[itemId],
+    }));
+  };
+
+  const handleEditItem = (itemId: string) => {
+    setIsEditingProduct(true);
+    router.push(`/services/print/${itemId}`);
+  };
 
   return (
     <Card withBorder>
@@ -51,6 +72,13 @@ export const ReviewItems = () => {
                       Size: {item.size}
                     </Text>
                   )}
+                  {item.isCustomizable &&
+                    item.artworkFiles &&
+                    item.artworkFiles.length > 0 && (
+                      <Text fz="xs" c="dimmed">
+                        Artworks: {item.artworkFiles.length}
+                      </Text>
+                    )}
                 </Group>
               </div>
             </Group>
@@ -87,6 +115,15 @@ export const ReviewItems = () => {
                 >
                   +
                 </Button>
+                <Button
+                  onClick={() => handleEditItem(item.id)}
+                  variant="subtle"
+                  color="pink"
+                  size="xs"
+                  leftSection={<IconEdit size={14} />}
+                >
+                  Edit
+                </Button>
               </Group>
 
               <Group>
@@ -99,6 +136,39 @@ export const ReviewItems = () => {
               </Group>
             </Flex>
           </Flex>
+
+          {item.isCustomizable &&
+            item.artworkFiles &&
+            item.artworkFiles.length > 0 && (
+              <>
+                <UnstyledButton
+                  onClick={() => toggleArtworks(item.id)}
+                  mt="md"
+                  style={{ width: "100%" }}
+                >
+                  <Group justify="space-between">
+                    <Text size="xs" c="pink">
+                      {openArtworks[item.id] ? "Hide" : "View"} Artwork Files
+                    </Text>
+                    {openArtworks[item.id] ? (
+                      <IconChevronUp size={16} />
+                    ) : (
+                      <IconChevronDown size={16} />
+                    )}
+                  </Group>
+                </UnstyledButton>
+
+                <Collapse in={openArtworks[item.id]}>
+                  <Box mt="xs">
+                    <ReceivedFilesRenderer
+                      files={item.artworkFiles}
+                      title={`Artwork Files (${item.artworkFiles.length})`}
+                      requireOneFile={true}
+                    />
+                  </Box>
+                </Collapse>
+              </>
+            )}
         </Card>
       ))}
     </Card>

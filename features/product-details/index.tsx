@@ -34,13 +34,17 @@ import { Sizes } from "@/components/Sizes";
 import { AdditionalDetails } from "@/components/AdditionalDetails";
 import { Quantity } from "@/components/Quantity";
 import { ErrorText } from "@/components/ErrorText";
-import { useCheckout } from "@/store/checkout";
+import { useCheckout, useEditCheckoutItem } from "@/store/checkout";
 import { useRouter } from "next/navigation";
 import { OtherItems } from "./OtherItems";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { featureFlags } from "@/constants/feature-flags";
 import { RatingStars } from "../ratings/RatingStars";
 import { CopyIcon } from "@/components/CopyIcon";
+import { ArtworksDropzone } from "@/components/Dropzone/ArtworksDropzone";
+import { TextEditor } from "@/components/TextEditor";
+import { useCustomEditor } from "@/hooks/useCustomEditor";
+import { convertFilesToBase64 } from "@/functions/convert-files-to-base64";
 
 const defaultValue = {
   productId: "",
@@ -50,17 +54,21 @@ const defaultValue = {
   quantity: 1,
   note: "",
   selectedProductType: "regular",
-} as any;
+  artworkFiles: [],
+  instructions: "",
+} as SelectedProductOptions;
 
 interface Props {
   product: IPrintProduct;
 }
 export const ProductDetails = ({ product }: Props) => {
   const router = useRouter();
-  const addItem = useCart((state) => state.addItem);
-  const { setItems } = useCheckout();
+  const { addItem } = useCart((state) => state);
+  const { setItems, details: checkoutDetails } = useCheckout();
+  const { isEditingProduct, setIsEditingProduct } = useEditCheckoutItem();
   const { trackProductView, trackAddToCart } = useAnalytics();
   const [errors, setErrors] = useState<IOptionsErrors>({});
+  const editor = useCustomEditor("");
   const [selectedProductOptions, setSelectedProductOptions] =
     useLocalStorage<SelectedProductOptions>({
       key: "fmt_dp_selected_product_options",
@@ -72,19 +80,80 @@ export const ProductDetails = ({ product }: Props) => {
     trackProductView(product.id, product.title);
   }, [product.id, product.title, trackProductView]);
 
-  const handleBuyOrAddItemToCart = (actionType: "buy" | "cart") => {
+  useEffect(() => {
+    // If we're editing a product, find it in the checkout items and set the options
+    if (isEditingProduct) {
+      const itemToEdit = checkoutDetails.items.find(
+        (item) => item.id === product.id
+      );
+
+      if (itemToEdit) {
+        // Convert base64 artwork files back to File objects if they exist
+        const artworkFiles = itemToEdit.artworkFiles
+          ? itemToEdit.artworkFiles.map((file) => {
+              // Create a File object from the base64 string
+              const byteString = atob(file.url.split(",")[1]);
+              const ab = new ArrayBuffer(byteString.length);
+              const ia = new Uint8Array(ab);
+
+              for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+              }
+
+              return new File([ab], file.name, { type: file.type });
+            })
+          : [];
+
+        // Set the selected options from the item
+        setSelectedProductOptions({
+          productId: product.id,
+          image: product.image,
+
+          color: itemToEdit.color,
+          size: itemToEdit.size || "",
+          quantity: itemToEdit.quantity,
+          note: itemToEdit.note || "",
+          selectedProductType:
+            (itemToEdit.selectedProductType as "regular" | "jersey") ||
+            "regular",
+          artworkFiles: artworkFiles,
+          instructions: itemToEdit.instructions || "",
+        });
+
+        // Set the editor content if instructions exist
+        if (editor && itemToEdit.instructions) {
+          editor.commands.setContent(itemToEdit.instructions);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product, isEditingProduct]);
+
+  const handleBuyOrAddItemToCart = async (actionType: "buy" | "cart") => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
+      isCustomizable: product.isCustomizable,
     });
     setErrors(errors);
 
-    if (Object.keys(errors).length > 0) return false;
+    if (Object.keys(errors).length > 0) {
+      // Scroll to the first error if it's about artwork
+      if (errors.artworkFiles) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return false;
+    }
 
     const isTshirt = product.type.slug === "t-shirts";
     const adjustedPrice =
       isTshirt && selectedProductOptions.selectedProductType === "jersey"
         ? product.price - 5
         : product.price;
+
+    // Convert files to base64
+    const serializedArtworkFiles = await convertFilesToBase64(
+      selectedProductOptions.artworkFiles || []
+    );
 
     const item: ICartItem = {
       id: product.id,
@@ -100,12 +169,32 @@ export const ProductDetails = ({ product }: Props) => {
       selectedProductType: isTshirt
         ? selectedProductOptions.selectedProductType
         : product.type.slug || undefined,
+      isCustomizable: product.isCustomizable,
+      instructions: editor?.getHTML(),
+      artworkFiles: serializedArtworkFiles,
     };
 
     if (actionType === "buy") {
-      setItems([item]);
-      router.push("/checkout");
-      return;
+      if (isEditingProduct) {
+        const itemIndex = checkoutDetails.items.findIndex(
+          (existingItem) => existingItem.id === item.id
+        );
+
+        if (itemIndex !== -1) {
+          const updatedItems = [...checkoutDetails.items];
+
+          updatedItems[itemIndex] = item;
+
+          setItems(updatedItems);
+          router.push("/checkout");
+          setIsEditingProduct(false);
+          return;
+        }
+
+        setItems([item]);
+        router.push("/checkout");
+        return;
+      }
     }
 
     addItem(item);
@@ -113,21 +202,6 @@ export const ProductDetails = ({ product }: Props) => {
     trackAddToCart(product.id, product.title, product.price);
     toast.success("Item added to cart");
   };
-
-  useEffect(() => {
-    if (product.id !== selectedProductOptions.productId) {
-      setSelectedProductOptions({
-        productId: product.id,
-        color: product.color,
-        image: product.image,
-        size: "",
-        quantity: 1,
-        note: "",
-        selectedProductType: "regular" as const,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product]);
 
   const isTshirt = product.type.slug === "t-shirts";
   const adjustedPrice =
@@ -160,7 +234,7 @@ export const ProductDetails = ({ product }: Props) => {
           </Box>
         </Grid.Col>
 
-        <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md">
+        <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md" maw={700}>
           <Title order={3}>{product.title}</Title>
           {product.productNumber && product.productNumber != null && (
             <Group>
@@ -177,6 +251,47 @@ export const ProductDetails = ({ product }: Props) => {
           {featureFlags.productRatings && (
             <Box mb="md">
               <RatingStars productId={product.id} size="sm" />
+            </Box>
+          )}
+
+          {product.isCustomizable && (
+            <Box mb="xl">
+              <Title order={4} mb="xs">
+                Upload Your Artwork
+              </Title>
+              <Box mb="md">
+                <ArtworksDropzone
+                  files={selectedProductOptions.artworkFiles || []}
+                  onFilesChange={(files) =>
+                    setSelectedProductOptions((prev) => ({
+                      ...prev,
+                      artworkFiles: files,
+                    }))
+                  }
+                  maxFiles={5}
+                  maxSize={10 * 1024 ** 2}
+                  dropzoneText="Drag images here or click to select files"
+                  description={`Files should not exceed 10MB (${selectedProductOptions.artworkFiles?.length || 0}/5 files)`}
+                />
+
+                {selectedProductOptions.artworkFiles?.length === 0 &&
+                  errors.artworkFiles && (
+                    <Box mt="xs">
+                      <ErrorText text={errors.artworkFiles} />
+                    </Box>
+                  )}
+              </Box>
+              <Box>
+                <Text fw="bold" mb="xs">
+                  Instructions
+                </Text>
+                <Text size="sm" c="dimmed" mb="md">
+                  Add any specific instructions for your artwork. NB:
+                  Instructions that demand extra work may be subject to
+                  additional charges.
+                </Text>
+                <TextEditor editor={editor} />
+              </Box>
             </Box>
           )}
 
@@ -263,7 +378,7 @@ export const ProductDetails = ({ product }: Props) => {
               miw={{ base: "100%", xs: 150 }}
               className="btn"
             >
-              Buy now
+              Checkout
             </Button>
           </Group>
           <Text>

@@ -49,6 +49,7 @@ export function groupProductTypesByCategory(arr: IProductType[]) {
 
 type Payload = {
   sizes?: string[] | null;
+  isCustomizable?: boolean;
 };
 export function getProductOptionsErrors(
   options: SelectedProductOptions,
@@ -66,6 +67,16 @@ export function getProductOptionsErrors(
 
   if (!options.quantity) {
     errors = { ...errors, quantity: "Choose quantity" };
+  }
+
+  if (
+    payload?.isCustomizable &&
+    (!options.artworkFiles || options.artworkFiles.length === 0)
+  ) {
+    errors = {
+      ...errors,
+      artworkFiles: "Upload artwork files for customization",
+    };
   }
 
   return errors;

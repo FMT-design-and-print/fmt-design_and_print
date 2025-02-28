@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Permission } from "./roles";
+import { FileWithPath } from "@mantine/dropzone";
 
 export type MessageStatus = "error" | "success" | "info";
 export type DiscountType =
@@ -97,6 +98,7 @@ export interface IPrintProduct extends FeaturedItem {
   isForKids?: boolean;
   relatedProducts: FeaturedItem[];
   otherProducts: FeaturedItem[];
+  isCustomizable?: boolean;
 }
 
 export interface ICartItem {
@@ -111,6 +113,14 @@ export interface ICartItem {
   note?: string;
   productNumber?: string;
   selectedProductType?: "regular" | "jersey" | string;
+  isCustomizable?: boolean;
+  artworkFiles?: {
+    url: string;
+    name: string;
+    size: number;
+    type: string;
+  }[];
+  instructions?: string;
 }
 
 export type GroupedPrintProductTypes = Record<
@@ -147,12 +157,15 @@ export type SelectedProductOptions = {
   color?: ProductColor;
   note?: string;
   selectedProductType?: "regular" | "jersey";
+  artworkFiles?: FileWithPath[];
+  instructions?: string;
 };
 
 export interface IOptionsErrors {
   color?: string;
   size?: string;
   quantity?: string;
+  artworkFiles?: string;
 }
 
 export type GHRegion = { id: number; name: string };

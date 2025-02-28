@@ -37,7 +37,8 @@ export const allProductsQuery = groq`
             "id": _id,
             "slug": slug.current,
             title,
-        }
+        },
+        isCustomizable
     }
 `;
 
@@ -76,7 +77,8 @@ export const printProductsQuery = groq`
             "id": _id,
             "slug": slug.current,
             title,
-        }  
+        },
+        isCustomizable
     }
 `;
 
@@ -119,7 +121,8 @@ export const printProductsByTypeQuery = groq`
             "id": _id,
             "slug": slug.current,
             title,
-        }
+        },
+        isCustomizable
     }
 `;
 
@@ -166,6 +169,7 @@ export const singleProductQuery = groq`
             "slug": slug.current,
             title,
         },
+        isCustomizable,
         "relatedProducts": *[_type == "printService" && references(^.type->_id) ] { 
             "id": _id, 
             title, 
@@ -200,7 +204,8 @@ export const relatedProductsQuery = groq`
             "id": _id,
             "slug": slug.current,
             title,
-        }
+        },
+        isCustomizable
     }[0...5]
 `;
 
@@ -249,7 +254,8 @@ export const productsByTagQuery = groq`
     "id": _id,
     "slug": slug.current,
     title
-  }
+  },
+  isCustomizable
 }
 `;
 
@@ -298,6 +304,7 @@ export const allProductsInCategoryByTagQuery = groq`
     "id": _id,
     "slug": slug.current,
     title
-  }
+  },
+  isCustomizable
 }
 `;

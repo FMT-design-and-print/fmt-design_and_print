@@ -24,6 +24,15 @@ const printService: SchemaTypeDefinition = {
   ],
   fields: [
     {
+      name: "isCustomizable",
+      title: "User must provide artwork for this product",
+      description:
+        "If checked, the user will need to upload their own artwork to be used for this product.",
+      type: "boolean",
+      initialValue: false,
+      group: "general",
+    },
+    {
       name: "title",
       title: "Product Title",
       type: "string",
