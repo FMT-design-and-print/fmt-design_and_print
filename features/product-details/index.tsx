@@ -298,9 +298,15 @@ export const ProductDetails = ({ product }: Props) => {
     product.isCustomizable &&
     // Only use multiple artworks if:
     // 1. We have more than one side OR
-    // 2. We have a specific number of artworks (not -1) that is greater than 1
+    // 2. We have a specific number of artworks (not -1) that is greater than 1 OR
+    // 3. We allow multiple artworks for each side (when number of sides > 1)
     ((product.numberOfSides && product.numberOfSides > 1) ||
-      (product.numberOfArtworks != null && product.numberOfArtworks > 1));
+      (product.numberOfArtworks != null &&
+        product.numberOfArtworks > 1 &&
+        product.numberOfArtworks !== -1) ||
+      (product.allowMultipleArtworksForEachSide &&
+        product.numberOfSides &&
+        product.numberOfSides > 1));
 
   return (
     <Box px="xl" py="lg">
@@ -371,7 +377,7 @@ export const ProductDetails = ({ product }: Props) => {
                     numberOfSides: product.numberOfSides,
                     numberOfArtworks: product.numberOfArtworks,
                     enableArtworkLabels: product.enableArtworkLabels,
-                    artworkLabels: product.artworkLabels,
+                    artworkLabels: product.artworkLabels || [],
                     allowMultipleArtworksForEachSide:
                       product.allowMultipleArtworksForEachSide,
                   }}
@@ -383,7 +389,11 @@ export const ProductDetails = ({ product }: Props) => {
                 // Legacy single dropzone for backward compatibility
                 <Box>
                   <Title order={4} mb="xs">
-                    Upload Your Artwork
+                    {product.enableArtworkLabels &&
+                    product.artworkLabels &&
+                    product.artworkLabels.length > 0
+                      ? product.artworkLabels[0]
+                      : "Upload Your Artwork"}
                   </Title>
                   <Box mb="md">
                     <ArtworksDropzone
@@ -394,12 +404,37 @@ export const ProductDetails = ({ product }: Props) => {
                           artworkFiles: files,
                         }))
                       }
-                      maxFiles={5}
+                      maxFiles={
+                        product.numberOfArtworks != null &&
+                        product.numberOfArtworks > 0
+                          ? product.numberOfArtworks
+                          : 5
+                      }
                       maxSize={10 * 1024 ** 2}
-                      dropzoneText="Drag images here or click to select files"
+                      dropzoneText={`Drag ${
+                        product.numberOfArtworks != null &&
+                        product.numberOfArtworks > 1
+                          ? "images"
+                          : "image"
+                      } here or click to select ${
+                        product.numberOfArtworks != null &&
+                        product.numberOfArtworks > 1
+                          ? "files"
+                          : "file"
+                      }`}
                       description={`Files should not exceed 10MB (${
                         selectedProductOptions.artworkFiles?.length || 0
-                      }/5 files)`}
+                      }/${
+                        product.numberOfArtworks != null &&
+                        product.numberOfArtworks > 0
+                          ? product.numberOfArtworks
+                          : 5
+                      } ${
+                        product.numberOfArtworks != null &&
+                        product.numberOfArtworks > 1
+                          ? "files"
+                          : "file"
+                      })`}
                     />
 
                     {selectedProductOptions.artworkFiles?.length === 0 &&

@@ -85,8 +85,12 @@ export const ProductOptions = ({ product, actionType }: Props) => {
     // 2. We have a specific number of artworks (not -1) that is greater than 1 OR
     // 3. We allow multiple artworks for each side
     ((product.numberOfSides && product.numberOfSides > 1) ||
-      (product.numberOfArtworks != null && product.numberOfArtworks > 1) ||
-      product.allowMultipleArtworksForEachSide);
+      (product.numberOfArtworks != null &&
+        product.numberOfArtworks > 1 &&
+        product.numberOfArtworks !== -1) ||
+      (product.allowMultipleArtworksForEachSide &&
+        product.numberOfSides &&
+        product.numberOfSides > 1));
 
   const handleConfirm = async () => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
@@ -222,7 +226,7 @@ export const ProductOptions = ({ product, actionType }: Props) => {
                       numberOfSides: product.numberOfSides,
                       numberOfArtworks: product.numberOfArtworks,
                       enableArtworkLabels: product.enableArtworkLabels,
-                      artworkLabels: product.artworkLabels,
+                      artworkLabels: product.artworkLabels || [],
                       allowMultipleArtworksForEachSide:
                         product.allowMultipleArtworksForEachSide,
                     }}
@@ -233,7 +237,11 @@ export const ProductOptions = ({ product, actionType }: Props) => {
                 ) : (
                   <Box>
                     <Title order={4} mb="xs">
-                      Upload Your Artwork
+                      {product.enableArtworkLabels &&
+                      product.artworkLabels &&
+                      product.artworkLabels.length > 0
+                        ? product.artworkLabels[0]
+                        : "Upload Your Artwork"}
                     </Title>
                     <Box mb="md">
                       <ArtworksDropzone
@@ -245,11 +253,16 @@ export const ProductOptions = ({ product, actionType }: Props) => {
                           }))
                         }
                         maxFiles={
-                          product.allowMultipleArtworksForEachSide ? 5 : 1
+                          product.allowMultipleArtworksForEachSide
+                            ? 5
+                            : product.numberOfArtworks != null &&
+                                product.numberOfArtworks > 0
+                              ? product.numberOfArtworks
+                              : 1
                         }
                         maxSize={10 * 1024 ** 2}
-                        dropzoneText={`Drag ${product.allowMultipleArtworksForEachSide ? "images" : "image"} here or click to select ${product.allowMultipleArtworksForEachSide ? "files" : "file"}`}
-                        description={`File${product.allowMultipleArtworksForEachSide ? "s" : ""} should not exceed 10MB ${product.allowMultipleArtworksForEachSide ? `(${selectedProductOptions.artworkFiles?.length || 0}/5 files)` : ""}`}
+                        dropzoneText={`Drag ${product.allowMultipleArtworksForEachSide || (product.numberOfArtworks != null && product.numberOfArtworks > 1) ? "images" : "image"} here or click to select ${product.allowMultipleArtworksForEachSide || (product.numberOfArtworks != null && product.numberOfArtworks > 1) ? "files" : "file"}`}
+                        description={`File${product.allowMultipleArtworksForEachSide || (product.numberOfArtworks != null && product.numberOfArtworks > 1) ? "s" : ""} should not exceed 10MB (${selectedProductOptions.artworkFiles?.length || 0}/${product.allowMultipleArtworksForEachSide ? 5 : product.numberOfArtworks != null && product.numberOfArtworks > 0 ? product.numberOfArtworks : 1} files)`}
                       />
 
                       {selectedProductOptions.artworkFiles?.length === 0 &&

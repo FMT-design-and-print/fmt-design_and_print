@@ -190,7 +190,16 @@ const printService: SchemaTypeDefinition = {
       type: "boolean",
       initialValue: false,
       group: "customizationOptions",
-      hidden: ({ document }) => !document?.isCustomizable,
+      hidden: ({ document }) =>
+        !document?.isCustomizable || document?.numberOfSides === 1,
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          // Reset to false if numberOfSides is 1
+          if (context.document?.numberOfSides === 1 && value === true) {
+            return "This option is only available when Number of Sides is greater than 1";
+          }
+          return true;
+        }),
     },
     {
       name: "colors",
