@@ -78,3 +78,12 @@ export const useCheckout = create<
     }
   )
 );
+
+export const useEditCheckoutItem = create<{
+  isEditingProduct: boolean;
+  setIsEditingProduct: (isEditing: boolean) => void;
+}>((set) => ({
+  isEditingProduct: false,
+  setIsEditingProduct: (isEditing) =>
+    set(() => ({ isEditingProduct: isEditing })),
+}));

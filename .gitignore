@@ -46,3 +46,6 @@ next-env.d.ts
 
 places-raw-file.txt
 todo.txt
+
+/.cursor/
+/.sanity/

@@ -13,12 +13,11 @@ export const Quantity = ({ quantity, setSelectedProductOptions }: Props) => {
         variant="light"
         color="gray"
         onClick={() => {
-          if (quantity > 1) {
-            setSelectedProductOptions((prevState) => ({
-              ...prevState,
-              quantity: prevState.quantity - 1,
-            }));
-          }
+          const newValue = Math.max(quantity - 1, 1);
+          setSelectedProductOptions((prevState) => ({
+            ...prevState,
+            quantity: newValue,
+          }));
         }}
       >
         -
@@ -29,9 +28,10 @@ export const Quantity = ({ quantity, setSelectedProductOptions }: Props) => {
         value={quantity}
         onChange={(value) => {
           if (value == null) return;
+          const newValue = Math.max(Number(value), 1);
           setSelectedProductOptions((prevState) => ({
             ...prevState,
-            quantity: Number(value),
+            quantity: newValue,
           }));
         }}
         min={1}
@@ -43,7 +43,7 @@ export const Quantity = ({ quantity, setSelectedProductOptions }: Props) => {
         onClick={() => {
           setSelectedProductOptions((prevState) => ({
             ...prevState,
-            quantity: prevState.quantity + 1,
+            quantity: quantity + 1,
           }));
         }}
       >

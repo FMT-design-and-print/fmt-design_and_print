@@ -49,6 +49,13 @@ export function groupProductTypesByCategory(arr: IProductType[]) {
 
 type Payload = {
   sizes?: string[] | null;
+  isCustomizable?: boolean;
+  disableMainColor?: boolean;
+  numberOfSides?: number;
+  numberOfArtworks?: number;
+  enableArtworkLabels?: boolean;
+  artworkLabels?: string[];
+  allowMultipleArtworksForEachSide?: boolean;
 };
 export function getProductOptionsErrors(
   options: SelectedProductOptions,
@@ -56,7 +63,7 @@ export function getProductOptionsErrors(
 ) {
   let errors: IOptionsErrors = {};
 
-  if (options.color == null) {
+  if (!payload?.disableMainColor && options.color == null) {
     errors = { ...errors, color: "Select color" };
   }
 
@@ -65,7 +72,47 @@ export function getProductOptionsErrors(
   }
 
   if (!options.quantity) {
-    errors = { ...errors, quantity: "Choose quantity" };
+    errors = { ...errors, quantity: "Select quantity" };
+  }
+
+  // Artwork validation
+  if (payload?.isCustomizable) {
+    // Check if we're using the multiple artworks dropzone
+    if (
+      (payload.numberOfSides && payload.numberOfSides > 1) ||
+      (payload.numberOfArtworks !== undefined && payload.numberOfArtworks > 1)
+    ) {
+      // Determine how many artworks are required
+      const requiredArtworkCount =
+        payload.numberOfArtworks && payload.numberOfArtworks > 0
+          ? payload.numberOfArtworks
+          : payload.numberOfSides || 1;
+
+      // Check if artworkFilesMap exists and has the correct number of entries with files
+      if (
+        !options.artworkFilesMap ||
+        Object.keys(options.artworkFilesMap).length < requiredArtworkCount ||
+        Object.values(options.artworkFilesMap).some(
+          (files) => files.length === 0
+        )
+      ) {
+        errors = {
+          ...errors,
+          artworkFiles: `Please upload artwork for all ${requiredArtworkCount} required positions`,
+        };
+      }
+    }
+    // For backward compatibility with single dropzone
+    else if (
+      (!options.artworkFiles || options.artworkFiles.length === 0) &&
+      (!options.artworkFilesMap ||
+        Object.keys(options.artworkFilesMap).length === 0)
+    ) {
+      errors = {
+        ...errors,
+        artworkFiles: "Upload artwork files for customization",
+      };
+    }
   }
 
   return errors;

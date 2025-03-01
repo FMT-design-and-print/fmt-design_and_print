@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Permission } from "./roles";
+import { FileWithPath } from "@mantine/dropzone";
 
 export type MessageStatus = "error" | "success" | "info";
 export type DiscountType =
@@ -81,6 +82,7 @@ export type ProductColor = {
 export interface IPrintProduct extends FeaturedItem {
   productNumber?: string;
   color?: ProductColor;
+  disableMainColor?: boolean;
   gallery?: string[];
   description?: string;
   details?: unknown; // TODO: replace with correct type
@@ -97,6 +99,12 @@ export interface IPrintProduct extends FeaturedItem {
   isForKids?: boolean;
   relatedProducts: FeaturedItem[];
   otherProducts: FeaturedItem[];
+  isCustomizable?: boolean;
+  numberOfSides?: number;
+  numberOfArtworks?: number;
+  enableArtworkLabels?: boolean;
+  artworkLabels?: string[];
+  allowMultipleArtworksForEachSide?: boolean;
 }
 
 export interface ICartItem {
@@ -111,6 +119,23 @@ export interface ICartItem {
   note?: string;
   productNumber?: string;
   selectedProductType?: "regular" | "jersey" | string;
+  isCustomizable?: boolean;
+  artworkFiles?: {
+    url: string;
+    name: string;
+    size: number;
+    type: string;
+  }[];
+  artworkFilesMap?: Record<
+    string,
+    {
+      url: string;
+      name: string;
+      size: number;
+      type: string;
+    }[]
+  >;
+  instructions?: string;
 }
 
 export type GroupedPrintProductTypes = Record<
@@ -147,12 +172,16 @@ export type SelectedProductOptions = {
   color?: ProductColor;
   note?: string;
   selectedProductType?: "regular" | "jersey";
+  artworkFiles?: FileWithPath[];
+  instructions?: string;
+  artworkFilesMap?: Record<string, FileWithPath[]>;
 };
 
 export interface IOptionsErrors {
   color?: string;
   size?: string;
   quantity?: string;
+  artworkFiles?: string;
 }
 
 export type GHRegion = { id: number; name: string };

@@ -36,7 +36,7 @@ export const OrderDetails = ({
         onClose={close}
         title="Order Details"
         position="right"
-        size="lg"
+        size="xl"
       >
         <Group my="sm">
           <Text size="sm">Order Id: </Text>

@@ -10,6 +10,7 @@ interface Props extends ButtonProps {
   size?: MantineSize;
   showLabel?: boolean;
   disableRemove?: boolean;
+  text?: string;
 }
 export const CartBtn = ({
   handler,
@@ -17,6 +18,7 @@ export const CartBtn = ({
   disableRemove,
   size,
   productId,
+  text,
   ...props
 }: Props) => {
   const { items, removeItem } = useCart((state) => state);
@@ -54,7 +56,7 @@ export const CartBtn = ({
       title="add to cart"
       {...props}
     >
-      {showLabel ? "Add to cart" : <BsCartPlus />}
+      {showLabel ? text || "Add to cart" : <BsCartPlus />}
     </Button>
   );
 };
