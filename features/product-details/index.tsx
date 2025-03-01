@@ -10,7 +10,6 @@ import {
   SelectedProductOptions,
 } from "@/types";
 import {
-  AspectRatio,
   Badge,
   Box,
   Button,
@@ -18,13 +17,13 @@ import {
   Flex,
   Grid,
   Group,
-  Image,
   Text,
   Title,
   Select,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Gallery } from "./Gallery";
 import { ProductDescription } from "./ProductDescription";
@@ -42,9 +41,13 @@ import { featureFlags } from "@/constants/feature-flags";
 import { RatingStars } from "../ratings/RatingStars";
 import { CopyIcon } from "@/components/CopyIcon";
 import { ArtworksDropzone } from "@/components/Dropzone/ArtworksDropzone";
+import { MultipleArtworksDropzone } from "@/components/Dropzone/MultipleArtworksDropzone";
 import { TextEditor } from "@/components/TextEditor";
 import { useCustomEditor } from "@/hooks/useCustomEditor";
-import { convertFilesToBase64 } from "@/functions/convert-files-to-base64";
+import {
+  convertFilesToBase64,
+  convertFilesMapToBase64,
+} from "@/functions/convert-files-to-base64";
 
 const defaultValue = {
   productId: "",
@@ -55,6 +58,7 @@ const defaultValue = {
   note: "",
   selectedProductType: "regular",
   artworkFiles: [],
+  artworkFilesMap: {},
   instructions: "",
 } as SelectedProductOptions;
 
@@ -64,7 +68,8 @@ interface Props {
 export const ProductDetails = ({ product }: Props) => {
   const router = useRouter();
   const { addItem } = useCart((state) => state);
-  const { setItems, details: checkoutDetails } = useCheckout();
+  const { setItems: setCheckoutItems, details: checkoutDetails } =
+    useCheckout();
   const { isEditingProduct, setIsEditingProduct } = useEditCheckoutItem();
   const { trackProductView, trackAddToCart } = useAnalytics();
   const [errors, setErrors] = useState<IOptionsErrors>({});
@@ -79,6 +84,23 @@ export const ProductDetails = ({ product }: Props) => {
     // Track product view when component mounts
     trackProductView(product.id, product.title);
   }, [product.id, product.title, trackProductView]);
+
+  // Reset selected product options when product changes
+  useEffect(() => {
+    // Only update if the product ID has changed
+    if (selectedProductOptions.productId !== product.id) {
+      setSelectedProductOptions({
+        ...defaultValue,
+        productId: product.id,
+        image: product.image,
+      });
+    }
+  }, [
+    product.id,
+    product.image,
+    selectedProductOptions.productId,
+    setSelectedProductOptions,
+  ]);
 
   useEffect(() => {
     // If we're editing a product, find it in the checkout items and set the options
@@ -104,11 +126,53 @@ export const ProductDetails = ({ product }: Props) => {
             })
           : [];
 
+        // Convert artworkFilesMap from base64 to File objects if it exists
+        const artworkFilesMap: Record<string, File[]> = {};
+        if (itemToEdit.artworkFilesMap) {
+          // Process each label and its files
+          Object.entries(itemToEdit.artworkFilesMap).forEach(
+            ([label, files]) => {
+              artworkFilesMap[label] = files.map((file) => {
+                // Create a File object from the base64 string
+                const byteString = atob(file.url.split(",")[1]);
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+
+                for (let i = 0; i < byteString.length; i++) {
+                  ia[i] = byteString.charCodeAt(i);
+                }
+
+                return new File([ab], file.name, { type: file.type });
+              });
+            }
+          );
+        } else if (
+          artworkFiles.length > 0 &&
+          product.artworkLabels &&
+          product.artworkLabels.length > 0
+        ) {
+          // If no artworkFilesMap but we have artworkFiles and labels, create a map
+          // This is for backward compatibility with older items
+          const labels =
+            product.enableArtworkLabels && product.artworkLabels.length > 0
+              ? product.artworkLabels.slice(0, product.numberOfSides || 1)
+              : Array.from(
+                  { length: product.numberOfSides || 1 },
+                  (_, i) => `Artwork ${i + 1}`
+                );
+
+          // Distribute the files among the labels
+          labels.forEach((label, index) => {
+            if (index < artworkFiles.length) {
+              artworkFilesMap[label] = [artworkFiles[index]];
+            }
+          });
+        }
+
         // Set the selected options from the item
         setSelectedProductOptions({
           productId: product.id,
           image: product.image,
-
           color: itemToEdit.color,
           size: itemToEdit.size || "",
           quantity: itemToEdit.quantity,
@@ -117,6 +181,7 @@ export const ProductDetails = ({ product }: Props) => {
             (itemToEdit.selectedProductType as "regular" | "jersey") ||
             "regular",
           artworkFiles: artworkFiles,
+          artworkFilesMap: artworkFilesMap,
           instructions: itemToEdit.instructions || "",
         });
 
@@ -133,6 +198,13 @@ export const ProductDetails = ({ product }: Props) => {
     const errors = getProductOptionsErrors(selectedProductOptions, {
       sizes: product.sizes,
       isCustomizable: product.isCustomizable,
+      disableMainColor: product.disableMainColor,
+      numberOfSides: product.numberOfSides,
+      numberOfArtworks: product.numberOfArtworks,
+      enableArtworkLabels: product.enableArtworkLabels,
+      artworkLabels: product.artworkLabels,
+      allowMultipleArtworksForEachSide:
+        product.allowMultipleArtworksForEachSide,
     });
     setErrors(errors);
 
@@ -155,6 +227,11 @@ export const ProductDetails = ({ product }: Props) => {
       selectedProductOptions.artworkFiles || []
     );
 
+    // Convert artworkFilesMap to base64 if it exists
+    const serializedArtworkFilesMap = selectedProductOptions.artworkFilesMap
+      ? await convertFilesMapToBase64(selectedProductOptions.artworkFilesMap)
+      : undefined;
+
     const item: ICartItem = {
       id: product.id,
       title: product.title,
@@ -172,6 +249,7 @@ export const ProductDetails = ({ product }: Props) => {
       isCustomizable: product.isCustomizable,
       instructions: editor?.getHTML(),
       artworkFiles: serializedArtworkFiles,
+      artworkFilesMap: serializedArtworkFilesMap,
     };
 
     if (actionType === "buy") {
@@ -185,18 +263,24 @@ export const ProductDetails = ({ product }: Props) => {
 
           updatedItems[itemIndex] = item;
 
-          setItems(updatedItems);
+          setCheckoutItems(updatedItems);
           router.push("/checkout");
           setIsEditingProduct(false);
           return;
         }
 
-        setItems([item]);
+        setCheckoutItems([item]);
         router.push("/checkout");
         return;
       }
+
+      // Add item to checkout and redirect for non-editing "buy" action
+      setCheckoutItems([item]);
+      router.push("/checkout");
+      return;
     }
 
+    // This code only runs for "cart" action
     addItem(item);
     // Track add to cart event
     trackAddToCart(product.id, product.title, product.price);
@@ -209,22 +293,47 @@ export const ProductDetails = ({ product }: Props) => {
       ? product.price - 5
       : product.price;
 
+  // Determine if we should use the new multiple artworks dropzone
+  const shouldUseMultipleArtworks =
+    product.isCustomizable &&
+    // Only use multiple artworks if:
+    // 1. We have more than one side OR
+    // 2. We have a specific number of artworks (not -1) that is greater than 1
+    ((product.numberOfSides && product.numberOfSides > 1) ||
+      (product.numberOfArtworks != null && product.numberOfArtworks > 1));
+
   return (
     <Box px="xl" py="lg">
       <Grid>
         <Grid.Col span={{ base: 12, sm: 6, lg: 5 }}>
           <Box>
-            <AspectRatio
-              ratio={1 / 1.2}
+            <Box
               maw={450}
               mx={{ base: "sm", sm: "auto" }}
+              h={{ base: "auto", sm: 450 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+                position: "relative",
+                borderRadius: "var(--mantine-radius-md)",
+              }}
             >
-              <Image
-                radius="md"
-                src={selectedProductOptions.image}
-                alt={product.title}
-              />
-            </AspectRatio>
+              {selectedProductOptions.image && (
+                <Image
+                  src={selectedProductOptions.image}
+                  alt={product.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 450px"
+                  priority
+                  style={{
+                    objectFit: "contain",
+                    borderRadius: "var(--mantine-radius-sm)",
+                  }}
+                />
+              )}
+            </Box>
             {product.gallery && product.gallery.length > 0 && (
               <Gallery
                 images={[product.image, ...product.gallery]}
@@ -256,31 +365,52 @@ export const ProductDetails = ({ product }: Props) => {
 
           {product.isCustomizable && (
             <Box mb="xl">
-              <Title order={4} mb="xs">
-                Upload Your Artwork
-              </Title>
-              <Box mb="md">
-                <ArtworksDropzone
-                  files={selectedProductOptions.artworkFiles || []}
-                  onFilesChange={(files) =>
-                    setSelectedProductOptions((prev) => ({
-                      ...prev,
-                      artworkFiles: files,
-                    }))
-                  }
-                  maxFiles={5}
-                  maxSize={10 * 1024 ** 2}
-                  dropzoneText="Drag images here or click to select files"
-                  description={`Files should not exceed 10MB (${selectedProductOptions.artworkFiles?.length || 0}/5 files)`}
+              {shouldUseMultipleArtworks ? (
+                <MultipleArtworksDropzone
+                  product={{
+                    numberOfSides: product.numberOfSides,
+                    numberOfArtworks: product.numberOfArtworks,
+                    enableArtworkLabels: product.enableArtworkLabels,
+                    artworkLabels: product.artworkLabels,
+                    allowMultipleArtworksForEachSide:
+                      product.allowMultipleArtworksForEachSide,
+                  }}
+                  artworkFilesMap={selectedProductOptions.artworkFilesMap}
+                  setSelectedProductOptions={setSelectedProductOptions}
+                  errors={{ artworkFiles: errors.artworkFiles }}
                 />
+              ) : (
+                // Legacy single dropzone for backward compatibility
+                <Box>
+                  <Title order={4} mb="xs">
+                    Upload Your Artwork
+                  </Title>
+                  <Box mb="md">
+                    <ArtworksDropzone
+                      files={selectedProductOptions.artworkFiles || []}
+                      onFilesChange={(files) =>
+                        setSelectedProductOptions((prev) => ({
+                          ...prev,
+                          artworkFiles: files,
+                        }))
+                      }
+                      maxFiles={5}
+                      maxSize={10 * 1024 ** 2}
+                      dropzoneText="Drag images here or click to select files"
+                      description={`Files should not exceed 10MB (${
+                        selectedProductOptions.artworkFiles?.length || 0
+                      }/5 files)`}
+                    />
 
-                {selectedProductOptions.artworkFiles?.length === 0 &&
-                  errors.artworkFiles && (
-                    <Box mt="xs">
-                      <ErrorText text={errors.artworkFiles} />
-                    </Box>
-                  )}
-              </Box>
+                    {selectedProductOptions.artworkFiles?.length === 0 &&
+                      errors.artworkFiles && (
+                        <Box mt="xs">
+                          <ErrorText text={errors.artworkFiles} />
+                        </Box>
+                      )}
+                  </Box>
+                </Box>
+              )}
               <Box>
                 <Text fw="bold" mb="xs">
                   Instructions
@@ -317,16 +447,21 @@ export const ProductDetails = ({ product }: Props) => {
             </>
           )}
 
-          <Colors
-            mainImage={product.image}
-            mainColor={product.color}
-            colors={product.colors || []}
-            selectedColor={selectedProductOptions.color}
-            setSelectedProductOptions={setSelectedProductOptions}
-          />
-          {!selectedProductOptions.color && errors.color && (
-            <ErrorText text={errors.color} />
+          {!product.disableMainColor && (
+            <>
+              <Colors
+                mainImage={product.image}
+                mainColor={product.color}
+                colors={product.colors || []}
+                selectedColor={selectedProductOptions.color}
+                setSelectedProductOptions={setSelectedProductOptions}
+              />
+              {!selectedProductOptions.color && errors.color && (
+                <ErrorText text={errors.color} />
+              )}
+            </>
           )}
+
           <Sizes
             sizes={product.sizes}
             selectedSize={selectedProductOptions.size}

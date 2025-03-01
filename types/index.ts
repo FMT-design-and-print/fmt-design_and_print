@@ -82,6 +82,7 @@ export type ProductColor = {
 export interface IPrintProduct extends FeaturedItem {
   productNumber?: string;
   color?: ProductColor;
+  disableMainColor?: boolean;
   gallery?: string[];
   description?: string;
   details?: unknown; // TODO: replace with correct type
@@ -99,6 +100,11 @@ export interface IPrintProduct extends FeaturedItem {
   relatedProducts: FeaturedItem[];
   otherProducts: FeaturedItem[];
   isCustomizable?: boolean;
+  numberOfSides?: number;
+  numberOfArtworks?: number;
+  enableArtworkLabels?: boolean;
+  artworkLabels?: string[];
+  allowMultipleArtworksForEachSide?: boolean;
 }
 
 export interface ICartItem {
@@ -120,6 +126,15 @@ export interface ICartItem {
     size: number;
     type: string;
   }[];
+  artworkFilesMap?: Record<
+    string,
+    {
+      url: string;
+      name: string;
+      size: number;
+      type: string;
+    }[]
+  >;
   instructions?: string;
 }
 
@@ -159,6 +174,7 @@ export type SelectedProductOptions = {
   selectedProductType?: "regular" | "jersey";
   artworkFiles?: FileWithPath[];
   instructions?: string;
+  artworkFilesMap?: Record<string, FileWithPath[]>;
 };
 
 export interface IOptionsErrors {

@@ -1,5 +1,5 @@
 import { SelectedProductOptions } from "@/types";
-import { Box, Card, Center, Group, Text } from "@mantine/core";
+import { Box, Center, Group, Paper, Text } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import classes from "./Style.module.css";
 
@@ -33,10 +33,10 @@ export const Sizes = ({
         </Text>
         <Group gap="xs" my="xs">
           {sizes.map((size, i) => (
-            <Card
+            <Paper
               onClick={() => handleSizeSelect(size)}
               key={size + i}
-              p={0}
+              px={10}
               withBorder
               style={{
                 borderWidth: selectedSize === size ? "2px" : "1px",
@@ -50,7 +50,7 @@ export const Sizes = ({
               <Center w="100%" h="100%">
                 <Text size="sm">{size}</Text>
               </Center>
-            </Card>
+            </Paper>
           ))}
         </Group>
       </Box>

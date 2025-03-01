@@ -6,11 +6,13 @@ import React from "react";
 interface Props {
   rejectedFiles: FileRejection[];
   handleClear: () => void;
+  maxFiles?: number;
 }
 
 export const RejectedFilesMessages = ({
   rejectedFiles,
   handleClear,
+  maxFiles = 5,
 }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatFileError = (error: any) => {
@@ -18,7 +20,7 @@ export const RejectedFilesMessages = ({
       case "file-too-large":
         return `File is too large. Max file size is 10MB`;
       case "too-many-files":
-        return `You can only upload up to 5 files`;
+        return `You can only upload up to ${maxFiles} ${maxFiles === 1 ? "file" : "files"}`;
       default:
         return error.message;
     }

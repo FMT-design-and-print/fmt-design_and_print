@@ -10,6 +10,10 @@ const printService: SchemaTypeDefinition = {
       title: "General Details",
     },
     {
+      name: "customizationOptions",
+      title: "Customization Options",
+    },
+    {
       name: "variations",
       title: "Variations",
     },
@@ -30,7 +34,7 @@ const printService: SchemaTypeDefinition = {
         "If checked, the user will need to upload their own artwork to be used for this product.",
       type: "boolean",
       initialValue: false,
-      group: "general",
+      group: "customizationOptions",
     },
     {
       name: "title",
@@ -84,11 +88,20 @@ const printService: SchemaTypeDefinition = {
       group: "general",
     },
     {
+      name: "disableMainColor",
+      title: "Disable Main Image Color",
+      description: "Check this if the product doesn't need a main image color",
+      type: "boolean",
+      initialValue: false,
+      group: "general",
+    },
+    {
       name: "color",
       title: "Main Image Color",
       type: "reference",
       to: [{ type: "colors" }],
       group: "general",
+      hidden: ({ document }) => document?.disableMainColor === true,
     },
     {
       name: "gallery",
@@ -114,6 +127,70 @@ const printService: SchemaTypeDefinition = {
       type: "array",
       of: [{ type: "block" }],
       group: "general",
+    },
+    {
+      name: "numberOfSides",
+      title: "Number of Sides",
+      description:
+        "The number of sides of the product that will be printed (up to 4)",
+      type: "number",
+      validation: (Rule) => Rule.min(1).max(4).integer(),
+      initialValue: 1,
+      group: "customizationOptions",
+      hidden: ({ document }) => !document?.isCustomizable,
+    },
+    {
+      name: "numberOfArtworks",
+      title: "Number of Artworks",
+      description:
+        "The number of different artworks that must be provided. Use -1 for unspecified.",
+      type: "number",
+      validation: (Rule) => Rule.min(-1).max(5).integer(),
+      initialValue: 1,
+      group: "customizationOptions",
+      hidden: ({ document }) => !document?.isCustomizable,
+    },
+    {
+      name: "enableArtworkLabels",
+      title: "Enable Artwork Labels",
+      description: "If checked, you can provide custom labels for each artwork",
+      type: "boolean",
+      initialValue: false,
+      group: "customizationOptions",
+      hidden: ({ document }) => !document?.isCustomizable,
+    },
+    {
+      name: "artworkLabels",
+      title: "Artwork Labels",
+      description:
+        "Custom labels for each artwork (e.g., 'Front Side', 'Back Side')",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            {
+              name: "label",
+              title: "Label",
+              type: "string",
+              initialValue: "Artwork",
+            },
+          ],
+        },
+      ],
+      group: "customizationOptions",
+      hidden: ({ document }) =>
+        !document?.isCustomizable || !document?.enableArtworkLabels,
+    },
+    {
+      name: "allowMultipleArtworksForEachSide",
+      title: "Allow Multiple Artworks For Each Side",
+      description:
+        "If checked, users can upload multiple artworks (up to 5) for each side or artwork position",
+      type: "boolean",
+      initialValue: false,
+      group: "customizationOptions",
+      hidden: ({ document }) => !document?.isCustomizable,
     },
     {
       name: "colors",
