@@ -9,12 +9,16 @@ export const allProductsQuery = groq`
         title,
         "slug": slug.current,
         "image": image.asset->url,
-        color->{
-            "id": _id,
-            title,
-            hex,
-            "image": image.asset->url
-        },
+        disableMainColor,
+        "color": select(
+          disableMainColor == true => null,
+          color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+          }
+        ),
         "colors": colors[]{
             "id": _key,
             "image": image.asset->url,
@@ -38,7 +42,12 @@ export const allProductsQuery = groq`
             "slug": slug.current,
             title,
         },
-        isCustomizable
+        isCustomizable,
+        allowMultipleArtworksForEachSide,
+        numberOfSides,
+        numberOfArtworks,
+        enableArtworkLabels,
+        "artworkLabels": artworkLabels[].label
     }
 `;
 
@@ -49,12 +58,16 @@ export const printProductsQuery = groq`
         "slug": slug.current,
         "productNumber": number,
         "image": image.asset->url,
-        color->{
-            "id": _id,
-            title,
-            hex,
-            "image": image.asset->url
-        },
+        disableMainColor,
+        "color": select(
+          disableMainColor == true => null,
+          color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+          }
+        ),
         "colors": colors[]{
             "id": _key,
             "image": image.asset->url,
@@ -78,7 +91,12 @@ export const printProductsQuery = groq`
             "slug": slug.current,
             title,
         },
-        isCustomizable
+        isCustomizable,
+        allowMultipleArtworksForEachSide,
+        numberOfSides,
+        numberOfArtworks,
+        enableArtworkLabels,
+        "artworkLabels": artworkLabels[].label
     }
 `;
 
@@ -88,12 +106,16 @@ export const printProductsByTypeQuery = groq`
         title,
         "slug": slug.current,
         "image": image.asset->url,
-        color->{
-            "id": _id,
-            title,
-            hex,
-            "image": image.asset->url
-        },
+        disableMainColor,
+        "color": select(
+          disableMainColor == true => null,
+          color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+          }
+        ),
         "colors": colors[]{
             "id": _key,
             "image": image.asset->url,
@@ -122,7 +144,12 @@ export const printProductsByTypeQuery = groq`
             "slug": slug.current,
             title,
         },
-        isCustomizable
+        isCustomizable,
+        allowMultipleArtworksForEachSide,
+        numberOfSides,
+       numberOfArtworks,
+       enableArtworkLabels,
+       "artworkLabels": artworkLabels[].label
     }
 `;
 
@@ -133,12 +160,16 @@ export const singleProductQuery = groq`
         "slug": slug.current,
         "productNumber": number,
         "image": image.asset->url,
-        color->{
-            "id": _id,
-            title,
-            hex,
-            "image": image.asset->url
-        },
+        disableMainColor,
+        "color": select(
+          disableMainColor == true => null,
+          color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+          }
+        ),
         "colors": colors[]{
             "id": _key,
             "image": image.asset->url,
@@ -170,6 +201,11 @@ export const singleProductQuery = groq`
             title,
         },
         isCustomizable,
+       numberOfSides,
+       numberOfArtworks,
+       enableArtworkLabels,
+       "artworkLabels": artworkLabels[].label,
+       allowMultipleArtworksForEachSide,
         "relatedProducts": *[_type == "printService" && references(^.type->_id) ] { 
             "id": _id, 
             title, 
@@ -205,7 +241,8 @@ export const relatedProductsQuery = groq`
             "slug": slug.current,
             title,
         },
-        isCustomizable
+        isCustomizable,
+        allowMultipleArtworksForEachSide
     }[0...5]
 `;
 
@@ -221,12 +258,16 @@ export const productsByTagQuery = groq`
   title,
   "slug": slug.current,
   "image": image.asset->url,
-  color->{
-    "id": _id,
-    title,
-    hex,
-    "image": image.asset->url
-  },
+  disableMainColor,
+  "color": select(
+    disableMainColor == true => null,
+    color->{
+      "id": _id,
+      title,
+      hex,
+      "image": image.asset->url
+    }
+  ),
   "colors": colors[]{
     "id": _key,
     "image": image.asset->url,
@@ -255,7 +296,12 @@ export const productsByTagQuery = groq`
     "slug": slug.current,
     title
   },
-  isCustomizable
+  isCustomizable,
+  allowMultipleArtworksForEachSide,
+  numberOfSides,
+  numberOfArtworks,
+  enableArtworkLabels,
+  "artworkLabels": artworkLabels[].label
 }
 `;
 
@@ -271,12 +317,16 @@ export const allProductsInCategoryByTagQuery = groq`
   title,
   "slug": slug.current,
   "image": image.asset->url,
-  color->{
-    "id": _id,
-    title,
-    hex,
-    "image": image.asset->url
-  },
+  disableMainColor,
+  "color": select(
+    disableMainColor == true => null,
+    color->{
+      "id": _id,
+      title,
+      hex,
+      "image": image.asset->url
+    }
+  ),
   "colors": colors[]{
     "id": _key,
     "image": image.asset->url,
@@ -305,6 +355,77 @@ export const allProductsInCategoryByTagQuery = groq`
     "slug": slug.current,
     title
   },
-  isCustomizable
+  isCustomizable,
+  allowMultipleArtworksForEachSide,
+  numberOfSides,
+  numberOfArtworks,
+  enableArtworkLabels,
+  "artworkLabels": artworkLabels[].label
 }
+`;
+
+export const productQuery = groq`
+    *[_type == "printService" && _id == $id][0] {
+        "id": _id,
+        title,
+        "slug": slug.current,
+        "image": image.asset->url,
+        disableMainColor,
+        "color": select(
+          disableMainColor == true => null,
+          color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+          }
+        ),
+        "colors": colors[]{
+            "id": _key,
+            "image": image.asset->url,
+            color->{
+              "id": _id,
+              title,
+              hex,
+              "image": image.asset->url
+            }, 
+        },
+        "sizes": sizes[]->.title,
+        price,
+        description,
+        details,
+        productNumber,
+        "gallery": gallery[].asset->url,
+        "tags": tags,
+        category->{
+            "id": _id,
+            "slug": slug.current,
+            title,
+        },
+        type->{
+            "id": _id,
+            "slug": slug.current,
+            title,
+        },
+        isCustomizable,
+       numberOfSides,
+       numberOfArtworks,
+       enableArtworkLabels,
+       "artworkLabels": artworkLabels[].label,
+       allowMultipleArtworksForEachSide,
+        "relatedProducts": *[_type == "printService" && references(^.type->_id) ] { 
+            "id": _id, 
+            title, 
+            price, 
+            "slug": slug.current, 
+            "image": image.asset->url  
+        }[0..5],
+        "otherProducts": *[_type == "printService" && !references(^.type->_id)]{ 
+            "id": _id, 
+            title, 
+            price, 
+            "slug": slug.current, 
+            "image": image.asset->url 
+        }[0...10]
+    }
 `;

@@ -48,22 +48,31 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
         <Avatar size="lg" src={cartItem.image} radius="xs" />
 
         <div>
-          <Text fz="sm" fw={500} lineClamp={2} mb="xs">
+          <Text fz="sm" fw={500} lineClamp={2} mb="5px">
             {cartItem.title}
           </Text>
 
-          <Group>
-            <Group gap="5px">
-              <Text fz="xs" c="dimmed">
-                Color:
-              </Text>
-              <Avatar src={cartItem.color?.image} size="xs" />
-            </Group>
+          <Group gap="xs">
+            {cartItem.color && (
+              <Group gap="5px">
+                <Text fz="xs" c="dimmed">
+                  Color:
+                </Text>
+                <Avatar src={cartItem.color?.image} size="xs" />
+              </Group>
+            )}
             {cartItem.size && (
               <Text fz="xs" c="dimmed">
                 Size: {cartItem.size}
               </Text>
             )}
+            {cartItem.isCustomizable &&
+              cartItem.artworkFiles &&
+              cartItem.artworkFiles.length > 0 && (
+                <Text fz="xs" c="dimmed">
+                  Artworks: {cartItem.artworkFiles.length}
+                </Text>
+              )}
             <Group>
               <Text fz="xs" c="dimmed">
                 Price:

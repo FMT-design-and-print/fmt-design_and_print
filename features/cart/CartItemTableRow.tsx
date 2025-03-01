@@ -38,18 +38,28 @@ export const CartItemTableRow = ({ cartItem }: Props) => {
               {cartItem.title}
             </Text>
             <Group>
-              <Group gap="5px">
-                <Text fz="xs" c="dimmed">
-                  Color:
-                </Text>
-                <Avatar src={cartItem.color?.image} size="xs" />
-              </Group>
+              {cartItem.color && (
+                <Group gap="5px">
+                  <Text fz="xs" c="dimmed">
+                    Color:
+                  </Text>
+                  <Avatar src={cartItem.color?.image} size="xs" />
+                </Group>
+              )}
 
               {cartItem.size && (
                 <Text fz="xs" c="dimmed">
                   Size: {cartItem.size}
                 </Text>
               )}
+
+              {cartItem.isCustomizable &&
+                cartItem.artworkFiles &&
+                cartItem.artworkFiles.length > 0 && (
+                  <Text fz="xs" c="dimmed">
+                    Artworks: {cartItem.artworkFiles.length}
+                  </Text>
+                )}
             </Group>
           </div>
         </Group>

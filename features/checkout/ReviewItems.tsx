@@ -61,12 +61,14 @@ export const ReviewItems = () => {
                 </Text>
 
                 <Group>
-                  <Group gap="5px">
-                    <Text fz="xs" c="dimmed">
-                      Color:
-                    </Text>
-                    <Avatar src={item.color?.image} size="xs" />
-                  </Group>
+                  {item.color && (
+                    <Group gap="5px">
+                      <Text fz="xs" c="dimmed">
+                        Color:
+                      </Text>
+                      <Avatar src={item.color?.image} size="xs" />
+                    </Group>
+                  )}
                   {item.size && (
                     <Text fz="xs" c="dimmed">
                       Size: {item.size}
@@ -138,8 +140,9 @@ export const ReviewItems = () => {
           </Flex>
 
           {item.isCustomizable &&
-            item.artworkFiles &&
-            item.artworkFiles.length > 0 && (
+            ((item.artworkFiles && item.artworkFiles.length > 0) ||
+              (item.artworkFilesMap &&
+                Object.keys(item.artworkFilesMap).length > 0)) && (
               <>
                 <UnstyledButton
                   onClick={() => toggleArtworks(item.id)}
@@ -160,11 +163,28 @@ export const ReviewItems = () => {
 
                 <Collapse in={openArtworks[item.id]}>
                   <Box mt="xs">
-                    <ReceivedFilesRenderer
-                      files={item.artworkFiles}
-                      title={`Artwork Files (${item.artworkFiles.length})`}
-                      requireOneFile={true}
-                    />
+                    {item.artworkFilesMap &&
+                    Object.keys(item.artworkFilesMap).length > 0 ? (
+                      <Group>
+                        {Object.entries(item.artworkFilesMap).map(
+                          ([label, files]) => (
+                            <Box key={label} mb="md">
+                              <ReceivedFilesRenderer
+                                files={files}
+                                title={`${label} (${files.length})`}
+                                requireOneFile={true}
+                              />
+                            </Box>
+                          )
+                        )}
+                      </Group>
+                    ) : (
+                      <ReceivedFilesRenderer
+                        files={item.artworkFiles || []}
+                        title={`Artwork Files (${item.artworkFiles?.length || 0})`}
+                        requireOneFile={true}
+                      />
+                    )}
                   </Box>
                 </Collapse>
               </>

@@ -1,5 +1,6 @@
 import { SelectedProductOptions } from "@/types";
-import { Avatar, Group } from "@mantine/core";
+import { Group, Box } from "@mantine/core";
+import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {
@@ -11,17 +12,31 @@ export const Gallery = ({ images, setSelectedProductOptions }: Props) => {
   return (
     <Group gap="xs" my="xs" justify="center">
       {images.map((image, i) => (
-        <Avatar
-          radius="xs"
+        <Box
           key={i}
-          size="lg"
-          src={image}
-          variant="outline"
+          style={{
+            position: "relative",
+            width: 64,
+            height: 64,
+            cursor: "pointer",
+            border: "1px solid var(--mantine-color-gray-3)",
+            borderRadius: "var(--mantine-radius-xs)",
+            overflow: "hidden",
+          }}
           onClick={() => {
             setSelectedProductOptions((prev) => ({ ...prev, image }));
           }}
-          style={{ cursor: "pointer" }}
-        />
+        >
+          <Image
+            src={image}
+            alt={`Product view ${i + 1}`}
+            fill
+            sizes="64px"
+            style={{
+              objectFit: "contain",
+            }}
+          />
+        </Box>
       ))}
     </Group>
   );

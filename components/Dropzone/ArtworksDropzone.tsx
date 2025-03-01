@@ -140,7 +140,18 @@ export const ArtworksDropzone = ({
         }}
         maxFiles={maxFiles - files.length}
         maxSize={maxSize}
-        accept={acceptedFileTypes}
+        accept={acceptedFileTypes.reduce((acc, type) => {
+          if (type in DEFAULT_ACCEPTED_TYPES) {
+            return {
+              ...acc,
+              [type]:
+                DEFAULT_ACCEPTED_TYPES[
+                  type as keyof typeof DEFAULT_ACCEPTED_TYPES
+                ],
+            };
+          }
+          return acc;
+        }, {})}
         {...props}
       >
         <Group
@@ -253,22 +264,25 @@ export const ArtworksDropzone = ({
         </Group>
       </Dropzone>
 
-      {files.length > 0 &&
-        (renderFiles?.() ?? (
-          <ReceivedFilesRenderer
-            files={files}
-            onRemove={handleRemoveFile}
-            title={`Uploaded Files (${files.length}/${maxFiles})`}
-          />
-        ))}
+      {renderFiles ? (
+        renderFiles()
+      ) : (
+        <ReceivedFilesRenderer
+          files={files}
+          onRemove={handleRemoveFile}
+          title={`Uploaded Files (${files.length}/${maxFiles})`}
+        />
+      )}
 
-      {rejectedFiles.length > 0 &&
-        (renderRejected?.(rejectedFiles, () => setRejectedFiles([])) ?? (
-          <RejectedFilesMessages
-            rejectedFiles={rejectedFiles}
-            handleClear={() => setRejectedFiles([])}
-          />
-        ))}
+      {renderRejected
+        ? renderRejected(rejectedFiles, () => setRejectedFiles([]))
+        : rejectedFiles.length > 0 && (
+            <RejectedFilesMessages
+              rejectedFiles={rejectedFiles}
+              handleClear={() => setRejectedFiles([])}
+              maxFiles={maxFiles}
+            />
+          )}
 
       {errors.length > 0 && (
         <ErrorsRenderer errors={errors} showTitle={false} />
