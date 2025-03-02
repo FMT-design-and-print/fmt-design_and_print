@@ -6,6 +6,10 @@ export function validateQuoteMedium(
 ) {
   const errors: string[] = [];
 
+  if (!quoteReceptionMedium) {
+    errors.push("Select how you want to receive your quote");
+  }
+
   if (!value) {
     if (quoteReceptionMedium === "email") {
       errors.push("Enter email address");
@@ -23,11 +27,18 @@ export function validateQuoteMedium(
       errors.push("Enter valid email address");
     }
 
-    if (
-      (quoteReceptionMedium === "whatsapp" || quoteReceptionMedium === "sms") &&
-      value.length !== 10
-    ) {
-      errors.push("Enter valid number. It should be 10 digits");
+    if (quoteReceptionMedium === "whatsapp" || quoteReceptionMedium === "sms") {
+      // Check if the phone number is in one of the allowed formats:
+      // 1. +233267866768 (with country code and plus)
+      // 2. 233267866768 (with country code, no plus)
+      // 3. 0267866768 (local format starting with 0)
+      const isValidFormat = /^(\+\d{10,12}|\d{10,12})$/.test(value);
+
+      if (!isValidFormat) {
+        errors.push(
+          "Enter valid number format (e.g., +233xxxxxxxxx, 233xxxxxxxxx, or 024xxxxxxx)"
+        );
+      }
     }
   }
 

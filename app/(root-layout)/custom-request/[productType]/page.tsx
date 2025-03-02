@@ -1,13 +1,11 @@
-import { productKeywords } from "@/constants/all-product_keywords";
 import { CustomRequest } from "@/features/custom-request";
 import { CustomRequestPageRenderer } from "@/features/custom-request/Renderer";
-import { Container } from "@mantine/core";
-import { redirect } from "next/navigation";
-import { Banner } from "../Banner";
-import { Metadata } from "next";
 import { formatString } from "@/functions";
-import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
+import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
+import { Container } from "@mantine/core";
+import { Metadata } from "next";
+import { Banner } from "../Banner";
 
 type Params = Promise<{
   productType: string;
@@ -30,9 +28,6 @@ const CustomRequestPage = async ({ params }: { params: Params }) => {
 
   const product = productType;
 
-  if (!productKeywords.includes(product)) {
-    redirect("/custom-request");
-  }
   return (
     <>
       <Container size="xl">
