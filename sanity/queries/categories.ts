@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 
 export const categoriesQuery = groq`
-*[_type == "printCategories" && *[_type == "productTypes" && live == true ]] {
+*[_type == "printCategories" && count(*[_type == "productTypes" && references(^._id) && live == true]) > 0] {
     "id": _id,
     title,
     "slug": slug.current,

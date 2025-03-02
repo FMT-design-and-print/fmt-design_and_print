@@ -11,7 +11,7 @@ interface HeroLinkProps {
 
 export const HeroLink = ({ item, link, isMobile }: HeroLinkProps) => (
   <Link href={link}>
-    <Group py="xs" wrap="nowrap">
+    <Group py="5px" wrap="nowrap">
       <Avatar className="border border-1">
         <Image src={item.icon} alt={item.tagline} width={20} height={20} />
       </Avatar>

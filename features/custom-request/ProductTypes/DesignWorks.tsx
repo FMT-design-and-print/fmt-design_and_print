@@ -6,12 +6,12 @@ import { DesignInstructions } from "../DesignInstructions";
 import { ArtworkSection } from "../ArtworkSection";
 import { QuoteReceptionOptions } from "../QuoteReceptionOptions";
 import { ErrorsRenderer } from "@/components/ErrorsRenderer";
-import { Checkbox, Text } from "@mantine/core";
+import { Box, Checkbox, Divider, Stack, Text } from "@mantine/core";
 import { uploadArtworkFiles } from "../../../functions/upload-files";
 import { saveCustomOrderDetails } from "../save-details";
 import { validateQuoteMedium } from "../validate-quote-medium";
 import { isArtworkRequired } from "../required-artwork";
-import { cardKeywords } from "@/constants/all-product_keywords";
+import { cardKeywords, pullUpKeywords } from "@/constants/all-product_keywords";
 import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
@@ -27,10 +27,16 @@ export const DesignWorks = ({ image }: { image: string }) => {
     router,
     productType,
   } = useCustomReqCommonStates(image);
-  const [willPrint, setWillPrint] = useState(true);
+  const [services, setServices] = useState<string[]>([]);
+  const [extraOptions, setExtraOptions] = useState<string[]>([]);
 
   const validateFields = () => {
     let errors: string[] = [];
+
+    // Validate that at least one service is selected
+    if (services.length === 0) {
+      errors.push("Please select at least one service");
+    }
 
     if (
       isArtworkRequired(context?.selectedArtworkOption, context?.artworkFiles)
@@ -69,6 +75,8 @@ export const DesignWorks = ({ image }: { image: string }) => {
 
     const requestDetails = {
       itemTypes: [productType],
+      services: services,
+      extraOptions: extraOptions,
       user_id: user?.id,
     };
 
@@ -117,31 +125,130 @@ export const DesignWorks = ({ image }: { image: string }) => {
   return (
     <Layout isLoading={isLoading} loadingMessage={loadingMessage}>
       <Text c="dimmed" size="sm" mt="sm">
+        Choose all the services you require
+      </Text>
+      <Stack>
+        <Checkbox
+          label="Design"
+          color="pink"
+          checked={services.includes("design")}
+          onChange={(e) => {
+            setServices(
+              e.currentTarget.checked
+                ? [...services, "design"]
+                : services.filter((s) => s !== "design")
+            );
+          }}
+        />
+        <Checkbox
+          label="Print"
+          color="pink"
+          checked={services.includes("print")}
+          onChange={(e) => {
+            setServices(
+              e.currentTarget.checked
+                ? [...services, "print"]
+                : services.filter((s) => s !== "print")
+            );
+          }}
+        />
+      </Stack>
+
+      {cardKeywords.includes(productType as string) && (
+        <Box>
+          <Divider my="sm" />
+          <Text c="dimmed" size="sm" my="sm">
+            Side
+          </Text>
+          <Stack>
+            <Checkbox
+              color="pink"
+              label="One Side"
+              checked={extraOptions.includes("One Side")}
+              onChange={(e) => {
+                setExtraOptions(
+                  e.currentTarget.checked
+                    ? [...extraOptions, "One Side"]
+                    : extraOptions.filter((o) => o !== "One Side")
+                );
+              }}
+            />
+            <Checkbox
+              color="pink"
+              label="Two Sides"
+              checked={extraOptions.includes("Two Sides")}
+              onChange={(e) => {
+                setExtraOptions(
+                  e.currentTarget.checked
+                    ? [...extraOptions, "Two Sides"]
+                    : extraOptions.filter((o) => o !== "Two Sides")
+                );
+              }}
+            />
+          </Stack>
+        </Box>
+      )}
+
+      {pullUpKeywords.includes(productType as string) && (
+        <Box>
+          <Divider my="sm" />
+
+          <Stack>
+            <Checkbox
+              color="pink"
+              label="Complete Set"
+              checked={extraOptions.includes("Complete Set")}
+              onChange={(e) => {
+                setExtraOptions(
+                  e.currentTarget.checked
+                    ? [...extraOptions, "Complete Set"]
+                    : extraOptions.filter((o) => o !== "Complete Set")
+                );
+              }}
+            />
+            <Checkbox
+              color="pink"
+              label="Banner Only"
+              checked={extraOptions.includes("Banner Only")}
+              onChange={(e) => {
+                setExtraOptions(
+                  e.currentTarget.checked
+                    ? [...extraOptions, "Banner Only"]
+                    : extraOptions.filter((o) => o !== "Banner Only")
+                );
+              }}
+            />
+            <Checkbox
+              color="pink"
+              label="Base Only"
+              checked={extraOptions.includes("Base Only")}
+              onChange={(e) => {
+                setExtraOptions(
+                  e.currentTarget.checked
+                    ? [...extraOptions, "Base Only"]
+                    : extraOptions.filter((o) => o !== "Base Only")
+                );
+              }}
+            />
+          </Stack>
+        </Box>
+      )}
+
+      <Text c="dimmed" size="sm" mt="sm">
         Please add all the details like, the <b>Type of Item</b>, <b>Colors</b>{" "}
         and <b>Dimensions</b> as design instructions below. You can use example
         in the editor as a guide.
       </Text>
-
       <DesignInstructions />
 
-      <Checkbox
-        label="Will you print?"
-        checked={willPrint}
-        color="pink"
-        onChange={(e) => {
-          setWillPrint(e.currentTarget.checked);
-        }}
-      />
-
-      {willPrint && (
+      {services.includes("print") && (
         <Quantity
-          minQty={cardKeywords.includes(productType as string) ? 50 : 1}
+          label="Print Quantity"
+          minQty={cardKeywords.includes(productType as string) ? 100 : 1}
         />
       )}
-
       <ArtworkSection />
       <QuoteReceptionOptions handleReceiveQuote={handleReceiveQuote} />
-
       {errors.length > 0 && <ErrorsRenderer errors={errors} />}
     </Layout>
   );

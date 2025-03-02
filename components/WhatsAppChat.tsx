@@ -34,7 +34,7 @@ const WhatsAppChat: React.FC<WhatsAppChatProps> = ({
     <div className="fixed bottom-4 right-4 z-50">
       {/* Chat Window */}
       {isOpen && (
-        <div className="mb-4 w-[300px] rounded-lg bg-white shadow-lg">
+        <div className="mb-4 w-[320px] rounded-lg bg-white shadow-lg">
           {/* Header */}
           <div className="flex items-center justify-between bg-[#075E54] p-4 rounded-t-lg">
             <div className="text-white">

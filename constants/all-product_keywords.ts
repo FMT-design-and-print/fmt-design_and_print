@@ -38,6 +38,22 @@ export const cardKeywords = [
   "ticket",
   "tickets",
 ];
+
+export const pullUpKeywords = [
+  "pullup",
+  "pullups",
+  "pull-up",
+  "pull-ups",
+  "pull_up",
+  "pull_ups",
+  "roll-up",
+  "roll-ups",
+  "roll_up",
+  "roll_ups",
+  "rollups",
+  "rollup",
+];
+
 export const designsKeywords = [
   "flyers",
   "flyer",
@@ -59,6 +75,7 @@ export const designsKeywords = [
   "invoice",
   "calendar",
   "calendars",
+  ...pullUpKeywords,
 ];
 
 export const bagKeywords = [

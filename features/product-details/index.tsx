@@ -316,7 +316,7 @@ export const ProductDetails = ({ product }: Props) => {
             <Box
               maw={450}
               mx={{ base: "sm", sm: "auto" }}
-              h={{ base: "auto", sm: 450 }}
+              h={{ base: 300, sm: 450 }}
               style={{
                 display: "flex",
                 alignItems: "center",
