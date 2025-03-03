@@ -1,6 +1,6 @@
 import { ProductColor, SelectedProductOptions } from "@/types";
 import { Avatar, Box, CheckIcon, Group, Text } from "@mantine/core";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import classes from "./Style.module.css";
 
 interface Props {
@@ -24,16 +24,21 @@ export const Colors = ({
   setSelectedProductOptions,
 }: Props) => {
   const handleColorSelect = (color: ProductColor, image: string) => {
-    // const colorId = color.id;
-
-    if (colors != null && colors.length !== 0) {
-      setSelectedProductOptions((prevState) => ({
-        ...prevState,
-        color,
-        image,
-      }));
-    }
+    setSelectedProductOptions((prevState) => ({
+      ...prevState,
+      color,
+      image,
+    }));
   };
+
+  useEffect(() => {
+    setSelectedProductOptions((prevState) => ({
+      ...prevState,
+      color: mainColor,
+      image: mainImage,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box mb="sm" maw={700}>

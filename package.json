@@ -49,6 +49,7 @@
     "embla-carousel-autoplay": "^7.1.0",
     "embla-carousel-react": "^7.1.0",
     "file-saver": "^2.0.5",
+    "idb": "^8.0.2",
     "isomorphic-dompurify": "^2.16.0",
     "mantine-datatable": "^7.14.5",
     "moment": "^2.30.1",
