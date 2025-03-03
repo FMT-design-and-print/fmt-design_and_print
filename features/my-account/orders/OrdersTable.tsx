@@ -7,7 +7,6 @@ interface Props {
 }
 
 export const OrdersTable = ({ orders }: Props) => {
-  console.log(orders);
   return (
     <>
       <Table.ScrollContainer minWidth={500} type="native">
