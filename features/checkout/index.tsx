@@ -25,6 +25,7 @@ import { sendMessage } from "@/functions/send-message";
 import { ConfirmOrder } from "@/components/PaymentDetails/ConfirmOrder";
 import { PaymentStatus } from "@/types/order";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { getArtworkFiles, getArtworkFilesMap } from "@/utils/storage";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
@@ -65,13 +66,49 @@ export const Checkout = ({ shippingAddresses }: Props) => {
     setIsLoading(true);
     const supabase = createClient();
 
+    // Process items to include actual artwork files
+    const processedItems = await Promise.all(
+      details.items.map(async (item) => {
+        const processedItem = { ...item };
+
+        // Remove unnecessary properties
+        delete processedItem.hasArtworkFiles;
+        delete processedItem.hasArtworkFilesMap;
+        delete processedItem.artworkLabels;
+
+        // Get actual artwork files if they exist
+        if (item.hasArtworkFilesMap) {
+          try {
+            const filesMap = await getArtworkFilesMap(
+              item.id,
+              item.artworkLabels || []
+            );
+            processedItem.artworkFilesMap = filesMap;
+            delete processedItem.artworkFiles; // Remove single files if using map
+          } catch (error) {
+            console.error("Error loading artwork files map:", error);
+          }
+        } else if (item.hasArtworkFiles) {
+          try {
+            const files = await getArtworkFiles(item.id);
+            processedItem.artworkFiles = files;
+            delete processedItem.artworkFilesMap; // Remove map if using single files
+          } catch (error) {
+            console.error("Error loading artwork files:", error);
+          }
+        }
+
+        return processedItem;
+      })
+    );
+
     const { error } = await supabase
       .from("orders")
       .insert([
         {
           user_id: user?.id,
           orderId: ref.reference,
-          items: details.items as any[],
+          items: processedItems,
           totalAmount: total,
           status: "placed",
           deliveryType: details.deliveryType,

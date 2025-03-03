@@ -1,4 +1,5 @@
 import { useDisclosure } from "@mantine/hooks";
+import { FileWithPath } from "@mantine/dropzone";
 import {
   AspectRatio,
   Box,
@@ -39,10 +40,32 @@ import { useCustomEditor } from "@/hooks/useCustomEditor";
 import { ArtworksDropzone } from "../Dropzone/ArtworksDropzone";
 import { MultipleArtworksDropzone } from "../Dropzone/MultipleArtworksDropzone";
 import { TextEditor } from "../TextEditor";
-import {
-  convertFilesToBase64,
-  convertFilesMapToBase64,
-} from "@/functions/convert-files-to-base64";
+import { storeArtworkFiles, storeArtworkFilesMap } from "@/utils/storage";
+import { SerializedFile } from "@/utils/storage";
+
+const convertToSerializedFile = async (
+  file: FileWithPath
+): Promise<SerializedFile> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Response = reader.result as string;
+      const mimeType = base64Response.split(";")[0].split(":")[1];
+
+      // Get the size from the base64 string if file.size is not available
+      const size = file.size || Math.ceil((base64Response.length * 3) / 4);
+
+      resolve({
+        ...file,
+        type: mimeType,
+        url: base64Response,
+        size: size,
+      });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
 
 const defaultValue = {
   productId: "",
@@ -110,46 +133,92 @@ export const ProductOptions = ({ product, actionType }: Props) => {
       return false;
     }
 
-    // Convert files to base64
-    const serializedArtworkFiles = await convertFilesToBase64(
-      selectedProductOptions.artworkFiles || []
-    );
+    try {
+      let serializedFiles: SerializedFile[] | undefined;
+      let serializedMap: Record<string, SerializedFile[]> | undefined;
 
-    // Convert artworkFilesMap to base64 if it exists
-    const serializedArtworkFilesMap = selectedProductOptions.artworkFilesMap
-      ? await convertFilesMapToBase64(selectedProductOptions.artworkFilesMap)
-      : undefined;
+      if (
+        selectedProductOptions.artworkFilesMap &&
+        Object.keys(selectedProductOptions.artworkFilesMap).length > 0
+      ) {
+        try {
+          serializedMap = {};
+          for (const [key, files] of Object.entries(
+            selectedProductOptions.artworkFilesMap
+          )) {
+            serializedMap[key] = await Promise.all(
+              files.map(convertToSerializedFile)
+            );
+          }
+          await storeArtworkFilesMap(product.id, serializedMap, true);
+        } catch (error) {
+          console.error("Debug - Error in map serialization:", error);
+          if (error instanceof Error && error.name === "QuotaExceededError") {
+            toast.error(
+              "Storage quota exceeded. Please remove some items from your cart first."
+            );
+            return;
+          }
+          console.error("Failed to store artwork files map:", error);
+        }
+      } else if (
+        selectedProductOptions.artworkFiles &&
+        selectedProductOptions.artworkFiles.length > 0
+      ) {
+        try {
+          serializedFiles = await Promise.all(
+            selectedProductOptions.artworkFiles.map(convertToSerializedFile)
+          );
+          await storeArtworkFiles(product.id, serializedFiles, true);
+        } catch (error) {
+          if (error instanceof Error && error.name === "QuotaExceededError") {
+            toast.error(
+              "Storage quota exceeded. Please remove some items from your cart first."
+            );
+            return;
+          }
+          console.error("Failed to store artwork files:", error);
+        }
+      }
 
-    const item: ICartItem = {
-      id: product.id,
-      title: product.title,
-      price: adjustedPrice,
-      quantity: selectedProductOptions.quantity,
-      image: selectedProductOptions.image || "",
-      timestamp: new Date(),
-      color: selectedProductOptions.color,
-      size: selectedProductOptions.size,
-      note: selectedProductOptions.note,
-      selectedProductType: isTshirt
-        ? selectedProductOptions.selectedProductType
-        : undefined,
-      isCustomizable: product.isCustomizable,
-      artworkFiles: serializedArtworkFiles,
-      artworkFilesMap: serializedArtworkFilesMap,
-      instructions: editor?.getHTML(),
-    };
+      const item: ICartItem = {
+        id: product.id,
+        title: product.title,
+        price: adjustedPrice,
+        quantity: selectedProductOptions.quantity,
+        image: selectedProductOptions.image || "",
+        timestamp: new Date(),
+        color: selectedProductOptions.color,
+        size: selectedProductOptions.size,
+        note: selectedProductOptions.note,
+        selectedProductType: isTshirt
+          ? selectedProductOptions.selectedProductType
+          : undefined,
+        isCustomizable: product.isCustomizable,
+        hasArtworkFiles: serializedFiles && serializedFiles.length > 0,
+        hasArtworkFilesMap:
+          serializedMap && Object.keys(serializedMap).length > 0,
+        artworkLabels: serializedMap ? product.artworkLabels : undefined,
+        instructions: editor?.getHTML(),
+        artworkFiles: serializedFiles || [],
+        artworkFilesMap: serializedMap || {},
+      };
 
-    if (actionType === "cart") {
-      addItem(item);
-      toast.success("Item added to cart");
+      if (actionType === "cart") {
+        addItem(item);
+        toast.success("Item added to cart");
+      }
+
+      if (actionType === "buy") {
+        setItems([item]);
+        router.push("/checkout");
+      }
+
+      close();
+    } catch (error) {
+      console.error("Error storing artwork files:", error);
+      toast.error("Failed to store artwork files. Please try again.");
     }
-
-    if (actionType === "buy") {
-      setItems([item]);
-      router.push("/checkout");
-    }
-
-    close();
   };
 
   useEffect(() => {

@@ -111,31 +111,24 @@ export interface ICartItem {
   id: string;
   title: string;
   price: number;
+  productNumber?: string;
   quantity: number;
   image: string;
   timestamp: Date;
   color?: ProductColor;
   size?: string;
   note?: string;
-  productNumber?: string;
-  selectedProductType?: "regular" | "jersey" | string;
+  selectedProductType?: string;
   isCustomizable?: boolean;
-  artworkFiles?: {
-    url: string;
-    name: string;
-    size: number;
-    type: string;
-  }[];
+  instructions?: string;
+  artworkFiles?: { name: string; type: string; url: string; size: number }[];
   artworkFilesMap?: Record<
     string,
-    {
-      url: string;
-      name: string;
-      size: number;
-      type: string;
-    }[]
+    { name: string; type: string; url: string; size: number }[]
   >;
-  instructions?: string;
+  artworkLabels?: string[];
+  hasArtworkFiles?: boolean;
+  hasArtworkFilesMap?: boolean;
 }
 
 export type GroupedPrintProductTypes = Record<

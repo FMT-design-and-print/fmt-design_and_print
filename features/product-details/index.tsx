@@ -48,6 +48,7 @@ import {
   convertFilesToBase64,
   convertFilesMapToBase64,
 } from "@/functions/convert-files-to-base64";
+import { getArtworkFiles, getArtworkFilesMap } from "@/utils/storage";
 
 const defaultValue = {
   productId: "",
@@ -110,85 +111,123 @@ export const ProductDetails = ({ product }: Props) => {
       );
 
       if (itemToEdit) {
-        // Convert base64 artwork files back to File objects if they exist
-        const artworkFiles = itemToEdit.artworkFiles
-          ? itemToEdit.artworkFiles.map((file) => {
+        const loadArtworkFiles = async () => {
+          let artworkFiles: File[] = [];
+          const artworkFilesMap: Record<string, File[]> = {};
+
+          if (itemToEdit.hasArtworkFiles) {
+            const files = await getArtworkFiles(itemToEdit.id);
+            artworkFiles = files.map((file) => {
               // Create a File object from the base64 string
-              const byteString = atob(file.url.split(",")[1]);
-              const ab = new ArrayBuffer(byteString.length);
-              const ia = new Uint8Array(ab);
+              const base64Response = file.url;
+              const mimeType = base64Response.split(";")[0].split(":")[1];
+              const byteString = atob(base64Response.split(",")[1]);
+              const byteNumbers = new Array(byteString.length);
 
               for (let i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
+                byteNumbers[i] = byteString.charCodeAt(i);
               }
 
-              return new File([ab], file.name, { type: file.type });
-            })
-          : [];
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], { type: mimeType });
 
-        // Convert artworkFilesMap from base64 to File objects if it exists
-        const artworkFilesMap: Record<string, File[]> = {};
-        if (itemToEdit.artworkFilesMap) {
-          // Process each label and its files
-          Object.entries(itemToEdit.artworkFilesMap).forEach(
-            ([label, files]) => {
+              const newFile = new File([blob], file.name, {
+                type: mimeType,
+                lastModified: Date.now(),
+              });
+
+              // Add size property
+              Object.defineProperty(newFile, "size", {
+                value: byteArray.length,
+                writable: false,
+              });
+
+              // Add other required properties
+              Object.defineProperty(newFile, "lastModifiedDate", {
+                value: new Date(),
+                writable: false,
+              });
+
+              Object.defineProperty(newFile, "webkitRelativePath", {
+                value: "",
+                writable: false,
+              });
+
+              return newFile;
+            });
+          }
+
+          if (itemToEdit.hasArtworkFilesMap) {
+            const filesMap = await getArtworkFilesMap(
+              itemToEdit.id,
+              product.artworkLabels || []
+            );
+
+            // Convert each file in the map to a File object
+            Object.entries(filesMap).forEach(([label, files]) => {
               artworkFilesMap[label] = files.map((file) => {
-                // Create a File object from the base64 string
-                const byteString = atob(file.url.split(",")[1]);
-                const ab = new ArrayBuffer(byteString.length);
-                const ia = new Uint8Array(ab);
+                const base64Response = file.url;
+                const mimeType = base64Response.split(";")[0].split(":")[1];
+                const byteString = atob(base64Response.split(",")[1]);
+                const byteNumbers = new Array(byteString.length);
 
                 for (let i = 0; i < byteString.length; i++) {
-                  ia[i] = byteString.charCodeAt(i);
+                  byteNumbers[i] = byteString.charCodeAt(i);
                 }
 
-                return new File([ab], file.name, { type: file.type });
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: mimeType });
+
+                const newFile = new File([blob], file.name, {
+                  type: mimeType,
+                  lastModified: Date.now(),
+                });
+
+                // Add size property
+                Object.defineProperty(newFile, "size", {
+                  value: byteArray.length,
+                  writable: false,
+                });
+
+                // Add other required properties
+                Object.defineProperty(newFile, "lastModifiedDate", {
+                  value: new Date(),
+                  writable: false,
+                });
+
+                Object.defineProperty(newFile, "webkitRelativePath", {
+                  value: "",
+                  writable: false,
+                });
+
+                return newFile;
               });
-            }
-          );
-        } else if (
-          artworkFiles.length > 0 &&
-          product.artworkLabels &&
-          product.artworkLabels.length > 0
-        ) {
-          // If no artworkFilesMap but we have artworkFiles and labels, create a map
-          // This is for backward compatibility with older items
-          const labels =
-            product.enableArtworkLabels && product.artworkLabels.length > 0
-              ? product.artworkLabels.slice(0, product.numberOfSides || 1)
-              : Array.from(
-                  { length: product.numberOfSides || 1 },
-                  (_, i) => `Artwork ${i + 1}`
-                );
+            });
+          }
 
-          // Distribute the files among the labels
-          labels.forEach((label, index) => {
-            if (index < artworkFiles.length) {
-              artworkFilesMap[label] = [artworkFiles[index]];
-            }
+          // Set the selected options from the item
+          setSelectedProductOptions({
+            productId: product.id,
+            image: product.image,
+            color: itemToEdit.color,
+            size: itemToEdit.size || "",
+            quantity: itemToEdit.quantity,
+            note: itemToEdit.note || "",
+            selectedProductType:
+              (itemToEdit.selectedProductType as "regular" | "jersey") ||
+              "regular",
+            artworkFiles,
+            artworkFilesMap,
+            instructions: itemToEdit.instructions || "",
           });
-        }
 
-        // Set the selected options from the item
-        setSelectedProductOptions({
-          productId: product.id,
-          image: product.image,
-          color: itemToEdit.color,
-          size: itemToEdit.size || "",
-          quantity: itemToEdit.quantity,
-          note: itemToEdit.note || "",
-          selectedProductType:
-            (itemToEdit.selectedProductType as "regular" | "jersey") ||
-            "regular",
-          artworkFiles: artworkFiles,
-          artworkFilesMap: artworkFilesMap,
-          instructions: itemToEdit.instructions || "",
-        });
+          // Set the editor content if instructions exist
+          if (editor && itemToEdit.instructions) {
+            editor.commands.setContent(itemToEdit.instructions);
+          }
+        };
 
-        // Set the editor content if instructions exist
-        if (editor && itemToEdit.instructions) {
-          editor.commands.setContent(itemToEdit.instructions);
-        }
+        loadArtworkFiles();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,6 +289,12 @@ export const ProductDetails = ({ product }: Props) => {
       instructions: editor?.getHTML(),
       artworkFiles: serializedArtworkFiles,
       artworkFilesMap: serializedArtworkFilesMap,
+      hasArtworkFiles:
+        serializedArtworkFiles && serializedArtworkFiles.length > 0,
+      hasArtworkFilesMap:
+        serializedArtworkFilesMap &&
+        Object.keys(serializedArtworkFilesMap).length > 0,
+      artworkLabels: product.artworkLabels,
     };
 
     if (actionType === "buy") {

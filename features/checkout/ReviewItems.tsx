@@ -11,11 +11,17 @@ import {
   Collapse,
   UnstyledButton,
   Box,
+  Skeleton,
 } from "@mantine/core";
 import { IconChevronDown, IconChevronUp, IconEdit } from "@tabler/icons-react";
 import { ReceivedFilesRenderer } from "@/components/Dropzone/ReceivedFilesRenderer";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import {
+  getArtworkFiles,
+  getArtworkFilesMap,
+  SerializedFile,
+} from "@/utils/storage";
 
 export const ReviewItems = () => {
   const router = useRouter();
@@ -26,6 +32,103 @@ export const ReviewItems = () => {
   } = useCheckout((state) => state);
   const { setIsEditingProduct } = useEditCheckoutItem((state) => state);
   const [openArtworks, setOpenArtworks] = useState<Record<string, boolean>>({});
+  const [artworkData, setArtworkData] = useState<
+    Record<
+      string,
+      {
+        artworkFiles?: SerializedFile[];
+        artworkFilesMap?: Record<string, SerializedFile[]>;
+      }
+    >
+  >({});
+  const [isLoadingArtwork, setIsLoadingArtwork] = useState<
+    Record<string, boolean>
+  >({});
+
+  useEffect(() => {
+    // Load artwork data for items that have them
+    const loadArtworkData = async () => {
+      const newArtworkData: Record<
+        string,
+        {
+          artworkFiles?: SerializedFile[];
+          artworkFilesMap?: Record<string, SerializedFile[]>;
+        }
+      > = {};
+
+      // Set loading state for all items that have artwork
+      const loadingState: Record<string, boolean> = {};
+      items.forEach((item) => {
+        if (item.hasArtworkFiles || item.hasArtworkFilesMap) {
+          loadingState[item.id] = true;
+        }
+      });
+      setIsLoadingArtwork(loadingState);
+
+      await Promise.all(
+        items.map(async (item) => {
+          // Initialize the item's artwork data object
+          newArtworkData[item.id] = {};
+
+          if (item.hasArtworkFiles) {
+            try {
+              const files = await getArtworkFiles(item.id);
+              if (files && files.length > 0) {
+                // Convert files to match FileWithPath interface
+                const convertedFiles = files.map((file) => ({
+                  ...file,
+                  lastModified: new Date().getTime(),
+                  lastModifiedDate: new Date(),
+                  webkitRelativePath: "",
+                }));
+                newArtworkData[item.id].artworkFiles = convertedFiles;
+              }
+            } catch (error) {
+              console.error("Error loading artwork files:", error);
+            }
+          }
+
+          if (item.hasArtworkFilesMap) {
+            try {
+              const filesMap = await getArtworkFilesMap(
+                item.id,
+                item.artworkLabels || []
+              );
+              if (filesMap && Object.keys(filesMap).length > 0) {
+                // Convert files in the map
+                const convertedMap = Object.fromEntries(
+                  Object.entries(filesMap).map(([label, files]) => [
+                    label,
+                    files.map((file) => ({
+                      ...file,
+                      lastModified: new Date().getTime(),
+                      lastModifiedDate: new Date(),
+                      webkitRelativePath: "",
+                    })),
+                  ])
+                );
+                newArtworkData[item.id].artworkFilesMap = convertedMap;
+              }
+            } catch (error) {
+              console.error("Error loading artwork files map:", error);
+            }
+          }
+
+          // After processing each item, remove its loading state
+          setIsLoadingArtwork((prev) => ({
+            ...prev,
+            [item.id]: false,
+          }));
+        })
+      );
+
+      setArtworkData(newArtworkData);
+    };
+
+    if (items.some((item) => item.hasArtworkFiles || item.hasArtworkFilesMap)) {
+      loadArtworkData();
+    }
+  }, [items]);
 
   const toggleArtworks = (itemId: string) => {
     setOpenArtworks((prev) => ({
@@ -37,6 +140,12 @@ export const ReviewItems = () => {
   const handleEditItem = (itemId: string) => {
     setIsEditingProduct(true);
     router.push(`/services/print/${itemId}`);
+  };
+
+  const getArtworkFilesForRenderer = (
+    files: SerializedFile[] | undefined
+  ): SerializedFile[] => {
+    return files || [];
   };
 
   return (
@@ -75,10 +184,15 @@ export const ReviewItems = () => {
                     </Text>
                   )}
                   {item.isCustomizable &&
-                    item.artworkFiles &&
-                    item.artworkFiles.length > 0 && (
+                    (item.hasArtworkFiles || item.hasArtworkFilesMap) && (
                       <Text fz="xs" c="dimmed">
-                        Artworks: {item.artworkFiles.length}
+                        Artworks:{" "}
+                        {artworkData[item.id]?.artworkFiles?.length ||
+                          (artworkData[item.id]?.artworkFilesMap
+                            ? Object.values(
+                                artworkData[item.id]?.artworkFilesMap || {}
+                              ).reduce((acc, files) => acc + files.length, 0)
+                            : 0)}
                       </Text>
                     )}
                 </Group>
@@ -139,11 +253,9 @@ export const ReviewItems = () => {
             </Flex>
           </Flex>
 
-          {item.isCustomizable &&
-            ((item.artworkFiles && item.artworkFiles.length > 0) ||
-              (item.artworkFilesMap &&
-                Object.keys(item.artworkFilesMap).length > 0)) && (
-              <>
+          {item.isCustomizable && (
+            <>
+              {!isLoadingArtwork[item.id] && (
                 <UnstyledButton
                   onClick={() => toggleArtworks(item.id)}
                   mt="md"
@@ -152,6 +264,14 @@ export const ReviewItems = () => {
                   <Group justify="space-between">
                     <Text size="xs" c="pink">
                       {openArtworks[item.id] ? "Hide" : "View"} Artwork Files
+                      {` (${
+                        artworkData[item.id]?.artworkFiles?.length ||
+                        (artworkData[item.id]?.artworkFilesMap
+                          ? Object.values(
+                              artworkData[item.id]?.artworkFilesMap || {}
+                            ).reduce((acc, files) => acc + files.length, 0)
+                          : 0)
+                      })`}
                     </Text>
                     {openArtworks[item.id] ? (
                       <IconChevronUp size={16} />
@@ -160,35 +280,42 @@ export const ReviewItems = () => {
                     )}
                   </Group>
                 </UnstyledButton>
+              )}
 
-                <Collapse in={openArtworks[item.id]}>
-                  <Box mt="xs">
-                    {item.artworkFilesMap &&
-                    Object.keys(item.artworkFilesMap).length > 0 ? (
-                      <Group>
-                        {Object.entries(item.artworkFilesMap).map(
-                          ([label, files]) => (
-                            <Box key={label} mb="md">
-                              <ReceivedFilesRenderer
-                                files={files}
-                                title={`${label} (${files.length})`}
-                                requireOneFile={true}
-                              />
-                            </Box>
-                          )
-                        )}
-                      </Group>
-                    ) : (
-                      <ReceivedFilesRenderer
-                        files={item.artworkFiles || []}
-                        title={`Artwork Files (${item.artworkFiles?.length || 0})`}
-                        requireOneFile={true}
-                      />
-                    )}
-                  </Box>
-                </Collapse>
-              </>
-            )}
+              <Collapse in={openArtworks[item.id]}>
+                <Box mt="xs">
+                  {isLoadingArtwork[item.id] ? (
+                    <Skeleton height={100} radius="sm" />
+                  ) : artworkData[item.id]?.artworkFilesMap ? (
+                    <Group>
+                      {Object.entries(
+                        artworkData[item.id].artworkFilesMap || {}
+                      ).map(([label, files]) => {
+                        const rendererFiles = getArtworkFilesForRenderer(files);
+                        return (
+                          <Box key={label} mb="md">
+                            <ReceivedFilesRenderer
+                              files={rendererFiles}
+                              title={`${label} (${rendererFiles.length})`}
+                              requireOneFile={true}
+                            />
+                          </Box>
+                        );
+                      })}
+                    </Group>
+                  ) : artworkData[item.id]?.artworkFiles ? (
+                    <ReceivedFilesRenderer
+                      files={getArtworkFilesForRenderer(
+                        artworkData[item.id].artworkFiles
+                      )}
+                      title={`Artwork Files (${artworkData[item.id].artworkFiles?.length || 0})`}
+                      requireOneFile={true}
+                    />
+                  ) : null}
+                </Box>
+              </Collapse>
+            </>
+          )}
         </Card>
       ))}
     </Card>

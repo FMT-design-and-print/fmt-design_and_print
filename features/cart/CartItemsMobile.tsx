@@ -12,6 +12,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
+import { useArtworkCount } from "@/hooks/useArtworkCount";
 
 interface Props {
   cartItems: ICartItem[];
@@ -36,6 +37,7 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
     (state) => state
   );
   const { setItems } = useCheckout((state) => state);
+  const artworkCount = useArtworkCount(cartItem);
 
   const handleCheckout = () => {
     setItems([cartItem]);
@@ -67,10 +69,9 @@ const CartItem = ({ cartItem }: ICartItemProps) => {
               </Text>
             )}
             {cartItem.isCustomizable &&
-              cartItem.artworkFiles &&
-              cartItem.artworkFiles.length > 0 && (
+              (cartItem.hasArtworkFiles || cartItem.hasArtworkFilesMap) && (
                 <Text fz="xs" c="dimmed">
-                  Artworks: {cartItem.artworkFiles.length}
+                  Artworks: {artworkCount}
                 </Text>
               )}
             <Group>
