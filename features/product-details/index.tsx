@@ -613,27 +613,35 @@ export const ProductDetails = ({ product }: Props) => {
         details={product.details}
       />
 
-      <OtherItems
-        label="Related Items"
-        items={product.relatedProducts.filter((item) => item.id !== product.id)}
-      />
-      <OtherItems
-        label="You may also like"
-        items={product.otherProducts.filter((item) => item.id !== product.id)}
-      />
+      {product.relatedProducts && product.relatedProducts.length > 0 && (
+        <OtherItems
+          label="Related Items"
+          items={product.relatedProducts.filter(
+            (item) => item.id !== product.id
+          )}
+        />
+      )}
+      {product.otherProducts && product.otherProducts.length > 0 && (
+        <OtherItems
+          label="You may also like"
+          items={product.otherProducts.filter((item) => item.id !== product.id)}
+        />
+      )}
 
-      <Box m="xl">
-        <Text fw="bold" my="sm">
-          Related search terms
-        </Text>
-        <Group>
-          {product.tags.map((tag, i) => (
-            <Badge key={tag + i} variant="outline" color="gray">
-              {tag}
-            </Badge>
-          ))}
-        </Group>
-      </Box>
+      {product.tags && product.tags.length > 0 && (
+        <Box m="xl">
+          <Text fw="bold" my="sm">
+            Related search terms
+          </Text>
+          <Group>
+            {product.tags.map((tag, i) => (
+              <Badge key={tag + i} variant="outline" color="gray">
+                {tag}
+              </Badge>
+            ))}
+          </Group>
+        </Box>
+      )}
     </Box>
   );
 };
