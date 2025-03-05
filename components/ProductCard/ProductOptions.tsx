@@ -287,6 +287,53 @@ export const ProductOptions = ({ product, actionType }: Props) => {
               <RatingStars productId={product.id} size="sm" />
             )}
 
+            {isTshirt && (
+              <>
+                <Select
+                  label="T-Shirt Type"
+                  value={
+                    selectedProductOptions.selectedProductType || "regular"
+                  }
+                  onChange={(value) =>
+                    setSelectedProductOptions((prev) => ({
+                      ...prev,
+                      selectedProductType:
+                        (value as "regular" | "jersey") || "regular",
+                    }))
+                  }
+                  data={[
+                    { value: "regular", label: "Regular T-Shirt" },
+                    { value: "jersey", label: "Jersey Shirt" },
+                  ]}
+                  mb="md"
+                />
+                <Divider />
+              </>
+            )}
+
+            {!product.disableMainColor && (
+              <>
+                <Colors
+                  mainImage={product.image}
+                  mainColor={product.color}
+                  colors={product.colors || []}
+                  selectedColor={selectedProductOptions.color}
+                  setSelectedProductOptions={setSelectedProductOptions}
+                />
+                {!selectedProductOptions.color && errors.color && (
+                  <ErrorText text={errors.color} />
+                )}
+              </>
+            )}
+            <Sizes
+              sizes={product.sizes}
+              selectedSize={selectedProductOptions.size}
+              setSelectedProductOptions={setSelectedProductOptions}
+            />
+            {!selectedProductOptions.size && errors.size && (
+              <ErrorText text={errors.size} />
+            )}
+
             {product.isCustomizable && (
               <Box mb="xl">
                 {shouldUseMultipleArtworks ? (
@@ -355,53 +402,6 @@ export const ProductOptions = ({ product, actionType }: Props) => {
                   <TextEditor editor={editor} />
                 </Box>
               </Box>
-            )}
-
-            {isTshirt && (
-              <>
-                <Select
-                  label="T-Shirt Type"
-                  value={
-                    selectedProductOptions.selectedProductType || "regular"
-                  }
-                  onChange={(value) =>
-                    setSelectedProductOptions((prev) => ({
-                      ...prev,
-                      selectedProductType:
-                        (value as "regular" | "jersey") || "regular",
-                    }))
-                  }
-                  data={[
-                    { value: "regular", label: "Regular T-Shirt" },
-                    { value: "jersey", label: "Jersey Shirt" },
-                  ]}
-                  mb="md"
-                />
-                <Divider />
-              </>
-            )}
-
-            {!product.disableMainColor && (
-              <>
-                <Colors
-                  mainImage={product.image}
-                  mainColor={product.color}
-                  colors={product.colors || []}
-                  selectedColor={selectedProductOptions.color}
-                  setSelectedProductOptions={setSelectedProductOptions}
-                />
-                {!selectedProductOptions.color && errors.color && (
-                  <ErrorText text={errors.color} />
-                )}
-              </>
-            )}
-            <Sizes
-              sizes={product.sizes}
-              selectedSize={selectedProductOptions.size}
-              setSelectedProductOptions={setSelectedProductOptions}
-            />
-            {!selectedProductOptions.size && errors.size && (
-              <ErrorText text={errors.size} />
             )}
 
             <Divider label="Quantity" labelPosition="left" mt="md" maw={700} />
