@@ -1,3 +1,5 @@
+import { PaymentType } from "@/types";
+
 export const fmtDescription =
   "We print everything on anything, including T-Shirts & Apparel, Cups, Mugs, Bottles, Labels, Packaging, Souvenirs, Large Format, Paper works, Frames, Engraving, Phone Cases, Pillows, branding, and more";
 
@@ -79,3 +81,9 @@ export const bannerImage =
   "https://res.cloudinary.com/dnbmynikp/image/upload/v1738272353/fmt-preview-banner1_rko7sw.png";
 
 export const baseUrl = "https://fmtdesignprint.com";
+
+export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
+  cod: "Cash On Delivery",
+  momo: "Mobile Money",
+  card: "Card Payment",
+};

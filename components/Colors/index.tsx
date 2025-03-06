@@ -1,6 +1,6 @@
 import { ProductColor, SelectedProductOptions } from "@/types";
 import { Avatar, Box, CheckIcon, Group, Text } from "@mantine/core";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useCallback } from "react";
 import classes from "./Style.module.css";
 
 interface Props {
@@ -23,20 +23,25 @@ export const Colors = ({
   colors = [],
   setSelectedProductOptions,
 }: Props) => {
-  const handleColorSelect = (color: ProductColor, image: string) => {
-    setSelectedProductOptions((prevState) => ({
-      ...prevState,
-      color,
-      image,
-    }));
-  };
+  const handleColorSelect = useCallback(
+    (color: ProductColor, image: string) => {
+      setSelectedProductOptions((prevState) => ({
+        ...prevState,
+        color,
+        image,
+      }));
+    },
+    [setSelectedProductOptions]
+  );
 
   useEffect(() => {
-    setSelectedProductOptions((prevState) => ({
-      ...prevState,
-      color: mainColor,
-      image: mainImage,
-    }));
+    if (mainColor && !selectedColor) {
+      setSelectedProductOptions((prevState) => ({
+        ...prevState,
+        color: mainColor,
+        ...(prevState.image ? {} : { image: mainImage }),
+      }));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

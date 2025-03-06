@@ -15,6 +15,7 @@ import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import { EstimatedFulfillmentDate } from "./EstimatedFulfillmentDate";
 import { OrderItem } from "./OrderItem";
+import { PAYMENT_TYPE_LABELS } from "@/constants";
 
 export const OrderDetails = ({
   order,
@@ -29,6 +30,19 @@ export const OrderDetails = ({
     ? new Date(order.estimatedFulfillmentDate)
     : undefined;
 
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case "paid":
+        return "green";
+      case "partly-paid":
+        return "yellow";
+      case "unpaid":
+        return "red";
+      default:
+        return "gray";
+    }
+  };
+
   return (
     <>
       <Drawer
@@ -38,6 +52,19 @@ export const OrderDetails = ({
         position="right"
         size="xl"
       >
+        <Badge
+          color={getPaymentStatusColor(order.paymentStatus || "unpaid")}
+          variant="light"
+        >
+          {order.paymentStatus}
+        </Badge>
+        <Group my="sm">
+          <Text size="sm">Payment Type: </Text>
+          <Text size="sm">
+            {PAYMENT_TYPE_LABELS[order.paymentType] || order.paymentType}
+          </Text>
+        </Group>
+
         <Group my="sm">
           <Text size="sm">Order Id: </Text>
           <Group gap={2}>
@@ -142,8 +169,8 @@ export const OrderDetails = ({
               labelPosition="left"
               my="md"
             />
-            {order.items.map((item) => (
-              <OrderItem key={item.id} item={item} />
+            {order.items.map((item, index) => (
+              <OrderItem key={index} item={item} orderId={order.id} />
             ))}
           </>
         )}

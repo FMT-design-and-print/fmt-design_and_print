@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { CartBtn } from "@/components/CartBtn";
-import { getProductOptionsErrors } from "@/functions";
-import { useCart } from "@/store/cart";
-import {
-  ICartItem,
-  IOptionsErrors,
-  IPrintProduct,
-  SelectedProductOptions,
-} from "@/types";
+import { IOptionsErrors, IPrintProduct, SelectedProductOptions } from "@/types";
 import {
   Badge,
   Box,
@@ -21,20 +14,16 @@ import {
   Title,
   Select,
 } from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Gallery } from "./Gallery";
 import { ProductDescription } from "./ProductDescription";
-import { toast } from "react-toastify";
 import { Colors } from "@/components/Colors";
 import { Sizes } from "@/components/Sizes";
 import { AdditionalDetails } from "@/components/AdditionalDetails";
 import { Quantity } from "@/components/Quantity";
 import { ErrorText } from "@/components/ErrorText";
-import { useCheckout, useEditCheckoutItem } from "@/store/checkout";
-import { useRouter } from "next/navigation";
 import { OtherItems } from "./OtherItems";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { featureFlags } from "@/constants/feature-flags";
@@ -44,11 +33,9 @@ import { ArtworksDropzone } from "@/components/Dropzone/ArtworksDropzone";
 import { MultipleArtworksDropzone } from "@/components/Dropzone/MultipleArtworksDropzone";
 import { TextEditor } from "@/components/TextEditor";
 import { useCustomEditor } from "@/hooks/useCustomEditor";
-import {
-  convertFilesToBase64,
-  convertFilesMapToBase64,
-} from "@/functions/convert-files-to-base64";
-import { getArtworkFiles, getArtworkFilesMap } from "@/utils/storage";
+import { useEditProductEffect } from "./useEditProductEffect";
+import { useBuyOrAddToCart } from "./useBuyOrAddToCart";
+import { getDefaultProductImage, shouldUseMultipleArtworks } from "@/functions";
 
 const defaultValue = {
   productId: "",
@@ -67,24 +54,29 @@ interface Props {
   product: IPrintProduct;
 }
 export const ProductDetails = ({ product }: Props) => {
-  const router = useRouter();
-  const { addItem } = useCart((state) => state);
-  const { setItems: setCheckoutItems, details: checkoutDetails } =
-    useCheckout();
-  const { isEditingProduct, setIsEditingProduct } = useEditCheckoutItem();
-  const { trackProductView, trackAddToCart } = useAnalytics();
+  const { trackProductView } = useAnalytics();
   const [errors, setErrors] = useState<IOptionsErrors>({});
   const editor = useCustomEditor("");
+
+  // Use useState instead of useLocalStorage to prevent flickering issues
   const [selectedProductOptions, setSelectedProductOptions] =
-    useLocalStorage<SelectedProductOptions>({
-      key: "fmt_dp_selected_product_options",
-      defaultValue,
+    useState<SelectedProductOptions>({
+      ...defaultValue,
+      productId: product.id,
+      image: getDefaultProductImage(product),
     });
+
+  // Memoize the default image to prevent unnecessary re-renders
+  const defaultImage = useMemo(
+    () => getDefaultProductImage(product),
+    [product]
+  );
 
   useEffect(() => {
     // Track product view when component mounts
     trackProductView(product.id, product.title);
-  }, [product.id, product.title, trackProductView]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id, product.title]);
 
   // Reset selected product options when product changes
   useEffect(() => {
@@ -93,244 +85,22 @@ export const ProductDetails = ({ product }: Props) => {
       setSelectedProductOptions({
         ...defaultValue,
         productId: product.id,
-        image: product.image,
+        image: defaultImage,
       });
     }
-  }, [
-    product.id,
-    product.image,
-    selectedProductOptions.productId,
-    setSelectedProductOptions,
-  ]);
-
-  useEffect(() => {
-    // If we're editing a product, find it in the checkout items and set the options
-    if (isEditingProduct) {
-      const itemToEdit = checkoutDetails.items.find(
-        (item) => item.id === product.id
-      );
-
-      if (itemToEdit) {
-        const loadArtworkFiles = async () => {
-          let artworkFiles: File[] = [];
-          const artworkFilesMap: Record<string, File[]> = {};
-
-          if (itemToEdit.hasArtworkFiles) {
-            const files = await getArtworkFiles(itemToEdit.id);
-            artworkFiles = files.map((file) => {
-              // Create a File object from the base64 string
-              const base64Response = file.url;
-              const mimeType = base64Response.split(";")[0].split(":")[1];
-              const byteString = atob(base64Response.split(",")[1]);
-              const byteNumbers = new Array(byteString.length);
-
-              for (let i = 0; i < byteString.length; i++) {
-                byteNumbers[i] = byteString.charCodeAt(i);
-              }
-
-              const byteArray = new Uint8Array(byteNumbers);
-              const blob = new Blob([byteArray], { type: mimeType });
-
-              const newFile = new File([blob], file.name, {
-                type: mimeType,
-                lastModified: Date.now(),
-              });
-
-              // Add size property
-              Object.defineProperty(newFile, "size", {
-                value: byteArray.length,
-                writable: false,
-              });
-
-              // Add other required properties
-              Object.defineProperty(newFile, "lastModifiedDate", {
-                value: new Date(),
-                writable: false,
-              });
-
-              Object.defineProperty(newFile, "webkitRelativePath", {
-                value: "",
-                writable: false,
-              });
-
-              return newFile;
-            });
-          }
-
-          if (itemToEdit.hasArtworkFilesMap) {
-            const filesMap = await getArtworkFilesMap(
-              itemToEdit.id,
-              product.artworkLabels || []
-            );
-
-            // Convert each file in the map to a File object
-            Object.entries(filesMap).forEach(([label, files]) => {
-              artworkFilesMap[label] = files.map((file) => {
-                const base64Response = file.url;
-                const mimeType = base64Response.split(";")[0].split(":")[1];
-                const byteString = atob(base64Response.split(",")[1]);
-                const byteNumbers = new Array(byteString.length);
-
-                for (let i = 0; i < byteString.length; i++) {
-                  byteNumbers[i] = byteString.charCodeAt(i);
-                }
-
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: mimeType });
-
-                const newFile = new File([blob], file.name, {
-                  type: mimeType,
-                  lastModified: Date.now(),
-                });
-
-                // Add size property
-                Object.defineProperty(newFile, "size", {
-                  value: byteArray.length,
-                  writable: false,
-                });
-
-                // Add other required properties
-                Object.defineProperty(newFile, "lastModifiedDate", {
-                  value: new Date(),
-                  writable: false,
-                });
-
-                Object.defineProperty(newFile, "webkitRelativePath", {
-                  value: "",
-                  writable: false,
-                });
-
-                return newFile;
-              });
-            });
-          }
-
-          // Set the selected options from the item
-          setSelectedProductOptions({
-            productId: product.id,
-            image: product.image,
-            color: itemToEdit.color,
-            size: itemToEdit.size || "",
-            quantity: itemToEdit.quantity,
-            note: itemToEdit.note || "",
-            selectedProductType:
-              (itemToEdit.selectedProductType as "regular" | "jersey") ||
-              "regular",
-            artworkFiles,
-            artworkFilesMap,
-            instructions: itemToEdit.instructions || "",
-          });
-
-          // Set the editor content if instructions exist
-          if (editor && itemToEdit.instructions) {
-            editor.commands.setContent(itemToEdit.instructions);
-          }
-        };
-
-        loadArtworkFiles();
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product, isEditingProduct]);
+  }, [product.id, defaultImage]);
 
-  const handleBuyOrAddItemToCart = async (actionType: "buy" | "cart") => {
-    const errors = getProductOptionsErrors(selectedProductOptions, {
-      sizes: product.sizes,
-      isCustomizable: product.isCustomizable,
-      disableMainColor: product.disableMainColor,
-      numberOfSides: product.numberOfSides,
-      numberOfArtworks: product.numberOfArtworks,
-      enableArtworkLabels: product.enableArtworkLabels,
-      artworkLabels: product.artworkLabels,
-      allowMultipleArtworksForEachSide:
-        product.allowMultipleArtworksForEachSide,
-    });
-    setErrors(errors);
+  // Use our custom hook for editing product
+  useEditProductEffect(product, setSelectedProductOptions, editor);
 
-    if (Object.keys(errors).length > 0) {
-      // Scroll to the first error if it's about artwork
-      if (errors.artworkFiles) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      return false;
-    }
-
-    const isTshirt = product.type.slug === "t-shirts";
-    const adjustedPrice =
-      isTshirt && selectedProductOptions.selectedProductType === "jersey"
-        ? product.price - 5
-        : product.price;
-
-    // Convert files to base64
-    const serializedArtworkFiles = await convertFilesToBase64(
-      selectedProductOptions.artworkFiles || []
-    );
-
-    // Convert artworkFilesMap to base64 if it exists
-    const serializedArtworkFilesMap = selectedProductOptions.artworkFilesMap
-      ? await convertFilesMapToBase64(selectedProductOptions.artworkFilesMap)
-      : undefined;
-
-    const item: ICartItem = {
-      id: product.id,
-      title: product.title,
-      price: adjustedPrice,
-      productNumber: product.productNumber,
-      quantity: selectedProductOptions.quantity,
-      image: selectedProductOptions.image || "",
-      timestamp: new Date(),
-      color: selectedProductOptions.color,
-      size: selectedProductOptions.size,
-      note: selectedProductOptions.note,
-      selectedProductType: isTshirt
-        ? selectedProductOptions.selectedProductType
-        : product.type.slug || undefined,
-      isCustomizable: product.isCustomizable,
-      instructions: editor?.getHTML(),
-      artworkFiles: serializedArtworkFiles,
-      artworkFilesMap: serializedArtworkFilesMap,
-      hasArtworkFiles:
-        serializedArtworkFiles && serializedArtworkFiles.length > 0,
-      hasArtworkFilesMap:
-        serializedArtworkFilesMap &&
-        Object.keys(serializedArtworkFilesMap).length > 0,
-      artworkLabels: product.artworkLabels,
-    };
-
-    if (actionType === "buy") {
-      if (isEditingProduct) {
-        const itemIndex = checkoutDetails.items.findIndex(
-          (existingItem) => existingItem.id === item.id
-        );
-
-        if (itemIndex !== -1) {
-          const updatedItems = [...checkoutDetails.items];
-
-          updatedItems[itemIndex] = item;
-
-          setCheckoutItems(updatedItems);
-          router.push("/checkout");
-          setIsEditingProduct(false);
-          return;
-        }
-
-        setCheckoutItems([item]);
-        router.push("/checkout");
-        return;
-      }
-
-      // Add item to checkout and redirect for non-editing "buy" action
-      setCheckoutItems([item]);
-      router.push("/checkout");
-      return;
-    }
-
-    // This code only runs for "cart" action
-    addItem(item);
-    // Track add to cart event
-    trackAddToCart(product.id, product.title, product.price);
-    toast.success("Item added to cart");
-  };
+  // Use our custom hook for buying or adding to cart
+  const { handleBuyOrAddItemToCart } = useBuyOrAddToCart(
+    product,
+    selectedProductOptions,
+    editor,
+    setErrors
+  );
 
   const isTshirt = product.type.slug === "t-shirts";
   const adjustedPrice =
@@ -339,29 +109,17 @@ export const ProductDetails = ({ product }: Props) => {
       : product.price;
 
   // Determine if we should use the new multiple artworks dropzone
-  const shouldUseMultipleArtworks =
-    product.isCustomizable &&
-    // Only use multiple artworks if:
-    // 1. We have more than one side OR
-    // 2. We have a specific number of artworks (not -1) that is greater than 1 OR
-    // 3. We allow multiple artworks for each side (when number of sides > 1)
-    ((product.numberOfSides && product.numberOfSides > 1) ||
-      (product.numberOfArtworks != null &&
-        product.numberOfArtworks > 1 &&
-        product.numberOfArtworks !== -1) ||
-      (product.allowMultipleArtworksForEachSide &&
-        product.numberOfSides &&
-        product.numberOfSides > 1));
+  const useMultipleArtworks = shouldUseMultipleArtworks(product);
 
   return (
     <Box px="xl" py="lg">
       <Grid>
-        <Grid.Col span={{ base: 12, sm: 6, lg: 5 }}>
+        <Grid.Col span={{ base: 12, sm: 6, lg: 7 }}>
           <Box>
             <Box
-              maw={450}
+              maw={700}
               mx={{ base: "sm", sm: "auto" }}
-              h={{ base: 300, sm: 450 }}
+              h={{ base: 300, sm: 600 }}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -392,10 +150,21 @@ export const ProductDetails = ({ product }: Props) => {
               />
             )}
           </Box>
+          <Box visibleFrom="sm">
+            <ProductDescription
+              description={product.description}
+              details={product.details}
+            />
+          </Box>
         </Grid.Col>
 
-        <Grid.Col span={{ base: 12, sm: 6, lg: 7 }} px="md" maw={700}>
-          <Title order={3}>{product.title}</Title>
+        <Grid.Col span={{ base: 12, sm: 6, lg: 5 }} px="md" maw={700}>
+          <Title order={3} visibleFrom="sm">
+            {product.title}
+          </Title>
+          <Title order={4} hiddenFrom="sm">
+            {product.title}
+          </Title>
           {product.productNumber && product.productNumber != null && (
             <Group>
               <Text>Item no: </Text>
@@ -414,9 +183,55 @@ export const ProductDetails = ({ product }: Props) => {
             </Box>
           )}
 
+          {isTshirt && (
+            <>
+              <Select
+                label="T-Shirt Type"
+                value={selectedProductOptions.selectedProductType || "regular"}
+                onChange={(value) =>
+                  setSelectedProductOptions((prev) => ({
+                    ...prev,
+                    selectedProductType:
+                      (value as "regular" | "jersey") || "regular",
+                  }))
+                }
+                data={[
+                  { value: "regular", label: "Regular T-Shirt" },
+                  { value: "jersey", label: "Jersey Shirt" },
+                ]}
+                mb="md"
+              />
+              <Divider my="sm" />
+            </>
+          )}
+
+          {!product.disableMainColor && (
+            <>
+              <Colors
+                mainImage={product.image}
+                mainColor={product.color}
+                colors={product.colors || []}
+                selectedColor={selectedProductOptions.color}
+                setSelectedProductOptions={setSelectedProductOptions}
+              />
+              {!selectedProductOptions.color && errors.color && (
+                <ErrorText text={errors.color} />
+              )}
+            </>
+          )}
+
+          <Sizes
+            sizes={product.sizes}
+            selectedSize={selectedProductOptions.size}
+            setSelectedProductOptions={setSelectedProductOptions}
+          />
+          {!selectedProductOptions.size && errors.size && (
+            <ErrorText text={errors.size} />
+          )}
+
           {product.isCustomizable && (
             <Box mb="xl">
-              {shouldUseMultipleArtworks ? (
+              {useMultipleArtworks ? (
                 <MultipleArtworksDropzone
                   product={{
                     numberOfSides: product.numberOfSides,
@@ -505,52 +320,6 @@ export const ProductDetails = ({ product }: Props) => {
             </Box>
           )}
 
-          {isTshirt && (
-            <>
-              <Select
-                label="T-Shirt Type"
-                value={selectedProductOptions.selectedProductType || "regular"}
-                onChange={(value) =>
-                  setSelectedProductOptions((prev) => ({
-                    ...prev,
-                    selectedProductType:
-                      (value as "regular" | "jersey") || "regular",
-                  }))
-                }
-                data={[
-                  { value: "regular", label: "Regular T-Shirt" },
-                  { value: "jersey", label: "Jersey Shirt" },
-                ]}
-                mb="md"
-              />
-              <Divider />
-            </>
-          )}
-
-          {!product.disableMainColor && (
-            <>
-              <Colors
-                mainImage={product.image}
-                mainColor={product.color}
-                colors={product.colors || []}
-                selectedColor={selectedProductOptions.color}
-                setSelectedProductOptions={setSelectedProductOptions}
-              />
-              {!selectedProductOptions.color && errors.color && (
-                <ErrorText text={errors.color} />
-              )}
-            </>
-          )}
-
-          <Sizes
-            sizes={product.sizes}
-            selectedSize={selectedProductOptions.size}
-            setSelectedProductOptions={setSelectedProductOptions}
-          />
-          {!selectedProductOptions.size && errors.size && (
-            <ErrorText text={errors.size} />
-          )}
-
           <Divider label="Quantity" labelPosition="left" mt="md" maw={700} />
           <Flex my="sm" justify="space-between" maw={700}>
             <Box>
@@ -607,33 +376,48 @@ export const ProductDetails = ({ product }: Props) => {
           </Text>
         </Grid.Col>
       </Grid>
-
-      <ProductDescription
-        description={product.description}
-        details={product.details}
-      />
-
-      <OtherItems
-        label="Related Items"
-        items={product.relatedProducts.filter((item) => item.id !== product.id)}
-      />
-      <OtherItems
-        label="You may also like"
-        items={product.otherProducts.filter((item) => item.id !== product.id)}
-      />
-
-      <Box m="xl">
-        <Text fw="bold" my="sm">
-          Related search terms
-        </Text>
-        <Group>
-          {product.tags.map((tag, i) => (
-            <Badge key={tag + i} variant="outline" color="gray">
-              {tag}
-            </Badge>
-          ))}
-        </Group>
+      <Box hiddenFrom="sm">
+        <ProductDescription
+          description={product.description}
+          details={product.details}
+        />
       </Box>
+
+      {product.relatedProducts &&
+        product.relatedProducts.filter((item) => item.id !== product.id)
+          .length > 0 && (
+          <OtherItems
+            label="Related Items"
+            items={product.relatedProducts.filter(
+              (item) => item.id !== product.id
+            )}
+          />
+        )}
+
+      {product.otherProducts &&
+        product.otherProducts.filter((item) => item.id !== product.id).length >
+          0 && (
+          <OtherItems
+            label="You may also like"
+            items={product.otherProducts.filter(
+              (item) => item.id !== product.id
+            )}
+          />
+        )}
+      {product.tags && product.tags.length > 0 && (
+        <Box m="xl">
+          <Text fw="bold" my="sm">
+            Related search terms
+          </Text>
+          <Group>
+            {product.tags.map((tag, i) => (
+              <Badge key={tag + i} variant="outline" color="gray">
+                {tag}
+              </Badge>
+            ))}
+          </Group>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { ICartItem, IShippingAddress } from ".";
+import { ICartItem, IShippingAddress, PaymentType } from ".";
 
 export type OrderStatus =
   | "pending"
@@ -30,7 +30,7 @@ interface CommonOrderDetails {
   reference?: string;
   user_id: string;
   estimatedFulfillmentDate?: Date;
-  paymentType: string;
+  paymentType: PaymentType;
   deliveryFee?: number;
   paymentStatus?: PaymentStatus;
 }

@@ -18,6 +18,7 @@ import { useState } from "react";
 import { IShippingAddress } from "@/types";
 import { RegionSelect } from "@/components/RegionSelect";
 import { TownCombobox } from "@/components/TownCombobox";
+import { PAYMENT_TYPE_LABELS } from "@/constants";
 
 interface Props {
   orderId: string;
@@ -31,12 +32,6 @@ interface Props {
   ) => Promise<void>;
   onUpdateNote?: (orderId: string, note: string) => Promise<void>;
 }
-
-const PAYMENT_TYPE_LABELS: Record<string, string> = {
-  cod: "Cash On Delivery",
-  momo: "Mobile Money",
-  card: "Card Payment",
-};
 
 export const OrderItems = ({
   orderId,

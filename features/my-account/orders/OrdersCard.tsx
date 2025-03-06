@@ -5,24 +5,11 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { CancelRequest } from "./CancelRequest";
 import { OrderItems } from "./OrderItems";
+import { getPaymentStatusColor } from "@/functions/payment-status";
 
 interface Props {
   orders: IOrder[];
 }
-
-const getPaymentStatusColor = (status: string | undefined) => {
-  if (!status) return "gray";
-  switch (status) {
-    case "paid":
-      return "green";
-    case "partly-paid":
-      return "yellow";
-    case "unpaid":
-      return "red";
-    default:
-      return "gray";
-  }
-};
 
 export const OrdersCard = ({ orders }: Props) => {
   return (
@@ -81,7 +68,7 @@ export const OrdersCard = ({ orders }: Props) => {
                 </Text>
                 <Badge
                   size="sm"
-                  color={getPaymentStatusColor(order.paymentStatus)}
+                  color={getPaymentStatusColor(order.paymentStatus || "unpaid")}
                 >
                   {order.paymentStatus || "N/A"}
                 </Badge>

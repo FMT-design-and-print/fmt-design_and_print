@@ -121,10 +121,22 @@ export interface ICartItem {
   selectedProductType?: string;
   isCustomizable?: boolean;
   instructions?: string;
-  artworkFiles?: { name: string; type: string; url: string; size: number }[];
+  artworkFiles?: {
+    name: string;
+    type: string;
+    url: string;
+    size: number;
+    isDeleted?: boolean;
+  }[];
   artworkFilesMap?: Record<
     string,
-    { name: string; type: string; url: string; size: number }[]
+    {
+      name: string;
+      type: string;
+      url: string;
+      size: number;
+      isDeleted?: boolean;
+    }[]
   >;
   artworkLabels?: string[];
   hasArtworkFiles?: boolean;

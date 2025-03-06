@@ -18,6 +18,8 @@ import { CustomOrderDetailsRenderer } from "./CustomOrderDetailsRenderer";
 import { EstimatedFulfillmentDate } from "./EstimatedFulfillmentDate";
 import { OrderStatusOptions } from "./OrderStatusOptions";
 import { QuotesManager } from "./Quote/QuotesManager";
+import { getPaymentStatusColor } from "@/functions/payment-status";
+import { PAYMENT_TYPE_LABELS } from "@/constants";
 
 export const CustomOrderDetails = ({
   order,
@@ -41,6 +43,21 @@ export const CustomOrderDetails = ({
       >
         <Grid>
           <Grid.Col span={{ base: 12, sm: 5 }}>
+            <Badge
+              color={getPaymentStatusColor(order.paymentStatus || "unpaid")}
+              variant="light"
+            >
+              {order.paymentStatus}
+            </Badge>
+            {order.paymentType && (
+              <Group my="sm">
+                <Text size="sm">Payment Type: </Text>
+                <Text size="sm">
+                  {PAYMENT_TYPE_LABELS[order.paymentType] || order.paymentType}
+                </Text>
+              </Group>
+            )}
+
             <Group my="sm">
               <Text size="sm">Order Id: </Text>
               <Group gap={2}>
@@ -101,7 +118,10 @@ export const CustomOrderDetails = ({
               defaultFulfillmentDate={order.estimatedFulfillmentDate}
             />
 
-            <CustomOrderDetailsRenderer orderDetails={order.orderDetails} />
+            <CustomOrderDetailsRenderer
+              orderDetails={order.orderDetails}
+              orderId={order.id}
+            />
 
             {order.deliveryDetails && (
               <>

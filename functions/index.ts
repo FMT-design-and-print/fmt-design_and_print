@@ -3,6 +3,7 @@ import {
   ICartItem,
   ICategory,
   IOptionsErrors,
+  IPrintProduct,
   IProductType,
   IShippingAddress,
   MessageStatus,
@@ -353,7 +354,68 @@ export const shippingAddressLabelMap = (key: keyof IShippingAddress) => {
       return "Town";
     case "region":
       return "Region";
+    case "country":
+      return "Country";
     default:
       return key;
   }
 };
+
+/**
+ * Determines if a product should use the multiple artworks dropzone
+ * @param product The product to check
+ * @returns Boolean indicating if multiple artworks should be used
+ */
+export function shouldUseMultipleArtworks(product: IPrintProduct): boolean {
+  if (!product.isCustomizable) {
+    return false;
+  }
+
+  // Only use multiple artworks if:
+  // 1. We have more than one side OR
+  // 2. We have a specific number of artworks (not -1) that is greater than 1 OR
+  // 3. We allow multiple artworks for each side (when number of sides > 1)
+  const hasMultipleSides = !!product.numberOfSides && product.numberOfSides > 1;
+  const hasMultipleArtworks =
+    product.numberOfArtworks != null &&
+    product.numberOfArtworks > 1 &&
+    product.numberOfArtworks !== -1;
+  const allowsMultipleArtworksPerSide =
+    !!product.allowMultipleArtworksForEachSide &&
+    !!product.numberOfSides &&
+    product.numberOfSides > 1;
+
+  return (
+    hasMultipleSides || hasMultipleArtworks || allowsMultipleArtworksPerSide
+  );
+}
+
+/**
+ * Gets the default image for a product
+ * Prioritizes: main image -> first gallery image -> first color image
+ * @param product The product to get the default image for
+ * @returns The default image URL
+ */
+export function getDefaultProductImage(product: {
+  image?: string;
+  gallery?: string[];
+  colors?: { image: string }[] | null;
+}): string {
+  // First priority: Main product image
+  if (product.image) {
+    return product.image;
+  }
+
+  // Second priority: First gallery image
+  if (product.gallery && product.gallery.length > 0) {
+    return product.gallery[0];
+  }
+
+  // Third priority: First color image
+  if (product.colors && product.colors.length > 0) {
+    return product.colors[0].image;
+  }
+
+  // Fallback to empty string if no images are available
+  return "";
+}
