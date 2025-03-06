@@ -9,6 +9,7 @@ import { IShippingAddress } from "@/types";
 import { toast } from "react-toastify";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { CURRENCY_SYMBOL } from "@/features/admin/PriceCalculator/constants";
+import { getPaymentStatusColor } from "@/functions/payment-status";
 
 interface Props {
   order: IOrder;
@@ -17,19 +18,6 @@ interface Props {
 export const OrderTableRow = ({ order }: Props) => {
   const supabase = createClientComponentClient();
   const createdAt = new Date(order.created_at);
-
-  const getPaymentStatusColor = (status: string) => {
-    switch (status) {
-      case "paid":
-        return "green";
-      case "partly-paid":
-        return "yellow";
-      case "unpaid":
-        return "red";
-      default:
-        return "gray";
-    }
-  };
 
   const handleUpdateDeliveryDetails = async (
     orderId: string,
