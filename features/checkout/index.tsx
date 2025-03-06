@@ -26,9 +26,19 @@ import { ConfirmOrder } from "@/components/PaymentDetails/ConfirmOrder";
 import { PaymentStatus } from "@/types/order";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { getArtworkFiles, getArtworkFilesMap } from "@/utils/storage";
+import {
+  uploadBase64Files,
+  uploadBase64FilesMap,
+} from "@/functions/upload-files";
 
 interface Props {
   shippingAddresses?: IShippingAddress[];
+}
+
+// Define interfaces for the uploaded files
+interface UploadedFile {
+  path: string;
+  filename: string;
 }
 
 export const Checkout = ({ shippingAddresses }: Props) => {
@@ -76,25 +86,74 @@ export const Checkout = ({ shippingAddresses }: Props) => {
         delete processedItem.hasArtworkFilesMap;
         delete processedItem.artworkLabels;
 
-        // Get actual artwork files if they exist
+        // Get actual artwork files if they exist and upload to Supabase storage
         if (item.hasArtworkFilesMap) {
           try {
+            // Get files from IndexedDB
             const filesMap = await getArtworkFilesMap(
               item.id,
               item.artworkLabels || []
             );
-            processedItem.artworkFilesMap = filesMap;
+
+            // Upload files to Supabase storage
+            const uploadedFilesMap = await uploadBase64FilesMap(filesMap);
+
+            // Convert the uploaded files to match the expected format in ICartItem
+            const storedFilesMap: Record<
+              string,
+              { name: string; type: string; url: string; size: number }[]
+            > = {};
+
+            for (const [label, files] of Object.entries(uploadedFilesMap)) {
+              storedFilesMap[label] = files.map((file: UploadedFile) => {
+                // Extract file extension to determine type
+                const fileExt =
+                  file.filename.split(".").pop()?.toLowerCase() || "";
+                const mimeType = getMimeType(fileExt);
+
+                return {
+                  name: file.filename,
+                  type: mimeType,
+                  url: file.path, // Store the path instead of base64
+                  size: 0, // Size is not relevant for the stored path
+                };
+              });
+            }
+
+            // Store the file references in the order
+            processedItem.artworkFilesMap = storedFilesMap;
             delete processedItem.artworkFiles; // Remove single files if using map
           } catch (error) {
-            console.error("Error loading artwork files map:", error);
+            console.error("Error processing artwork files map:", error);
           }
         } else if (item.hasArtworkFiles) {
           try {
+            // Get files from IndexedDB
             const files = await getArtworkFiles(item.id);
-            processedItem.artworkFiles = files;
+
+            // Upload files to Supabase storage
+            const uploadedFiles = await uploadBase64Files(files);
+
+            // Convert the uploaded files to match the expected format in ICartItem
+            const storedFiles = uploadedFiles.map((file: UploadedFile) => {
+              // Extract file extension to determine type
+              const fileExt =
+                file.filename.split(".").pop()?.toLowerCase() || "";
+              const mimeType = getMimeType(fileExt);
+
+              return {
+                name: file.filename,
+                type: mimeType,
+                url: file.path, // Store the path instead of base64
+                size: 0, // Size is not relevant for the stored path
+              };
+            });
+
+            // Store the file references in the order
+            processedItem.artworkFiles = storedFiles;
             delete processedItem.artworkFilesMap; // Remove map if using single files
           } catch (error) {
-            console.error("Error loading artwork files:", error);
+            console.error("Error processing artwork files:", error);
           }
         }
 
@@ -173,6 +232,21 @@ export const Checkout = ({ shippingAddresses }: Props) => {
 
     clearItemsFromCart(details.items.map((item) => item.id));
     router.push(`/order-success?reference=${ref.reference}`);
+  };
+
+  // Helper function to determine MIME type from file extension
+  const getMimeType = (extension: string): string => {
+    const mimeTypes: Record<string, string> = {
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      svg: "image/svg+xml",
+      pdf: "application/pdf",
+      eps: "application/postscript",
+      ai: "application/illustrator",
+    };
+
+    return mimeTypes[extension] || "application/octet-stream";
   };
 
   useEffect(() => {

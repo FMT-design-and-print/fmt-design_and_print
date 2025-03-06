@@ -6,17 +6,35 @@ import {
   mapOrderDetailsKeyToLabel,
 } from "@/constants/order-details-map";
 import { useCustomReadOnlyEditor } from "@/hooks/useCustomEditor";
+import { useUpdateCustomOrder } from "@/hooks/admin/useUpdateOrder";
 import { ArtworkOption } from "@/types";
 import { Group, Paper, Stack, Text } from "@mantine/core";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { v4 as uid } from "uuid";
 import { FileDownloader } from "./FileDownloader";
+import { notifications } from "@mantine/notifications";
 
 interface Props {
   orderDetails: Record<string, any>;
+  orderId?: string;
 }
 
-const renderArtworks = (value: string[]) => {
+interface ArtworkFile {
+  url: string;
+  name: string;
+  size?: number;
+  type?: string;
+  isDeleted?: boolean;
+}
+
+const renderArtworks = (
+  value: string[],
+  orderId?: string,
+  onFilesUpdated?: (updatedFiles: (string | ArtworkFile)[]) => void
+) => {
+  // Check if any files are marked as deleted with #deleted suffix
+  const hasDeletedFiles = value.some((file) => file.includes("#deleted"));
+
   return (
     <Group pb="sm" key={uid()}>
       <Text size="sm">Artworks:</Text>
@@ -25,7 +43,12 @@ const renderArtworks = (value: string[]) => {
           No artworks provided
         </Text>
       ) : (
-        <FileDownloader fileNames={value} />
+        <FileDownloader fileNames={value} onFilesUpdated={onFilesUpdated} />
+      )}
+      {hasDeletedFiles && (
+        <Text size="xs" c="dimmed" fs="italic">
+          Some files have been marked as deleted
+        </Text>
       )}
     </Group>
   );
@@ -53,11 +76,52 @@ const renderOtherDetails = (
   </Group>
 );
 
-export const CustomOrderDetailsRenderer: FC<Props> = ({ orderDetails }) => {
+export const CustomOrderDetailsRenderer: FC<Props> = ({
+  orderDetails,
+  orderId,
+}) => {
   const editor = useCustomReadOnlyEditor(orderDetails.instructions || "");
+  const [updatedOrderDetails, setUpdatedOrderDetails] = useState(orderDetails);
+  const { mutate: updateCustomOrder } = useUpdateCustomOrder();
+
+  // Handle file updates
+  const handleFilesUpdated = async (updatedFiles: (string | ArtworkFile)[]) => {
+    if (!orderId) return;
+
+    try {
+      // Create a new orderDetails object with the updated artworks
+      const newOrderDetails = {
+        ...updatedOrderDetails,
+        artworks: updatedFiles,
+      };
+
+      // Update the state
+      setUpdatedOrderDetails(newOrderDetails);
+
+      // Update the order in the database
+      updateCustomOrder({
+        orderId,
+        update: { orderDetails: newOrderDetails },
+      });
+
+      notifications.show({
+        title: "Success",
+        message: "Order details updated successfully",
+        color: "green",
+      });
+    } catch (error) {
+      console.error("Error updating order details:", error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to update order details",
+        color: "red",
+      });
+    }
+  };
+
   return (
     <Paper withBorder p="lg" my="lg">
-      {Object.entries(orderDetails).map(([key, value]) => {
+      {Object.entries(updatedOrderDetails).map(([key, value]) => {
         if (key === "instructions")
           return (
             <Stack key={key} my="lg">
@@ -66,7 +130,8 @@ export const CustomOrderDetailsRenderer: FC<Props> = ({ orderDetails }) => {
             </Stack>
           );
 
-        if (key === "artworks") return renderArtworks(value);
+        if (key === "artworks")
+          return renderArtworks(value, orderId, handleFilesUpdated);
 
         if (key === "artworkOption") return renderArtworkOption(value);
 
