@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Database } from "@/types/supabase";
 import { createBrowserClient } from "@supabase/ssr";
 import { createClient as createNewClient } from "@supabase/supabase-js";
