@@ -115,8 +115,8 @@ export function Faq({ isOverview = false }: Props) {
               </Accordion.Control>
               <Accordion.Panel>
                 You can reach our customer service team by sending email to
-                customer@fmtdesignprint.com or calling +233537656594, Monday
-                through Friday, 7am - 6pm GMT. Our friendly representatives are
+                customer@fmtdesignprint.com or support@fmtdesignprint.com or by calling +233530516908, You can also whatsapp us on +233559617959 from Monday
+                through Friday, 8am - 6pm GMT. Our friendly representatives are
                 here to assist you with any questions or concerns you may have.
               </Accordion.Panel>
             </Accordion.Item>
