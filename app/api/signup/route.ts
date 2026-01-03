@@ -1,5 +1,5 @@
 import EmailVerificationTemplate from "@/emails/EmailVerificationTemplate";
-import { createAdminClient } from "@/utils/supabase/client";
+import { createAdminClient } from "@/utils/supabase/server";
 
 import { Resend } from "resend";
 

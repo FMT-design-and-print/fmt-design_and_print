@@ -18,11 +18,12 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
 const frameSizes = ["A5", "A4", "A3", "A2", "20cm x 25cm"];
 const types = ["with Glass", "Canvas Laminated", "Rubber Laminated"];
 
-export const Frames = ({ image }: { image: string }) => {
+export const Frames = ({ image = productImages.frames }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },
@@ -174,7 +175,7 @@ export const Frames = ({ image }: { image: string }) => {
               Enter a URL of an image of a frame type you want here.{" "}
               <Text
                 component={Link}
-                href="https://images.app.goo.gl/EjWttyjDMzAgWzrb9"
+                href="https://cdn.sanity.io/images/5qz48ekn/production/43f9560f42be5413ace2cf7c52715f79d624067f-3000x2000.jpg"
                 target="_blank"
                 c="pink"
               >

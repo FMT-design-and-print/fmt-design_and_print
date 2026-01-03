@@ -1,8 +1,9 @@
 import { useTagsFilters } from "@/store/filters";
-import { ActionIcon, Card, Group, Text } from "@mantine/core";
+import { ActionIcon, Card, Group, Text, Divider } from "@mantine/core";
 import { IconArrowBarLeft } from "@tabler/icons-react";
 import { CiFilter } from "react-icons/ci";
 import { TagsFilters } from ".";
+import { SortAndDateFilters } from "./SortAndDateFilters";
 
 interface Props {
   availableTags: string[];
@@ -28,6 +29,10 @@ export const DesktopFilters = ({ availableTags }: Props) => {
             <IconArrowBarLeft />
           </ActionIcon>
         </Group>
+
+        <SortAndDateFilters />
+        
+        <Divider my="md" />
 
         <TagsFilters availableTags={availableTags} />
       </Card>

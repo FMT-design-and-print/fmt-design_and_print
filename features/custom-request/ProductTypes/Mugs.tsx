@@ -44,7 +44,7 @@ const mugTypes = [
   },
 ];
 
-export const Mugs = ({ image }: { image: string }) => {
+export const Mugs = ({ image = mugTypes[0].image }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

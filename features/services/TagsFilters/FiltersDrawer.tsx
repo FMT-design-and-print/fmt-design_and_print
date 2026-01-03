@@ -1,9 +1,10 @@
 "use client";
-import { Button, Drawer } from "@mantine/core";
+import { Button, Drawer, Divider } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React from "react";
 import { CiFilter } from "react-icons/ci";
 import { TagsFilters } from ".";
+import { SortAndDateFilters } from "./SortAndDateFilters";
 
 interface Props {
   availableTags: string[];
@@ -22,6 +23,8 @@ export const FiltersDrawer = ({ availableTags }: Props) => {
         title="Filters"
         position="right"
       >
+        <SortAndDateFilters />
+        <Divider my="md" />
         <TagsFilters availableTags={availableTags} />
       </Drawer>
 

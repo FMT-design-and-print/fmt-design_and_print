@@ -16,8 +16,9 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
-export const DesignWorks = ({ image }: { image: string }) => {
+export const DesignWorks = ({ image = productImages.designWorks }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

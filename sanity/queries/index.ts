@@ -11,4 +11,5 @@ export {
   printProductsQuery,
   printProductsByTypeQuery,
   singleProductQuery,
+  recentProductsQuery,
 } from "./products";

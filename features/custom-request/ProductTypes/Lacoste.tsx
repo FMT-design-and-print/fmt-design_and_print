@@ -18,6 +18,7 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
 const lacosteBrands: ComboboxData = [
   {
@@ -30,7 +31,7 @@ const lacosteBrands: ComboboxData = [
   },
 ];
 
-export const Lacoste = ({ image }: { image: string }) => {
+export const Lacoste = ({ image = productImages.lacoste }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

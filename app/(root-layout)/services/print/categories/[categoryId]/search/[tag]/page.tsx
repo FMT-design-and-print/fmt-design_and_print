@@ -4,11 +4,17 @@ import { formatString } from "@/functions";
 import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/sanity/lib/client";
-import { allProductsInCategoryByTagQuery } from "@/sanity/queries/products";
+import {
+  getAllProductsInCategoryByTagQuery,
+  getProductSortOrder,
+} from "@/sanity/queries/products";
 import { IPrintProduct } from "@/types";
 import { Metadata } from "next";
 import { fmtDescription } from "@/constants";
-import { generateOGImage, addMetadataCacheControl } from "@/lib/utils/metadata";
+import {
+  generateOGImage,
+  addMetadataCacheControl,
+} from "@/lib/utils/metadata";
 
 type Params = Promise<{
   categoryId: string;
@@ -16,13 +22,26 @@ type Params = Promise<{
   tag: string;
 }>;
 
+type SearchParams = Promise<{
+  sort?: string;
+  dir?: string;
+  from?: string;
+  to?: string;
+}>;
+
 async function getProducts(
   categoryId: string,
-  tag: string
+  tag: string,
+  sortOrder: string = "order(_createdAt desc)",
+  startDate: string | null = null,
+  endDate: string | null = null
 ): Promise<IPrintProduct[]> {
-  return client.fetch(allProductsInCategoryByTagQuery, {
+  const query = getAllProductsInCategoryByTagQuery(sortOrder);
+  return client.fetch(query, {
     slug: categoryId,
     itemTag: formatString(decodeURIComponent(tag)),
+    startDate,
+    endDate,
   });
 }
 
@@ -34,7 +53,8 @@ export async function generateMetadata({
   const { categoryId, tag } = await params;
   const decodedTag = decodeURIComponent(tag);
 
-  const products = await getProducts(categoryId, decodedTag);
+  const sortOrder = getProductSortOrder("date", "desc");
+  const products = await getProducts(categoryId, decodedTag, sortOrder);
 
   // Use product type if available, otherwise use formatted category
   const typeTitle = products[0]?.type.title || formatString(categoryId);
@@ -60,11 +80,25 @@ export async function generateMetadata({
   return addMetadataCacheControl(metadata);
 }
 
-const CategorySearchPage = async ({ params }: { params: Params }) => {
+const CategorySearchPage = async ({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) => {
   await redirectAdminUser();
   const { categoryId, tag } = await params;
+  const { sort, dir, from, to } = await searchParams;
 
-  const products: IPrintProduct[] = await getProducts(categoryId, tag);
+  const sortOrder = getProductSortOrder(sort, dir);
+  const products: IPrintProduct[] = await getProducts(
+    categoryId,
+    tag,
+    sortOrder,
+    from || null,
+    to || null
+  );
 
   const items = [
     { title: "Printing Services", href: "/services?st=print" },

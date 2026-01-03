@@ -1,5 +1,5 @@
 import ResetPasswordEmail from "@/emails/ResetPasswordEmail";
-import { createAdminClient } from "@/utils/supabase/client";
+import { createAdminClient } from "@/utils/supabase/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);

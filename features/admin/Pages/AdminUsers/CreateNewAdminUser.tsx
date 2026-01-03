@@ -2,7 +2,6 @@
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { generatePassword } from "@/functions";
 import { validateForm } from "@/functions/validate-form";
-import { createAdminClient, createClient } from "@/utils/supabase/client";
 import {
   Avatar,
   Box,
@@ -77,57 +76,16 @@ export const CreateNewAdminUser = () => {
 
     if (result.success) {
       setIsLoading(true);
-      // 1. create new user
-      const supabaseAdmin = createAdminClient();
-      const { data: createdUser, error: createUserError } =
-        await supabaseAdmin.auth.admin.createUser({
-          email,
-          password,
-          email_confirm: true,
-          user_metadata: {
-            userType: "admin",
-            role,
-            firstName,
-            lastName,
-            avatar,
-          },
-        });
-
-      if (createUserError) {
-        console.error(createUserError);
-        toast.error("Error creating user");
+      const res = await fetch("/api/admin/create-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) {
+        const json = await res.json().catch(() => null);
+        toast.error(json?.message || "Error creating user");
         setIsLoading(false);
         return;
-      }
-      const supabase = createClient();
-      // 2. Add user details to admins table with role
-      const { error: addDataError } = await supabase.from("admins").insert([
-        {
-          id: createdUser.user?.id,
-          role,
-          email,
-          firstName,
-          lastName,
-          avatar,
-        },
-      ]);
-
-      if (addDataError) {
-        console.error(addDataError);
-        toast.error("Error saving user details to DB");
-        setIsLoading(false);
-        return;
-      }
-
-      // 3. Send user email to reset their password
-      if (sendMail) {
-        await fetch("/api/send", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({ firstName, email, tempPassword: password }),
-        });
       }
 
       setIsLoading(false);

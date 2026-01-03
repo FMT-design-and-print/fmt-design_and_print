@@ -1,5 +1,5 @@
 import { IPrintProduct } from "@/types";
-import { Box, Card, Center, Group, Text } from "@mantine/core";
+import { Box, Card, Center, Group, type MantineStyleProps, Text } from "@mantine/core";
 import Link from "next/link";
 import { FavoriteBtn } from "./FavoriteBtn";
 import classes from "./ProductCard.module.css";
@@ -11,14 +11,15 @@ interface Props {
   product: IPrintProduct;
   link: string;
   size?: "default" | "small" | "large";
+  width?: MantineStyleProps["w"];
 }
-export function ProductCard({ product, link = "", size = "default" }: Props) {
+export function ProductCard({ product, link = "", size = "default", width = "250px" }: Props) {
   return (
     <Card
       withBorder
       radius="md"
       className={classes.card}
-      w={size === "small" ? "160px" : "250px"}
+      w={size === "small" ? "160px" : width ? width : "250px"}
       mb={size === "small" ? "xs" : "sm"}
     >
       <Card.Section
@@ -67,7 +68,7 @@ export function ProductCard({ product, link = "", size = "default" }: Props) {
         {product.title}
       </Text>
 
-      <Group justify="space-between" mt={size === "small" ? "5px" : "md"}>
+      <Group justify="space-between" gap="xs" mt={size === "small" ? "5px" : "md"}>
         <Box>
           <Text fw="bold" size={size === "small" ? "sm" : "md"}>
             GHS {product.price}
