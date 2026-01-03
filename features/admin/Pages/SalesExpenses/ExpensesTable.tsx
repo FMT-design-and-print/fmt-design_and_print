@@ -11,10 +11,11 @@ import {
   Tooltip,
   TextInput,
   Box,
+  Pagination,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconEye, IconEdit, IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import ExpensesForm from "./ExpensesForm";
 import ExpenseDetails from "./ExpenseDetails";
@@ -49,6 +50,19 @@ export default function ExpensesTable({
     expenses,
     filters,
     filteredExpenses
+  );
+
+  const [activePage, setActivePage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setActivePage(1);
+  }, [search, filters]);
+
+  const totalPages = Math.ceil(filteredAndSortedExpenses.length / itemsPerPage);
+  const paginatedExpenses = filteredAndSortedExpenses.slice(
+    (activePage - 1) * itemsPerPage,
+    activePage * itemsPerPage
   );
 
   const handleViewDetails = (expense: Expenses) => {
@@ -115,7 +129,7 @@ export default function ExpensesTable({
               </Table.Td>
             </Table.Tr>
           ) : (
-            filteredAndSortedExpenses.map((expense) => (
+            paginatedExpenses.map((expense) => (
               <Table.Tr key={expense.id}>
                 <Table.Td>
                   <Group gap="sm" wrap="nowrap">
@@ -154,6 +168,17 @@ export default function ExpensesTable({
           )}
         </Table.Tbody>
       </Table>
+
+      {totalPages > 1 && (
+        <Group justify="center" mt="md">
+          <Pagination
+            total={totalPages}
+            value={activePage}
+            onChange={setActivePage}
+            color="pink"
+          />
+        </Group>
+      )}
 
       <Drawer
         opened={opened}

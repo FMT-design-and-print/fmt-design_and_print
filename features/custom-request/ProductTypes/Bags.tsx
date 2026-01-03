@@ -16,6 +16,7 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
 const bagTypes = [
   { type: "Paper Bag", minQty: 100 },
@@ -23,7 +24,7 @@ const bagTypes = [
   { type: "Rubber bag / Polybag", minQty: 100 },
 ];
 
-export const Bags = ({ image }: { image: string }) => {
+export const Bags = ({ image = productImages.bags }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

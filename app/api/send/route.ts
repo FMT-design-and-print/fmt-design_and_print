@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "FMT Design and Print | Admin <noreply@fmtdesignprint.com>",
+      from: "FMT Design and Print | Admin <auth@fmtdesignprint.com>",
       to: [email],
       subject: "Admin Account Created",
       react: NewAdminUserEmail({

@@ -1,7 +1,7 @@
 export const productImages = {
   tShirts:
     "https://cdn.sanity.io/images/5qz48ekn/production/8e920b7307482707994f3cee1b01c6c0c3c8122a-740x493.png",
-  mugs: "https://cdn.sanity.io/images/5qz48ekn/production/8e920b7307482707994f3cee1b01c6c0c3c8122a-740x493.png",
+  mugs: "https://res.cloudinary.com/dnbmynikp/image/upload/v1715105489/FMT/colored-mugs-photo-print-megastore-printing_yepeb5.jpg",
   hoodies:
     "https://cdn.sanity.io/images/5qz48ekn/production/6ddd9100a1e61c87f44174071d09f2113348e21b-740x740.jpg",
   frames:

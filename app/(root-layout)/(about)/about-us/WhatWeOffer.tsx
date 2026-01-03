@@ -26,9 +26,7 @@ import classes from "./FeaturesCards.module.css";
 export type Data = {
   title: string;
   description: string;
-  icon: React.ForwardRefExoticComponent<
-    Omit<IconProps, "ref"> & React.RefAttributes<Icon>
-  >;
+  icon: any;
 };
 
 const offers = [

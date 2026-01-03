@@ -17,6 +17,7 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
 const pillowTypes = [
   {
@@ -33,7 +34,7 @@ const pillowTypes = [
   },
 ];
 
-export const Pillows = ({ image }: { image: string }) => {
+export const Pillows = ({ image = productImages.pillows }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

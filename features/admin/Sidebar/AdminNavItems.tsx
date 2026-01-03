@@ -16,6 +16,7 @@ import {
   IconUserShield,
   IconUsersGroup,
   IconAdjustments,
+  IconWorld,
 } from "@tabler/icons-react";
 import { Dashboard } from "../Pages/Dashboard";
 import { Orders } from "../Pages/Orders";
@@ -31,6 +32,7 @@ import SalesExpenses from "../Pages/SalesExpenses";
 import { ReceiptsPage } from "../Pages/Receipts";
 import QuotesPage from "../Pages/quotes";
 import { SystemControl } from "../Pages/SystemControl";
+import { Analytics } from "../Pages/Analytics";
 
 export const adminNavItems: IAdminNavItems[] = [
   {
@@ -40,6 +42,14 @@ export const adminNavItems: IAdminNavItems[] = [
     isVisible: true,
     component: <Dashboard />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
+  },
+  {
+    value: "analytics",
+    label: "Visitor Analytics",
+    icon: <IconWorld />,
+    isVisible: true,
+    component: <Analytics />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   {
     value: "customers",

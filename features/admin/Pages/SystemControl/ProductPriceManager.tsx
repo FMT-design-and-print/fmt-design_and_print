@@ -16,7 +16,7 @@ import {
   Loader,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { client, writableClient } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/client";
 import { IconPercentage, IconSearch } from "@tabler/icons-react";
 import debounce from "lodash/debounce";
 import { usePriceUpdate } from "../../hooks/usePriceUpdate";
@@ -79,18 +79,11 @@ export function ProductPriceManager() {
   const { data: categories } = useQuery({
     queryKey: ["categories-with-types"],
     queryFn: async () => {
-      const query = `*[_type == "printCategories"] {
-        "id": _id,
-        title,
-        "productCount": count(*[_type == "printService" && references(^._id)]),
-        "productTypes": *[_type == "productTypes" && references(^._id)] {
-          "id": _id,
-          title,
-          "productCount": count(*[_type == "printService" && references(^._id)])
-        }
-      }`;
-      const results = await client.fetch(query);
-      return results.filter((cat: Category) => cat.productCount > 0);
+      const res = await fetch("/api/admin/prices/categories");
+      if (!res.ok) throw new Error("Failed to load categories");
+      const json = await res.json();
+      console.log(json.categories)
+      return (json.categories || []) as Category[];
     },
   });
 
@@ -155,21 +148,18 @@ export function ProductPriceManager() {
     let productTypeName: string | undefined;
 
     if (updateScope === "category" && selectedCategory && selectedProductType) {
-      const query = `*[_type == "printService" && references("${selectedCategory}") && references("${selectedProductType}")]{
-        "id": _id,
-        title,
-        price,
-        category->{
-          title
-        },
-        type->{
-          title
-        }
-      }`;
-      const products = await client.fetch(query);
-      productsToUpdate = products.map((p: { id: string }) => p.id);
-      categoryName = products[0]?.category?.title;
-      productTypeName = products[0]?.type?.title;
+      const res = await fetch("/api/admin/prices/resolve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          categoryId: selectedCategory,
+          productTypeId: selectedProductType,
+        }),
+      });
+      const json = await res.json();
+      productsToUpdate = (json.products || []) as string[];
+      categoryName = json.categoryName;
+      productTypeName = json.productTypeName;
     } else if (updateScope === "selected") {
       productsToUpdate = selectedProducts;
     }
@@ -180,7 +170,6 @@ export function ProductPriceManager() {
       priceValue,
       categoryName,
       productTypeName,
-      client: writableClient,
     });
   };
 

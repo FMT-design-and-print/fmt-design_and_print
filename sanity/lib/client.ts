@@ -16,5 +16,5 @@ export const writableClient = createClient({
   dataset,
   apiVersion,
   useCdn: false, // Required for mutations
-  token: process.env.NEXT_PUBLIC_SANITY_ADMIN_TOKEN, // Add this token to your .env.local
+  token: process.env.SANITY_ADMIN_TOKEN, // Server-side token only
 });

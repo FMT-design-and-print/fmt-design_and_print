@@ -4,7 +4,6 @@ import { formatString } from "@/functions";
 import { Avatar, Button, Center, Stack, Title } from "@mantine/core";
 import { IconArrowBack } from "@tabler/icons-react";
 import Link from "next/link";
-import React from "react";
 
 interface Props {
   name: string;

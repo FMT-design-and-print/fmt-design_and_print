@@ -34,7 +34,7 @@ async function fetchRpc<T>(rpcName: string): Promise<T[]> {
     return [];
   }
 
-  return data;
+  return (data as T[]) || [];
 }
 
 function useRealtimeSubscription(

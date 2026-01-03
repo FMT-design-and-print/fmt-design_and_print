@@ -12,10 +12,11 @@ import {
   Tooltip,
   TextInput,
   Box,
+  Pagination,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconEye, IconEdit, IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import SalesForm from "./SalesForm";
 import SalesDetails from "./SalesDetails";
@@ -49,6 +50,19 @@ export default function SalesTable({
 
   const { filteredSales } = useSalesSearch(sales, search);
   const filteredAndSortedSales = useFilters(sales, filters, filteredSales);
+
+  const [activePage, setActivePage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setActivePage(1);
+  }, [search, filters]);
+
+  const totalPages = Math.ceil(filteredAndSortedSales.length / itemsPerPage);
+  const paginatedSales = filteredAndSortedSales.slice(
+    (activePage - 1) * itemsPerPage,
+    activePage * itemsPerPage
+  );
 
   const handleViewDetails = (sale: ISales) => {
     setSelectedSale(sale);
@@ -131,7 +145,7 @@ export default function SalesTable({
               </Table.Td>
             </Table.Tr>
           ) : (
-            filteredAndSortedSales.map((sale) => (
+            paginatedSales.map((sale) => (
               <Table.Tr key={sale.id}>
                 <Table.Td>
                   <Group gap="sm" wrap="nowrap">
@@ -170,6 +184,17 @@ export default function SalesTable({
           )}
         </Table.Tbody>
       </Table>
+
+      {totalPages > 1 && (
+        <Group justify="center" mt="md">
+          <Pagination
+            total={totalPages}
+            value={activePage}
+            onChange={setActivePage}
+            color="pink"
+          />
+        </Group>
+      )}
 
       <Drawer
         opened={opened}
