@@ -76,10 +76,10 @@ export function ErrorComponent({ reset }: Props) {
               <Text c="dimmed" fs="italic" size="sm">
                 Need help? Contact us at{" "}
                 <a
-                  href="mailto:customer-service@fmt.com"
+                  href="mailto:support@fmtdesignprint.com"
                   className={classes.supportLink}
                 >
-                  customer-service@fmt.com
+                  support@fmtdesignprint.com
                 </a>
               </Text>
             </Group>

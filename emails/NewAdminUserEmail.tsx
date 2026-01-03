@@ -94,7 +94,7 @@ export const NewAdminUserEmail = ({
 
 NewAdminUserEmail.PreviewProps = {
   firstName: "FMT",
-  email: "test@fmtdesignprint.com",
+  email: "admin@fmtdesignprint.com",
   tempPassword: "",
 } as Props;
 

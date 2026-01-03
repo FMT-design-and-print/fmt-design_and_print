@@ -32,7 +32,7 @@ export const TopBar = () => {
         >
           <Flex
             component={Link}
-            href="tel:+233 537656594"
+            href="tel:+233 530516908"
             align="center"
             gap={4}
           >
@@ -40,7 +40,7 @@ export const TopBar = () => {
               <MdCall />
             </Text>
             <Text c="gray.6" size="sm">
-              +233 537656594
+              +233 530516908
             </Text>
           </Flex>
           <Flex
