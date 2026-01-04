@@ -787,6 +787,74 @@ export type Database = {
         }
         Relationships: []
       }
+      visitors: {
+        Row: {
+          id: string
+          created_at: string
+          last_visit: string
+          ip_address: string | null
+          country: string | null
+          city: string | null
+          region: string | null
+          user_agent: string | null
+          visit_count: number
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          last_visit?: string
+          ip_address?: string | null
+          country?: string | null
+          city?: string | null
+          region?: string | null
+          user_agent?: string | null
+          visit_count?: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          last_visit?: string
+          ip_address?: string | null
+          country?: string | null
+          city?: string | null
+          region?: string | null
+          user_agent?: string | null
+          visit_count?: number
+        }
+        Relationships: []
+      }
+      page_views: {
+        Row: {
+          id: number
+          created_at: string
+          visitor_id: string
+          url: string
+          referrer: string | null
+        }
+        Insert: {
+          id?: number
+          created_at?: string
+          visitor_id: string
+          url: string
+          referrer?: string | null
+        }
+        Update: {
+          id?: number
+          created_at?: string
+          visitor_id?: string
+          url?: string
+          referrer?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_views_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "visitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

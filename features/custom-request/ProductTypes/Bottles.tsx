@@ -18,6 +18,7 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
 const bottleTypes = [
   {
@@ -32,7 +33,7 @@ const bottleTypes = [
   },
 ];
 
-export const Bottles = ({ image }: { image: string }) => {
+export const Bottles = ({ image = productImages.bottles }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

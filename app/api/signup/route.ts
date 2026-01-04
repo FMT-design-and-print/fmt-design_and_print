@@ -1,5 +1,5 @@
 import EmailVerificationTemplate from "@/emails/EmailVerificationTemplate";
-import { createAdminClient } from "@/utils/supabase/client";
+import { createAdminClient } from "@/utils/supabase/server";
 
 import { Resend } from "resend";
 
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
   if (res.data.properties?.email_otp) {
     const resendRes = await resend.emails.send({
-      from: "FMT Design and Print | Signup <noreply@fmtdesignprint.com>",
+      from: "FMT Design and Print | Signup <auth@fmtdesignprint.com>",
       to: [data.email],
       subject: "Verify Email",
       react: EmailVerificationTemplate({

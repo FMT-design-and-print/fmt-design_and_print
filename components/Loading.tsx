@@ -17,6 +17,7 @@ export const Loading = () => {
         alt="loading cart"
         width={200}
         height={200}
+        unoptimized
       />
       <Text c="dimmed">Loading...</Text>
     </Flex>

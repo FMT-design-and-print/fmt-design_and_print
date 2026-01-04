@@ -18,6 +18,7 @@ import { validateContactInfo } from "../validate-contact-info";
 import { sendMessage } from "@/functions/send-message";
 import { createOrderMessage } from "./messageUtils";
 import { artworkOptionLabelMap } from "@/constants/order-details-map";
+import { productImages } from "@/constants/images";
 
 const tShirtBrands: ComboboxData = [
   {
@@ -38,7 +39,7 @@ const tShirtBrands: ComboboxData = [
   },
 ];
 
-export const TShirts = ({ image }: { image: string }) => {
+export const TShirts = ({ image = productImages.tShirts }: { image: string }) => {
   const {
     context,
     loadingState: { isLoading, setIsLoading },

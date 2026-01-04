@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
-import { SanityClient } from "next-sanity";
 
 // Constants for rate limiting
 const BATCH_SIZE = 20; // Keeping well below the 25 req/s limit
@@ -20,7 +19,6 @@ interface PriceUpdateOptions {
   priceValue: number;
   categoryName?: string;
   productTypeName?: string;
-  client: SanityClient;
 }
 
 interface UpdateSummary {
@@ -34,10 +32,12 @@ interface UpdateSummary {
   skippedProducts: number;
 }
 
-interface SanityDocument {
-  _id: string;
-  title: string;
-  price: number;
+interface ServerBatchSummary {
+  totalProducts: number;
+  updatedProducts: number;
+  skippedProducts: number;
+  oldPrices: Record<string, number>;
+  newPrices: Record<string, number>;
 }
 
 export const usePriceUpdate = () => {
@@ -53,65 +53,57 @@ export const usePriceUpdate = () => {
     batch: string[],
     options: PriceUpdateOptions,
     updateSummary: UpdateSummary,
-    startIndex: number
+    startIndex: number,
+    totalCount: number
   ) => {
-    const { client, updateType, priceValue } = options;
-
-    // Fetch current prices for the batch
-    const docs = await Promise.all(
-      batch.map((id) => client.getDocument(id) as Promise<SanityDocument>)
-    );
-
-    // Prepare all updates for this batch
-    const updates = docs
-      .map((doc) => {
-        if (!doc) return null;
-
-        const oldPrice = doc.price || 0;
-        let newPrice;
-
-        if (updateType === "percentage") {
-          newPrice = Math.round(oldPrice * (1 + priceValue / 100) * 100) / 100;
-        } else {
-          newPrice = priceValue;
-        }
-
-        // Skip if the price is already the same
-        if (Math.abs(oldPrice - newPrice) < 0.01) {
-          updateSummary.skippedProducts++;
-          return null;
-        }
-
-        updateSummary.oldPrices[doc.title] = oldPrice;
-        updateSummary.newPrices[doc.title] = newPrice;
-
-        return {
-          id: doc._id,
-          price: newPrice,
-        };
-      })
-      .filter(Boolean);
-
-    // Create and execute a transaction for this batch
-    if (updates.length > 0) {
-      const transaction = updates.map((update) =>
-        client.patch(update!.id).set({ price: update!.price })
-      );
-      await Promise.all(transaction.map((tx) => tx.commit()));
+    const res = await fetch(`/api/admin/prices/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        products: batch,
+        updateType: options.updateType,
+        priceValue: options.priceValue,
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Failed to update prices");
     }
+    const json = (await res.json()) as {
+      success: boolean;
+      message: string;
+      summary: ServerBatchSummary;
+    };
 
-    // Update progress notification with current numbers
+    updateSummary.skippedProducts += json.summary.skippedProducts;
+    updateSummary.oldPrices = {
+      ...updateSummary.oldPrices,
+      ...json.summary.oldPrices,
+    };
+    updateSummary.newPrices = {
+      ...updateSummary.newPrices,
+      ...json.summary.newPrices,
+    };
+
+    const processedProducts = Math.min(startIndex + BATCH_SIZE, totalCount);
+    const percentage = Math.round((processedProducts / totalCount) * 100);
+    setProgress({
+      totalProducts: totalCount,
+      processedProducts,
+      percentage,
+      skippedProducts: updateSummary.skippedProducts,
+    });
+
     notifications.update({
       id: "price-update-progress",
       title: "Updating Prices",
       message: `Processing ${startIndex + 1} to ${Math.min(
         startIndex + BATCH_SIZE,
-        progress.totalProducts
-      )} of ${progress.totalProducts} products...${
-        updateSummary.skippedProducts > 0
+        totalCount
+      )} of ${totalCount} products...${updateSummary.skippedProducts > 0
           ? `\n(${updateSummary.skippedProducts} products skipped - already at target price)`
           : ""
-      }`,
+        }`,
       loading: true,
       autoClose: false,
     });
@@ -151,28 +143,32 @@ export const usePriceUpdate = () => {
         skippedProducts: 0,
       });
 
-      // Process in batches
+      // Show initial progress notification
+      notifications.show({
+        id: "price-update-progress",
+        title: "Updating Prices",
+        message: `Starting updates for ${products.length} products...`,
+        loading: true,
+        autoClose: false,
+      });
+
+      // Process in batches on the server, preserving rate limits and UI progress
       for (let i = 0; i < products.length; i += BATCH_SIZE) {
         const batch = products.slice(i, i + BATCH_SIZE);
-        await processBatch(batch, options, updateSummary, i);
+        await processBatch(batch, options, updateSummary, i, products.length);
 
-        // Update progress
-        const processedProducts = Math.min(i + BATCH_SIZE, products.length);
-        const percentage = Math.round(
-          (processedProducts / products.length) * 100
-        );
-        setProgress({
-          totalProducts: products.length,
-          processedProducts,
-          percentage,
-          skippedProducts: updateSummary.skippedProducts,
-        });
-
-        // Add delay between batches
+        // Delay between batches to avoid rate limit
         if (i + BATCH_SIZE < products.length) {
           await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY));
         }
       }
+
+      setProgress({
+        totalProducts: products.length,
+        processedProducts: products.length,
+        percentage: 100,
+        skippedProducts: updateSummary.skippedProducts,
+      });
 
       setIsUpdating(false);
       return updateSummary;
@@ -194,11 +190,10 @@ export const usePriceUpdate = () => {
       notifications.update({
         id: "price-update-progress",
         title: "Update Complete ✓",
-        message: `All products have been successfully updated!\n${
-          summary.skippedProducts > 0
-            ? `(${summary.skippedProducts} products skipped - already at target price)`
-            : ""
-        }`,
+        message: `All products have been successfully updated!\n${summary.skippedProducts > 0
+          ? `(${summary.skippedProducts} products skipped - already at target price)`
+          : ""
+          }`,
         loading: false,
         color: "green",
         autoClose: 4000,
@@ -214,10 +209,9 @@ export const usePriceUpdate = () => {
           summary.categoryName
             ? `\nin ${summary.categoryName} (${summary.productTypeName})`
             : "",
-          `\nwith ${
-            summary.updateType === "fixed"
-              ? `fixed price of GH₵${summary.priceValue}`
-              : `${summary.priceValue}% change`
+          `\nwith ${summary.updateType === "fixed"
+            ? `fixed price of GH₵${summary.priceValue}`
+            : `${summary.priceValue}% change`
           }`,
           "\n\nSample changes:",
           priceChangeExamples,

@@ -1,5 +1,6 @@
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createNewClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 export const createClient = async () => {
@@ -29,3 +30,9 @@ export const createClient = async () => {
     }
   );
 };
+
+export const createAdminClient = () =>
+  createNewClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SRK!
+  );

@@ -5,16 +5,29 @@ import { generateMetaDetails } from "@/functions/generate-meta-details";
 import { redirectAdminUser } from "@/lib/actions/admin-check.actions";
 import { client } from "@/sanity/lib/client";
 import { filteredProductTypesQuery } from "@/sanity/queries";
-import { printProductsQuery } from "@/sanity/queries/products";
+import {
+  getPrintProductsQuery,
+  getProductSortOrder,
+} from "@/sanity/queries/products";
 import { IPrintProduct, IProductType } from "@/types";
 import { Metadata } from "next";
 import { fmtDescription } from "@/constants";
-import { generateOGImage, addMetadataCacheControl } from "@/lib/utils/metadata";
+import {
+  generateOGImage,
+  addMetadataCacheControl,
+} from "@/lib/utils/metadata";
 
 export const revalidate = 0;
 
 type Params = Promise<{
   categoryId: string;
+}>;
+
+type SearchParams = Promise<{
+  sort?: string;
+  dir?: string;
+  from?: string;
+  to?: string;
 }>;
 
 export async function generateMetadata({
@@ -25,8 +38,13 @@ export async function generateMetadata({
   const { categoryId } = await params;
   const formattedCategory = formatString(categoryId).replace(/-/g, " ");
 
-  const products = await client.fetch(printProductsQuery, {
+  // Default sort for metadata generation
+  const sortOrder = getProductSortOrder("date", "desc");
+  const query = getPrintProductsQuery(sortOrder);
+  const products = await client.fetch(query, {
     slug: categoryId,
+    startDate: null,
+    endDate: null,
   });
 
   const productTypes = await client.fetch(filteredProductTypesQuery, {
@@ -57,9 +75,16 @@ export async function generateMetadata({
   return addMetadataCacheControl(metadata);
 }
 
-const PrintCategoryPage = async ({ params }: { params: Params }) => {
+const PrintCategoryPage = async ({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) => {
   await redirectAdminUser();
   const { categoryId } = await params;
+  const { sort, dir, from, to } = await searchParams;
 
   const productTypes: IProductType[] = await client.fetch(
     filteredProductTypesQuery,
@@ -68,8 +93,13 @@ const PrintCategoryPage = async ({ params }: { params: Params }) => {
     }
   );
 
-  const products: IPrintProduct[] = await client.fetch(printProductsQuery, {
+  const sortOrder = getProductSortOrder(sort, dir);
+  const query = getPrintProductsQuery(sortOrder);
+
+  const products: IPrintProduct[] = await client.fetch(query, {
     slug: categoryId,
+    startDate: from || null,
+    endDate: to || null,
   });
 
   const items = [

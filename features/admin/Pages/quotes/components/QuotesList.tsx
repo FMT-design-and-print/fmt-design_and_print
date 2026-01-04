@@ -228,7 +228,7 @@ export function QuotesList({ onEdit }: { onEdit: (id: string) => void }) {
                     </Text>
                   </Tooltip>
                 </Table.Td>
-                <Table.Td>${quote.totalAmount.toFixed(2)}</Table.Td>
+                <Table.Td>GHS {quote.totalAmount.toFixed(2)}</Table.Td>
                 <Table.Td>
                   <QuoteStatusUpdate
                     quoteId={quote.id}

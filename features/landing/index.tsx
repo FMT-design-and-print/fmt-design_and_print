@@ -16,11 +16,12 @@ import { FeaturedItems } from "./FeaturedItems";
 import { Hero } from "./Hero";
 import { Categories } from "./Categories";
 import Link from "next/link";
-import { ICategory, IFeaturedProducts } from "@/types";
+import { ICategory, IFeaturedProducts, IPrintProduct } from "@/types";
 import { Faq } from "@/components/FAQ/FAQ";
 import { useSaveInitialUserDetails } from "@/hooks/useSaveInitialUserDetails";
 import { orderSteps, paymentOptions } from "@/constants/order-steps";
 import Image from "next/image";
+import { RecentProducts } from "./RecentProducts";
 
 const defaultFeaturedProducts = {
   tShirts: [],
@@ -32,10 +33,12 @@ const defaultFeaturedProducts = {
 interface Props {
   featuredProducts: IFeaturedProducts;
   categories?: ICategory[];
+  recentProducts?: IPrintProduct[];
 }
 export const Landing = ({
   featuredProducts = defaultFeaturedProducts,
   categories = [],
+  recentProducts = [],
 }: Props) => {
   useSaveInitialUserDetails();
 
@@ -48,6 +51,11 @@ export const Landing = ({
         <Box p={{ base: "md", sm: "xl" }}>
           <Categories categories={categories} />
         </Box>
+      )}
+
+      {/* Recent Products Section */}
+      {recentProducts && recentProducts.length > 0 && (
+        <RecentProducts products={recentProducts} />
       )}
 
       <Box p={{ base: "md", sm: "xl" }}>

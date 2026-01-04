@@ -11,6 +11,7 @@ import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/providers/GoogleAnalytics";
 import WhatsAppChat from "@/components/WhatsAppChat";
+import { AnalyticsTracker } from "@/features/analytics/Tracker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +37,7 @@ export default function RootLayout({
         <SessionProvider />
         <ToastContainer />
         <GoogleAnalytics />
+        <AnalyticsTracker />
       </body>
     </html>
   );

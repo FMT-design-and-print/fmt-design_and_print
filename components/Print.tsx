@@ -45,7 +45,9 @@ export const Print = ({ children, triggerBtn, btnStyles }: Props) => {
       </div>
 
       {triggerBtn ? (
-        cloneElement(triggerBtn, { onClick: handlePrint })
+        cloneElement(triggerBtn as ReactElement<{ onClick?: () => void }>, {
+          onClick: handlePrint,
+        })
       ) : (
         <Button
           size="xs"

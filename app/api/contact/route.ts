@@ -55,7 +55,7 @@ export async function POST(request: Request) {
 
     // Send email notification
     const { error: emailError } = await resend.emails.send({
-      from: "FMT Design & Print <noreply@fmtdesignprint.com>",
+      from: "FMT Design & Print <contact@fmtdesignprint.com>",
       to: RECIPIENT_EMAILS,
       replyTo: email,
       subject: `New Contact Form Message from ${name || "Anonymous"}`,

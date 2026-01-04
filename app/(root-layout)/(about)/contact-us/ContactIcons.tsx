@@ -34,7 +34,7 @@ function ContactIcon({
 
 const MOCKDATA = [
   { title: "Email", description: "contact@fmtdesignprint.com", icon: IconAt },
-  { title: "Phone", description: "+233 537656594", icon: IconPhone },
+  { title: "Phone", description: "+233 530516908", icon: IconPhone },
   {
     title: "Address",
     description: "Dome Crossing, St. John's-Dome-Kwabenya-Brekuso Rd",
