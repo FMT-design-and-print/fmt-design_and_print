@@ -23,6 +23,8 @@ interface CommonOrderDetails {
   updated_at?: Date;
   orderId: string;
   totalAmount: number;
+  amountPaid?: number;
+  balanceDue?: number;
   status: OrderStatus;
   deliveryType: DeliveryType;
   deliveryDetails: IShippingAddress;
@@ -33,6 +35,8 @@ interface CommonOrderDetails {
   paymentType: PaymentType;
   deliveryFee?: number;
   paymentStatus?: PaymentStatus;
+  isDeleted?: boolean;
+  updatedBy?: object;
 }
 
 export interface IOrder extends CommonOrderDetails {

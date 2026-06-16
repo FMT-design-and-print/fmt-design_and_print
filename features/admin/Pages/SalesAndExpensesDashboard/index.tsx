@@ -1,6 +1,7 @@
 import { Container, Grid, Paper, Space } from "@mantine/core";
 import StatCards from "./components/StatCards";
 import RevenueChart from "./components/RevenueChart";
+import ProductRevenueChart from "./components/ProductRevenueChart";
 import RecentActivities from "./components/RecentActivities";
 import Filters, { FilterValues } from "./components/Filters";
 import { useDashboardData } from "./hooks/useDashboardData";
@@ -12,7 +13,7 @@ export default function SalesAndExpensesDashboard() {
     type: "all",
   });
 
-  const { totalRevenue, totalExpenses, totalProfit, isLoading, error } =
+  const { totalRevenue, totalExpenses, totalProfit, totalDebts, totalBadDebts, isLoading, error } =
     useDashboardData(filters);
 
   const handleFilterChange = useCallback((newFilters: FilterValues) => {
@@ -31,6 +32,8 @@ export default function SalesAndExpensesDashboard() {
             totalRevenue={totalRevenue}
             totalExpenses={totalExpenses}
             totalProfit={totalProfit}
+            totalDebts={totalDebts}
+            totalBadDebts={totalBadDebts}
             isLoading={isLoading}
             type={filters.type}
           />
@@ -45,6 +48,12 @@ export default function SalesAndExpensesDashboard() {
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Paper shadow="sm" p="md" radius="md">
             <RecentActivities filters={filters} />
+          </Paper>
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12 }}>
+          <Paper shadow="sm" p="md" radius="md">
+            <ProductRevenueChart filters={filters} />
           </Paper>
         </Grid.Col>
       </Grid>

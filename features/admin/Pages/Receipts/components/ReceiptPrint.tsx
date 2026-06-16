@@ -62,21 +62,35 @@ export function ReceiptPrint({ receipt }: ReceiptPrintProps) {
             <Text>Subtotal:</Text>
             <Text>{formatCurrency(receipt.subtotal)}</Text>
           </Group>
+          {receipt.taxAmount > 0 && (
+            <Group gap="xl">
+              <Text>Tax ({receipt.taxRate}%):</Text>
+              <Text>{formatCurrency(receipt.taxAmount)}</Text>
+            </Group>
+          )}
           <Group gap="xl">
-            <Text>Tax ({receipt.taxRate}%):</Text>
-            <Text>{formatCurrency(receipt.taxAmount)}</Text>
-          </Group>
-          <Group gap="xl">
-            <Text fw={500}>Total:</Text>
+            <Text fw={500}>Total Amount:</Text>
             <Text fw={500}>{formatCurrency(receipt.totalAmount)}</Text>
           </Group>
+          {receipt.amountPaid !== undefined && (
+            <Group gap="xl">
+              <Text>Amount Paid:</Text>
+              <Text c="green" fw={500}>{formatCurrency(receipt.amountPaid)}</Text>
+            </Group>
+          )}
+          {(receipt.balanceDue || 0) > 0 && (
+            <Group gap="xl">
+              <Text fw={700} c="red">Balance Due:</Text>
+              <Text fw={700} c="red">{formatCurrency(receipt.balanceDue || 0)}</Text>
+            </Group>
+          )}
         </Stack>
 
         <Stack gap="xs" mt="xl">
-          <Text>Payment Status: {receipt.paymentStatus.toUpperCase()}</Text>
+          <Text>Payment Status: {receipt.paymentStatus ? receipt.paymentStatus.toUpperCase() : "UNKNOWN"}</Text>
           <Text>
             Payment Method:{" "}
-            {receipt.paymentMethod.replace("_", " ").toUpperCase()}
+            {receipt.paymentMethod ? receipt.paymentMethod.replace("_", " ").toUpperCase() : "CASH"}
           </Text>
           {receipt.notes && (
             <Text c="dimmed" size="sm">

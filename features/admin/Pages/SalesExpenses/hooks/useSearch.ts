@@ -19,8 +19,8 @@ export function useSalesSearch(sales: ISales[], searchTerm: string) {
     const searchLower = debouncedSearch.toLowerCase();
     return sortedSales.filter(
       (sale) =>
-        sale.description.toLowerCase().includes(searchLower) ||
-        sale.productType.toLowerCase().includes(searchLower)
+        (sale.description?.toLowerCase() || "").includes(searchLower) ||
+        (sale.productType?.toLowerCase() || "").includes(searchLower)
     );
   }, [sales, debouncedSearch]);
 

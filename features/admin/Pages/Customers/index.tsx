@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Box, LoadingOverlay } from "@mantine/core";
+import { Box, LoadingOverlay, Tabs } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { createClient } from "@/utils/supabase/client";
 import { IUserDetails } from "@/types/user";
@@ -7,7 +7,9 @@ import CustomerEditModal from "./CustomerEditModal";
 import { CustomerStats } from "./components/CustomerStats";
 import { CustomerFilters } from "./components/CustomerFilters";
 import { CustomerTable } from "./components/CustomerTable";
+import DedicatedCustomersList from "./DedicatedCustomersList";
 import { toast } from "react-toastify";
+import { IconUserScan, IconUsersGroup } from "@tabler/icons-react";
 
 const PAGE_SIZE = 10;
 
@@ -131,41 +133,60 @@ export default function CustomersPage() {
 
   return (
     <Box p="md">
-      <LoadingOverlay visible={loading} />
+      <Tabs defaultValue="dedicated">
+        <Tabs.List mb="md">
+          <Tabs.Tab value="dedicated" leftSection={<IconUsersGroup size="1rem" />}>
+            Customers (Walk-in)
+          </Tabs.Tab>
+          <Tabs.Tab value="registered" leftSection={<IconUserScan size="1rem" />}>
+            Registered Users
+          </Tabs.Tab>
+        </Tabs.List>
 
-      <CustomerStats
-        totalCustomers={totalCustomers}
-        genderStats={genderStats}
-      />
+        <Tabs.Panel value="dedicated">
+          <DedicatedCustomersList />
+        </Tabs.Panel>
 
-      <CustomerFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        filterBy={filterBy}
-        filterValue={filterValue}
-        onFilterByChange={setFilterBy}
-        onFilterValueChange={setFilterValue}
-        customers={allCustomers}
-        csvData={csvData}
-      />
+        <Tabs.Panel value="registered">
+          <Box pos="relative">
+            <LoadingOverlay visible={loading} />
 
-      <CustomerTable
-        customers={currentCustomers}
-        totalRecords={filteredCustomers.length}
-        page={page}
-        onPageChange={setPage}
-        onEditCustomer={(customer) => {
-          setSelectedCustomer(customer);
-          open();
-        }}
-      />
+            <CustomerStats
+              totalCustomers={totalCustomers}
+              genderStats={genderStats}
+            />
 
-      <CustomerEditModal
-        opened={opened}
-        onClose={close}
-        customer={selectedCustomer}
-        onUpdate={handleCustomerUpdate}
-      />
+            <CustomerFilters
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              filterBy={filterBy}
+              filterValue={filterValue}
+              onFilterByChange={setFilterBy}
+              onFilterValueChange={setFilterValue}
+              customers={allCustomers}
+              csvData={csvData}
+            />
+
+            <CustomerTable
+              customers={currentCustomers}
+              totalRecords={filteredCustomers.length}
+              page={page}
+              onPageChange={setPage}
+              onEditCustomer={(customer) => {
+                setSelectedCustomer(customer);
+                open();
+              }}
+            />
+
+            <CustomerEditModal
+              opened={opened}
+              onClose={close}
+              customer={selectedCustomer}
+              onUpdate={handleCustomerUpdate}
+            />
+          </Box>
+        </Tabs.Panel>
+      </Tabs>
     </Box>
   );
 }

@@ -6,6 +6,7 @@ import { PrintModal } from "./components/PrintModal";
 import { Receipt } from "@/types/receipts";
 import { CreateEditReceipt } from "./components/CreateEditReceipt";
 import { useReceipts } from "./hooks/useReceipts";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
 
 type Screen = "list" | "create" | "edit";
 
@@ -13,6 +14,8 @@ export function ReceiptsPage() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("list");
   const [selectedReceipt, setSelectedReceipt] = useState<Receipt | null>(null);
   const [printReceipt, setPrintReceipt] = useState<Receipt | null>(null);
+  const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+  const [receiptToDelete, setReceiptToDelete] = useState<string | null>(null);
 
   const { receipts, isLoading, deleteReceipt } = useReceipts();
 
@@ -21,9 +24,16 @@ export function ReceiptsPage() {
     setCurrentScreen("edit");
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this receipt?")) {
-      deleteReceipt.mutate(id);
+  const handleDeleteClick = (id: string) => {
+    setReceiptToDelete(id);
+    setDeleteModalOpened(true);
+  };
+
+  const confirmDelete = async () => {
+    if (receiptToDelete) {
+      await deleteReceipt.mutateAsync(receiptToDelete);
+      setDeleteModalOpened(false);
+      setReceiptToDelete(null);
     }
   };
 
@@ -68,9 +78,21 @@ export function ReceiptsPage() {
           loading={isLoading}
           onEdit={handleEdit}
           onPrint={handlePrint}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
         />
       </Paper>
+
+      <ConfirmationModal
+        opened={deleteModalOpened}
+        onClose={() => setDeleteModalOpened(false)}
+        onConfirm={confirmDelete}
+        title="Delete Receipt"
+        loading={deleteReceipt.isPending}
+        confirmLabel="Delete"
+        confirmColor="red"
+      >
+        Are you sure you want to delete this receipt? This action cannot be undone.
+      </ConfirmationModal>
 
       {printReceipt && (
         <PrintModal
