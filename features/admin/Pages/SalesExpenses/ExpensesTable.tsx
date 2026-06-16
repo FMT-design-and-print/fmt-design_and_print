@@ -6,15 +6,16 @@ import {
   Text,
   ActionIcon,
   Drawer,
-  Stack,
   Button,
   Tooltip,
   TextInput,
   Box,
   Pagination,
+  Badge,
+  Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEye, IconEdit, IconSearch } from "@tabler/icons-react";
+import { IconEye, IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import ExpensesForm from "./ExpensesForm";
@@ -25,6 +26,10 @@ import { useExpensesSearch } from "./hooks/useSearch";
 import { Filters, initialFilters, useFilters } from "./hooks/useFilters";
 import { TableFilters } from "./components/TableFilters";
 import { ExportButton } from "./components/ExportButton";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { toast } from "react-toastify";
+import { createClient } from "@/utils/supabase/client";
+import { open } from "fs";
 
 interface ExpensesTableProps {
   expenses: Expenses[];
@@ -41,7 +46,6 @@ export default function ExpensesTable({
 }: ExpensesTableProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedExpense, setSelectedExpense] = useState<Expenses | null>(null);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Filters>(initialFilters);
 
@@ -51,9 +55,14 @@ export default function ExpensesTable({
     filters,
     filteredExpenses
   );
+  const supabase = createClient();
 
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
+  
+  const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState<Expenses | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setActivePage(1);
@@ -67,22 +76,45 @@ export default function ExpensesTable({
 
   const handleViewDetails = (expense: Expenses) => {
     setSelectedExpense(expense);
-    setIsEditMode(false);
     open();
   };
 
-  const handleEdit = () => {
-    setIsEditMode(true);
+  const handleEditClick = (expense: Expenses) => {
+    onEdit(expense as any);
   };
 
-  const handleCancelEdit = () => {
-    setIsEditMode(false);
+  const handleDeleteClick = (expense: Expenses) => {
+    setExpenseToDelete(expense);
+    setDeleteModalOpened(true);
   };
 
-  const handleUpdate = async (updatedData: Expenses) => {
-    await onEdit(updatedData);
-    setIsEditMode(false);
-    close();
+  const confirmDelete = async () => {
+    if (!expenseToDelete) return;
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("expenses")
+        .update({ 
+          isDeleted: true,
+          updatedBy: {
+            userId: adminUser?.id,
+            name: adminUser?.firstName + " " + adminUser?.lastName,
+            email: adminUser?.email || "",
+            role: adminUser?.role || "",
+            image: adminUser?.avatar || "",
+          }
+        })
+        .eq("id", expenseToDelete.id);
+      
+      if (error) throw error;
+      toast.success("Expense deleted successfully");
+      setDeleteModalOpened(false);
+      setExpenseToDelete(null);
+    } catch (err) {
+      toast.error("Failed to delete expense");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -109,22 +141,23 @@ export default function ExpensesTable({
         <Table.Thead>
           <Table.Tr>
             <Table.Th style={{ width: "200px" }}>Created By</Table.Th>
-            <Table.Th>Description</Table.Th>
+            <Table.Th>Type / Desc</Table.Th>
             <Table.Th style={{ width: "120px" }}>Amount</Table.Th>
-            <Table.Th style={{ width: "120px" }}>Created At</Table.Th>
-            <Table.Th style={{ width: "70px" }}>Actions</Table.Th>
+            <Table.Th style={{ width: "120px" }}>Bad Debt</Table.Th>
+            <Table.Th style={{ width: "120px" }}>Date</Table.Th>
+            <Table.Th style={{ width: "120px" }}>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {isLoading ? (
             <Table.Tr>
-              <Table.Td colSpan={4}>
+              <Table.Td colSpan={6}>
                 <Text ta="center">Loading expenses...</Text>
               </Table.Td>
             </Table.Tr>
           ) : filteredAndSortedExpenses.length === 0 ? (
             <Table.Tr>
-              <Table.Td colSpan={4}>
+              <Table.Td colSpan={6}>
                 <Text ta="center">No expenses found</Text>
               </Table.Td>
             </Table.Tr>
@@ -142,26 +175,53 @@ export default function ExpensesTable({
                   </Group>
                 </Table.Td>
                 <Table.Td>
-                  <Text size="sm" lineClamp={1}>
+                  <Text size="sm" fw={500}>{expense.type}</Text>
+                  <Text size="xs" c="dimmed" lineClamp={1}>
                     {expense.description}
                   </Text>
                 </Table.Td>
                 <Table.Td>
-                  <Text size="sm">
+                  <Text size="sm" fw={600} c="red">
                     {CURRENCY_SYMBOL} {expense.amount.toLocaleString()}
                   </Text>
+                </Table.Td>
+                <Table.Td>
+                  {expense.isBadDebt ? (
+                    <Badge color="red" variant="light">Yes</Badge>
+                  ) : (
+                    <Text size="sm" c="dimmed">-</Text>
+                  )}
                 </Table.Td>
                 <Table.Td>
                   <Text size="sm">{formatDate(expense.created_at)}</Text>
                 </Table.Td>
                 <Table.Td>
-                  <ActionIcon
-                    variant="subtle"
-                    color="pink"
-                    onClick={() => handleViewDetails(expense)}
-                  >
-                    <IconEye size="1.1rem" />
-                  </ActionIcon>
+                  <Group gap="xs" wrap="nowrap">
+                    <ActionIcon
+                      variant="subtle"
+                      color="gray"
+                      onClick={() => handleViewDetails(expense)}
+                      title="View Details"
+                    >
+                      <IconEye size="1.1rem" />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      color="blue"
+                      onClick={() => handleEditClick(expense)}
+                      title="Edit Expense"
+                    >
+                      <IconEdit size="1.1rem" />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
+                      onClick={() => handleDeleteClick(expense)}
+                      title="Delete Expense"
+                    >
+                      <IconTrash size="1.1rem" />
+                    </ActionIcon>
+                  </Group>
                 </Table.Td>
               </Table.Tr>
             ))
@@ -180,36 +240,29 @@ export default function ExpensesTable({
         </Group>
       )}
 
+      <ConfirmationModal
+        opened={deleteModalOpened}
+        onClose={() => setDeleteModalOpened(false)}
+        onConfirm={confirmDelete}
+        title="Delete Expense"
+        loading={isDeleting}
+        confirmLabel="Delete"
+        confirmColor="red"
+      >
+        Are you sure you want to delete this expense? This action can be reversed by an administrator.
+      </ConfirmationModal>
+
       <Drawer
         opened={opened}
         onClose={close}
         position="right"
         size="xl"
-        title={isEditMode ? "Edit Expense" : "Expense Details"}
+        title="Expense Details"
       >
         {selectedExpense && (
-          <>
-            {isEditMode ? (
-              <ExpensesForm
-                onSubmit={handleUpdate}
-                loading={isLoading || false}
-                adminUser={adminUser}
-                initialData={selectedExpense}
-                onCancel={handleCancelEdit}
-              />
-            ) : (
-              <Stack>
-                <ExpenseDetails expense={selectedExpense} />
-                <Button
-                  leftSection={<IconEdit size="1.1rem" />}
-                  onClick={handleEdit}
-                  color="pink"
-                >
-                  Edit
-                </Button>
-              </Stack>
-            )}
-          </>
+          <Stack>
+            <ExpenseDetails expense={selectedExpense} />
+          </Stack>
         )}
       </Drawer>
     </Stack>
