@@ -13,6 +13,8 @@ export interface Receipt {
   taxRate: number;
   taxAmount: number;
   totalAmount: number;
+  amountPaid?: number;
+  balanceDue?: number;
   paymentMethod: PaymentMethod;
   paymentStatus: "paid" | "pending" | "cancelled";
   notes?: string;

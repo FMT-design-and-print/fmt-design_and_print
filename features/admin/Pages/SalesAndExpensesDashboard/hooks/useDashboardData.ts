@@ -50,11 +50,17 @@ export const useDashboardData = (filters?: FilterValues) => {
     }
 
     if (filters?.dateRange[0] && filters?.dateRange[1]) {
-      filtered = filtered.filter(
-        (item) =>
-          new Date(item.created_at) >= filters.dateRange[0]! &&
-          new Date(item.created_at) <= filters.dateRange[1]!
-      );
+      // Fix date inclusivity by setting end date to 23:59:59.999
+      const startDate = new Date(filters.dateRange[0]);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(filters.dateRange[1]);
+      endDate.setHours(23, 59, 59, 999);
+
+      filtered = filtered.filter((item) => {
+        const itemDate = new Date(item.created_at);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
     }
 
     if (filters?.type !== "all") {
@@ -140,6 +146,23 @@ export const useDashboardData = (filters?: FilterValues) => {
     );
   };
 
+  const calculateTotalDebts = () => {
+    if (filters?.type === "all") {
+      const regularOrdersDebts = filterData(regularOrders, "regularOrders").reduce((acc, order) => acc + (order.balanceDue || 0), 0);
+      const customOrdersDebts = filterData(customerOrders, "customOrders").reduce((acc, order) => acc + (order.balanceDue || 0), 0);
+      const salesDebts = filterData(sales, "sales").reduce((acc, sale) => acc + (sale.balanceDue || 0), 0);
+      return regularOrdersDebts + customOrdersDebts + salesDebts;
+    }
+    return 0;
+  };
+
+  const calculateTotalBadDebts = () => {
+    if (filters?.type !== "all") return 0;
+    return filterData(expenses, "expenses")
+      .filter((expense) => expense.isBadDebt)
+      .reduce((acc, expense) => acc + expense.amount, 0);
+  };
+
   return {
     totalRevenue: calculateTotalRevenue(),
     totalExpenses: calculateTotalExpenses(),
@@ -147,6 +170,8 @@ export const useDashboardData = (filters?: FilterValues) => {
       filters?.type === "all"
         ? calculateTotalRevenue() - calculateTotalExpenses()
         : calculateTotalRevenue(),
+    totalDebts: calculateTotalDebts(),
+    totalBadDebts: calculateTotalBadDebts(),
     isLoading:
       ordersLoading || customOrdersLoading || salesLoading || expensesLoading,
     error: null,

@@ -882,6 +882,17 @@ export type Database = {
           order_count: number
         }[]
       }
+      get_revenue_by_product_type: {
+        Args: {
+          start_date: string
+          end_date: string
+        }
+        Returns: {
+          product_type: string
+          category: string
+          total_revenue: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

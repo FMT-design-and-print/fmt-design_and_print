@@ -17,6 +17,7 @@ import {
   IconUsersGroup,
   IconAdjustments,
   IconWorld,
+  IconTags,
 } from "@tabler/icons-react";
 import { Dashboard } from "../Pages/Dashboard";
 import { Orders } from "../Pages/Orders";
@@ -29,6 +30,7 @@ import { PriceCalculator } from "../PriceCalculator";
 import CustomersPage from "../Pages/Customers";
 import MessagesPage from "../Pages/Messages";
 import SalesExpenses from "../Pages/SalesExpenses";
+import ProductManager from "../Pages/SalesExpenses/ProductManager";
 import { ReceiptsPage } from "../Pages/Receipts";
 import QuotesPage from "../Pages/quotes";
 import { SystemControl } from "../Pages/SystemControl";
@@ -140,6 +142,14 @@ export const adminNavItems: IAdminNavItems[] = [
     isVisible: true,
     component: <SalesExpenses />,
     requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
+  },
+  {
+    value: "product-categories-types",
+    label: "Product Categories & Types",
+    icon: <IconTags />,
+    isVisible: true,
+    component: <ProductManager />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   {
     value: "employees",

@@ -1,6 +1,8 @@
 import { Expenses } from "@/types/sales-expenses";
-import { Stack, Text, Group, Avatar } from "@mantine/core";
+import { Stack, Text, Group, Avatar, Card, Title, Grid, Badge, Divider } from "@mantine/core";
+import { IconCash, IconListDetails, IconUserCheck, IconAlertTriangle } from "@tabler/icons-react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
+import { formatDate } from "./utils";
 
 interface ExpenseDetailsProps {
   expense: Expenses;
@@ -8,53 +10,120 @@ interface ExpenseDetailsProps {
 
 export default function ExpenseDetails({ expense }: ExpenseDetailsProps) {
   return (
-    <Stack gap="md">
+    <Stack gap="xl">
       <Group>
-        <Avatar size="lg" src={expense.createdBy.image} />
+        <Avatar size="lg" src={expense.createdBy?.image} radius="xl" />
         <Stack gap={0}>
-          <Text size="sm" fw={500}>
-            Created By
+          <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
+            Recorded By
           </Text>
-          <Text>{expense.createdBy.name}</Text>
+          <Text fw={500}>{expense.createdBy?.name || "System"}</Text>
+          <Text size="xs" c="dimmed">{formatDate(expense.created_at)}</Text>
         </Stack>
       </Group>
 
-      <Stack gap="xs">
-        <Text size="sm" fw={500}>
-          Expense Type
-        </Text>
-        <Text>{expense.type}</Text>
-      </Stack>
+      <Grid>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card withBorder radius="md" p="md" h="100%">
+            <Group mb="md">
+              <IconListDetails size="1.2rem" className="text-pink-500" />
+              <Title order={5}>Expense Info</Title>
+            </Group>
 
-      <Stack gap="xs">
-        <Text size="sm" fw={500}>
-          Description
-        </Text>
-        <Text>{expense.description}</Text>
-      </Stack>
+            <Stack gap="sm">
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">Type</Text>
+                <Text size="sm" fw={500}>{expense.type}</Text>
+              </Group>
+              <Divider variant="dashed" />
+              <Group justify="space-between" align="flex-start">
+                <Text size="sm" c="dimmed" style={{ whiteSpace: "nowrap" }}>Description</Text>
+                <Text size="sm" fw={500} style={{ maxWidth: '60%', textAlign: 'right' }}>
+                  {expense.description || "N/A"}
+                </Text>
+              </Group>
+            </Stack>
+          </Card>
+        </Grid.Col>
 
-      <Stack gap="xs">
-        <Text size="sm" fw={500}>
-          Amount
-        </Text>
-        <Text>
-          {CURRENCY_SYMBOL} {expense.amount.toLocaleString()}
-        </Text>
-      </Stack>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card withBorder radius="md" p="md" h="100%">
+            <Group mb="md">
+              <IconUserCheck size="1.2rem" className="text-pink-500" />
+              <Title order={5}>Approval</Title>
+            </Group>
 
-      <Stack gap="xs">
-        <Text size="sm" fw={500}>
-          Payment Methods
-        </Text>
-        <Text>{expense.paymentMethods.join(", ")}</Text>
-      </Stack>
+            <Stack gap="sm">
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">Approver Name</Text>
+                <Text size="sm" fw={500}>{expense.approver || "N/A"}</Text>
+              </Group>
+              {expense.notes && (
+                <>
+                  <Divider variant="dashed" />
+                  <Group justify="space-between" align="flex-start">
+                    <Text size="sm" c="dimmed" style={{ whiteSpace: "nowrap" }}>Notes</Text>
+                    <Text size="sm" fw={500} style={{ maxWidth: '60%', textAlign: 'right' }}>
+                      {expense.notes}
+                    </Text>
+                  </Group>
+                </>
+              )}
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
 
-      <Stack gap="xs">
-        <Text size="sm" fw={500}>
-          Approver
-        </Text>
-        <Text>{expense.approver}</Text>
-      </Stack>
+      {expense.isBadDebt && (
+        <Card withBorder radius="md" p="md" bg="red.0" style={{ borderColor: 'var(--mantine-color-red-3)' }}>
+          <Group mb="md">
+            <IconAlertTriangle size="1.2rem" color="var(--mantine-color-red-6)" />
+            <Title order={5} c="red.7">Bad Debt / Spoilt Item Details</Title>
+          </Group>
+          <Stack gap="sm">
+            <Group justify="space-between">
+              <Text size="sm" c="dimmed" fw={500}>Status</Text>
+              <Badge color="red" variant="filled">Marked as Bad Debt</Badge>
+            </Group>
+            <Divider variant="dashed" color="red.2" />
+            <Group justify="space-between">
+              <Text size="sm" c="dimmed" fw={500}>Reference / Order</Text>
+              <Text size="sm" fw={600} c="red.8">{expense.badDebtReference || "N/A"}</Text>
+            </Group>
+          </Stack>
+        </Card>
+      )}
+
+      <Card withBorder radius="md" p="md">
+        <Group mb="md">
+          <IconCash size="1.2rem" className="text-pink-500" />
+          <Title order={5}>Financial Details</Title>
+        </Group>
+
+        <Grid>
+          <Grid.Col span={{ base: 12, sm: 6 }}>
+            <Stack gap="sm">
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">Payment Method</Text>
+                <Text size="sm" fw={500}>
+                  {(expense.paymentMethods || []).join(", ") || "N/A"}
+                </Text>
+              </Group>
+            </Stack>
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12, sm: 6 }}>
+            <Stack gap="sm" bg="gray.0" p="md" style={{ borderRadius: '8px' }}>
+              <Group justify="space-between">
+                <Text size="sm" fw={600}>Total Amount</Text>
+                <Text size="lg" fw={700} c="red">
+                  {CURRENCY_SYMBOL} {(expense.amount || 0).toLocaleString()}
+                </Text>
+              </Group>
+            </Stack>
+          </Grid.Col>
+        </Grid>
+      </Card>
     </Stack>
   );
 }
