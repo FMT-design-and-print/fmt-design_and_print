@@ -16,6 +16,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSession } from "@/store";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
 
 export function AdminResetPasswordForm() {
   const router = useRouter();
@@ -24,6 +26,8 @@ export function AdminResetPasswordForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const { session } = useSession((state) => state);
+  const { logActivity } = useActivityLogger();
 
   const supabase = createClient();
 
@@ -64,6 +68,26 @@ export function AdminResetPasswordForm() {
       setIsLoading(false);
       return setErrorMsg(passwordResetFailedMessage);
     }
+
+    if (session?.user) {
+        const firstName = session.user.user_metadata?.firstName || "";
+        const lastName = session.user.user_metadata?.lastName || "";
+        const fullName = `${firstName} ${lastName}`.trim();
+        const displayName = fullName || session.user.email || "Admin User";
+
+        logActivity({
+          action: "PASSWORD_RESET",
+          entity_type: "AUTH",
+          entity_id: session.user.id,
+          description: `Admin user reset their password (${session.user.email})`,
+          user_details: {
+            userId: session.user.id,
+            name: displayName,
+            role: session.user.user_metadata?.role,
+            image: session.user.user_metadata?.avatar,
+          }
+        });
+      }
 
     setResetSuccess(true);
     setIsLoading(false);

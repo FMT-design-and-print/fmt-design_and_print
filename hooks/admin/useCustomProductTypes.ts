@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { ICustomProductType } from "@/types/sales-expenses";
 import { toast } from "react-toastify";
+import { useActivityLogger } from "./useActivityLogger";
 
 export const useCustomProductTypes = () => {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const { logActivity } = useActivityLogger();
 
   const query = useQuery({
     queryKey: ["custom-product-types"],
@@ -59,6 +61,13 @@ export const useCustomProductTypes = () => {
       if (error) {
         throw error;
       }
+
+      logActivity({
+        action: "CREATE",
+        entity_type: "PRODUCT_TYPE",
+        description: `Created ${newTypes.length} new product type(s)`,
+      });
+
       return data as ICustomProductType[];
     },
     onSuccess: () => {
@@ -80,6 +89,14 @@ export const useCustomProductTypes = () => {
         .single();
 
       if (error) throw error;
+
+      logActivity({
+        action: "UPDATE",
+        entity_type: "PRODUCT_TYPE",
+        entity_id: data.id,
+        description: `Updated product type: ${data.name}`,
+      });
+
       return data as ICustomProductType;
     },
     onSuccess: () => {
@@ -103,6 +120,13 @@ export const useCustomProductTypes = () => {
         .eq("id", id);
 
       if (error) throw error;
+
+      logActivity({
+        action: "DELETE",
+        entity_type: "PRODUCT_TYPE",
+        entity_id: id,
+        description: `Deleted product type`,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["custom-product-types"] });

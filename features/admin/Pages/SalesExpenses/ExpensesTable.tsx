@@ -30,6 +30,7 @@ import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { toast } from "react-toastify";
 import { createClient } from "@/utils/supabase/client";
 import { open } from "fs";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
 
 interface ExpensesTableProps {
   expenses: Expenses[];
@@ -59,7 +60,8 @@ export default function ExpensesTable({
 
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
-  
+  const { logActivity } = useActivityLogger();
+
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const [expenseToDelete, setExpenseToDelete] = useState<Expenses | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -94,7 +96,7 @@ export default function ExpensesTable({
     try {
       const { error } = await supabase
         .from("expenses")
-        .update({ 
+        .update({
           isDeleted: true,
           updatedBy: {
             userId: adminUser?.id,
@@ -105,9 +107,17 @@ export default function ExpensesTable({
           }
         })
         .eq("id", expenseToDelete.id);
-      
+
       if (error) throw error;
       toast.success("Expense deleted successfully");
+
+      logActivity({
+        action: "DELETE",
+        entity_type: "EXPENSE",
+        entity_id: expenseToDelete.id,
+        description: `Deleted Expense record`,
+      });
+
       setDeleteModalOpened(false);
       setExpenseToDelete(null);
     } catch (err) {
@@ -186,7 +196,7 @@ export default function ExpensesTable({
                   </Text>
                 </Table.Td>
                 <Table.Td>
-                  {expense.isBadDebt ? (
+                  {expense.isBadDebt || expense.is_bad_debt ? (
                     <Badge color="red" variant="light">Yes</Badge>
                   ) : (
                     <Text size="sm" c="dimmed">-</Text>

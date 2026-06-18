@@ -17,7 +17,7 @@ import {
   Menu,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEye, IconEdit, IconSearch, IconTrash, IconPrinter, IconDotsVertical, IconCash } from "@tabler/icons-react";
+import { IconEye, IconEdit, IconSearch, IconTrash, IconPrinter, IconDotsVertical, IconCash, IconReceipt } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import { IAdminUser } from "@/types/admin";
@@ -34,6 +34,7 @@ import { toast } from "react-toastify";
 import { createClient } from "@/utils/supabase/client";
 import { Modal, NumberInput, Select } from "@mantine/core";
 import { usePaymentHistory } from "@/hooks/admin/usePaymentHistory";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
 
 interface SalesTableProps {
   sales: ISales[];
@@ -62,7 +63,8 @@ export default function SalesTable({
 
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
-  
+  const { logActivity } = useActivityLogger();
+
   const [printModalOpened, setPrintModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<ISales | null>(null);
@@ -74,7 +76,7 @@ export default function SalesTable({
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [paymentNotes, setPaymentNotes] = useState("");
   const [isSubmittingPayment, setIsSubmittingPayment] = useState(false);
-  
+
   // Create a dummy customerId for the hook, as we're recording for a specific sale but the hook requires a customerId.
   // It's okay if customer_id is undefined for walk-in sales, but usePaymentHistory expects a string.
   // We'll pass a dummy string if missing and override it in the actual submission.
@@ -114,7 +116,7 @@ export default function SalesTable({
     try {
       const { error } = await supabase
         .from("sales")
-        .update({ 
+        .update({
           isDeleted: true,
           updatedBy: {
             userId: adminUser?.id,
@@ -125,9 +127,17 @@ export default function SalesTable({
           }
         })
         .eq("id", saleToDelete.id);
-      
+
       if (error) throw error;
       toast.success("Sale deleted successfully");
+
+      logActivity({
+        action: "DELETE",
+        entity_type: "SALE",
+        entity_id: saleToDelete.id,
+        description: `Deleted Sale record`,
+      });
+
       setDeleteModalOpened(false);
       setSaleToDelete(null);
     } catch (err) {
@@ -137,9 +147,16 @@ export default function SalesTable({
     }
   };
 
-  const handlePrint = (sale: ISales) => {
+  const handlePrintReceipt = (sale: ISales) => {
     setSelectedSale(sale);
     setPrintModalOpened(true);
+
+    logActivity({
+      action: "PRINT_RECEIPT",
+      entity_type: "SALE",
+      entity_id: sale.id,
+      description: `Printed receipt for Sale`,
+    });
   };
 
   const handleRecordPaymentClick = (sale: ISales) => {
@@ -173,11 +190,11 @@ export default function SalesTable({
           image: adminUser?.avatar || "",
         }
       });
-      
+
       // Update the sales record as well
       const newAmountPaid = (saleForPayment.amountPaid || 0) + paymentAmount;
       const newBalanceDue = (saleForPayment.totalAmount || 0) - newAmountPaid;
-      
+
       await supabase
         .from("sales")
         .update({
@@ -186,7 +203,7 @@ export default function SalesTable({
           paymentMethods: Array.from(new Set([...(saleForPayment.paymentMethods || []), paymentMethod])),
         })
         .eq("id", saleForPayment.id);
-        
+
       toast.success("Payment recorded successfully");
       setPaymentModalOpened(false);
       setSaleForPayment(null);
@@ -317,26 +334,26 @@ export default function SalesTable({
                       </Menu.Target>
 
                       <Menu.Dropdown>
-                        <Menu.Item 
+                        <Menu.Item
                           leftSection={<IconEye size="1rem" />}
                           onClick={() => handleViewDetails(sale)}
                         >
                           View Details
                         </Menu.Item>
-                        <Menu.Item 
+                        <Menu.Item
                           leftSection={<IconEdit size="1rem" />}
                           onClick={() => handleEditClick(sale)}
                         >
                           Edit Sale
                         </Menu.Item>
-                        <Menu.Item 
-                          leftSection={<IconPrinter size="1rem" />}
-                          onClick={() => handlePrint(sale)}
+                        <Menu.Item
+                          leftSection={<IconReceipt size={16} />}
+                          onClick={() => handlePrintReceipt(sale)}
                         >
                           Print Receipt
                         </Menu.Item>
                         {(sale.balanceDue || 0) > 0 && (
-                          <Menu.Item 
+                          <Menu.Item
                             leftSection={<IconCash size="1rem" />}
                             color="green"
                             onClick={() => handleRecordPaymentClick(sale)}
@@ -345,7 +362,7 @@ export default function SalesTable({
                           </Menu.Item>
                         )}
                         <Menu.Divider />
-                        <Menu.Item 
+                        <Menu.Item
                           leftSection={<IconTrash size="1rem" />}
                           color="red"
                           onClick={() => handleDeleteClick(sale)}
@@ -386,23 +403,23 @@ export default function SalesTable({
               customerPhone: customers?.find(c => c.id === selectedSale.customer_id)?.phone || "",
               customerEmail: customers?.find(c => c.id === selectedSale.customer_id)?.email || "",
               date: selectedSale.created_at ? new Date(selectedSale.created_at).toISOString() : new Date().toISOString(),
-              items: selectedSale.items && selectedSale.items.length > 0 
+              items: selectedSale.items && selectedSale.items.length > 0
                 ? selectedSale.items.map(item => ({
-                    id: item.id || selectedSale.id,
-                    description: item.productType + (item.description ? ` - ${item.description}` : ""),
-                    quantity: item.quantity || 1,
-                    unitPrice: item.unitPrice || 0,
-                    total: item.totalAmount || 0,
-                  }))
+                  id: item.id || selectedSale.id,
+                  description: item.productType + (item.description ? ` - ${item.description}` : ""),
+                  quantity: item.quantity || 1,
+                  unitPrice: item.unitPrice || 0,
+                  total: item.totalAmount || 0,
+                }))
                 : [
-                    {
-                      id: selectedSale.id,
-                      description: selectedSale.productType + (selectedSale.description ? ` - ${selectedSale.description}` : ""),
-                      quantity: selectedSale.quantity || 1,
-                      unitPrice: selectedSale.unitPrice || 0,
-                      total: selectedSale.totalAmount || 0,
-                    }
-                  ],
+                  {
+                    id: selectedSale.id,
+                    description: selectedSale.productType + (selectedSale.description ? ` - ${selectedSale.description}` : ""),
+                    quantity: selectedSale.quantity || 1,
+                    unitPrice: selectedSale.unitPrice || 0,
+                    total: selectedSale.totalAmount || 0,
+                  }
+                ],
               subtotal: selectedSale.totalAmount || 0,
               taxRate: 0,
               taxAmount: 0,
@@ -441,7 +458,7 @@ export default function SalesTable({
       >
         {selectedSale && (
           <Stack>
-            <SalesDetails sale={selectedSale} onPrint={() => handlePrint(selectedSale)} />
+            <SalesDetails sale={selectedSale} onPrint={() => handlePrintReceipt(selectedSale)} />
           </Stack>
         )}
       </Drawer>

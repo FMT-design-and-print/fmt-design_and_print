@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { ICustomProductCategory } from "@/types/sales-expenses";
 import { toast } from "react-toastify";
+import { useActivityLogger } from "./useActivityLogger";
 
 export const useCustomProductCategories = () => {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const { logActivity } = useActivityLogger();
 
   const query = useQuery({
     queryKey: ["custom-product-categories"],
@@ -38,6 +40,14 @@ export const useCustomProductCategories = () => {
         }
         throw error;
       }
+
+      logActivity({
+        action: "CREATE",
+        entity_type: "PRODUCT_CATEGORY",
+        entity_id: data.id,
+        description: `Created product category: ${data.name}`,
+      });
+
       return data as ICustomProductCategory;
     },
     onSuccess: () => {
@@ -59,6 +69,14 @@ export const useCustomProductCategories = () => {
         .single();
 
       if (error) throw error;
+
+      logActivity({
+        action: "UPDATE",
+        entity_type: "PRODUCT_CATEGORY",
+        entity_id: data.id,
+        description: `Updated product category: ${data.name}`,
+      });
+
       return data as ICustomProductCategory;
     },
     onSuccess: () => {
@@ -82,6 +100,13 @@ export const useCustomProductCategories = () => {
         .eq("id", id);
 
       if (error) throw error;
+
+      logActivity({
+        action: "DELETE",
+        entity_type: "PRODUCT_CATEGORY",
+        entity_id: id,
+        description: `Deleted product category`,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["custom-product-categories"] });

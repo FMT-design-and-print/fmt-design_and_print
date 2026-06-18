@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { ICustomer } from "@/types/sales-expenses";
 import { toast } from "react-toastify";
+import { useActivityLogger } from "./useActivityLogger";
 
 export const useCustomers = () => {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const { logActivity } = useActivityLogger();
 
   const query = useQuery({
     queryKey: ["customers"],
@@ -33,6 +35,14 @@ export const useCustomers = () => {
         .single();
 
       if (error) throw error;
+      
+      logActivity({
+        action: "CREATE",
+        entity_type: "CUSTOMER",
+        entity_id: data.id,
+        description: `Created customer: ${data.name}`,
+      });
+      
       return data as ICustomer;
     },
     onSuccess: () => {
@@ -54,6 +64,14 @@ export const useCustomers = () => {
         .single();
 
       if (error) throw error;
+      
+      logActivity({
+        action: "UPDATE",
+        entity_type: "CUSTOMER",
+        entity_id: data.id,
+        description: `Updated customer: ${data.name}`,
+      });
+      
       return data as ICustomer;
     },
     onSuccess: () => {

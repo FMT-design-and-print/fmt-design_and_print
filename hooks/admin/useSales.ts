@@ -31,6 +31,7 @@ export const useSales = () => {
       const { data, error } = await supabase
         .from("sales")
         .select("*")
+        .eq("isDeleted", false)
         .order("created_at", { ascending: false });
 
       if (error) throw error;

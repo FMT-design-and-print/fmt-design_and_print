@@ -49,7 +49,9 @@ export interface Expenses {
   amount: number;
   type: string;
   isBadDebt?: boolean;
+  is_bad_debt?: boolean;
   badDebtReference?: string;
+  bad_debt_reference?: string;
   paymentMethods: PaymentMethod[];
   approver: string;
   notes?: string;

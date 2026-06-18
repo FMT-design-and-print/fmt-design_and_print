@@ -36,6 +36,8 @@ import QuotesPage from "../Pages/quotes";
 import { SystemControl } from "../Pages/SystemControl";
 import { Analytics } from "../Pages/Analytics";
 
+import ActivitiesPage from "../Pages/Activities";
+
 export const adminNavItems: IAdminNavItems[] = [
   {
     value: "dashboard",
@@ -51,6 +53,14 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconWorld />,
     isVisible: true,
     component: <Analytics />,
+    requiredPermission: UserPermission.ADMIN_PERMISSIONS,
+  },
+  {
+    value: "activities",
+    label: "Activity Logs",
+    icon: <IconFileAnalytics />,
+    isVisible: true,
+    component: <ActivitiesPage />,
     requiredPermission: UserPermission.ADMIN_PERMISSIONS,
   },
   {
