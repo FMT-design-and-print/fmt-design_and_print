@@ -3,12 +3,22 @@ import { Stack, Text, Group, Avatar, Card, Title, Grid, Badge, Divider } from "@
 import { IconCash, IconListDetails, IconUserCheck, IconAlertTriangle } from "@tabler/icons-react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import { formatDate } from "./utils";
+import { useSales } from "@/hooks/admin/useSales";
 
 interface ExpenseDetailsProps {
   expense: Expenses;
 }
 
 export default function ExpenseDetails({ expense }: ExpenseDetailsProps) {
+  const { data: sales } = useSales();
+
+  const badDebtRef = expense.badDebtReference || expense.bad_debt_reference;
+  const isBadDebt = expense.isBadDebt || expense.is_bad_debt;
+  const referenceSale = sales?.find(s => s.id === badDebtRef);
+  const referenceText = referenceSale
+    ? `Sale - ${formatDate(referenceSale.created_at)} - ${referenceSale.items && referenceSale.items.length > 0 ? referenceSale.items[0].productType + (referenceSale.items.length > 1 ? ` (+${referenceSale.items.length - 1})` : '') : referenceSale.productType}`
+    : badDebtRef;
+
   return (
     <Stack gap="xl">
       <Group>
@@ -74,7 +84,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetailsProps) {
         </Grid.Col>
       </Grid>
 
-      {expense.isBadDebt && (
+      {isBadDebt && (
         <Card withBorder radius="md" p="md" bg="red.0" style={{ borderColor: 'var(--mantine-color-red-3)' }}>
           <Group mb="md">
             <IconAlertTriangle size="1.2rem" color="var(--mantine-color-red-6)" />
@@ -88,7 +98,7 @@ export default function ExpenseDetails({ expense }: ExpenseDetailsProps) {
             <Divider variant="dashed" color="red.2" />
             <Group justify="space-between">
               <Text size="sm" c="dimmed" fw={500}>Reference / Order</Text>
-              <Text size="sm" fw={600} c="red.8">{expense.badDebtReference || "N/A"}</Text>
+              <Text size="sm" fw={600} c="red.8">{referenceText || "N/A"}</Text>
             </Group>
           </Stack>
         </Card>

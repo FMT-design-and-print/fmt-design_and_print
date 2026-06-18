@@ -1,27 +1,28 @@
-import { IAdminUser } from "@/types/admin";
 import { PaymentMethod } from "@/types";
+import { IAdminUser } from "@/types/admin";
 import { Expenses } from "@/types/sales-expenses";
 import {
-  Stack,
-  Select,
-  TextInput,
-  Group,
   Button,
-  NumberInput,
-  Checkbox,
   Card,
-  Text,
-  Title,
+  Checkbox,
   Collapse,
-  UnstyledButton,
   Grid,
+  Group,
+  NumberInput,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+  UnstyledButton,
 } from "@mantine/core";
-import { IconChevronDown, IconChevronRight, IconListDetails, IconCash, IconReceipt, IconAlertTriangle } from "@tabler/icons-react";
-import { useState, useEffect } from "react";
-import CommonFormFields from "./CommonFormFields";
+import { IconAlertTriangle, IconCash, IconChevronDown, IconChevronRight, IconListDetails, IconReceipt } from "@tabler/icons-react";
+import { useEffect, useMemo, useState } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
-import { getChangedExpenseFields } from "@/features/admin/Pages/SalesExpenses/form-helpers";
-import { isEqual } from "lodash";
+import CommonFormFields from "./CommonFormFields";
+
+import { useLoadAdminUsers } from "@/hooks/admin/useLoadAdminUsers";
+import { useSales } from "@/hooks/admin/useSales";
 
 interface ExpensesFormProps {
   onSubmit: (data: Expenses) => void;
@@ -39,13 +40,26 @@ export default function ExpensesForm({
   initialData,
   onCancel,
   expenseTypes = [
-    { value: "Rent", label: "Rent" },
-    { value: "Utilities", label: "Utilities" },
     { value: "Raw Materials", label: "Raw Materials" },
-    { value: "Marketing", label: "Marketing" },
+    { value: "Materials & Substrates", label: "Materials & Substrates (Flexi, Vinyl, etc)" },
+    { value: "Ink & Toner", label: "Ink & Toner" },
+    { value: "Equipment Maintenance", label: "Equipment Maintenance" },
+    { value: "Electricity / Utilities", label: "Electricity / Utilities" },
+    { value: "Logistics & Delivery", label: "Logistics & Delivery" },
+    { value: "Outsourced Printing", label: "Outsourced Printing" },
+    { value: "Refunds", label: "Refunds" },
+    { value: "Packaging Materials", label: "Packaging Materials" },
+    { value: "Staff Food/Allowance", label: "Staff Food/Allowance" },
+    { value: "Salary/Wages", label: "Salary/Wages" },
+    { value: "Marketing & Ads", label: "Marketing & Ads" },
+    { value: "Office Supplies", label: "Office Supplies" },
+    { value: "Rent", label: "Rent" },
     { value: "other", label: "Other" },
   ],
 }: ExpensesFormProps) {
+  const { data: sales } = useSales();
+  const { adminUsers } = useLoadAdminUsers();
+
   const [amount, setAmount] = useState<number | undefined>(initialData?.amount);
   const [expenseType, setExpenseType] = useState(initialData?.type || "");
   const [customExpenseType, setCustomExpenseType] = useState("");
@@ -60,13 +74,33 @@ export default function ExpensesForm({
   );
   const [summaryOpened, setSummaryOpened] = useState(false);
 
+  const salesOptions = useMemo(() => {
+    return (sales || []).map((s) => {
+      const date = new Date(s.created_at).toLocaleDateString();
+      const productType = s.items && s.items.length > 0
+        ? s.items[0].productType + (s.items.length > 1 ? ` (+${s.items.length - 1})` : '')
+        : s.productType;
+      return {
+        value: s.id,
+        label: `Sale - ${date} - ${productType} (${CURRENCY_SYMBOL}${s.totalAmount})`
+      };
+    });
+  }, [sales]);
+
+  const approverOptions = useMemo(() => {
+    return (adminUsers || []).map((user) => ({
+      value: `${user.firstName} ${user.lastName}`,
+      label: `${user.firstName} ${user.lastName}`
+    }));
+  }, [adminUsers]);
+
   useEffect(() => {
     if (initialData) {
       setAmount(initialData.amount);
       setExpenseType(initialData.type);
       setApprover(initialData.approver || "");
-      setIsBadDebt(initialData.isBadDebt || false);
-      setBadDebtReference(initialData.badDebtReference || "");
+      setIsBadDebt(initialData.isBadDebt || initialData.is_bad_debt || false);
+      setBadDebtReference(initialData.badDebtReference || initialData.bad_debt_reference || "");
       setPaymentMethods(initialData.paymentMethods || []);
       setDescription(initialData.description || "");
     }
@@ -82,7 +116,9 @@ export default function ExpensesForm({
         paymentMethods,
         approver,
         isBadDebt,
+        is_bad_debt: isBadDebt,
         badDebtReference: isBadDebt ? badDebtReference : null,
+        bad_debt_reference: isBadDebt ? badDebtReference : null,
         createdBy: {
           userId: adminUser?.id,
           name: adminUser?.firstName + " " + adminUser?.lastName,
@@ -96,43 +132,34 @@ export default function ExpensesForm({
     }
 
     const currentData = {
+      id: initialData.id,
+      updated_at: new Date(),
       description,
       amount: amount || 0,
-      type: expenseType,
+      type: expenseType === "other" ? customExpenseType : expenseType,
       paymentMethods,
       approver,
       isBadDebt,
+      is_bad_debt: isBadDebt,
       badDebtReference: isBadDebt ? badDebtReference : null,
+      bad_debt_reference: isBadDebt ? badDebtReference : null,
+      updatedBy: {
+        userId: adminUser?.id,
+        name: adminUser?.firstName + " " + adminUser?.lastName,
+        email: adminUser?.email || "",
+        role: adminUser?.role || "",
+        image: adminUser?.avatar || "",
+      },
     };
 
-    const changes = getChangedExpenseFields(currentData, initialData);
-    onSubmit(changes as Expenses);
+    // Bypass getChangedExpenseFields and pass the entire payload directly, 
+    // exactly like we did for SalesForm to fix the update bug.
+    onSubmit(currentData as unknown as Expenses);
   };
 
   const hasChanges = () => {
     if (!initialData) return true; // Allow save for new entries
-
-    const currentData = {
-      description,
-      amount: amount || 0,
-      type: expenseType,
-      paymentMethods,
-      approver,
-      isBadDebt,
-      badDebtReference: isBadDebt ? badDebtReference : null,
-    };
-
-    const originalData = {
-      description: initialData.description,
-      amount: initialData.amount,
-      type: initialData.type,
-      paymentMethods: initialData.paymentMethods,
-      approver: initialData.approver,
-      isBadDebt: initialData.isBadDebt || false,
-      badDebtReference: initialData.badDebtReference || null,
-    };
-
-    return !isEqual(currentData, originalData);
+    return true; // Always allow saving on edit view to bypass broken diff logic, similar to SalesForm
   };
 
   return (
@@ -185,13 +212,15 @@ export default function ExpensesForm({
                 fw={500}
               />
               {isBadDebt && (
-                <TextInput
+                <Select
                   mt="md"
-                  label="Order or Product Reference"
-                  placeholder="e.g. Order #1234 or Banner Job"
-                  required={isBadDebt}
+                  label="Reference Sale (Optional)"
+                  placeholder="Select a related sale if applicable"
+                  data={salesOptions}
                   value={badDebtReference}
-                  onChange={(e) => setBadDebtReference(e.target.value)}
+                  onChange={(val) => setBadDebtReference(val || "")}
+                  searchable
+                  clearable
                 />
               )}
             </Card>
@@ -230,11 +259,15 @@ export default function ExpensesForm({
                   </Group>
                 </Checkbox.Group>
 
-                <TextInput
-                  label="Approver Name or Email"
+                <Select
+                  label="Approver"
+                  placeholder="Select an approver"
                   required
+                  data={approverOptions}
                   value={approver}
-                  onChange={(e) => setApprover(e.target.value)}
+                  onChange={(val) => setApprover(val || "")}
+                  searchable
+                  clearable
                 />
               </Stack>
             </Card>

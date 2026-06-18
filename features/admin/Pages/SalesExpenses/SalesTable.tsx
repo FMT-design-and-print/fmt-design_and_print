@@ -17,14 +17,14 @@ import {
   Menu,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEye, IconEdit, IconSearch, IconTrash, IconPrinter, IconDotsVertical, IconCash } from "@tabler/icons-react";
+import { IconEye, IconEdit, IconSearch, IconTrash, IconDotsVertical, IconCash, IconReceipt, IconX } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import { IAdminUser } from "@/types/admin";
 import { formatDate } from "./utils";
 import { useSalesSearch } from "./hooks/useSearch";
-import { useFilters, Filters, initialFilters } from "./hooks/useFilters";
-import { TableFilters } from "./components/TableFilters";
+import { useSalesFilters } from "./hooks/useFilters";
+import { SalesTableFilters } from "./components/TableFilters";
 import { ExportButton } from "./components/ExportButton";
 import { useCustomers } from "@/hooks/admin/useCustomers";
 import { PrintModal } from "../Receipts/components/PrintModal";
@@ -34,6 +34,8 @@ import { toast } from "react-toastify";
 import { createClient } from "@/utils/supabase/client";
 import { Modal, NumberInput, Select } from "@mantine/core";
 import { usePaymentHistory } from "@/hooks/admin/usePaymentHistory";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
+import { useSalesExpensesStore } from "@/store/salesExpenses";
 
 interface SalesTableProps {
   sales: ISales[];
@@ -52,17 +54,21 @@ export default function SalesTable({
 }: SalesTableProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedSale, setSelectedSale] = useState<ISales | null>(null);
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<Filters>(initialFilters);
 
-  const { filteredSales } = useSalesSearch(sales, search);
-  const filteredAndSortedSales = useFilters(sales, filters, filteredSales);
   const { data: customers } = useCustomers();
+
+  // Use Zustand store for filters & pagination
+  const { salesPage: activePage, setSalesPage: setActivePage, salesFilters: filters, setSalesFilters, clearSalesFilters } = useSalesExpensesStore();
+  const search = filters.search;
+  const setSearch = (s: string) => setSalesFilters({ search: s });
+
+  const { filteredSales } = useSalesSearch(sales, search, customers);
+  const filteredAndSortedSales = useSalesFilters(sales, filters, filteredSales);
   const supabase = createClient();
 
-  const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
-  
+  const { logActivity } = useActivityLogger();
+
   const [printModalOpened, setPrintModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<ISales | null>(null);
@@ -74,16 +80,13 @@ export default function SalesTable({
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [paymentNotes, setPaymentNotes] = useState("");
   const [isSubmittingPayment, setIsSubmittingPayment] = useState(false);
-  
+
   // Create a dummy customerId for the hook, as we're recording for a specific sale but the hook requires a customerId.
   // It's okay if customer_id is undefined for walk-in sales, but usePaymentHistory expects a string.
   // We'll pass a dummy string if missing and override it in the actual submission.
   const dummyCustomerId = saleForPayment?.customer_id || "walk-in";
   const { recordPayment } = usePaymentHistory(dummyCustomerId);
 
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filters]);
 
   const totalPages = Math.ceil(filteredAndSortedSales.length / itemsPerPage);
   const paginatedSales = filteredAndSortedSales.slice(
@@ -97,9 +100,6 @@ export default function SalesTable({
   };
 
   const handleEditClick = (sale: ISales) => {
-    // If the parent provided an onEdit function that just changes the view, we can call it.
-    // Wait, the parent handles switching to edit view if we call onEdit without await, but let's check the signature.
-    // We will just call onEdit and pass the sale.
     onEdit(sale as any);
   };
 
@@ -114,7 +114,7 @@ export default function SalesTable({
     try {
       const { error } = await supabase
         .from("sales")
-        .update({ 
+        .update({
           isDeleted: true,
           updatedBy: {
             userId: adminUser?.id,
@@ -125,9 +125,17 @@ export default function SalesTable({
           }
         })
         .eq("id", saleToDelete.id);
-      
+
       if (error) throw error;
       toast.success("Sale deleted successfully");
+
+      logActivity({
+        action: "DELETE",
+        entity_type: "SALE",
+        entity_id: saleToDelete.id,
+        description: `Deleted Sale record`,
+      });
+
       setDeleteModalOpened(false);
       setSaleToDelete(null);
     } catch (err) {
@@ -137,9 +145,16 @@ export default function SalesTable({
     }
   };
 
-  const handlePrint = (sale: ISales) => {
+  const handlePrintReceipt = (sale: ISales) => {
     setSelectedSale(sale);
     setPrintModalOpened(true);
+
+    logActivity({
+      action: "PRINT_RECEIPT",
+      entity_type: "SALE",
+      entity_id: sale.id,
+      description: `Printed receipt for Sale`,
+    });
   };
 
   const handleRecordPaymentClick = (sale: ISales) => {
@@ -173,11 +188,11 @@ export default function SalesTable({
           image: adminUser?.avatar || "",
         }
       });
-      
+
       // Update the sales record as well
       const newAmountPaid = (saleForPayment.amountPaid || 0) + paymentAmount;
       const newBalanceDue = (saleForPayment.totalAmount || 0) - newAmountPaid;
-      
+
       await supabase
         .from("sales")
         .update({
@@ -186,7 +201,7 @@ export default function SalesTable({
           paymentMethods: Array.from(new Set([...(saleForPayment.paymentMethods || []), paymentMethod])),
         })
         .eq("id", saleForPayment.id);
-        
+
       toast.success("Payment recorded successfully");
       setPaymentModalOpened(false);
       setSaleForPayment(null);
@@ -218,16 +233,18 @@ export default function SalesTable({
 
   return (
     <Stack gap="md">
-      <TableFilters
+      <SalesTableFilters
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={setSalesFilters}
         data={sales}
+        onClearFilters={clearSalesFilters}
       />
 
       <Group justify="space-between" align="flex-start">
         <TextInput
-          placeholder="Search by description or product type..."
+          placeholder="Search by description, product type, customer, or amount..."
           leftSection={<IconSearch size="1rem" />}
+          rightSection={search && <ActionIcon variant="transparent" color="gray" onClick={() => setSearch("")}><IconX size={16} /></ActionIcon>}
           value={search}
           onChange={(e) => setSearch(e.currentTarget.value)}
           style={{ flex: 1 }}
@@ -236,7 +253,7 @@ export default function SalesTable({
           <ExportButton data={filteredAndSortedSales} filename="sales" />
         </Box>
       </Group>
-      <Table>
+      <Table striped highlightOnHover>
         <Table.Thead>
           <Table.Tr>
             <Table.Th style={{ width: "200px" }}>Created By</Table.Th>
@@ -245,19 +262,20 @@ export default function SalesTable({
             <Table.Th style={{ width: "120px" }}>Amount</Table.Th>
             <Table.Th style={{ width: "120px" }}>Debt</Table.Th>
             <Table.Th style={{ width: "120px" }}>Date</Table.Th>
+            <Table.Th style={{ width: "120px" }}>Updated By</Table.Th>
             <Table.Th style={{ width: "120px" }}>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {isLoading ? (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={8}>
                 <Text ta="center">Loading sales...</Text>
               </Table.Td>
             </Table.Tr>
           ) : filteredAndSortedSales.length === 0 ? (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={8}>
                 <Text ta="center">No sales found</Text>
               </Table.Td>
             </Table.Tr>
@@ -309,6 +327,20 @@ export default function SalesTable({
                     <Text size="sm">{formatDate(sale.created_at)}</Text>
                   </Table.Td>
                   <Table.Td>
+                    {sale.updatedBy ? (
+                      <Group gap="sm" wrap="nowrap">
+                        <Avatar size="sm" src={sale.updatedBy.image} />
+                        <Tooltip label={sale.updatedBy.name}>
+                          <Text size="sm" lineClamp={1} style={{ flex: 1 }}>
+                            {sale.updatedBy.name}
+                          </Text>
+                        </Tooltip>
+                      </Group>
+                    ) : (
+                      <Text size="sm" c="dimmed">--</Text>
+                    )}
+                  </Table.Td>
+                  <Table.Td>
                     <Menu shadow="md" width={200} position="bottom-end">
                       <Menu.Target>
                         <ActionIcon variant="subtle" color="gray">
@@ -317,26 +349,26 @@ export default function SalesTable({
                       </Menu.Target>
 
                       <Menu.Dropdown>
-                        <Menu.Item 
+                        <Menu.Item
                           leftSection={<IconEye size="1rem" />}
                           onClick={() => handleViewDetails(sale)}
                         >
                           View Details
                         </Menu.Item>
-                        <Menu.Item 
+                        <Menu.Item
                           leftSection={<IconEdit size="1rem" />}
                           onClick={() => handleEditClick(sale)}
                         >
                           Edit Sale
                         </Menu.Item>
-                        <Menu.Item 
-                          leftSection={<IconPrinter size="1rem" />}
-                          onClick={() => handlePrint(sale)}
+                        <Menu.Item
+                          leftSection={<IconReceipt size={16} />}
+                          onClick={() => handlePrintReceipt(sale)}
                         >
                           Print Receipt
                         </Menu.Item>
                         {(sale.balanceDue || 0) > 0 && (
-                          <Menu.Item 
+                          <Menu.Item
                             leftSection={<IconCash size="1rem" />}
                             color="green"
                             onClick={() => handleRecordPaymentClick(sale)}
@@ -345,7 +377,7 @@ export default function SalesTable({
                           </Menu.Item>
                         )}
                         <Menu.Divider />
-                        <Menu.Item 
+                        <Menu.Item
                           leftSection={<IconTrash size="1rem" />}
                           color="red"
                           onClick={() => handleDeleteClick(sale)}
@@ -386,23 +418,23 @@ export default function SalesTable({
               customerPhone: customers?.find(c => c.id === selectedSale.customer_id)?.phone || "",
               customerEmail: customers?.find(c => c.id === selectedSale.customer_id)?.email || "",
               date: selectedSale.created_at ? new Date(selectedSale.created_at).toISOString() : new Date().toISOString(),
-              items: selectedSale.items && selectedSale.items.length > 0 
+              items: selectedSale.items && selectedSale.items.length > 0
                 ? selectedSale.items.map(item => ({
-                    id: item.id || selectedSale.id,
-                    description: item.productType + (item.description ? ` - ${item.description}` : ""),
-                    quantity: item.quantity || 1,
-                    unitPrice: item.unitPrice || 0,
-                    total: item.totalAmount || 0,
-                  }))
+                  id: item.id || selectedSale.id,
+                  description: item.productType + (item.description ? ` - ${item.description}` : ""),
+                  quantity: item.quantity || 1,
+                  unitPrice: item.unitPrice || 0,
+                  total: item.totalAmount || 0,
+                }))
                 : [
-                    {
-                      id: selectedSale.id,
-                      description: selectedSale.productType + (selectedSale.description ? ` - ${selectedSale.description}` : ""),
-                      quantity: selectedSale.quantity || 1,
-                      unitPrice: selectedSale.unitPrice || 0,
-                      total: selectedSale.totalAmount || 0,
-                    }
-                  ],
+                  {
+                    id: selectedSale.id,
+                    description: selectedSale.productType + (selectedSale.description ? ` - ${selectedSale.description}` : ""),
+                    quantity: selectedSale.quantity || 1,
+                    unitPrice: selectedSale.unitPrice || 0,
+                    total: selectedSale.totalAmount || 0,
+                  }
+                ],
               subtotal: selectedSale.totalAmount || 0,
               taxRate: 0,
               taxAmount: 0,
@@ -441,7 +473,7 @@ export default function SalesTable({
       >
         {selectedSale && (
           <Stack>
-            <SalesDetails sale={selectedSale} onPrint={() => handlePrint(selectedSale)} />
+            <SalesDetails sale={selectedSale} onPrint={() => handlePrintReceipt(selectedSale)} />
           </Stack>
         )}
       </Drawer>

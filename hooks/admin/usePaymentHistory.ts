@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { IPaymentHistory } from "@/types/sales-expenses";
 import { toast } from "react-toastify";
+import { useActivityLogger } from "./useActivityLogger";
 
 export const usePaymentHistory = (customerId?: string) => {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const { logActivity } = useActivityLogger();
 
   const query = useQuery({
     queryKey: ["payment-history", customerId],
@@ -44,6 +46,13 @@ export const usePaymentHistory = (customerId?: string) => {
       // Update customer total debt and total spent automatically via RPC or trigger in future, 
       // but for now we can do it via a quick client-side update if needed
       
+      logActivity({
+        action: "RECORD_PAYMENT",
+        entity_type: payment.reference_type === "sales" ? "SALE" : "ORDER",
+        entity_id: payment.reference_id,
+        description: `Recorded payment of ₵${payment.amount_paid} for ${payment.reference_type} via ${payment.payment_method}`,
+      });
+
       return data as IPaymentHistory;
     },
     onSuccess: () => {

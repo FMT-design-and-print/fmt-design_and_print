@@ -1,7 +1,7 @@
 "use client";
 import { useAdminStore } from "@/store/admin";
 import { IAdminNavItems } from "@/types";
-import { ActionIcon, Avatar, Divider, Group, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Divider, Group, Text, Tooltip } from "@mantine/core";
 import cx from "clsx";
 import classes from "./Sidebar.module.css";
 import { v4 as uid } from "uuid";
@@ -10,9 +10,10 @@ import { usePermission } from "@/hooks/admin/usePermission";
 interface Props {
   isMobile?: boolean;
   navItems: IAdminNavItems[];
+  isCollapsed?: boolean;
 }
 
-export const Links = ({ navItems, isMobile }: Props) => {
+export const Links = ({ navItems, isMobile, isCollapsed }: Props) => {
   const { hasPermission } = usePermission();
 
   const visibleItems = navItems.filter(
@@ -21,10 +22,10 @@ export const Links = ({ navItems, isMobile }: Props) => {
 
   return visibleItems.map((item) =>
     item === "divider" || !item.requiredPermission ? (
-      <Link key={uid()} item={item} isMobile={isMobile} />
+      <Link key={uid()} item={item} isMobile={isMobile} isCollapsed={isCollapsed} />
     ) : (
       hasPermission(item.requiredPermission) && (
-        <Link key={uid()} item={item} isMobile={isMobile} />
+        <Link key={uid()} item={item} isMobile={isMobile} isCollapsed={isCollapsed} />
       )
     )
   );
@@ -33,9 +34,10 @@ export const Links = ({ navItems, isMobile }: Props) => {
 interface LinkProps {
   isMobile?: boolean;
   item: IAdminNavItems;
+  isCollapsed?: boolean;
 }
 
-const Link = ({ item, isMobile }: LinkProps) => {
+const Link = ({ item, isMobile, isCollapsed }: LinkProps) => {
   const { selectedNavValue, setSelectedNavValue } = useAdminStore(
     (state) => state
   );
@@ -44,25 +46,25 @@ const Link = ({ item, isMobile }: LinkProps) => {
     return <Divider key={uid()} my="sm" />;
   }
 
-  if (isMobile) {
+  if (isMobile || isCollapsed) {
     return (
-      <ActionIcon
-        w="100%"
-        variant="light"
-        color="gray"
-        key={item.value}
-        px="sm"
-        py="md"
-        my="sm"
-        radius="xs"
-        title={item.label}
-        className={cx(classes.link, {
-          [classes.linkSelected]: selectedNavValue === item.value,
-        })}
-        onClick={() => setSelectedNavValue(item.value)}
-      >
-        {item.icon}
-      </ActionIcon>
+      <Tooltip label={item.label} position="right" key={item.value}>
+        <ActionIcon
+          w="100%"
+          variant="light"
+          color="gray"
+          px="sm"
+          py="md"
+          my="sm"
+          radius="xs"
+          className={cx(classes.link, {
+            [classes.linkSelected]: selectedNavValue === item.value,
+          })}
+          onClick={() => setSelectedNavValue(item.value)}
+        >
+          {item.icon}
+        </ActionIcon>
+      </Tooltip>
     );
   }
 

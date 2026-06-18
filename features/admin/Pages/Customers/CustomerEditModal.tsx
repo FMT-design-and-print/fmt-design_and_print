@@ -6,6 +6,7 @@ import { DateInput } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import { IUserDetails } from "@/types/user";
 import { createClient } from "@/utils/supabase/client";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
 
 interface CustomerEditModalProps {
   opened: boolean;
@@ -22,6 +23,7 @@ export default function CustomerEditModal({
 }: CustomerEditModalProps) {
   const [formData, setFormData] = useState<Partial<IUserDetails>>({});
   const [loading, setLoading] = useState(false);
+  const { logActivity } = useActivityLogger();
 
   const handleSubmit = async () => {
     const supabase = createClient();
@@ -36,6 +38,13 @@ export default function CustomerEditModal({
         .eq("id", customer.id);
 
       if (error) throw error;
+
+      logActivity({
+        action: "UPDATE",
+        entity_type: "CUSTOMER",
+        entity_id: customer.id,
+        description: `Updated customer details for ${customer.firstName} ${customer.lastName}`,
+      });
 
       notifications.show({
         title: "Success",
@@ -59,7 +68,7 @@ export default function CustomerEditModal({
   return (
     <Modal
       opened={opened}
-      onClose={onClose || (() => {})}
+      onClose={onClose || (() => { })}
       title="Edit Customer Details"
       size="lg"
     >

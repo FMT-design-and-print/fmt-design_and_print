@@ -5,6 +5,7 @@ import { LoginDataSchema } from "@/lib/validations";
 import { useSession } from "@/store";
 import { createClient } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
 import {
   Alert,
   Anchor,
@@ -32,6 +33,7 @@ export function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
   const [unconfirmedAccount, setUnconfirmedAccount] = useState<boolean>(false);
+  const { logActivity } = useActivityLogger();
 
   const {
     register,
@@ -93,6 +95,25 @@ export function AdminLoginForm() {
         setErrorMsg(undefined);
         setSession(session);
         setUser(session?.user);
+
+        const firstName = session.user.user_metadata?.firstName || "";
+        const lastName = session.user.user_metadata?.lastName || "";
+        const fullName = `${firstName} ${lastName}`.trim();
+        const displayName = fullName || session.user.email || "Admin User";
+
+        logActivity({
+          action: "LOGIN",
+          entity_type: "AUTH",
+          entity_id: session.user.id,
+          description: `Admin logged in successfully (${session.user.email})`,
+          user_details: {
+            userId: session.user.id,
+            name: displayName,
+            role: session.user.user_metadata?.role,
+            image: session.user.user_metadata?.avatar,
+          }
+        });
+
         router.push("/admin");
       }
     }

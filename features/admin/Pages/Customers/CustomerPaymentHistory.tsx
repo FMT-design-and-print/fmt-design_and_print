@@ -1,18 +1,20 @@
 import { Box, Table, Text, Badge, Stack, Group, Paper, Title, Button, Modal, NumberInput, Select, TextInput } from "@mantine/core";
 import { usePaymentHistory } from "@/hooks/admin/usePaymentHistory";
 import { useSales } from "@/hooks/admin/useSales";
+import { createClient } from "@/utils/supabase/client";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import { useState, useMemo } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { useCurrentAdminUser } from "@/hooks/admin/useCurrentAdminUser";
 import { toast } from "react-toastify";
+import { supabase } from "@/hooks/admin/useUpdateOrder";
 
 export default function CustomerPaymentHistory({ customerId }: { customerId: string }) {
   const { data: payments, isLoading, recordPayment } = usePaymentHistory(customerId);
   const { data: sales } = useSales();
   const { adminUser } = useCurrentAdminUser();
   const [opened, { open, close }] = useDisclosure(false);
-  
+
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [method, setMethod] = useState("Cash");
   const [referenceType, setReferenceType] = useState("sales");
@@ -41,6 +43,7 @@ export default function CustomerPaymentHistory({ customerId }: { customerId: str
 
     setIsSubmitting(true);
     try {
+      // 1. Record the payment
       await recordPayment({
         customer_id: customerId,
         amount_paid: amount,
@@ -57,6 +60,23 @@ export default function CustomerPaymentHistory({ customerId }: { customerId: str
           image: adminUser?.avatar || "",
         }
       });
+
+      // 2. We need to automatically update the associated sale's balance due
+      if (referenceType === "sales" && referenceId) {
+        const sale = sales?.find(s => s.id === referenceId);
+        if (sale) {
+          const newAmountPaid = (sale.amountPaid || 0) + amount;
+          const newBalanceDue = Math.max(0, (sale.totalAmount || 0) - newAmountPaid);
+
+          const supabase = createClient();
+          await supabase.from("sales").update({
+            amountPaid: newAmountPaid,
+            balanceDue: newBalanceDue
+          }).eq("id", referenceId);
+        }
+      }
+
+      toast.success("Payment recorded successfully");
       close();
       // Reset form
       setAmount(undefined);
@@ -79,7 +99,7 @@ export default function CustomerPaymentHistory({ customerId }: { customerId: str
         <Title order={5}>Payment History</Title>
         <Button size="xs" color="pink" onClick={open}>Record Payment</Button>
       </Group>
-      
+
       {!payments || payments.length === 0 ? (
         <Text size="sm" c="dimmed">No payment history found for this customer.</Text>
       ) : (

@@ -42,28 +42,30 @@ export default function StatCards({
       color: "pink",
     },
     {
-      title: "Total Profit",
-      value: formatCurrency(totalProfit),
-      icon: IconPigMoney,
-      color: "green",
+      title: "Total Expenses",
+      value: formatCurrency(totalExpenses),
+      icon: IconReceipt,
+      color: "red",
     },
+
     {
       title: "Customer Debts (Arrears)",
       value: formatCurrency(totalDebts),
       icon: IconWallet,
       color: "orange",
     },
-    {
-      title: "Total Expenses",
-      value: formatCurrency(totalExpenses),
-      icon: IconReceipt,
-      color: "red",
-    },
+
     {
       title: "Bad Debts (Spoilt Items)",
       value: formatCurrency(totalBadDebts),
       icon: IconAlertTriangle,
       color: "red",
+    },
+    {
+      title: "Total Profit",
+      value: formatCurrency(totalProfit),
+      icon: IconPigMoney,
+      color: "green",
     },
   ];
 

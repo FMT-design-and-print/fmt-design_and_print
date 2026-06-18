@@ -2,6 +2,7 @@ import { useCurrentAdminUser } from "@/hooks/admin/useCurrentAdminUser";
 import { useExpenses } from "@/hooks/admin/useExpenses";
 import { useSales } from "@/hooks/admin/useSales";
 import { useProductTypes } from "@/hooks/useProductTypes";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
 import { Expenses, ISales } from "@/types/sales-expenses";
 import { createClient } from "@/utils/supabase/client";
 import { Box, Button, Paper, Stack, Tabs, Group, Title } from "@mantine/core";
@@ -13,6 +14,8 @@ import ExpensesTable from "./ExpensesTable";
 import SalesForm from "./SalesForm";
 import SalesTable from "./SalesTable";
 
+import { useSalesExpensesStore } from "@/store/salesExpenses";
+
 type ViewState = "list" | "create-sale" | "edit-sale" | "create-expense" | "edit-expense";
 
 export default function SalesExpensesPage() {
@@ -20,6 +23,8 @@ export default function SalesExpensesPage() {
   const [viewState, setViewState] = useState<ViewState>("list");
   const [editingItem, setEditingItem] = useState<ISales | Expenses | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const { setSalesPage, setExpensesPage } = useSalesExpensesStore();
   const { productTypes } = useProductTypes();
   const {
     adminUser,
@@ -28,6 +33,7 @@ export default function SalesExpensesPage() {
   } = useCurrentAdminUser();
   const { data: sales, isLoading: loadingSales } = useSales();
   const { data: expenses, isLoading: loadingExpenses } = useExpenses();
+  const { logActivity } = useActivityLogger();
 
   const supabase = createClient();
 
@@ -47,7 +53,7 @@ export default function SalesExpensesPage() {
 
     try {
       const table = viewState.includes("sale") ? "sales" : "expenses";
-      
+
       if (editingItem) {
         const { error } = await supabase
           .from(table)
@@ -55,11 +61,35 @@ export default function SalesExpensesPage() {
           .eq("id", editingItem.id);
 
         if (error) throw error;
+
+        logActivity({
+          action: "UPDATE",
+          entity_type: table === "sales" ? "SALE" : "EXPENSE",
+          entity_id: editingItem.id,
+          description: `Updated ${table === "sales" ? "Sale" : "Expense"} record`,
+        });
+
         toast.success(`${table === "sales" ? "Sale" : "Expense"} updated successfully`);
+        // Note: we DO NOT reset pagination here to keep the user on their current page/filter
       } else {
-        const { error } = await supabase.from(table).insert([data]);
+        const { data: insertedData, error } = await supabase.from(table).insert([data]).select().single();
         if (error) throw error;
+
+        logActivity({
+          action: "CREATE",
+          entity_type: table === "sales" ? "SALE" : "EXPENSE",
+          entity_id: insertedData?.id,
+          description: `Created new ${table === "sales" ? "Sale" : "Expense"} record for ₵${(data as any).amount || (data as any).totalAmount || 0}`,
+        });
+
         toast.success(`${table === "sales" ? "Sale" : "Expense"} recorded successfully`);
+
+        // Reset pagination to page 1 so the user sees their newly created item
+        if (table === "sales") {
+          setSalesPage(1);
+        } else {
+          setExpensesPage(1);
+        }
       }
 
       setViewState("list");
@@ -81,9 +111,9 @@ export default function SalesExpensesPage() {
     if (viewState !== "list") {
       return (
         <Group justify="space-between" mb="md">
-          <Button 
-            variant="subtle" 
-            color="gray" 
+          <Button
+            variant="subtle"
+            color="gray"
             leftSection={<IconArrowLeft size="1rem" />}
             onClick={() => {
               setViewState("list");

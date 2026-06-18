@@ -15,7 +15,7 @@ import {
   Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEye, IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconEye, IconEdit, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import ExpensesForm from "./ExpensesForm";
@@ -23,13 +23,14 @@ import ExpenseDetails from "./ExpenseDetails";
 import { IAdminUser } from "@/types/admin";
 import { formatDate } from "./utils";
 import { useExpensesSearch } from "./hooks/useSearch";
-import { Filters, initialFilters, useFilters } from "./hooks/useFilters";
-import { TableFilters } from "./components/TableFilters";
+import { useExpensesFilters } from "./hooks/useFilters";
+import { ExpensesTableFilters } from "./components/TableFilters";
 import { ExportButton } from "./components/ExportButton";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { toast } from "react-toastify";
 import { createClient } from "@/utils/supabase/client";
-import { open } from "fs";
+import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
+import { useSalesExpensesStore } from "@/store/salesExpenses";
 
 interface ExpensesTableProps {
   expenses: Expenses[];
@@ -46,27 +47,30 @@ export default function ExpensesTable({
 }: ExpensesTableProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedExpense, setSelectedExpense] = useState<Expenses | null>(null);
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<Filters>(initialFilters);
+
+  // Use Zustand store for filters & pagination
+  const { expensesPage: activePage, setExpensesPage: setActivePage, expensesFilters: filters, setExpensesFilters, clearExpensesFilters } = useSalesExpensesStore();
+  const search = filters.search;
+  const setSearch = (s: string) => setExpensesFilters({ search: s });
 
   const { filteredExpenses } = useExpensesSearch(expenses, search);
-  const filteredAndSortedExpenses = useFilters(
+  const filteredAndSortedExpenses = useExpensesFilters(
     expenses,
     filters,
     filteredExpenses
   );
   const supabase = createClient();
 
-  const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
-  
+  const { logActivity } = useActivityLogger();
+
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
   const [expenseToDelete, setExpenseToDelete] = useState<Expenses | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filters]);
+  // useEffect(() => {
+  //   setActivePage(1);
+  // }, [search, filters]);
 
   const totalPages = Math.ceil(filteredAndSortedExpenses.length / itemsPerPage);
   const paginatedExpenses = filteredAndSortedExpenses.slice(
@@ -94,7 +98,7 @@ export default function ExpensesTable({
     try {
       const { error } = await supabase
         .from("expenses")
-        .update({ 
+        .update({
           isDeleted: true,
           updatedBy: {
             userId: adminUser?.id,
@@ -105,9 +109,17 @@ export default function ExpensesTable({
           }
         })
         .eq("id", expenseToDelete.id);
-      
+
       if (error) throw error;
       toast.success("Expense deleted successfully");
+
+      logActivity({
+        action: "DELETE",
+        entity_type: "EXPENSE",
+        entity_id: expenseToDelete.id,
+        description: `Deleted Expense record`,
+      });
+
       setDeleteModalOpened(false);
       setExpenseToDelete(null);
     } catch (err) {
@@ -119,16 +131,18 @@ export default function ExpensesTable({
 
   return (
     <Stack gap="md">
-      <TableFilters
+      <ExpensesTableFilters
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={setExpensesFilters}
         data={expenses}
+        onClearFilters={clearExpensesFilters}
       />
 
       <Group justify="space-between" align="flex-start">
         <TextInput
-          placeholder="Search by description or expense type..."
+          placeholder="Search by description, type, approver, or amount..."
           leftSection={<IconSearch size="1rem" />}
+          rightSection={search && <ActionIcon variant="transparent" color="gray" onClick={() => setSearch("")}><IconX size={16} /></ActionIcon>}
           value={search}
           onChange={(e) => setSearch(e.currentTarget.value)}
           style={{ flex: 1 }}
@@ -137,7 +151,7 @@ export default function ExpensesTable({
           <ExportButton data={filteredAndSortedExpenses} filename="expenses" />
         </Box>
       </Group>
-      <Table>
+      <Table striped highlightOnHover>
         <Table.Thead>
           <Table.Tr>
             <Table.Th style={{ width: "200px" }}>Created By</Table.Th>
@@ -145,19 +159,20 @@ export default function ExpensesTable({
             <Table.Th style={{ width: "120px" }}>Amount</Table.Th>
             <Table.Th style={{ width: "120px" }}>Bad Debt</Table.Th>
             <Table.Th style={{ width: "120px" }}>Date</Table.Th>
+            <Table.Th style={{ width: "120px" }}>Updated By</Table.Th>
             <Table.Th style={{ width: "120px" }}>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {isLoading ? (
             <Table.Tr>
-              <Table.Td colSpan={6}>
+              <Table.Td colSpan={7}>
                 <Text ta="center">Loading expenses...</Text>
               </Table.Td>
             </Table.Tr>
           ) : filteredAndSortedExpenses.length === 0 ? (
             <Table.Tr>
-              <Table.Td colSpan={6}>
+              <Table.Td colSpan={7}>
                 <Text ta="center">No expenses found</Text>
               </Table.Td>
             </Table.Tr>
@@ -186,7 +201,7 @@ export default function ExpensesTable({
                   </Text>
                 </Table.Td>
                 <Table.Td>
-                  {expense.isBadDebt ? (
+                  {expense.isBadDebt || expense.is_bad_debt ? (
                     <Badge color="red" variant="light">Yes</Badge>
                   ) : (
                     <Text size="sm" c="dimmed">-</Text>
@@ -194,6 +209,20 @@ export default function ExpensesTable({
                 </Table.Td>
                 <Table.Td>
                   <Text size="sm">{formatDate(expense.created_at)}</Text>
+                </Table.Td>
+                <Table.Td>
+                  {expense.updatedBy ? (
+                    <Group gap="sm" wrap="nowrap">
+                      <Avatar size="sm" src={expense.updatedBy.image} />
+                      <Tooltip label={expense.updatedBy.name}>
+                        <Text size="sm" lineClamp={1} style={{ flex: 1 }}>
+                          {expense.updatedBy.name}
+                        </Text>
+                      </Tooltip>
+                    </Group>
+                  ) : (
+                    <Text size="sm" c="dimmed">--</Text>
+                  )}
                 </Table.Td>
                 <Table.Td>
                   <Group gap="xs" wrap="nowrap">
