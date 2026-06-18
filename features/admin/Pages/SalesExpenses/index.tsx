@@ -54,10 +54,17 @@ export default function SalesExpensesPage() {
     try {
       const table = viewState.includes("sale") ? "sales" : "expenses";
 
+      // Clean up frontend-only camelCase fields to avoid Supabase column errors
+      const dbPayload = { ...data };
+      if (table === "expenses") {
+        delete (dbPayload as any).isBadDebt;
+        delete (dbPayload as any).badDebtReference;
+      }
+
       if (editingItem) {
         const { error } = await supabase
           .from(table)
-          .update(data)
+          .update(dbPayload)
           .eq("id", editingItem.id);
 
         if (error) throw error;
@@ -72,7 +79,7 @@ export default function SalesExpensesPage() {
         toast.success(`${table === "sales" ? "Sale" : "Expense"} updated successfully`);
         // Note: we DO NOT reset pagination here to keep the user on their current page/filter
       } else {
-        const { data: insertedData, error } = await supabase.from(table).insert([data]).select().single();
+        const { data: insertedData, error } = await supabase.from(table).insert([dbPayload]).select().single();
         if (error) throw error;
 
         logActivity({
