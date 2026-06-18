@@ -14,6 +14,8 @@ import ExpensesTable from "./ExpensesTable";
 import SalesForm from "./SalesForm";
 import SalesTable from "./SalesTable";
 
+import { useSalesExpensesStore } from "@/store/salesExpenses";
+
 type ViewState = "list" | "create-sale" | "edit-sale" | "create-expense" | "edit-expense";
 
 export default function SalesExpensesPage() {
@@ -21,6 +23,8 @@ export default function SalesExpensesPage() {
   const [viewState, setViewState] = useState<ViewState>("list");
   const [editingItem, setEditingItem] = useState<ISales | Expenses | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const { setSalesPage, setExpensesPage } = useSalesExpensesStore();
   const { productTypes } = useProductTypes();
   const {
     adminUser,
@@ -66,6 +70,7 @@ export default function SalesExpensesPage() {
         });
 
         toast.success(`${table === "sales" ? "Sale" : "Expense"} updated successfully`);
+        // Note: we DO NOT reset pagination here to keep the user on their current page/filter
       } else {
         const { data: insertedData, error } = await supabase.from(table).insert([data]).select().single();
         if (error) throw error;
@@ -78,6 +83,13 @@ export default function SalesExpensesPage() {
         });
 
         toast.success(`${table === "sales" ? "Sale" : "Expense"} recorded successfully`);
+
+        // Reset pagination to page 1 so the user sees their newly created item
+        if (table === "sales") {
+          setSalesPage(1);
+        } else {
+          setExpensesPage(1);
+        }
       }
 
       setViewState("list");

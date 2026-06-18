@@ -17,14 +17,14 @@ import {
   Menu,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconEye, IconEdit, IconSearch, IconTrash, IconPrinter, IconDotsVertical, IconCash, IconReceipt } from "@tabler/icons-react";
+import { IconEye, IconEdit, IconSearch, IconTrash, IconDotsVertical, IconCash, IconReceipt, IconX } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
 import { CURRENCY_SYMBOL } from "../../PriceCalculator/constants";
 import { IAdminUser } from "@/types/admin";
 import { formatDate } from "./utils";
 import { useSalesSearch } from "./hooks/useSearch";
-import { useFilters, Filters, initialFilters } from "./hooks/useFilters";
-import { TableFilters } from "./components/TableFilters";
+import { useSalesFilters } from "./hooks/useFilters";
+import { SalesTableFilters } from "./components/TableFilters";
 import { ExportButton } from "./components/ExportButton";
 import { useCustomers } from "@/hooks/admin/useCustomers";
 import { PrintModal } from "../Receipts/components/PrintModal";
@@ -35,6 +35,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Modal, NumberInput, Select } from "@mantine/core";
 import { usePaymentHistory } from "@/hooks/admin/usePaymentHistory";
 import { useActivityLogger } from "@/hooks/admin/useActivityLogger";
+import { useSalesExpensesStore } from "@/store/salesExpenses";
 
 interface SalesTableProps {
   sales: ISales[];
@@ -53,15 +54,18 @@ export default function SalesTable({
 }: SalesTableProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedSale, setSelectedSale] = useState<ISales | null>(null);
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<Filters>(initialFilters);
 
-  const { filteredSales } = useSalesSearch(sales, search);
-  const filteredAndSortedSales = useFilters(sales, filters, filteredSales);
   const { data: customers } = useCustomers();
+
+  // Use Zustand store for filters & pagination
+  const { salesPage: activePage, setSalesPage: setActivePage, salesFilters: filters, setSalesFilters, clearSalesFilters } = useSalesExpensesStore();
+  const search = filters.search;
+  const setSearch = (s: string) => setSalesFilters({ search: s });
+
+  const { filteredSales } = useSalesSearch(sales, search, customers);
+  const filteredAndSortedSales = useSalesFilters(sales, filters, filteredSales);
   const supabase = createClient();
 
-  const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 10;
   const { logActivity } = useActivityLogger();
 
@@ -83,9 +87,6 @@ export default function SalesTable({
   const dummyCustomerId = saleForPayment?.customer_id || "walk-in";
   const { recordPayment } = usePaymentHistory(dummyCustomerId);
 
-  useEffect(() => {
-    setActivePage(1);
-  }, [search, filters]);
 
   const totalPages = Math.ceil(filteredAndSortedSales.length / itemsPerPage);
   const paginatedSales = filteredAndSortedSales.slice(
@@ -99,9 +100,6 @@ export default function SalesTable({
   };
 
   const handleEditClick = (sale: ISales) => {
-    // If the parent provided an onEdit function that just changes the view, we can call it.
-    // Wait, the parent handles switching to edit view if we call onEdit without await, but let's check the signature.
-    // We will just call onEdit and pass the sale.
     onEdit(sale as any);
   };
 
@@ -235,16 +233,18 @@ export default function SalesTable({
 
   return (
     <Stack gap="md">
-      <TableFilters
+      <SalesTableFilters
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={setSalesFilters}
         data={sales}
+        onClearFilters={clearSalesFilters}
       />
 
       <Group justify="space-between" align="flex-start">
         <TextInput
-          placeholder="Search by description or product type..."
+          placeholder="Search by description, product type, customer, or amount..."
           leftSection={<IconSearch size="1rem" />}
+          rightSection={search && <ActionIcon variant="transparent" color="gray" onClick={() => setSearch("")}><IconX size={16} /></ActionIcon>}
           value={search}
           onChange={(e) => setSearch(e.currentTarget.value)}
           style={{ flex: 1 }}
@@ -253,7 +253,7 @@ export default function SalesTable({
           <ExportButton data={filteredAndSortedSales} filename="sales" />
         </Box>
       </Group>
-      <Table>
+      <Table striped highlightOnHover>
         <Table.Thead>
           <Table.Tr>
             <Table.Th style={{ width: "200px" }}>Created By</Table.Th>
@@ -262,19 +262,20 @@ export default function SalesTable({
             <Table.Th style={{ width: "120px" }}>Amount</Table.Th>
             <Table.Th style={{ width: "120px" }}>Debt</Table.Th>
             <Table.Th style={{ width: "120px" }}>Date</Table.Th>
+            <Table.Th style={{ width: "120px" }}>Updated By</Table.Th>
             <Table.Th style={{ width: "120px" }}>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {isLoading ? (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={8}>
                 <Text ta="center">Loading sales...</Text>
               </Table.Td>
             </Table.Tr>
           ) : filteredAndSortedSales.length === 0 ? (
             <Table.Tr>
-              <Table.Td colSpan={7}>
+              <Table.Td colSpan={8}>
                 <Text ta="center">No sales found</Text>
               </Table.Td>
             </Table.Tr>
@@ -324,6 +325,20 @@ export default function SalesTable({
                   </Table.Td>
                   <Table.Td>
                     <Text size="sm">{formatDate(sale.created_at)}</Text>
+                  </Table.Td>
+                  <Table.Td>
+                    {sale.updatedBy ? (
+                      <Group gap="sm" wrap="nowrap">
+                        <Avatar size="sm" src={sale.updatedBy.image} />
+                        <Tooltip label={sale.updatedBy.name}>
+                          <Text size="sm" lineClamp={1} style={{ flex: 1 }}>
+                            {sale.updatedBy.name}
+                          </Text>
+                        </Tooltip>
+                      </Group>
+                    ) : (
+                      <Text size="sm" c="dimmed">--</Text>
+                    )}
                   </Table.Td>
                   <Table.Td>
                     <Menu shadow="md" width={200} position="bottom-end">

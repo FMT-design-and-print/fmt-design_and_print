@@ -1,23 +1,38 @@
 import {
   Group,
-  MultiSelect,
   Stack,
   TextInput,
   SegmentedControl,
   Button,
   Select,
   Title,
+  Popover,
+  Badge,
+  ActionIcon,
+  Box,
+  Text,
+  Divider,
 } from "@mantine/core";
 import { DatePickerInput, DatesRangeValue } from "@mantine/dates";
 import { useMemo, useState } from "react";
 import { ISales, Expenses } from "@/types/sales-expenses";
-import { Filters, AmountFilter } from "../hooks/useFilters";
+import { AmountFilter } from "../hooks/useFilters";
 import { DATE_PRESETS } from "@/constants/presets";
+import { SalesFilters, ExpensesFilters } from "@/store/salesExpenses";
+import { IconFilter, IconX } from "@tabler/icons-react";
 
-interface TableFiltersProps {
-  filters: Filters;
-  onFiltersChange: (filters: Filters) => void;
-  data: (ISales | Expenses)[];
+interface SalesFiltersProps {
+  filters: SalesFilters;
+  onFiltersChange: (filters: Partial<SalesFilters>) => void;
+  data: ISales[];
+  onClearFilters: () => void;
+}
+
+interface ExpensesFiltersProps {
+  filters: ExpensesFilters;
+  onFiltersChange: (filters: Partial<ExpensesFilters>) => void;
+  data: Expenses[];
+  onClearFilters: () => void;
 }
 
 function areDatesEqual(date1: Date | null, date2: Date | null): boolean {
@@ -29,209 +44,334 @@ function areDatesEqual(date1: Date | null, date2: Date | null): boolean {
   );
 }
 
-export function TableFilters({
+const getPresets = () => ({
+  today: DATE_PRESETS.today,
+  thisWeek: DATE_PRESETS.thisWeek,
+  thisMonth: DATE_PRESETS.thisMonth,
+  last30Days: DATE_PRESETS.last30Days,
+});
+
+export function SalesTableFilters({
   filters,
   onFiltersChange,
   data,
-}: TableFiltersProps) {
+  onClearFilters,
+}: SalesFiltersProps) {
   const [amountType, setAmountType] = useState<AmountFilter["type"]>("exact");
   const [amountValue, setAmountValue] = useState<string>("");
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const presets = {
-    today: DATE_PRESETS.today,
-    thisWeek: DATE_PRESETS.thisWeek,
-    thisMonth: DATE_PRESETS.thisMonth,
-    last30Days: DATE_PRESETS.last30Days,
-  };
+  const presets = getPresets();
 
   const uniqueUsers = useMemo(() => {
     if (!data?.length) return [];
-
     const uniqueItems = Array.from(
-      new Map(
-        data.map((item) => [
-          item.createdBy.userId,
-          {
-            value: item.createdBy.userId,
-            label: item.createdBy.name,
-          },
-        ])
-      ).values()
+      new Map(data.map((item) => [item.createdBy.userId, { value: item.createdBy.userId, label: item.createdBy.name }])).values()
     );
-
     return uniqueItems;
+  }, [data]);
+
+  const uniqueProductTypes = useMemo(() => {
+    if (!data?.length) return [];
+    const uniqueItems = Array.from(
+      new Set(
+        data.flatMap(item => [
+          item.productType,
+          ...(item.items?.map(i => i.productType) || [])
+        ]).filter(Boolean)
+      )
+    );
+    return uniqueItems.map(pt => ({ value: pt as string, label: pt as string }));
   }, [data]);
 
   const handleAmountChange = (value: string) => {
     setAmountValue(value);
     const numValue = Number(value);
     onFiltersChange({
-      ...filters,
-      amount: value
-        ? { type: amountType, value: numValue }
-        : { type: amountType, value: null },
+      amount: value ? { type: amountType, value: numValue } : null,
     });
   };
 
-  const handleDateChange = (value: DatesRangeValue) => {
-    onFiltersChange({
-      ...filters,
-      dateRange: value,
-    });
-  };
-
-  const handleFilterChange = (newFilters: string[]) => {
-    setActiveFilters(newFilters);
-
-    if (!newFilters.includes("amount") && filters.amount) {
-      setAmountValue("");
-      onFiltersChange({
-        ...filters,
-        amount: { type: "exact", value: null },
-      });
-    }
-
-    if (!newFilters.includes("date") && filters.dateRange[0]) {
-      onFiltersChange({
-        ...filters,
-        dateRange: [null, null],
-      });
-    }
-
-    if (!newFilters.includes("createdBy") && filters.createdBy) {
-      onFiltersChange({
-        ...filters,
-        createdBy: null,
-      });
-    }
-  };
+  const activeFilterCount = [
+    filters.createdBy,
+    filters.dateRange[0],
+    filters.amount?.value,
+    filters.productType,
+    filters.paymentStatus
+  ].filter(Boolean).length;
 
   return (
-    <Stack gap="sm">
-      <Group grow>
-        <MultiSelect
-          label="Filter By"
-          placeholder="Select filters"
-          data={[
-            { value: "createdBy", label: "Created By" },
-            { value: "date", label: "Date" },
-            { value: "amount", label: "Amount" },
-          ]}
-          value={activeFilters}
-          onChange={handleFilterChange}
-          clearable
-          searchable
-        />
-      </Group>
+    <Group justify="flex-start" mb="md" align="flex-end">
+      <DatePickerInput
+        type="range"
+        label="Created Date"
+        placeholder="Select date range"
+        value={filters.dateRange}
+        onChange={(val) => onFiltersChange({ dateRange: val })}
+        clearable
+        w={250}
+      />
 
-      {activeFilters.includes("createdBy") && (
-        <Select
-          label="Created By"
-          placeholder="Select a user"
-          data={uniqueUsers}
-          value={filters.createdBy}
-          onChange={(value) =>
-            onFiltersChange({ ...filters, createdBy: value || null })
-          }
-          clearable
-        />
-      )}
+      <Popover position="bottom-start" withArrow shadow="md">
+        <Popover.Target>
+          <Button
+            variant={activeFilterCount > 0 ? "light" : "default"}
+            leftSection={<IconFilter size={16} />}
+            rightSection={activeFilterCount > 0 && <Badge size="sm" circle color="pink">{activeFilterCount}</Badge>}
+          >
+            Advanced Filters
+          </Button>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <Stack gap="md" w={300}>
+            <Title order={6}>Advanced Filters</Title>
 
-      {activeFilters.includes("date") && (
-        <>
-          <Title order={5}>Filter By Date</Title>
-          <Group>
-            {Object.entries(presets).map(([key, preset]) => {
-              const presetDates = preset.getValue();
-              const isSelected =
-                !showDatePicker &&
-                filters.dateRange &&
-                filters.dateRange[0] &&
-                filters.dateRange[1] &&
-                areDatesEqual(filters.dateRange[0], presetDates[0]) &&
-                areDatesEqual(filters.dateRange[1], presetDates[1]);
+            <Select
+              label="Created By"
+              placeholder="Select User"
+              data={uniqueUsers}
+              value={filters.createdBy}
+              onChange={(val) => onFiltersChange({ createdBy: val })}
+              clearable
+            />
 
-              return (
-                <Button
-                  key={key}
-                  variant={isSelected ? "filled" : "light"}
-                  size="xs"
-                  color="pink"
-                  onClick={() => {
-                    onFiltersChange({
-                      ...filters,
-                      dateRange: preset.getValue() as DatesRangeValue,
-                    });
-                    setShowDatePicker(false);
+            <Select
+              label="Product Type"
+              placeholder="Select Product Type"
+              data={uniqueProductTypes}
+              value={filters.productType}
+              onChange={(val) => onFiltersChange({ productType: val })}
+              clearable
+              searchable
+            />
+
+            <Select
+              label="Payment Status"
+              placeholder="Select Status"
+              data={[
+                { value: "paid", label: "Paid" },
+                { value: "unpaid", label: "Unpaid / Balance Due" },
+              ]}
+              value={filters.paymentStatus}
+              onChange={(val) => onFiltersChange({ paymentStatus: val })}
+              clearable
+            />
+
+            <Box>
+              <Text size="sm" fw={500} mb={5}>Amount</Text>
+              <Group align="flex-start" gap="xs">
+                <SegmentedControl
+                  size="sm"
+                  value={amountType}
+                  onChange={(val: string) => {
+                    setAmountType(val as AmountFilter["type"]);
+                    if (amountValue) {
+                      onFiltersChange({
+                        amount: { type: val as AmountFilter["type"], value: Number(amountValue) },
+                      });
+                    }
                   }}
-                >
-                  {preset.label}
-                </Button>
-              );
-            })}
-            <Button
-              variant={showDatePicker ? "filled" : "light"}
-              size="xs"
-              color="pink"
-              onClick={() => {
-                setShowDatePicker(true);
-                onFiltersChange({
-                  ...filters,
-                  dateRange: [null, null],
-                });
-              }}
-            >
-              Custom Range
-            </Button>
-            {showDatePicker && (
-              <DatePickerInput
-                type="range"
-                size="xs"
-                w={{ base: "100%", md: "auto" }}
-                miw={200}
-                placeholder="Pick dates"
-                value={filters.dateRange}
-                onChange={handleDateChange}
-                clearable
-              />
-            )}
-          </Group>
-        </>
-      )}
+                  data={[
+                    { label: "=", value: "exact" },
+                    { label: "<", value: "less" },
+                    { label: ">", value: "greater" },
+                  ]}
+                />
+                <TextInput
+                  placeholder="Amount"
+                  value={amountValue}
+                  onChange={(e) => handleAmountChange(e.currentTarget.value)}
+                  type="number"
+                  style={{ flex: 1 }}
+                />
+              </Group>
+            </Box>
 
-      {activeFilters.includes("amount") && (
-        <Group align="flex-end">
-          <SegmentedControl
-            value={amountType}
-            onChange={(value: string) => {
-              setAmountType(value as AmountFilter["type"]);
-              if (amountValue) {
-                onFiltersChange({
-                  ...filters,
-                  amount: {
-                    type: value as AmountFilter["type"],
-                    value: Number(amountValue),
-                  },
-                });
-              }
-            }}
-            data={[
-              { label: "Exact", value: "exact" },
-              { label: "Less than", value: "less" },
-              { label: "Greater than", value: "greater" },
-            ]}
-          />
-          <TextInput
-            label="Amount"
-            placeholder="Enter amount"
-            value={amountValue}
-            onChange={(e) => handleAmountChange(e.currentTarget.value)}
-            type="number"
-          />
-        </Group>
+            <Divider />
+
+            <Button variant="subtle" color="red" fullWidth onClick={() => {
+              setAmountValue("");
+              onClearFilters();
+            }}>
+              Clear All Filters
+            </Button>
+          </Stack>
+        </Popover.Dropdown>
+      </Popover>
+
+      {activeFilterCount > 0 && (
+        <Button variant="subtle" color="red" size="sm" onClick={() => {
+          setAmountValue("");
+          onClearFilters();
+        }}>
+          Clear Filters
+        </Button>
       )}
-    </Stack>
+    </Group>
+  );
+}
+
+export function ExpensesTableFilters({
+  filters,
+  onFiltersChange,
+  data,
+  onClearFilters,
+}: ExpensesFiltersProps) {
+  const [amountType, setAmountType] = useState<AmountFilter["type"]>("exact");
+  const [amountValue, setAmountValue] = useState<string>("");
+
+  const uniqueUsers = useMemo(() => {
+    if (!data?.length) return [];
+    const uniqueItems = Array.from(
+      new Map(data.map((item) => [item.createdBy.userId, { value: item.createdBy.userId, label: item.createdBy.name }])).values()
+    );
+    return uniqueItems;
+  }, [data]);
+
+  const uniqueExpenseTypes = useMemo(() => {
+    if (!data?.length) return [];
+    const uniqueItems = Array.from(new Set(data.map(item => item.type).filter(Boolean)));
+    return uniqueItems.map(pt => ({ value: pt as string, label: pt as string }));
+  }, [data]);
+
+  const uniqueApprovers = useMemo(() => {
+    if (!data?.length) return [];
+    const uniqueItems = Array.from(new Set(data.map(item => item.approver).filter(Boolean)));
+    return uniqueItems.map(pt => ({ value: pt as string, label: pt as string }));
+  }, [data]);
+
+  const handleAmountChange = (value: string) => {
+    setAmountValue(value);
+    const numValue = Number(value);
+    onFiltersChange({
+      amount: value ? { type: amountType, value: numValue } : null,
+    });
+  };
+
+  const activeFilterCount = [
+    filters.createdBy,
+    filters.dateRange[0],
+    filters.amount?.value,
+    filters.expenseType,
+    filters.isBadDebt !== null ? "badDebt" : null,
+    filters.approver
+  ].filter(Boolean).length;
+
+  return (
+    <Group justify="flex-start" mb="md" align="flex-end">
+      <DatePickerInput
+        type="range"
+        label="Created Date"
+        placeholder="Select date range"
+        value={filters.dateRange}
+        onChange={(val) => onFiltersChange({ dateRange: val })}
+        clearable
+        w={250}
+      />
+
+      <Popover position="bottom-start" withArrow shadow="md">
+        <Popover.Target>
+          <Button
+            variant={activeFilterCount > 0 ? "light" : "default"}
+            leftSection={<IconFilter size={16} />}
+            rightSection={activeFilterCount > 0 && <Badge size="sm" circle color="pink">{activeFilterCount}</Badge>}
+          >
+            Advanced Filters
+          </Button>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <Stack gap="md" w={300}>
+            <Title order={6}>Advanced Filters</Title>
+
+            <Select
+              label="Created By"
+              placeholder="Select User"
+              data={uniqueUsers}
+              value={filters.createdBy}
+              onChange={(val) => onFiltersChange({ createdBy: val })}
+              clearable
+            />
+
+            <Select
+              label="Expense Type"
+              placeholder="Select Type"
+              data={uniqueExpenseTypes}
+              value={filters.expenseType}
+              onChange={(val) => onFiltersChange({ expenseType: val })}
+              clearable
+              searchable
+            />
+
+            <Select
+              label="Approver"
+              placeholder="Select Approver"
+              data={uniqueApprovers}
+              value={filters.approver}
+              onChange={(val) => onFiltersChange({ approver: val })}
+              clearable
+              searchable
+            />
+
+            <Select
+              label="Bad Debt"
+              placeholder="Any"
+              data={[
+                { value: "true", label: "Only Bad Debts" },
+                { value: "false", label: "Exclude Bad Debts" },
+              ]}
+              value={filters.isBadDebt === null ? null : filters.isBadDebt.toString()}
+              onChange={(val) => onFiltersChange({ isBadDebt: val === null ? null : val === "true" })}
+              clearable
+            />
+
+            <Box>
+              <Text size="sm" fw={500} mb={5}>Amount</Text>
+              <Group align="flex-start" gap="xs">
+                <SegmentedControl
+                  size="sm"
+                  value={amountType}
+                  onChange={(val: string) => {
+                    setAmountType(val as AmountFilter["type"]);
+                    if (amountValue) {
+                      onFiltersChange({
+                        amount: { type: val as AmountFilter["type"], value: Number(amountValue) },
+                      });
+                    }
+                  }}
+                  data={[
+                    { label: "=", value: "exact" },
+                    { label: "<", value: "less" },
+                    { label: ">", value: "greater" },
+                  ]}
+                />
+                <TextInput
+                  placeholder="Amount"
+                  value={amountValue}
+                  onChange={(e) => handleAmountChange(e.currentTarget.value)}
+                  type="number"
+                  style={{ flex: 1 }}
+                />
+              </Group>
+            </Box>
+
+            <Divider />
+
+            <Button variant="subtle" color="red" fullWidth onClick={() => {
+              setAmountValue("");
+              onClearFilters();
+            }}>
+              Clear All Filters
+            </Button>
+          </Stack>
+        </Popover.Dropdown>
+      </Popover>
+
+      {activeFilterCount > 0 && (
+        <Button variant="subtle" color="red" size="sm" onClick={() => {
+          setAmountValue("");
+          onClearFilters();
+        }}>
+          Clear Filters
+        </Button>
+      )}
+    </Group>
   );
 }
