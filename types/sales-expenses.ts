@@ -33,6 +33,7 @@ export interface ISales {
   totalAmount: number;
   amountPaid?: number;
   balanceDue?: number;
+  tip_amount?: number;
   customer_id?: string;
   paymentMethods: PaymentMethod[];
   notes?: string;

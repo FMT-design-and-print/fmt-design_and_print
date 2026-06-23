@@ -49,12 +49,12 @@ export const useDashboardData = (filters?: FilterValues) => {
       );
     }
 
-    if (filters?.dateRange[0] && filters?.dateRange[1]) {
+    if (filters?.dateRange && filters.dateRange[0]) {
       // Fix date inclusivity by setting end date to 23:59:59.999
       const startDate = new Date(filters.dateRange[0]);
       startDate.setHours(0, 0, 0, 0);
       
-      const endDate = new Date(filters.dateRange[1]);
+      const endDate = filters.dateRange[1] ? new Date(filters.dateRange[1]) : new Date(filters.dateRange[0]);
       endDate.setHours(23, 59, 59, 999);
 
       filtered = filtered.filter((item) => {
@@ -108,10 +108,12 @@ export const useDashboardData = (filters?: FilterValues) => {
         "customOrders"
       ).reduce((acc, order) => acc + order.totalAmount, 0);
 
-      const salesRevenue = filterData(sales, "sales").reduce(
-        (acc, sale) => acc + sale.totalAmount,
-        0
-      );
+      const salesRevenue = filterData(sales, "sales")
+        .filter(sale => !sale.isDeleted)
+        .reduce(
+          (acc, sale) => acc + sale.totalAmount,
+          0
+        );
 
       return regularOrdersRevenue + customOrdersRevenue + salesRevenue;
     }
@@ -128,10 +130,12 @@ export const useDashboardData = (filters?: FilterValues) => {
           0
         );
       case "manualSales":
-        return filterData(sales, "sales").reduce(
-          (acc, sale) => acc + sale.totalAmount,
-          0
-        );
+        return filterData(sales, "sales")
+          .filter(sale => !sale.isDeleted)
+          .reduce(
+            (acc, sale) => acc + sale.totalAmount,
+            0
+          );
       default:
         return 0;
     }
@@ -140,17 +144,21 @@ export const useDashboardData = (filters?: FilterValues) => {
   const calculateTotalExpenses = () => {
     if (filters?.type !== "all") return 0;
 
-    return filterData(expenses, "expenses").reduce(
-      (acc, expense) => acc + expense.amount,
-      0
-    );
+    return filterData(expenses, "expenses")
+      .filter(expense => !expense.isDeleted)
+      .reduce(
+        (acc, expense) => acc + expense.amount,
+        0
+      );
   };
 
   const calculateTotalDebts = () => {
     if (filters?.type === "all") {
-      const regularOrdersDebts = filterData(regularOrders, "regularOrders").reduce((acc, order) => acc + (order.balanceDue || 0), 0);
-      const customOrdersDebts = filterData(customerOrders, "customOrders").reduce((acc, order) => acc + (order.balanceDue || 0), 0);
-      const salesDebts = filterData(sales, "sales").reduce((acc, sale) => acc + (sale.balanceDue || 0), 0);
+      const regularOrdersDebts = filterData(regularOrders, "regularOrders").reduce((acc, order) => acc + Math.max(order.balanceDue || 0, 0), 0);
+      const customOrdersDebts = filterData(customerOrders, "customOrders").reduce((acc, order) => acc + Math.max(order.balanceDue || 0, 0), 0);
+      const salesDebts = filterData(sales, "sales")
+        .filter(sale => !sale.isDeleted)
+        .reduce((acc, sale) => acc + Math.max(sale.balanceDue || 0, 0), 0);
       return regularOrdersDebts + customOrdersDebts + salesDebts;
     }
     return 0;
@@ -159,8 +167,26 @@ export const useDashboardData = (filters?: FilterValues) => {
   const calculateTotalBadDebts = () => {
     if (filters?.type !== "all") return 0;
     return filterData(expenses, "expenses")
-      .filter((expense) => expense.isBadDebt)
+      .filter((expense) => !expense.isDeleted && expense.isBadDebt)
       .reduce((acc, expense) => acc + expense.amount, 0);
+  };
+
+  const calculateTotalTips = () => {
+    if (filters?.type === "all" || filters?.type === "manualSales") {
+      return filterData(sales, "sales")
+        .filter(sale => !sale.isDeleted)
+        .reduce((acc, sale) => acc + (sale.tip_amount || 0), 0);
+    }
+    return 0;
+  };
+
+  const calculateTotalCashReceived = () => {
+    if (filters?.type === "all" || filters?.type === "manualSales") {
+      return filterData(sales, "sales")
+        .filter(sale => !sale.isDeleted)
+        .reduce((acc, sale) => acc + (sale.amountPaid || 0), 0);
+    }
+    return 0;
   };
 
   return {
@@ -172,12 +198,14 @@ export const useDashboardData = (filters?: FilterValues) => {
         : calculateTotalRevenue(),
     totalDebts: calculateTotalDebts(),
     totalBadDebts: calculateTotalBadDebts(),
+    totalTips: calculateTotalTips(),
+    totalCashReceived: calculateTotalCashReceived(),
     isLoading:
       ordersLoading || customOrdersLoading || salesLoading || expensesLoading,
     error: null,
     orders: filterData(regularOrders, "regularOrders"),
     customOrders: filterData(customerOrders, "customOrders"),
-    sales: filterData(sales, "sales"),
-    expenses: filterData(expenses, "expenses"),
+    sales: filterData(sales, "sales").filter(sale => !sale.isDeleted),
+    expenses: filterData(expenses, "expenses").filter(expense => !expense.isDeleted),
   };
 };

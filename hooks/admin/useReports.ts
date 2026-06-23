@@ -19,6 +19,8 @@ export const useFinancialSummaryReport = (startDate: string, endDate: string) =>
         totalProfit: number;
         totalDebts: number;
         totalBadDebts: number;
+        totalTips: number;
+        totalCashReceived: number;
         salesCount: number;
         ordersCount: number;
         customOrdersCount: number;
@@ -96,6 +98,8 @@ export const useDetailedServicePerformanceReport = (startDate: string, endDate: 
         product_type: string;
         sales_count: number;
         total_revenue: number;
+        total_tips: number;
+        total_cash_received: number;
       }[];
     },
   });

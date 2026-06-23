@@ -161,7 +161,8 @@ export default function SalesForm({
 
   const calculateBalanceDue = () => {
     const total = calculateTotalAmount();
-    return total - (amountPaid || 0);
+    const balance = total - (amountPaid || 0);
+    return balance > 0 ? balance : 0;
   };
 
   const handleSubmit = async () => {
@@ -203,6 +204,9 @@ export default function SalesForm({
       totalAmount: item.totalAmount || 0,
     }));
 
+    const totalAmount = calculateTotalAmount();
+    const tip_amount = amountPaid && amountPaid > totalAmount ? amountPaid - totalAmount : 0;
+
     const data: Partial<ISales> = {
       updated_at: new Date().toISOString(),
       customer_id: (finalCustomerId !== "new" && finalCustomerId) ? finalCustomerId : undefined,
@@ -210,9 +214,10 @@ export default function SalesForm({
       discount: applyDiscount
         ? { type: discountType, value: discountValue }
         : undefined,
-      totalAmount: calculateTotalAmount(),
+      totalAmount,
       amountPaid: amountPaid || 0,
       balanceDue: calculateBalanceDue(),
+      tip_amount,
       paymentMethods,
       notes,
       // For backward compatibility on legacy screens, store the first item's details at root
@@ -422,7 +427,6 @@ export default function SalesForm({
                     value={amountPaid}
                     onChange={(value) => setAmountPaid(value as number)}
                     min={0}
-                    max={calculateTotalAmount()}
                     prefix={`${CURRENCY_SYMBOL} `}
                     thousandSeparator=","
                   />

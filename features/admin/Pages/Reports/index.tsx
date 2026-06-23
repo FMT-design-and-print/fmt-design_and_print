@@ -15,11 +15,15 @@ import {
     Table,
     Badge,
     MultiSelect,
+    ThemeIcon,
+    Tooltip as MantineTooltip,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { IconPrinter, IconSearch } from "@tabler/icons-react";
+import { IconPrinter, IconSearch, IconCurrencyDollar, IconReceipt2, IconWallet, IconPigMoney, IconInfoCircle } from "@tabler/icons-react";
 import { startOfMonth, endOfMonth, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfYear, endOfYear } from "date-fns";
 
+import { CURRENCY_SYMBOL } from "@/lib/constants";
+import { useCurrentAdminUser } from "@/hooks/admin/useCurrentAdminUser";
 import {
     useFinancialSummaryReport,
     useTopCustomersReport,
@@ -28,9 +32,10 @@ import {
     useDetailedServicePerformanceReport,
     useExpensesByTypeReport,
 } from "@/hooks/admin/useReports";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LabelList } from "recharts";
+import { RankedChartSection } from "./components/RankedChartSection";
 
 export const ReportsPage = () => {
+    const { adminUser } = useCurrentAdminUser();
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
         startOfMonth(new Date()),
         endOfMonth(new Date()),
@@ -149,51 +154,164 @@ export const ReportsPage = () => {
                 <Button variant="light" size="xs" onClick={() => setPreset('all_time')}>All Time</Button>
             </Group>
 
-            {/* The Printable Area */}
-            <Box id={printMode === 'global' ? 'print-mount' : undefined} p="md" bg="white" style={{ minHeight: "100vh" }} className="print-container">
-                {/* Header for Print */}
-                <Box mb="xl" style={{ display: "none" }} className="print-header">
-                    <Title order={2} ta="center">FMT Design and Print</Title>
-                    <Text ta="center" c="dimmed">Financial & Analytics Report</Text>
-                    <Text ta="center" size="sm" c="dimmed" mb="lg">
-                        {dateRange[0]?.toLocaleDateString()} - {dateRange[1]?.toLocaleDateString()}
-                    </Text>
-                </Box>
-
+            {/* The Interactive Area (on-screen only) */}
+            <Box p="md" bg="white" style={{ minHeight: "100vh" }} className="screen-only">
                 <Stack gap="xl">
                     {/* Summary Cards */}
                     <Paper withBorder p="md" radius="md">
                         <Title order={4} mb="md">Financial Summary</Title>
                         <Grid>
-                            <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                                <Card padding="lg" radius="md" bg="blue.0">
-                                    <Text size="sm" c="dimmed" fw={500}>Total Revenue</Text>
+                            <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
+                                <Card shadow="xs" p="lg" radius="md" withBorder>
+                                    <Group justify="space-between" mb="xs">
+                                        <Group gap={4}>
+                                            <Text size="sm" c="dimmed" fw={500}>Service Revenue (Expected)</Text>
+                                            <MantineTooltip
+                                                label="Total value of all sales billed in this period — whether the customer has paid in full or still owes you. Tips are not included."
+                                                multiline
+                                                w={260}
+                                                withArrow
+                                            >
+                                                <IconInfoCircle size={14} className="hide-in-print" style={{ color: "var(--mantine-color-gray-5)", cursor: "help" }} />
+                                            </MantineTooltip>
+                                        </Group>
+                                        <ThemeIcon color="pink" variant="light" size="sm">
+                                            <IconCurrencyDollar size={16} />
+                                        </ThemeIcon>
+                                    </Group>
+                                    <Text size="xl" fw={700}>
+                                        {CURRENCY_SYMBOL} {summary?.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                                    </Text>
+                                </Card>
+                            </Grid.Col>
+
+                            <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
+                                <Card shadow="xs" p="lg" radius="md" bg="blue.0" withBorder>
+                                    <Group justify="space-between" mb="xs">
+                                        <Group gap={4}>
+                                            <Text size="sm" c="dimmed" fw={500}>Total Cash Received</Text>
+                                            <MantineTooltip
+                                                label="Actual cash collected from customers in this period — money already in hand. Includes tips. Unpaid customer debts are not counted here."
+                                                multiline
+                                                w={260}
+                                                withArrow
+                                            >
+                                                <IconInfoCircle size={14} className="hide-in-print" style={{ color: "var(--mantine-color-gray-5)", cursor: "help" }} />
+                                            </MantineTooltip>
+                                        </Group>
+                                        <ThemeIcon color="blue" variant="light" size="sm">
+                                            <IconCurrencyDollar size={16} />
+                                        </ThemeIcon>
+                                    </Group>
                                     <Text size="xl" fw={700} c="blue.7">
-                                        {formatCurrency(summary?.totalRevenue || 0)}
+                                        {CURRENCY_SYMBOL} {summary?.totalCashReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                                    </Text>
+                                    {adminUser?.role === "super-admin" && (
+                                        <Text size="xs" c="teal" mt={4}>
+                                            Includes {CURRENCY_SYMBOL} {(summary?.totalTips || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} in tips
+                                        </Text>
+                                    )}
+                                </Card>
+                            </Grid.Col>
+
+                            <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
+                                <Card shadow="xs" p="lg" radius="md" withBorder>
+                                    <Group justify="space-between" mb="xs">
+                                        <Group gap={4}>
+                                            <Text size="sm" c="dimmed" fw={500}>Total Expenses</Text>
+                                            <MantineTooltip
+                                                label="Everything spent during this period — supplies, bills, salaries, and bad debts from spoilt items. Bad debts are already counted in this total."
+                                                multiline
+                                                w={260}
+                                                withArrow
+                                            >
+                                                <IconInfoCircle size={14} className="hide-in-print" style={{ color: "var(--mantine-color-gray-5)", cursor: "help" }} />
+                                            </MantineTooltip>
+                                        </Group>
+                                        <ThemeIcon color="red" variant="light" size="sm">
+                                            <IconReceipt2 size={16} />
+                                        </ThemeIcon>
+                                    </Group>
+                                    <Text size="xl" fw={700}>
+                                        {CURRENCY_SYMBOL} {summary?.totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                                    </Text>
+                                    <Text size="xs" c="dimmed" mt={4}>
+                                        Includes {CURRENCY_SYMBOL} {(summary?.totalBadDebts || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} in bad debts (spoilt items)
                                     </Text>
                                 </Card>
                             </Grid.Col>
-                            <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                                <Card padding="lg" radius="md" bg="red.0">
-                                    <Text size="sm" c="dimmed" fw={500}>Total Expenses</Text>
-                                    <Text size="xl" fw={700} c="red.7">
-                                        {formatCurrency(summary?.totalExpenses || 0)}
+
+                            <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
+                                <Card shadow="xs" p="lg" radius="md" withBorder>
+                                    <Group justify="space-between" mb="xs">
+                                        <Group gap={4}>
+                                            <Text size="sm" c="dimmed" fw={500}>Customer Debts (Unpaid)</Text>
+                                            <MantineTooltip
+                                                label="Money customers still owe you from sales in this period. This is part of Service Revenue but hasn't been received as cash yet."
+                                                multiline
+                                                w={260}
+                                                withArrow
+                                            >
+                                                <IconInfoCircle size={14} className="hide-in-print" style={{ color: "var(--mantine-color-gray-5)", cursor: "help" }} />
+                                            </MantineTooltip>
+                                        </Group>
+                                        <ThemeIcon color="orange" variant="light" size="sm">
+                                            <IconWallet size={16} />
+                                        </ThemeIcon>
+                                    </Group>
+                                    <Text size="xl" fw={700}>
+                                        {CURRENCY_SYMBOL} {summary?.totalDebts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                                     </Text>
                                 </Card>
                             </Grid.Col>
-                            <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                                <Card padding="lg" radius="md" bg="green.0">
-                                    <Text size="sm" c="dimmed" fw={500}>Net Profit</Text>
+
+                            <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
+                                <Card shadow="xs" p="lg" radius="md" withBorder>
+                                    <Group justify="space-between" mb="xs">
+                                        <Group gap={4}>
+                                            <Text size="sm" c="dimmed" fw={500}>Net Profit (Accrual)</Text>
+                                            <MantineTooltip
+                                                label="Service Revenue minus Total Expenses. Counts all billed sales — paid or unpaid — so it shows profit on paper, not cash in hand. Tips are not included."
+                                                multiline
+                                                w={260}
+                                                withArrow
+                                            >
+                                                <IconInfoCircle size={14} className="hide-in-print" style={{ color: "var(--mantine-color-gray-5)", cursor: "help" }} />
+                                            </MantineTooltip>
+                                        </Group>
+                                        <ThemeIcon color="green" variant="light" size="sm">
+                                            <IconPigMoney size={16} />
+                                        </ThemeIcon>
+                                    </Group>
+                                    <Text size="xl" fw={700}>
+                                        {CURRENCY_SYMBOL} {summary?.totalProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                                    </Text>
+                                    <Text size="xs" c="dimmed" mt={4}>
+                                        Excludes tips
+                                    </Text>
+                                </Card>
+                            </Grid.Col>
+
+                            <Grid.Col span={{ base: 12, sm: 6, lg: 4 }}>
+                                <Card shadow="xs" p="lg" radius="md" bg="green.0" withBorder>
+                                    <Group justify="space-between" mb="xs">
+                                        <Group gap={4}>
+                                            <Text size="sm" c="dimmed" fw={500}>Net Cash Flow</Text>
+                                            <MantineTooltip
+                                                label="The cash you should actually have in hand right now: Cash Received minus Expenses. Includes tips. Does not count unpaid customer debts."
+                                                multiline
+                                                w={260}
+                                                withArrow
+                                            >
+                                                <IconInfoCircle size={14} className="hide-in-print" style={{ color: "var(--mantine-color-gray-5)", cursor: "help" }} />
+                                            </MantineTooltip>
+                                        </Group>
+                                        <ThemeIcon color="green" variant="light" size="sm">
+                                            <IconPigMoney size={16} />
+                                        </ThemeIcon>
+                                    </Group>
                                     <Text size="xl" fw={700} c="green.7">
-                                        {formatCurrency(summary?.totalProfit || 0)}
-                                    </Text>
-                                </Card>
-                            </Grid.Col>
-                            <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                                <Card padding="lg" radius="md" bg="orange.0">
-                                    <Text size="sm" c="dimmed" fw={500}>Total Bad Debts</Text>
-                                    <Text size="xl" fw={700} c="orange.7">
-                                        {formatCurrency(summary?.totalBadDebts || 0)}
+                                        {CURRENCY_SYMBOL} {((summary?.totalCashReceived || 0) - (summary?.totalExpenses || 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </Text>
                                 </Card>
                             </Grid.Col>
@@ -201,141 +319,42 @@ export const ReportsPage = () => {
                     </Paper>
 
                     <Grid>
-                        {/* Top Performing Categories */}
                         <Grid.Col span={{ base: 12, md: 6 }}>
-                            <Paper withBorder p="md" radius="md" h="100%">
-                                <Title order={4} mb="md">Top 5 Performing Categories</Title>
-                                <Box h={300} mb="md">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart
-                                            data={(topServices || []).slice(0, 5)}
-                                            layout="vertical"
-                                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                                            <XAxis type="number" tickFormatter={(value) => `GH₵${value}`} />
-                                            <YAxis dataKey="category" type="category" width={180} tick={{ fontSize: 12 }} />
-                                            <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                                            <Bar dataKey="total_revenue" fill="#339af0" radius={[0, 4, 4, 0]} isAnimationActive={false}>
-                                                <LabelList
-                                                    dataKey="total_revenue"
-                                                    position="right"
-                                                    formatter={(val: number) => formatCurrency(val)}
-                                                    style={{ fill: '#495057', fontSize: 12 }}
-                                                />
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </Box>
-                                <Table striped highlightOnHover mt="lg">
-                                    <Table.Thead>
-                                        <Table.Tr>
-                                            <Table.Th>Category</Table.Th>
-                                            <Table.Th ta="right">Revenue</Table.Th>
-                                        </Table.Tr>
-                                    </Table.Thead>
-                                    <Table.Tbody>
-                                        {(topServices || []).slice(0, 5).map((item, i) => (
-                                            <Table.Tr key={i}>
-                                                <Table.Td>{item.category}</Table.Td>
-                                                <Table.Td ta="right" fw={500}>{formatCurrency(item.total_revenue)}</Table.Td>
-                                            </Table.Tr>
-                                        ))}
-                                    </Table.Tbody>
-                                </Table>
-                            </Paper>
+                            <RankedChartSection
+                                title="Top Performing Categories"
+                                storageKey="topCategories"
+                                data={(topServices || []).map(s => ({ label: s.category, value: s.total_revenue }))}
+                                labelHeader="Category"
+                                valueHeader="Revenue"
+                                primaryColor="#339af0"
+                                formatAbsolute={formatCurrency}
+                            />
                         </Grid.Col>
 
-                        {/* Top Performing Product Types */}
                         <Grid.Col span={{ base: 12, md: 6 }}>
-                            <Paper withBorder p="md" radius="md" h="100%">
-                                <Title order={4} mb="md">Top 5 Performing Product Types</Title>
-                                <Box h={300} mb="md">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart
-                                            data={(topProductTypes || []).slice(0, 5)}
-                                            layout="vertical"
-                                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                                            <XAxis type="number" tickFormatter={(value) => `GH₵${value}`} />
-                                            <YAxis dataKey="product_type" type="category" width={180} tick={{ fontSize: 12 }} />
-                                            <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                                            <Bar dataKey="total_revenue" fill="#845ef7" radius={[0, 4, 4, 0]} isAnimationActive={false}>
-                                                <LabelList
-                                                    dataKey="total_revenue"
-                                                    position="right"
-                                                    formatter={(val: number) => formatCurrency(val)}
-                                                    style={{ fill: '#495057', fontSize: 12 }}
-                                                />
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </Box>
-                                <Table striped highlightOnHover mt="lg">
-                                    <Table.Thead>
-                                        <Table.Tr>
-                                            <Table.Th>Product Type</Table.Th>
-                                            <Table.Th ta="right">Revenue</Table.Th>
-                                        </Table.Tr>
-                                    </Table.Thead>
-                                    <Table.Tbody>
-                                        {(topProductTypes || []).slice(0, 5).map((item, i) => (
-                                            <Table.Tr key={i}>
-                                                <Table.Td>{item.product_type}</Table.Td>
-                                                <Table.Td ta="right" fw={500}>{formatCurrency(item.total_revenue)}</Table.Td>
-                                            </Table.Tr>
-                                        ))}
-                                    </Table.Tbody>
-                                </Table>
-                            </Paper>
+                            <RankedChartSection
+                                title="Top Performing Product Types"
+                                storageKey="topProductTypes"
+                                data={(topProductTypes || []).map(p => ({ label: p.product_type, value: p.total_revenue }))}
+                                labelHeader="Product Type"
+                                valueHeader="Revenue"
+                                primaryColor="#845ef7"
+                                formatAbsolute={formatCurrency}
+                            />
                         </Grid.Col>
                     </Grid>
 
                     <Grid>
-                        {/* Expenses Breakdown */}
                         <Grid.Col span={{ base: 12, md: 6 }}>
-                            <Paper withBorder p="md" radius="md" h="100%">
-                                <Title order={4} mb="md">Expenses by Type</Title>
-                                <Box h={300} mb="md">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart
-                                            data={(expensesByType || []).slice(0, 5)}
-                                            layout="vertical"
-                                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                                            <XAxis type="number" tickFormatter={(value) => `GH₵${value}`} />
-                                            <YAxis dataKey="expense_type" type="category" width={180} tick={{ fontSize: 12 }} />
-                                            <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                                            <Bar dataKey="total_amount" fill="#ff6b6b" radius={[0, 4, 4, 0]} isAnimationActive={false}>
-                                                <LabelList
-                                                    dataKey="total_amount"
-                                                    position="right"
-                                                    formatter={(val: number) => formatCurrency(val)}
-                                                    style={{ fill: '#495057', fontSize: 12 }}
-                                                />
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </Box>
-                                <Table striped highlightOnHover mt="lg">
-                                    <Table.Thead>
-                                        <Table.Tr>
-                                            <Table.Th>Expense Type</Table.Th>
-                                            <Table.Th ta="right">Amount</Table.Th>
-                                        </Table.Tr>
-                                    </Table.Thead>
-                                    <Table.Tbody>
-                                        {(expensesByType || []).slice(0, 5).map((item, i) => (
-                                            <Table.Tr key={i}>
-                                                <Table.Td>{item.expense_type}</Table.Td>
-                                                <Table.Td ta="right" fw={500}>{formatCurrency(item.total_amount)}</Table.Td>
-                                            </Table.Tr>
-                                        ))}
-                                    </Table.Tbody>
-                                </Table>
-                            </Paper>
+                            <RankedChartSection
+                                title="Expenses by Type"
+                                storageKey="expensesByType"
+                                data={(expensesByType || []).map(e => ({ label: e.expense_type, value: e.total_amount }))}
+                                labelHeader="Expense Type"
+                                valueHeader="Amount"
+                                primaryColor="#ff6b6b"
+                                formatAbsolute={formatCurrency}
+                            />
                         </Grid.Col>
 
                         {/* Customer Leaderboard */}
@@ -423,21 +442,16 @@ export const ReportsPage = () => {
                             </Grid.Col>
                         </Grid>
 
-                        <Box id={printMode === 'detailed' ? 'print-mount' : undefined} p="md" bg="white" className="print-container">
-                            <Box mb="xl" style={{ display: "none" }} className="print-header">
-                                <Title order={3} ta="center">Service Performance Report</Title>
-                                <Text ta="center" size="sm" c="dimmed" mb="lg">
-                                    {dateRange[0]?.toLocaleDateString()} - {dateRange[1]?.toLocaleDateString()}
-                                </Text>
-                            </Box>
-
+                        <Box p="md" bg="white">
                             <Table striped highlightOnHover withTableBorder>
                                 <Table.Thead>
                                     <Table.Tr>
                                         <Table.Th>Category</Table.Th>
                                         <Table.Th>Product Type</Table.Th>
                                         <Table.Th ta="right">Total Sales</Table.Th>
-                                        <Table.Th ta="right">Total Revenue</Table.Th>
+                                        <Table.Th ta="right">Expected Revenue</Table.Th>
+                                        {adminUser?.role === "super-admin" && <Table.Th ta="right">Tips</Table.Th>}
+                                        <Table.Th ta="right">Cash Received</Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
@@ -447,11 +461,17 @@ export const ReportsPage = () => {
                                             <Table.Td>{item.product_type}</Table.Td>
                                             <Table.Td ta="right">{item.sales_count}</Table.Td>
                                             <Table.Td ta="right" c="blue.7" fw={600}>{formatCurrency(item.total_revenue)}</Table.Td>
+                                            {adminUser?.role === "super-admin" && (
+                                                <Table.Td ta="right" c="teal" fw={500}>
+                                                    {item.total_tips > 0 ? `+${formatCurrency(item.total_tips)}` : '--'}
+                                                </Table.Td>
+                                            )}
+                                            <Table.Td ta="right" c="green" fw={600}>{formatCurrency(item.total_cash_received)}</Table.Td>
                                         </Table.Tr>
                                     ))}
                                     {filteredDetailedPerformance.length === 0 && (
                                         <Table.Tr>
-                                            <Table.Td colSpan={4} ta="center">No data found for the selected filters</Table.Td>
+                                            <Table.Td colSpan={adminUser?.role === "super-admin" ? 6 : 5} ta="center">No data found for the selected filters</Table.Td>
                                         </Table.Tr>
                                     )}
                                 </Table.Tbody>
@@ -462,8 +482,16 @@ export const ReportsPage = () => {
                                             <Table.Th ta="right">
                                                 {filteredDetailedPerformance.reduce((acc, item) => acc + item.sales_count, 0)}
                                             </Table.Th>
-                                            <Table.Th ta="right">
+                                            <Table.Th ta="right" c="blue.7">
                                                 {formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + item.total_revenue, 0))}
+                                            </Table.Th>
+                                            {adminUser?.role === "super-admin" && (
+                                                <Table.Th ta="right" c="teal">
+                                                    {formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_tips || 0), 0))}
+                                                </Table.Th>
+                                            )}
+                                            <Table.Th ta="right" c="green">
+                                                {formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_cash_received || 0), 0))}
                                             </Table.Th>
                                         </Table.Tr>
                                     </Table.Tfoot>
@@ -473,51 +501,292 @@ export const ReportsPage = () => {
                     </Paper>
                 </Stack>
 
-                <style dangerouslySetInnerHTML={{
-                    __html: `
-            @media print {
-              @page { size: landscape; margin: 10mm; }
-              
-              body * {
-                  visibility: hidden;
-              }
-
-              #print-mount, #print-mount * {
-                  visibility: visible;
-              }
-
-              #print-mount {
-                  position: absolute !important;
-                  left: 0 !important;
-                  top: 0 !important;
-                  width: 100% !important;
-                  margin: 0 !important;
-                  padding: 0 !important;
-                  background-color: white !important;
-              }
-
-              .hide-in-print, .hide-in-print * {
-                  display: none !important;
-              }
-
-              .print-header {
-                  display: block !important;
-              }
-
-              /* Force charts to render their colors and avoid blanking out */
-              * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-              }
-              
-              /* Optional: If Recharts resize breaks in print, setting a fixed min-width can help */
-              .recharts-wrapper {
-                  min-width: 600px !important;
-              }
-            }
-          `
-                }} />
             </Box>
+
+            {printMode && (
+                <Box id="print-mount" className="print-only">
+                    <Box mb="lg" ta="center">
+                        <Title order={2}>FMT Design and Print</Title>
+                        <Text c="dimmed">
+                            {printMode === 'global' ? 'Financial & Analytics Report' : 'Service Performance Report'}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                            {dateRange[0]?.toLocaleDateString()} – {dateRange[1]?.toLocaleDateString()}
+                        </Text>
+                    </Box>
+
+                    {printMode === 'global' ? (
+                        <Stack gap="lg">
+                            <Box>
+                                <Title order={5} mb="xs">Financial Summary</Title>
+                                <Table withTableBorder withColumnBorders striped className="print-table">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th>Metric</Table.Th>
+                                            <Table.Th ta="right">Value</Table.Th>
+                                            <Table.Th>Notes</Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        <Table.Tr>
+                                            <Table.Td>Service Revenue (Expected)</Table.Td>
+                                            <Table.Td ta="right">{formatCurrency(summary?.totalRevenue || 0)}</Table.Td>
+                                            <Table.Td>Billed sales — paid or unpaid. Excludes tips.</Table.Td>
+                                        </Table.Tr>
+                                        <Table.Tr>
+                                            <Table.Td>Total Cash Received</Table.Td>
+                                            <Table.Td ta="right">{formatCurrency(summary?.totalCashReceived || 0)}</Table.Td>
+                                            <Table.Td>
+                                                Cash in hand.
+                                                {adminUser?.role === "super-admin" && ` Includes ${formatCurrency(summary?.totalTips || 0)} in tips.`}
+                                            </Table.Td>
+                                        </Table.Tr>
+                                        <Table.Tr>
+                                            <Table.Td>Total Expenses</Table.Td>
+                                            <Table.Td ta="right">{formatCurrency(summary?.totalExpenses || 0)}</Table.Td>
+                                            <Table.Td>Includes {formatCurrency(summary?.totalBadDebts || 0)} in bad debts (spoilt items).</Table.Td>
+                                        </Table.Tr>
+                                        <Table.Tr>
+                                            <Table.Td>Customer Debts (Unpaid)</Table.Td>
+                                            <Table.Td ta="right">{formatCurrency(summary?.totalDebts || 0)}</Table.Td>
+                                            <Table.Td>Money customers still owe.</Table.Td>
+                                        </Table.Tr>
+                                        <Table.Tr>
+                                            <Table.Td><strong>Net Profit (Accrual)</strong></Table.Td>
+                                            <Table.Td ta="right"><strong>{formatCurrency(summary?.totalProfit || 0)}</strong></Table.Td>
+                                            <Table.Td>Revenue − Expenses. Excludes tips.</Table.Td>
+                                        </Table.Tr>
+                                        <Table.Tr>
+                                            <Table.Td><strong>Net Cash Flow</strong></Table.Td>
+                                            <Table.Td ta="right"><strong>{formatCurrency((summary?.totalCashReceived || 0) - (summary?.totalExpenses || 0))}</strong></Table.Td>
+                                            <Table.Td>Cash Received − Expenses. Includes tips, excludes unpaid debts.</Table.Td>
+                                        </Table.Tr>
+                                    </Table.Tbody>
+                                </Table>
+                            </Box>
+
+                            <Box>
+                                <Title order={5} mb="xs">Top Performing Categories</Title>
+                                <Table withTableBorder withColumnBorders striped className="print-table">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th>Category</Table.Th>
+                                            <Table.Th ta="right">Revenue</Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {(topServices || []).map((item, i) => (
+                                            <Table.Tr key={i}>
+                                                <Table.Td>{item.category}</Table.Td>
+                                                <Table.Td ta="right">{formatCurrency(item.total_revenue)}</Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                        {(!topServices || topServices.length === 0) && (
+                                            <Table.Tr><Table.Td colSpan={2} ta="center">No data for this period</Table.Td></Table.Tr>
+                                        )}
+                                    </Table.Tbody>
+                                </Table>
+                            </Box>
+
+                            <Box>
+                                <Title order={5} mb="xs">Top Performing Product Types</Title>
+                                <Table withTableBorder withColumnBorders striped className="print-table">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th>Product Type</Table.Th>
+                                            <Table.Th ta="right">Revenue</Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {(topProductTypes || []).map((item, i) => (
+                                            <Table.Tr key={i}>
+                                                <Table.Td>{item.product_type}</Table.Td>
+                                                <Table.Td ta="right">{formatCurrency(item.total_revenue)}</Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                        {(!topProductTypes || topProductTypes.length === 0) && (
+                                            <Table.Tr><Table.Td colSpan={2} ta="center">No data for this period</Table.Td></Table.Tr>
+                                        )}
+                                    </Table.Tbody>
+                                </Table>
+                            </Box>
+
+                            <Box>
+                                <Title order={5} mb="xs">Expenses by Type</Title>
+                                <Table withTableBorder withColumnBorders striped className="print-table">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th>Expense Type</Table.Th>
+                                            <Table.Th ta="right">Amount</Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {(expensesByType || []).map((item, i) => (
+                                            <Table.Tr key={i}>
+                                                <Table.Td>{item.expense_type}</Table.Td>
+                                                <Table.Td ta="right">{formatCurrency(item.total_amount)}</Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                        {(!expensesByType || expensesByType.length === 0) && (
+                                            <Table.Tr><Table.Td colSpan={2} ta="center">No expenses recorded</Table.Td></Table.Tr>
+                                        )}
+                                    </Table.Tbody>
+                                </Table>
+                            </Box>
+
+                            <Box>
+                                <Title order={5} mb="xs">Top Customers (by Spending)</Title>
+                                <Table withTableBorder withColumnBorders striped className="print-table">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th>Customer Name</Table.Th>
+                                            <Table.Th>Phone</Table.Th>
+                                            <Table.Th ta="right">Total Spent</Table.Th>
+                                            <Table.Th ta="right">Current Debt</Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {(topCustomers || []).map((c) => (
+                                            <Table.Tr key={c.id}>
+                                                <Table.Td>{c.name}</Table.Td>
+                                                <Table.Td>{c.phone || 'N/A'}</Table.Td>
+                                                <Table.Td ta="right">{formatCurrency(c.period_spent)}</Table.Td>
+                                                <Table.Td ta="right">{c.period_debt > 0 ? formatCurrency(c.period_debt) : '—'}</Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                        {(!topCustomers || topCustomers.length === 0) && (
+                                            <Table.Tr><Table.Td colSpan={4} ta="center">No customer activity for this period</Table.Td></Table.Tr>
+                                        )}
+                                    </Table.Tbody>
+                                </Table>
+                            </Box>
+                        </Stack>
+                    ) : (
+                        <Box>
+                            {(selectedCategories.length > 0 || selectedProductTypes.length > 0) && (
+                                <Text size="sm" c="dimmed" mb="sm">
+                                    {selectedCategories.length > 0 && <>Categories: <strong>{selectedCategories.join(', ')}</strong>. </>}
+                                    {selectedProductTypes.length > 0 && <>Product Types: <strong>{selectedProductTypes.join(', ')}</strong>.</>}
+                                </Text>
+                            )}
+                            <Table withTableBorder withColumnBorders striped className="print-table">
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>Category</Table.Th>
+                                        <Table.Th>Product Type</Table.Th>
+                                        <Table.Th ta="right">Sales</Table.Th>
+                                        <Table.Th ta="right">Expected Revenue</Table.Th>
+                                        {adminUser?.role === "super-admin" && <Table.Th ta="right">Tips</Table.Th>}
+                                        <Table.Th ta="right">Cash Received</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {filteredDetailedPerformance.map((item, i) => (
+                                        <Table.Tr key={i}>
+                                            <Table.Td>{item.category}</Table.Td>
+                                            <Table.Td>{item.product_type}</Table.Td>
+                                            <Table.Td ta="right">{item.sales_count}</Table.Td>
+                                            <Table.Td ta="right">{formatCurrency(item.total_revenue)}</Table.Td>
+                                            {adminUser?.role === "super-admin" && (
+                                                <Table.Td ta="right">{item.total_tips > 0 ? formatCurrency(item.total_tips) : '—'}</Table.Td>
+                                            )}
+                                            <Table.Td ta="right">{formatCurrency(item.total_cash_received)}</Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                    {filteredDetailedPerformance.length === 0 && (
+                                        <Table.Tr>
+                                            <Table.Td colSpan={adminUser?.role === "super-admin" ? 6 : 5} ta="center">No data found for the selected filters</Table.Td>
+                                        </Table.Tr>
+                                    )}
+                                </Table.Tbody>
+                                {filteredDetailedPerformance.length > 0 && (
+                                    <Table.Tfoot>
+                                        <Table.Tr>
+                                            <Table.Th colSpan={2}>Total</Table.Th>
+                                            <Table.Th ta="right">{filteredDetailedPerformance.reduce((acc, item) => acc + item.sales_count, 0)}</Table.Th>
+                                            <Table.Th ta="right">{formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + item.total_revenue, 0))}</Table.Th>
+                                            {adminUser?.role === "super-admin" && (
+                                                <Table.Th ta="right">{formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_tips || 0), 0))}</Table.Th>
+                                            )}
+                                            <Table.Th ta="right">{formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_cash_received || 0), 0))}</Table.Th>
+                                        </Table.Tr>
+                                    </Table.Tfoot>
+                                )}
+                            </Table>
+                        </Box>
+                    )}
+
+                    <Text size="xs" c="dimmed" ta="right" mt="lg">
+                        Generated {new Date().toLocaleString()}
+                    </Text>
+                </Box>
+            )}
+
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                    /* On screen, the print-only mount sits off-canvas so it never disrupts layout. */
+                    .print-only {
+                        position: absolute;
+                        left: -10000px;
+                        top: 0;
+                    }
+
+                    @media print {
+                        @page { size: A4 portrait; margin: 12mm; }
+
+                        html, body {
+                            background: white !important;
+                        }
+
+                        /* Hide every element on the page (admin shell, sidebar, screen UI, etc.) */
+                        body * {
+                            visibility: hidden !important;
+                        }
+
+                        /* …then reveal only the print mount and its descendants. */
+                        #print-mount,
+                        #print-mount * {
+                            visibility: visible !important;
+                        }
+
+                        /* Pull the print mount to the top-left so it becomes the page content. */
+                        #print-mount {
+                            position: absolute !important;
+                            left: 0 !important;
+                            top: 0 !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            background: white !important;
+                            color: black !important;
+                        }
+
+                        #print-mount * {
+                            color: black !important;
+                        }
+
+                        .print-table {
+                            font-size: 11px;
+                            page-break-inside: auto;
+                        }
+                        .print-table tr {
+                            page-break-inside: avoid;
+                            page-break-after: auto;
+                        }
+                        .print-table thead {
+                            display: table-header-group;
+                        }
+                        .print-table tfoot {
+                            display: table-footer-group;
+                        }
+
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                    }
+                `
+            }} />
         </Box>
     );
 };

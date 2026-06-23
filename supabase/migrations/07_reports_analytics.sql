@@ -21,20 +21,12 @@ BEGIN
     SELECT COALESCE(SUM("totalAmount"), 0) INTO total_revenue
     FROM (
         SELECT "totalAmount" FROM public.sales WHERE "isDeleted" = false AND "created_at" >= start_date AND "created_at" <= end_date
-        UNION ALL
-        SELECT "totalAmount" FROM public.orders WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date
-        UNION ALL
-        SELECT "totalAmount" FROM public."custom-orders" WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date
     ) AS all_revenue;
 
     -- Calculate Debts
-    SELECT COALESCE(SUM("balanceDue"), 0) INTO total_debts
+    SELECT COALESCE(SUM(CASE WHEN "balanceDue" > 0 THEN "balanceDue" ELSE 0 END), 0) INTO total_debts
     FROM (
         SELECT "balanceDue" FROM public.sales WHERE "isDeleted" = false AND "created_at" >= start_date AND "created_at" <= end_date
-        UNION ALL
-        SELECT "balanceDue" FROM public.orders WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date
-        UNION ALL
-        SELECT "balanceDue" FROM public."custom-orders" WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date
     ) AS all_debts;
 
     -- Calculate Expenses
@@ -49,8 +41,9 @@ BEGIN
 
     -- Counts
     SELECT COUNT(id) INTO total_sales_count FROM public.sales WHERE "isDeleted" = false AND "created_at" >= start_date AND "created_at" <= end_date;
-    SELECT COUNT(id) INTO total_orders_count FROM public.orders WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date;
-    SELECT COUNT(id) INTO total_custom_orders_count FROM public."custom-orders" WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date;
+    -- Ignore orders for now to prevent column errors
+    -- SELECT COUNT(id) INTO total_orders_count FROM public.orders WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date;
+    -- SELECT COUNT(id) INTO total_custom_orders_count FROM public."custom-orders" WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date;
 
     RETURN json_build_object(
         'totalRevenue', total_revenue,
@@ -78,14 +71,11 @@ BEGIN
             c.name, 
             c.phone,
             COALESCE(SUM(s."totalAmount"), 0) as period_spent,
-            COALESCE(SUM(s."balanceDue"), 0) as period_debt
+            COALESCE(SUM(CASE WHEN s."balanceDue" > 0 THEN s."balanceDue" ELSE 0 END), 0) as period_debt
         FROM public.customers c
         LEFT JOIN (
             SELECT customer_id, "totalAmount", "balanceDue" FROM public.sales WHERE "isDeleted" = false AND "created_at" >= start_date AND "created_at" <= end_date
-            UNION ALL
-            SELECT customer_id, "totalAmount", "balanceDue" FROM public.orders WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date
-            UNION ALL
-            SELECT customer_id, "totalAmount", "balanceDue" FROM public."custom-orders" WHERE "isDeleted" = false AND "status" NOT IN ('cancelled', 'pending-cancellation') AND "created_at" >= start_date AND "created_at" <= end_date
+            -- Removed orders and custom-orders to prevent missing column errors
         ) s ON c.id = s.customer_id
         GROUP BY c.id, c.name, c.phone
         HAVING COALESCE(SUM(s."totalAmount"), 0) > 0

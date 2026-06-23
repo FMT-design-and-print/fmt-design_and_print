@@ -13,7 +13,7 @@ export default function SalesAndExpensesDashboard() {
     type: "all",
   });
 
-  const { totalRevenue, totalExpenses, totalProfit, totalDebts, totalBadDebts, isLoading, error } =
+  const { totalRevenue, totalExpenses, totalProfit, totalDebts, totalBadDebts, totalTips, isLoading, error } =
     useDashboardData(filters);
 
   const handleFilterChange = useCallback((newFilters: FilterValues) => {
@@ -34,6 +34,7 @@ export default function SalesAndExpensesDashboard() {
             totalProfit={totalProfit}
             totalDebts={totalDebts}
             totalBadDebts={totalBadDebts}
+            totalTips={totalTips}
             isLoading={isLoading}
             type={filters.type}
           />

@@ -261,6 +261,7 @@ export default function SalesTable({
             <Table.Th>Product</Table.Th>
             <Table.Th style={{ width: "120px" }}>Amount</Table.Th>
             <Table.Th style={{ width: "120px" }}>Debt</Table.Th>
+            {adminUser?.role === "super-admin" && <Table.Th style={{ width: "100px" }}>Tip</Table.Th>}
             <Table.Th style={{ width: "120px" }}>Date</Table.Th>
             <Table.Th style={{ width: "120px" }}>Updated By</Table.Th>
             <Table.Th style={{ width: "120px" }}>Actions</Table.Th>
@@ -294,6 +295,7 @@ export default function SalesTable({
                       </Tooltip>
                     </Group>
                   </Table.Td>
+
                   <Table.Td>
                     {customer ? (
                       <Text size="sm" fw={500}>{customer.name}</Text>
@@ -323,6 +325,17 @@ export default function SalesTable({
                       <Badge color="green" variant="light">Paid</Badge>
                     )}
                   </Table.Td>
+                  {adminUser?.role === "super-admin" && (
+                    <Table.Td>
+                      {sale.tip_amount && sale.tip_amount > 0 ? (
+                        <Text c="teal" fw={600} size="sm">
+                          +{CURRENCY_SYMBOL} {sale.tip_amount}
+                        </Text>
+                      ) : (
+                        <Text c="dimmed" size="sm">--</Text>
+                      )}
+                    </Table.Td>
+                  )}
                   <Table.Td>
                     <Text size="sm">{formatDate(sale.created_at)}</Text>
                   </Table.Td>

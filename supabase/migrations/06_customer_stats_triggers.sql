@@ -10,7 +10,7 @@ BEGIN
             UPDATE public.customers
             SET 
                 total_spent = (SELECT COALESCE(SUM("totalAmount"), 0) FROM public.sales WHERE customer_id = NEW.customer_id AND "isDeleted" = false),
-                total_debt = (SELECT COALESCE(SUM("balanceDue"), 0) FROM public.sales WHERE customer_id = NEW.customer_id AND "isDeleted" = false)
+                total_debt = (SELECT COALESCE(SUM(CASE WHEN "balanceDue" > 0 THEN "balanceDue" ELSE 0 END), 0) FROM public.sales WHERE customer_id = NEW.customer_id AND "isDeleted" = false)
             WHERE id = NEW.customer_id;
         END IF;
         
@@ -19,7 +19,7 @@ BEGIN
             UPDATE public.customers
             SET 
                 total_spent = (SELECT COALESCE(SUM("totalAmount"), 0) FROM public.sales WHERE customer_id = OLD.customer_id AND "isDeleted" = false),
-                total_debt = (SELECT COALESCE(SUM("balanceDue"), 0) FROM public.sales WHERE customer_id = OLD.customer_id AND "isDeleted" = false)
+                total_debt = (SELECT COALESCE(SUM(CASE WHEN "balanceDue" > 0 THEN "balanceDue" ELSE 0 END), 0) FROM public.sales WHERE customer_id = OLD.customer_id AND "isDeleted" = false)
             WHERE id = OLD.customer_id;
         END IF;
     -- If a DELETE happens
@@ -28,7 +28,7 @@ BEGIN
             UPDATE public.customers
             SET 
                 total_spent = (SELECT COALESCE(SUM("totalAmount"), 0) FROM public.sales WHERE customer_id = OLD.customer_id AND "isDeleted" = false),
-                total_debt = (SELECT COALESCE(SUM("balanceDue"), 0) FROM public.sales WHERE customer_id = OLD.customer_id AND "isDeleted" = false)
+                total_debt = (SELECT COALESCE(SUM(CASE WHEN "balanceDue" > 0 THEN "balanceDue" ELSE 0 END), 0) FROM public.sales WHERE customer_id = OLD.customer_id AND "isDeleted" = false)
             WHERE id = OLD.customer_id;
         END IF;
     END IF;
@@ -47,4 +47,4 @@ FOR EACH ROW EXECUTE FUNCTION public.update_customer_stats();
 UPDATE public.customers c
 SET 
     total_spent = COALESCE((SELECT SUM("totalAmount") FROM public.sales s WHERE s.customer_id = c.id AND s."isDeleted" = false), 0),
-    total_debt = COALESCE((SELECT SUM("balanceDue") FROM public.sales s WHERE s.customer_id = c.id AND s."isDeleted" = false), 0);
+    total_debt = COALESCE((SELECT SUM(CASE WHEN "balanceDue" > 0 THEN "balanceDue" ELSE 0 END) FROM public.sales s WHERE s.customer_id = c.id AND s."isDeleted" = false), 0);
