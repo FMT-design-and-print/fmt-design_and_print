@@ -36,7 +36,7 @@ import { RankedChartSection } from "./components/RankedChartSection";
 
 export const ReportsPage = () => {
     const { adminUser } = useCurrentAdminUser();
-    const canViewTips = canViewTips || adminUser?.role === "admin" || adminUser?.role === "manager";
+    const canViewTips = adminUser?.role === "super-admin" || adminUser?.role === "admin" || adminUser?.role === "manager";
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
         startOfMonth(new Date()),
         endOfMonth(new Date()),
