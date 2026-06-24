@@ -70,7 +70,7 @@ export const adminNavItems: IAdminNavItems[] = [
     icon: <IconUsersGroup />,
     isVisible: true,
     component: <CustomersPage />,
-    requiredPermission: UserPermission.MANAGER_PERMISSIONS,
+    requiredPermission: UserPermission.SALES_REP_PERMISSIONS,
   },
   {
     value: "orders",

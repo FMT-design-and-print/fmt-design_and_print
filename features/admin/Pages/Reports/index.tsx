@@ -36,6 +36,7 @@ import { RankedChartSection } from "./components/RankedChartSection";
 
 export const ReportsPage = () => {
     const { adminUser } = useCurrentAdminUser();
+    const canViewTips = canViewTips || adminUser?.role === "admin" || adminUser?.role === "manager";
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
         startOfMonth(new Date()),
         endOfMonth(new Date()),
@@ -206,7 +207,7 @@ export const ReportsPage = () => {
                                     <Text size="xl" fw={700} c="blue.7">
                                         {CURRENCY_SYMBOL} {summary?.totalCashReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                                     </Text>
-                                    {adminUser?.role === "super-admin" && (
+                                    {canViewTips && (
                                         <Text size="xs" c="teal" mt={4}>
                                             Includes {CURRENCY_SYMBOL} {(summary?.totalTips || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} in tips
                                         </Text>
@@ -450,7 +451,7 @@ export const ReportsPage = () => {
                                         <Table.Th>Product Type</Table.Th>
                                         <Table.Th ta="right">Total Sales</Table.Th>
                                         <Table.Th ta="right">Expected Revenue</Table.Th>
-                                        {adminUser?.role === "super-admin" && <Table.Th ta="right">Tips</Table.Th>}
+                                        {canViewTips && <Table.Th ta="right">Tips</Table.Th>}
                                         <Table.Th ta="right">Cash Received</Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
@@ -461,7 +462,7 @@ export const ReportsPage = () => {
                                             <Table.Td>{item.product_type}</Table.Td>
                                             <Table.Td ta="right">{item.sales_count}</Table.Td>
                                             <Table.Td ta="right" c="blue.7" fw={600}>{formatCurrency(item.total_revenue)}</Table.Td>
-                                            {adminUser?.role === "super-admin" && (
+                                            {canViewTips && (
                                                 <Table.Td ta="right" c="teal" fw={500}>
                                                     {item.total_tips > 0 ? `+${formatCurrency(item.total_tips)}` : '--'}
                                                 </Table.Td>
@@ -471,7 +472,7 @@ export const ReportsPage = () => {
                                     ))}
                                     {filteredDetailedPerformance.length === 0 && (
                                         <Table.Tr>
-                                            <Table.Td colSpan={adminUser?.role === "super-admin" ? 6 : 5} ta="center">No data found for the selected filters</Table.Td>
+                                            <Table.Td colSpan={canViewTips ? 6 : 5} ta="center">No data found for the selected filters</Table.Td>
                                         </Table.Tr>
                                     )}
                                 </Table.Tbody>
@@ -485,7 +486,7 @@ export const ReportsPage = () => {
                                             <Table.Th ta="right" c="blue.7">
                                                 {formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + item.total_revenue, 0))}
                                             </Table.Th>
-                                            {adminUser?.role === "super-admin" && (
+                                            {canViewTips && (
                                                 <Table.Th ta="right" c="teal">
                                                     {formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_tips || 0), 0))}
                                                 </Table.Th>
@@ -538,7 +539,7 @@ export const ReportsPage = () => {
                                             <Table.Td ta="right">{formatCurrency(summary?.totalCashReceived || 0)}</Table.Td>
                                             <Table.Td>
                                                 Cash in hand.
-                                                {adminUser?.role === "super-admin" && ` Includes ${formatCurrency(summary?.totalTips || 0)} in tips.`}
+                                                {canViewTips && ` Includes ${formatCurrency(summary?.totalTips || 0)} in tips.`}
                                             </Table.Td>
                                         </Table.Tr>
                                         <Table.Tr>
@@ -676,7 +677,7 @@ export const ReportsPage = () => {
                                         <Table.Th>Product Type</Table.Th>
                                         <Table.Th ta="right">Sales</Table.Th>
                                         <Table.Th ta="right">Expected Revenue</Table.Th>
-                                        {adminUser?.role === "super-admin" && <Table.Th ta="right">Tips</Table.Th>}
+                                        {canViewTips && <Table.Th ta="right">Tips</Table.Th>}
                                         <Table.Th ta="right">Cash Received</Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
@@ -687,7 +688,7 @@ export const ReportsPage = () => {
                                             <Table.Td>{item.product_type}</Table.Td>
                                             <Table.Td ta="right">{item.sales_count}</Table.Td>
                                             <Table.Td ta="right">{formatCurrency(item.total_revenue)}</Table.Td>
-                                            {adminUser?.role === "super-admin" && (
+                                            {canViewTips && (
                                                 <Table.Td ta="right">{item.total_tips > 0 ? formatCurrency(item.total_tips) : '—'}</Table.Td>
                                             )}
                                             <Table.Td ta="right">{formatCurrency(item.total_cash_received)}</Table.Td>
@@ -695,7 +696,7 @@ export const ReportsPage = () => {
                                     ))}
                                     {filteredDetailedPerformance.length === 0 && (
                                         <Table.Tr>
-                                            <Table.Td colSpan={adminUser?.role === "super-admin" ? 6 : 5} ta="center">No data found for the selected filters</Table.Td>
+                                            <Table.Td colSpan={canViewTips ? 6 : 5} ta="center">No data found for the selected filters</Table.Td>
                                         </Table.Tr>
                                     )}
                                 </Table.Tbody>
@@ -705,7 +706,7 @@ export const ReportsPage = () => {
                                             <Table.Th colSpan={2}>Total</Table.Th>
                                             <Table.Th ta="right">{filteredDetailedPerformance.reduce((acc, item) => acc + item.sales_count, 0)}</Table.Th>
                                             <Table.Th ta="right">{formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + item.total_revenue, 0))}</Table.Th>
-                                            {adminUser?.role === "super-admin" && (
+                                            {canViewTips && (
                                                 <Table.Th ta="right">{formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_tips || 0), 0))}</Table.Th>
                                             )}
                                             <Table.Th ta="right">{formatCurrency(filteredDetailedPerformance.reduce((acc, item) => acc + (item.total_cash_received || 0), 0))}</Table.Th>
