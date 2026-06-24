@@ -107,7 +107,7 @@ export default function StatCards({
                 <Text size="xl" fw={700}>
                   {isLoading ? "..." : stat.value}
                 </Text>
-                {stat.title.includes("Revenue") && adminUser?.role === "super-admin" && totalTips > 0 && (
+                {stat.title.includes("Revenue") && (adminUser?.role === "super-admin" || adminUser?.role === "admin" || adminUser?.role === "manager") && totalTips > 0 && (
                   <Badge color="teal" variant="light" size="xs" mt={4}>
                     + {formatCurrency(totalTips)} Tips
                   </Badge>
